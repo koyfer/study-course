@@ -1,0 +1,268 @@
+<!doctype html>
+<html lang="uk">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Лекція 1. Вступ до DevOps: терміни, SDLC і моделі хмарних сервісів · Хмарні технології та сервіси</title>
+<meta name="description" content="Що таке DevOps і CAMS, CI/CD, IaaS/PaaS/SaaS, бібліотека vs фреймворк, Waterfall vs Agile.">
+<meta name="theme-color" content="#0d7a6f">
+<script>try{var t=localStorage.getItem("htc-theme");if(t)document.documentElement.setAttribute("data-theme",t)}catch(e){}</script>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=Onest:wght@400;500;600;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<link rel="icon" href="../../assets/icons/favicon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="../../css/style.css">
+</head>
+<body data-root="../../" >
+<a class="skip-link" href="#main">Перейти до змісту</a>
+<header class="site-header">
+  <button class="icon-btn menu-btn" type="button" aria-label="Відкрити меню курсу" aria-expanded="false" aria-controls="sidebar"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M4 6h16M4 12h16M4 18h16"/></svg></button>
+  <a class="brand" href="../../index.html"><svg class="brand-mark" viewBox="0 0 32 32" aria-hidden="true"><rect width="32" height="32" rx="9" fill="var(--accent)"/><path d="M10 21.5h12.2a4.3 4.3 0 00.6-8.56A6 6 0 0011.4 12a4.75 4.75 0 00-1.4 9.5z" fill="none" stroke="#fff" stroke-width="2" stroke-linejoin="round"/><path d="M13 17.2l2.2 2.2 4-4.2" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg><span>Хмарні технології та сервіси<small>Конспект курсу · 12 лекцій</small></span></a>
+  <div class="header-spacer"></div>
+  <button class="search-btn" type="button" data-open-search aria-label="Пошук по курсу"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/></svg><span class="label">Пошук по лекціях</span><kbd>Ctrl K</kbd></button>
+  <button class="icon-btn theme-btn" type="button" aria-label="Перемкнути тему"><svg class="sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg><svg class="moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M21 12.8A9 9 0 1111.2 3a7 7 0 009.8 9.8z"/></svg></button>
+</header>
+<div class="layout">
+<nav class="sidebar" id="sidebar" aria-label="Навігація курсом">
+<div class="side-progress" data-week-progress="w1l1,w1l2,w1l3,w1l4,w1l5,w2l6,w2l7,w2l8,w2l9,w2l10,w3l11,w3l12"><div>Прогрес курсу: <strong class="wp-text">0 з 12</strong></div><div class="bar"><i></i></div></div>
+<div class="side-group"><a class="side-link" href="../../index.html"><span class="side-num">⌂</span><span>Огляд курсу і план</span></a></div>
+<div class="side-group" data-week-progress="w1l1,w1l2,w1l3,w1l4,w1l5"><div class="side-title"><a href="../../weeks/week-1.html">Тиждень 1</a><span class="wk-count wp-text">0 з 5</span></div>
+<a class="side-link" href="../../lectures/week-1/lecture-1.html" aria-current="page"><span class="side-num">01</span><span>Вступ до DevOps, SDLC і хмарних моделей</span><span class="side-check" data-check="w1l1" role="img" aria-label="Не опрацьовано"></span></a>
+<a class="side-link" href="../../lectures/week-1/lecture-2.html"><span class="side-num">02</span><span>Linux: команди, користувачі, права</span><span class="side-check" data-check="w1l2" role="img" aria-label="Не опрацьовано"></span></a>
+<a class="side-link" href="../../lectures/week-1/lecture-3.html"><span class="side-num">03</span><span>Bash: змінні, умови, цикли, функції</span><span class="side-check" data-check="w1l3" role="img" aria-label="Не опрацьовано"></span></a>
+<a class="side-link" href="../../lectures/week-1/lecture-4.html"><span class="side-num">04</span><span>Веб-архітектура: HTTP, REST, N-tier</span><span class="side-check" data-check="w1l4" role="img" aria-label="Не опрацьовано"></span></a>
+<a class="side-link" href="../../lectures/week-1/lecture-5.html"><span class="side-num">05</span><span>LAMP: Apache, MySQL, PHP</span><span class="side-check" data-check="w1l5" role="img" aria-label="Не опрацьовано"></span></a>
+</div>
+<div class="side-group" data-week-progress="w2l6,w2l7,w2l8,w2l9,w2l10"><div class="side-title"><a href="../../weeks/week-2.html">Тиждень 2</a><span class="wk-count wp-text">0 з 5</span></div>
+<a class="side-link" href="../../lectures/week-2/lecture-6.html"><span class="side-num">06</span><span>Мережі: OSI, TCP/IP, IP, NAT, VPN</span><span class="side-check" data-check="w2l6" role="img" aria-label="Не опрацьовано"></span></a>
+<a class="side-link" href="../../lectures/week-2/lecture-7.html"><span class="side-num">07</span><span>Хмари: NIST, моделі, AWS/GCP/Azure</span><span class="side-check" data-check="w2l7" role="img" aria-label="Не опрацьовано"></span></a>
+<a class="side-link" href="../../lectures/week-2/lecture-8.html"><span class="side-num">08</span><span>IaC і Terraform</span><span class="side-check" data-check="w2l8" role="img" aria-label="Не опрацьовано"></span></a>
+<a class="side-link" href="../../lectures/week-2/lecture-9.html"><span class="side-num">09</span><span>Віртуалізація і Docker</span><span class="side-check" data-check="w2l9" role="img" aria-label="Не опрацьовано"></span></a>
+<a class="side-link" href="../../lectures/week-2/lecture-10.html"><span class="side-num">10</span><span>Git і GitHub: версії, гілки, PR</span><span class="side-check" data-check="w2l10" role="img" aria-label="Не опрацьовано"></span></a>
+</div>
+<div class="side-group" data-week-progress="w3l11,w3l12"><div class="side-title"><a href="../../weeks/week-3.html">Тиждень 3</a><span class="wk-count wp-text">0 з 2</span></div>
+<a class="side-link" href="../../lectures/week-3/lecture-11.html"><span class="side-num">11</span><span>CI/CD і Jenkins, Jenkinsfile</span><span class="side-check" data-check="w3l11" role="img" aria-label="Не опрацьовано"></span></a>
+<a class="side-link" href="../../lectures/week-3/lecture-12.html"><span class="side-num">12</span><span>GitHub Actions: workflow і деплой</span><span class="side-check" data-check="w3l12" role="img" aria-label="Не опрацьовано"></span></a>
+</div>
+</nav><div class="backdrop"></div>
+<div class="main">
+<main class="content" id="main">
+<div class="lecture-hero">
+<div class="crumbs"><a href="../../index.html">Курс</a><span>/</span><a href="../../weeks/week-1.html">Тиждень 1</a><span>/</span><span>Лекція 1</span></div>
+<div class="eyebrow">Тиждень 1 · Лекція 1</div>
+<h1>Вступ до DevOps: терміни, SDLC і моделі хмарних сервісів</h1>
+<p class="lead">Навіщо компаніям DevOps-інженери, як DevOps прибирає «стіну непорозуміння» між розробкою та експлуатацією, і де в цій картині хмари.</p>
+<div class="meta-row">
+<span class="chip"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>≈ 13 хв читання</span>
+<span class="chip"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M9.5 9.5a2.5 2.5 0 114 2c-1 .7-1.5 1.2-1.5 2.5M12 17h.01"/></svg>7 питань самоперевірки</span>
+<span class="chip" data-status="w1l1"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg><span class="lbl">Не опрацьовано</span></span>
+</div>
+</div>
+<div class="objectives">
+<h2 id="goals">Чого ви навчитесь<a class="h-anchor" href="#goals" aria-label="Посилання на розділ">#</a></h2>
+<ul>
+<li>Пояснити, що таке DevOps і чому це <b>культура + практики + інструменти</b>, а не посада «адміна з Docker».</li>
+<li>Назвати 4 принципи <b>CAMS</b> і ключові DevOps-практики (CI, CD, IaC, моніторинг, контейнери).</li>
+<li>Розрізняти <b>IaaS, PaaS, SaaS</b> і On-Premises за тим, хто чим керує.</li>
+<li>Порівняти <b>Waterfall</b>, ітеративні моделі та <b>Agile</b> (Scrum, Kanban, XP).</li>
+<li>Відрізнити <b>бібліотеку</b> від <b>фреймворку</b> і пояснити, що таке CRUD-застосунок.</li>
+</ul>
+</div>
+
+<h2 id="software">Програмне забезпечення і CRUD<a class="h-anchor" href="#software" aria-label="Посилання на розділ">#</a></h2>
+<p><b>Програмне забезпечення (software)</b> — це набір програм <i>і пов'язаних даних</i>, які кажуть комп'ютеру, що і як робити, разом із документацією. Без ПЗ комп'ютер — «просто меблі».</p>
+<p>Чому наголос на <b>даних</b>? Майже кожен вебресурс (інтернет-магазин, соцмережа) зберігає дані в базі. Якщо впаде база — сайт формально працює, але стає марним. Тому DevOps-інженер відповідає не лише за код, а й за збереження та резервне копіювання даних.</p>
+<div class="callout def"><div class="callout-title">Визначення</div><p><b>CRUD</b> — Create, Read, Update, Delete. З будь-якою інформаційною сутністю (товар, користувач, пост) можна зробити лише ці 4 дії, тому більшість застосунків — це «CRUD-застосунки». Пізніше (лекція 4) побачимо, що CRUD напряму відображається на HTTP-методи POST/GET/PUT/DELETE.</p></div>
+
+<h2 id="devops">Що таке DevOps<a class="h-anchor" href="#devops" aria-label="Посилання на розділ">#</a></h2>
+<div class="callout def"><div class="callout-title">Визначення (AWS)</div><p><b>DevOps</b> — поєднання культурних філософій, практик та інструментів, яке підвищує здатність організації постачати застосунки та сервіси з <b>високою швидкістю</b>.</p></div>
+<h3>Проблема: «стіна непорозуміння»</h3>
+<p>Класично розробники (Dev) хочуть часто випускати зміни, а експлуатація (Ops) — щоб система була стабільною. Кожна група має власні інструменти й цілі. Розробники «перекидають через стіну» новий реліз, адміністратори його розгортають — і щось ламається. Agile свого часу зблизив бізнес і розробку; <b>DevOps зближує розробку й експлуатацію</b>.</p>
+
+<figure><div class="figure wide">
+<svg class="dg" viewBox="0 0 720 175" role="img" aria-label="Бізнес, розробка і експлуатація: Agile прибирає стіну між бізнесом і розробкою, DevOps — між розробкою та експлуатацією">
+<defs><marker id="l1a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" class="arrow-head"/></marker></defs>
+<rect x="20" y="40" width="170" height="80" rx="12" class="box"/><text x="105" y="74" text-anchor="middle" class="t-bold">Бізнес</text><text x="105" y="96" text-anchor="middle" class="t-muted">вимоги, цінність</text>
+<rect x="275" y="40" width="170" height="80" rx="12" class="acc"/><text x="360" y="74" text-anchor="middle" class="t-bold">Розробка (Dev)</text><text x="360" y="96" text-anchor="middle" class="t-muted">хоче змін швидко</text>
+<rect x="530" y="40" width="170" height="80" rx="12" class="warm"/><text x="615" y="74" text-anchor="middle" class="t-bold">Експлуатація (Ops)</text><text x="615" y="96" text-anchor="middle" class="t-muted">хоче стабільності</text>
+<path d="M195 80H270" class="ln" marker-end="url(#l1a)" marker-start="url(#l1a)"/>
+<path d="M450 80H525" class="ln" marker-end="url(#l1a)" marker-start="url(#l1a)"/>
+<rect x="223" y="52" width="18" height="56" rx="3" class="vio"/><rect x="478" y="52" width="18" height="56" rx="3" class="vio"/>
+<text x="232" y="150" text-anchor="middle" class="t-vio t-bold">стіну прибирає Agile</text>
+<text x="487" y="150" text-anchor="middle" class="t-vio t-bold">стіну прибирає DevOps</text>
+<text x="360" y="24" text-anchor="middle" class="t-muted">«стіни» між командами = затримки, конфлікти, аварійні релізи</text>
+</svg></div>
+<figcaption><b>Навіщо DevOps.</b> Agile зближує бізнес і розробку, DevOps — розробку й експлуатацію.</figcaption></figure>
+
+<h3>Що потрібно від DevOps</h3>
+<div class="table-wrap"><table>
+<thead><tr><th>Робимо</th><th>Замість</th></tr></thead>
+<tbody>
+<tr><td>Автоматизуємо процеси</td><td>ручного виконання</td></tr>
+<tr><td>Автоматичний журнал змін (audit trail)</td><td>бюрократії</td></tr>
+<tr><td>Співпрацюємо</td><td>«перекидання через стіну»</td></tr>
+<tr><td>Спільна автоматизація</td><td>повторення одного й того ж кожною командою</td></tr>
+</tbody></table></div>
+
+<h3>Принципи CAMS</h3>
+<div class="term-grid">
+<div class="term"><span class="en">Culture</span><b>Культура</b><p>Agile-підхід і спільна відповідальність за весь конвеєр постачання.</p></div>
+<div class="term"><span class="en">Automation</span><b>Автоматизація</b><p>Вища швидкість і частота релізів, менше ручної праці.</p></div>
+<div class="term"><span class="en">Measurement</span><b>Вимірювання</b><p>Збираємо метрики: усе в інфраструктурі виміряно і візуалізовано.</p></div>
+<div class="term"><span class="en">Sharing</span><b>Обмін</b><p>Спільні цілі, знання та інструменти у Dev і Ops.</p></div>
+</div>
+
+<h3>DevOps-цикл і практики</h3>
+<figure><div class="figure wide">
+<svg class="dg" viewBox="0 0 720 220" role="img" aria-label="Нескінченний DevOps-цикл: plan, code, build, test, release, deploy, operate, monitor">
+<path d="M360 110 C 300 30, 120 30, 120 110 C 120 190, 300 190, 360 110 C 420 30, 600 30, 600 110 C 600 190, 420 190, 360 110 Z" class="ln-acc"/>
+<text x="240" y="115" text-anchor="middle" class="t-bold" font-size="22">Dev</text>
+<text x="480" y="115" text-anchor="middle" class="t-bold" font-size="22">Ops</text>
+<text x="300" y="50" class="t-mono t-acc">plan</text><text x="175" y="50" class="t-mono t-acc">code</text>
+<text x="75" y="115" class="t-mono t-acc">build</text><text x="190" y="185" class="t-mono t-acc">test</text>
+<text x="395" y="50" class="t-mono t-warm">release</text><text x="520" y="50" class="t-mono t-warm">deploy</text>
+<text x="612" y="115" class="t-mono t-warm">operate</text><text x="480" y="188" class="t-mono t-warm">monitor</text>
+</svg></div>
+<figcaption><b>DevOps-цикл.</b> Ліва петля — розробка, права — експлуатація; моніторинг повертає зворотний зв'язок у планування.</figcaption></figure>
+<p>Ключові <b>DevOps-практики</b> зі слайдів: <b>Continuous Integration</b>, <b>Continuous Delivery</b>, <b>Infrastructure as Code (IaC)</b>, моніторинг і логування, мікросервіси, віртуалізація та контейнеризація, безперервний моніторинг. Типові інструменти: Jenkins, TeamCity, Maven/Gradle, Docker, Vagrant, Terraform, Ansible/Chef/Puppet, SonarQube, Nagios/Zabbix, хмари AWS/Azure/GCP. Кожну практику ми розберемо в окремій лекції.</p>
+
+<h2 id="cicd">CI, Continuous Delivery і Continuous Deployment<a class="h-anchor" href="#cicd" aria-label="Посилання на розділ">#</a></h2>
+<figure><div class="figure wide">
+<svg class="dg" viewBox="0 0 720 210" role="img" aria-label="Конвеєр: version control, build, staging, production; CI покриває перші два етапи, Delivery вимагає ручного підтвердження перед production, Deployment — ні">
+<defs><marker id="l1b" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0L10 5L0 10z" class="arrow-head"/></marker></defs>
+<g text-anchor="middle">
+<rect x="20" y="130" width="130" height="56" rx="28" class="box"/><text x="85" y="155" class="t-bold">Version control</text><text x="85" y="172" class="t-muted">push коду</text>
+<rect x="205" y="130" width="130" height="56" rx="28" class="box"/><text x="270" y="155" class="t-bold">Build</text><text x="270" y="172" class="t-muted">збірка + тести</text>
+<rect x="390" y="130" width="130" height="56" rx="28" class="box"/><text x="455" y="155" class="t-bold">Staging</text><text x="455" y="172" class="t-muted">тестове середовище</text>
+<rect x="575" y="130" width="130" height="56" rx="28" class="ok"/><text x="640" y="155" class="t-bold">Production</text><text x="640" y="172" class="t-muted">для користувачів</text>
+</g>
+<path d="M152 158H200" class="ln" marker-end="url(#l1b)"/><path d="M337 158H385" class="ln" marker-end="url(#l1b)"/><path d="M522 158H570" class="ln" marker-end="url(#l1b)"/>
+<rect x="20" y="16" width="315" height="26" rx="6" class="acc"/><text x="30" y="34" class="t-bold">Continuous Integration</text>
+<rect x="20" y="52" width="685" height="26" rx="6" class="vio"/><text x="30" y="70" class="t-bold">Continuous Delivery</text><text x="695" y="70" text-anchor="end" class="t-vio t-bold">ручне схвалення перед production</text>
+<rect x="20" y="88" width="685" height="26" rx="6" class="ok"/><text x="30" y="106" class="t-bold">Continuous Deployment</text><text x="695" y="106" text-anchor="end" class="t-bold">автоматичний деплой у production</text>
+</svg></div>
+<figcaption><b>CI → CD.</b> Різниця між Delivery і Deployment — лише в останньому кроці: людина чи автомат вирішує випуск у production.</figcaption></figure>
+<ul>
+<li><b>Continuous Integration (CI)</b> — розробники часто зливають код у спільний репозиторій; CI-сервер (наприклад, Jenkins) на кожну зміну збирає проєкт і проганяє тести, повертаючи швидкий зворотний зв'язок.</li>
+<li><b>Continuous Delivery</b> — кожна успішна збірка автоматично доходить до staging і <i>готова</i> до релізу; у production — після ручного схвалення.</li>
+<li><b>Continuous Deployment</b> — у production теж автоматично, без людини.</li>
+</ul>
+
+<h2 id="cloud">Хмари і моделі сервісів [X]aaS<a class="h-anchor" href="#cloud" aria-label="Посилання на розділ">#</a></h2>
+<div class="callout def"><div class="callout-title">Визначення NIST</div><p><b>Хмарні обчислення</b> — модель повсюдного, зручного мережевого доступу <b>на вимогу</b> до спільного пулу конфігурованих ресурсів (мережі, ВМ, сховища, застосунки, сервіси), які можна швидко виділити й звільнити з мінімальними зусиллями з управління.</p></div>
+<p>Економічний сенс: замість <b>CapEx</b> (капітальні витрати — купити сервери наперед) компанія платить <b>OpEx</b> (операційні витрати — оренда за фактом використання).</p>
+<figure><div class="figure wide">
+<svg class="dg" viewBox="0 0 720 330" role="img" aria-label="Розподіл відповідальності: On-Premises — усе керує клієнт; IaaS — провайдер керує серверами, сховищем, мережею, віртуалізацією; PaaS — ще й ОС, middleware, runtime; SaaS — усім">
+<rect x="30" y="60" width="150" height="25" rx="5" class="box"/><text x="105" y="77" text-anchor="middle" class="t-small">Applications</text>
+<rect x="30" y="89" width="150" height="25" rx="5" class="box"/><text x="105" y="106" text-anchor="middle" class="t-small">Data</text>
+<rect x="30" y="118" width="150" height="25" rx="5" class="box"/><text x="105" y="135" text-anchor="middle" class="t-small">Runtime</text>
+<rect x="30" y="147" width="150" height="25" rx="5" class="box"/><text x="105" y="164" text-anchor="middle" class="t-small">Middleware</text>
+<rect x="30" y="176" width="150" height="25" rx="5" class="box"/><text x="105" y="193" text-anchor="middle" class="t-small">O/S</text>
+<rect x="30" y="205" width="150" height="25" rx="5" class="box"/><text x="105" y="222" text-anchor="middle" class="t-small">Virtualization</text>
+<rect x="30" y="234" width="150" height="25" rx="5" class="box"/><text x="105" y="251" text-anchor="middle" class="t-small">Servers</text>
+<rect x="30" y="263" width="150" height="25" rx="5" class="box"/><text x="105" y="280" text-anchor="middle" class="t-small">Storage</text>
+<rect x="30" y="292" width="150" height="25" rx="5" class="box"/><text x="105" y="309" text-anchor="middle" class="t-small">Networking</text>
+<rect x="210" y="60" width="150" height="25" rx="5" class="box"/><text x="285" y="77" text-anchor="middle" class="t-small">Applications</text>
+<rect x="210" y="89" width="150" height="25" rx="5" class="box"/><text x="285" y="106" text-anchor="middle" class="t-small">Data</text>
+<rect x="210" y="118" width="150" height="25" rx="5" class="box"/><text x="285" y="135" text-anchor="middle" class="t-small">Runtime</text>
+<rect x="210" y="147" width="150" height="25" rx="5" class="box"/><text x="285" y="164" text-anchor="middle" class="t-small">Middleware</text>
+<rect x="210" y="176" width="150" height="25" rx="5" class="box"/><text x="285" y="193" text-anchor="middle" class="t-small">O/S</text>
+<rect x="210" y="205" width="150" height="25" rx="5" class="acc"/><text x="285" y="222" text-anchor="middle" class="t-small">Virtualization</text>
+<rect x="210" y="234" width="150" height="25" rx="5" class="acc"/><text x="285" y="251" text-anchor="middle" class="t-small">Servers</text>
+<rect x="210" y="263" width="150" height="25" rx="5" class="acc"/><text x="285" y="280" text-anchor="middle" class="t-small">Storage</text>
+<rect x="210" y="292" width="150" height="25" rx="5" class="acc"/><text x="285" y="309" text-anchor="middle" class="t-small">Networking</text>
+<rect x="390" y="60" width="150" height="25" rx="5" class="box"/><text x="465" y="77" text-anchor="middle" class="t-small">Applications</text>
+<rect x="390" y="89" width="150" height="25" rx="5" class="box"/><text x="465" y="106" text-anchor="middle" class="t-small">Data</text>
+<rect x="390" y="118" width="150" height="25" rx="5" class="acc"/><text x="465" y="135" text-anchor="middle" class="t-small">Runtime</text>
+<rect x="390" y="147" width="150" height="25" rx="5" class="acc"/><text x="465" y="164" text-anchor="middle" class="t-small">Middleware</text>
+<rect x="390" y="176" width="150" height="25" rx="5" class="acc"/><text x="465" y="193" text-anchor="middle" class="t-small">O/S</text>
+<rect x="390" y="205" width="150" height="25" rx="5" class="acc"/><text x="465" y="222" text-anchor="middle" class="t-small">Virtualization</text>
+<rect x="390" y="234" width="150" height="25" rx="5" class="acc"/><text x="465" y="251" text-anchor="middle" class="t-small">Servers</text>
+<rect x="390" y="263" width="150" height="25" rx="5" class="acc"/><text x="465" y="280" text-anchor="middle" class="t-small">Storage</text>
+<rect x="390" y="292" width="150" height="25" rx="5" class="acc"/><text x="465" y="309" text-anchor="middle" class="t-small">Networking</text>
+<rect x="570" y="60" width="150" height="25" rx="5" class="acc"/><text x="645" y="77" text-anchor="middle" class="t-small">Applications</text>
+<rect x="570" y="89" width="150" height="25" rx="5" class="acc"/><text x="645" y="106" text-anchor="middle" class="t-small">Data</text>
+<rect x="570" y="118" width="150" height="25" rx="5" class="acc"/><text x="645" y="135" text-anchor="middle" class="t-small">Runtime</text>
+<rect x="570" y="147" width="150" height="25" rx="5" class="acc"/><text x="645" y="164" text-anchor="middle" class="t-small">Middleware</text>
+<rect x="570" y="176" width="150" height="25" rx="5" class="acc"/><text x="645" y="193" text-anchor="middle" class="t-small">O/S</text>
+<rect x="570" y="205" width="150" height="25" rx="5" class="acc"/><text x="645" y="222" text-anchor="middle" class="t-small">Virtualization</text>
+<rect x="570" y="234" width="150" height="25" rx="5" class="acc"/><text x="645" y="251" text-anchor="middle" class="t-small">Servers</text>
+<rect x="570" y="263" width="150" height="25" rx="5" class="acc"/><text x="645" y="280" text-anchor="middle" class="t-small">Storage</text>
+<rect x="570" y="292" width="150" height="25" rx="5" class="acc"/><text x="645" y="309" text-anchor="middle" class="t-small">Networking</text>
+<text x="20" y="22" class="t-muted">■ керуєте ви</text><text x="130" y="22" class="t-muted t-acc">■ керує провайдер</text>
+<g text-anchor="middle" font-size="12">
+<text x="105" y="48" class="t-bold">On-Premises</text><text x="285" y="48" class="t-bold">IaaS</text><text x="465" y="48" class="t-bold">PaaS</text><text x="645" y="48" class="t-bold">SaaS</text>
+</g>
+</svg></div>
+<figcaption><b>Хто чим керує.</b> Що вище модель — то менше контролю і менше турбот.</figcaption></figure>
+<div class="table-wrap"><table>
+<thead><tr><th>Модель</th><th>Що отримуєте</th><th>Хто користувач</th><th>Приклади</th></tr></thead>
+<tbody>
+<tr><td><b>IaaS</b> — Infrastructure</td><td>ВМ, мережа, диски. ОС і все вище — ваше</td><td>адміністратори, <b>DevOps</b></td><td>AWS EC2, Azure VM, Google Compute Engine</td></tr>
+<tr><td><b>PaaS</b> — Platform</td><td>готове середовище запуску коду</td><td>розробники</td><td>Heroku, AWS Elastic Beanstalk, Google App Engine</td></tr>
+<tr><td><b>SaaS</b> — Software</td><td>готовий застосунок у браузері</td><td>кінцеві користувачі</td><td>Gmail, Google Docs, Office 365, Trello, Salesforce</td></tr>
+</tbody></table></div>
+<p>Мнемоніка зі слайдів: SaaS — <b>Use it</b>, PaaS — <b>Build with it</b>, IaaS — <b>Move to it</b>. Популярна аналогія — «піца як сервіс»: вдома робите все самі (On-Premises), купуєте напівфабрикат і печете (IaaS), замовляєте доставку (PaaS), йдете в піцерію (SaaS). Межа між PaaS і SaaS на практиці тонка.</p>
+<div class="callout"><div class="callout-title">Як почати безкоштовно</div><p>Великі провайдери дають free tier: AWS Free Tier, Google Cloud Free Tier, Microsoft Azure Free Account. Детальніше про хмари — у лекції 7.</p></div>
+
+<h2 id="framework">Бібліотека vs фреймворк<a class="h-anchor" href="#framework" aria-label="Посилання на розділ">#</a></h2>
+<p><b>Фреймворк</b> — готовий каркас програмних рішень (архітектура + базова функціональність). Перевага: усі системи на ньому мають однакову структуру.</p>
+<div class="compare">
+<div><h4>Бібліотека (library)</h4><ul><li>Набір функцій для повторного використання.</li><li><b>Ви</b> викликаєте бібліотеку, керування повертається вам.</li><li>Легко додати в наявний проєкт через API.</li><li>Приклад: Chart.js — для графіків.</li></ul></div>
+<div><h4>Фреймворк (framework)</h4><ul><li>Диктує архітектуру проєкту.</li><li><b>Фреймворк викликає ваш код</b> (інверсія керування).</li><li>Зазвичай обирається на старті нового проєкту.</li><li>Приклад: Angular — для вебзастосунків.</li></ul></div>
+</div>
+
+<h2 id="sdlc">SDLC і моделі розробки<a class="h-anchor" href="#sdlc" aria-label="Посилання на розділ">#</a></h2>
+<p><b>SDLC (Software Development Life Cycle)</b> — поділ роботи над ПЗ на фази для кращого планування: <b>аналіз → проєктування → реалізація → тестування</b> (+ розгортання і супровід). Будь-яка програма, мала чи велика, проходить ці кроки.</p>
+<div class="table-wrap"><table>
+<thead><tr><th>Модель</th><th>Ідея</th><th>Коли доречна</th></tr></thead>
+<tbody>
+<tr><td><b>Waterfall</b> (водоспад)</td><td>Послідовні фази згори вниз: бізнес-вимоги → вимоги користувача → системні вимоги → архітектура → детальний дизайн → реалізація → тестування. Повернутися назад дорого.</td><td>Вимоги стабільні й відомі наперед</td></tr>
+<tr><td><b>Ітеративна</b></td><td>Кожна ітерація — закритий «міні-проєкт» (вимоги, дизайн, код, інтеграція, тести). Наприкінці — повністю протестована версія і відгук стейкхолдерів у план наступної ітерації.</td><td>Вимоги уточнюються в процесі</td></tr>
+<tr><td><b>Еволюційне прототипування</b></td><td>Прототип поступово доводиться до готового продукту.</td><td>Нечіткі вимоги, потрібен ранній фідбек</td></tr>
+<tr><td><b>Agile</b></td><td>Мінімізує ризик, контролюючи 4 змінні: ресурси, час, якість і особливо <b>обсяг (scope)</b>.</td><td>Більшість сучасних продуктів</td></tr>
+</tbody></table></div>
+<h3>Цінності Agile-маніфесту</h3>
+<ul>
+<li><b>Люди і взаємодія</b> важливіші за процеси та інструменти.</li>
+<li><b>Працюючий продукт</b> важливіший за вичерпну документацію.</li>
+<li><b>Співпраця із замовником</b> важливіша за узгодження контракту.</li>
+<li><b>Готовність до змін</b> важливіша за дотримання плану.</li>
+</ul>
+<p>Популярні Agile-методології: <b>Scrum</b> (фіксовані спринти, ролі, церемонії), <b>Kanban</b> (безперервний потік задач на дошці з лімітом незавершеної роботи), <b>XP — eXtreme Programming</b> (інженерні практики: парне програмування, TDD, часті релізи).</p>
+
+<h2 id="history">Від хостингу 199x до DevOps-інженера<a class="h-anchor" href="#history" aria-label="Посилання на розділ">#</a></h2>
+<ol class="steps">
+<li><b>199x — власне залізо.</b> Компанія купує сервери, мережу, приміщення, наймає адмінів і платить за все, навіть якщо ресурс простоює.</li>
+<li><b>2000-ні — спільні дата-центри.</b> Оренда стійок, але сервери й ПЗ досі свої.</li>
+<li><b>Ера сервісів.</b> Хмари, IaaS/PaaS/SaaS, автоматизація. Типова сучасна інфраструктура: балансувальник (NGINX/HAProxy) → кілька вебсерверів (httpd/Tomcat) → основна та резервна БД MySQL. Без моніторингу важко навіть зрозуміти, що «щось не так».</li>
+<li><b>DevOps-інженер</b> потрібен практично на кожному середньому/великому проєкті: Linux, мережі, скрипти, хмари, IaC, контейнери, Git, CI/CD — саме ці теми й складають цей курс.</li>
+</ol>
+
+<h2 id="mistakes">Типові помилки<a class="h-anchor" href="#mistakes" aria-label="Посилання на розділ">#</a></h2>
+<div class="mistakes">
+<div class="mistake"><div class="wrong">DevOps — це посада або конкретний інструмент (Docker, Jenkins).</div><div class="right">DevOps — це культура + практики + інструменти. Інструменти лише реалізують принципи CAMS.</div></div>
+<div class="mistake"><div class="wrong">Continuous Delivery і Continuous Deployment — синоніми.</div><div class="right">У Delivery реліз у production схвалює людина; у Deployment він автоматичний.</div></div>
+<div class="mistake"><div class="wrong">У PaaS я налаштовую ОС і встановлюю runtime.</div><div class="right">ОС, middleware і runtime в PaaS — зона провайдера. Ваші — лише застосунок і дані. Керування ОС — це IaaS.</div></div>
+<div class="mistake"><div class="wrong">Фреймворк — це просто «велика бібліотека».</div><div class="right">Ключова різниця — хто кого викликає: бібліотеку викликаєте ви, фреймворк викликає ваш код.</div></div>
+</div>
+<h2 id="quiz">Перевір себе<a class="h-anchor" href="#quiz" aria-label="Посилання на розділ">#</a></h2><p>7 питань на розуміння. Натисніть варіант — одразу побачите правильну відповідь і пояснення.</p><div class="quiz" data-quiz="w1l1"></div><script type="application/json" id="quiz-data">[{"q": "Що з наведеного найточніше описує DevOps?", "options": ["Хмарний сервіс для розгортання застосунків", "Посада системного адміністратора, який працює з Docker", "Поєднання культури, практик та інструментів для швидкого й надійного постачання ПЗ", "Методологія управління проєктами на зразок Scrum"], "answer": 2, "explain": "DevOps — це культура, практики та інструменти разом (визначення AWS зі слайдів). Інструменти без культури співпраці DevOps не роблять."}, {"q": "Що означає літера M у CAMS?", "options": ["Management", "Microservices", "Measurement — вимірювання та візуалізація метрик", "Monitoring only"], "answer": 2, "explain": "CAMS = Culture, Automation, Measurement, Sharing. Measurement — збирати метрики так, щоб усе в інфраструктурі було виміряно й візуалізовано."}, {"q": "Компанія хоче отримати віртуальні машини і самостійно встановлювати на них ОС та ПЗ. Яка модель?", "options": ["On-Premises", "IaaS", "PaaS", "SaaS"], "answer": 1, "explain": "IaaS дає інфраструктуру (ВМ, мережа, диски), а ОС і все вище — зона клієнта. Саме на цьому рівні найчастіше працює DevOps-інженер."}, {"q": "Чим Continuous Delivery відрізняється від Continuous Deployment?", "options": ["Нічим, це синоніми", "Deployment працює тільки в хмарі", "У Delivery вихід у production потребує ручного схвалення, у Deployment — автоматичний", "Delivery не запускає тестів"], "answer": 2, "explain": "Обидві практики автоматизують шлях до staging; різниця лише в останньому кроці — людина чи автомат випускає зміни в production."}, {"q": "Яке твердження про фреймворк правильне?", "options": ["Фреймворк легко додати в будь-який наявний проєкт", "Ви викликаєте фреймворк, і керування повертається вам", "Фреймворк диктує архітектуру і сам викликає ваш код", "Chart.js — типовий приклад фреймворку"], "answer": 2, "explain": "Інверсія керування: «код ніколи не викликає фреймворк — фреймворк викликає вас». Chart.js — бібліотека, Angular — фреймворк."}, {"q": "Яка цінність належить до Agile-маніфесту?", "options": ["Співпраця із замовником важливіша за узгодження контракту", "Дотримання плану важливіше за реакцію на зміни", "Процеси та інструменти важливіші за людей", "Вичерпна документація важливіша за працюючий продукт"], "answer": 0, "explain": "У маніфесті ліва частина цінується більше: люди, працюючий продукт, співпраця із замовником, готовність до змін."}, {"q": "Що таке CRUD і чому про нього говорять у DevOps-курсі?", "options": ["Методологія тестування", "Протокол передачі даних", "Тип бази даних", "Чотири базові операції з даними; більшість застосунків — CRUD-застосунки, що залежать від БД"], "answer": 3, "explain": "Create, Read, Update, Delete. Майже кожен вебресурс — CRUD над базою даних, тому збереження і доступність даних критичні для експлуатації."}]</script>
+<div class="complete-box"><p>Прочитали і пройшли тест? Позначте лекцію — прогрес оновиться на головній і в меню.</p><button type="button" class="btn primary" data-complete="w1l1" aria-pressed="false"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg><span class="lbl">Позначити як опрацьовану</span></button></div>
+<nav class="pager" aria-label="Попередня і наступна лекції"><a class="next" href="../../lectures/week-1/lecture-2.html"><small>Наступна · Лекція 2 →</small><span>Linux: основи ОС, команди, користувачі та права доступу</span></a></nav>
+<div class="sources-note"><b>Джерела лекції:</b> презентація «Intro. Terminology. SDLC» (40 слайдів); презентація «Who is DevOps» (25 слайдів); програма курсу Teacher’s DevOps Course (PDF). <b>Обмеження:</b> MP3-запис лекції не транскрибовано (немає доступного засобу розпізнавання мовлення); відео не оброблялося за правилами курсу.</div>
+</main>
+<aside class="toc" aria-label="На цій сторінці"><div class="toc-title">На цій сторінці</div><ol><li><a href="#goals">Чого ви навчитесь</a></li><li><a href="#software">Програмне забезпечення і CRUD</a></li><li><a href="#devops">Що таке DevOps</a></li><li><a href="#cicd">CI, Continuous Delivery і Continuous Deployment</a></li><li><a href="#cloud">Хмари і моделі сервісів [X]aaS</a></li><li><a href="#framework">Бібліотека vs фреймворк</a></li><li><a href="#sdlc">SDLC і моделі розробки</a></li><li><a href="#history">Від хостингу 199x до DevOps-інженера</a></li><li><a href="#mistakes">Типові помилки</a></li><li><a href="#quiz">Перевір себе</a></li></ol></aside>
+</div>
+</div>
+<footer class="site-footer">Навчальний конспект для самопідготовки. Прогрес і результати тестів зберігаються лише в цьому браузері на цьому пристрої (localStorage) і не синхронізуються між пристроями.</footer>
+<div class="search-modal" role="dialog" aria-modal="true" aria-label="Пошук по курсу" aria-hidden="true">
+  <div class="search-panel">
+    <div class="search-input-row"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/></svg><input type="search" placeholder="Пошук по всіх лекціях…" aria-label="Пошуковий запит" autocomplete="off"><kbd style="font:11px var(--mono);color:var(--faint)">Esc</kbd></div>
+    <ul class="search-results"></ul>
+  </div>
+</div>
+<script src="../../js/course-data.js"></script>
+<script src="../../js/progress.js"></script>
+<script src="../../js/navigation.js"></script>
+<script src="../../js/app.js"></script>
+
+</body>
+</html>

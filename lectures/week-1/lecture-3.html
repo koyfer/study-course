@@ -1,0 +1,297 @@
+<!doctype html>
+<html lang="uk">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Лекція 3. Bash: скрипти, змінні, умови, цикли та функції · Хмарні технології та сервіси</title>
+<meta name="description" content="Shebang, змінні й лапки, змінні середовища, спецзмінні $1/$#/$?, підстановка команд, арифметика, test-вирази, цикли, функції і local.">
+<meta name="theme-color" content="#0d7a6f">
+<script>try{var t=localStorage.getItem("htc-theme");if(t)document.documentElement.setAttribute("data-theme",t)}catch(e){}</script>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=Onest:wght@400;500;600;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<link rel="icon" href="../../assets/icons/favicon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="../../css/style.css">
+</head>
+<body data-root="../../" >
+<a class="skip-link" href="#main">Перейти до змісту</a>
+<header class="site-header">
+  <button class="icon-btn menu-btn" type="button" aria-label="Відкрити меню курсу" aria-expanded="false" aria-controls="sidebar"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M4 6h16M4 12h16M4 18h16"/></svg></button>
+  <a class="brand" href="../../index.html"><svg class="brand-mark" viewBox="0 0 32 32" aria-hidden="true"><rect width="32" height="32" rx="9" fill="var(--accent)"/><path d="M10 21.5h12.2a4.3 4.3 0 00.6-8.56A6 6 0 0011.4 12a4.75 4.75 0 00-1.4 9.5z" fill="none" stroke="#fff" stroke-width="2" stroke-linejoin="round"/><path d="M13 17.2l2.2 2.2 4-4.2" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg><span>Хмарні технології та сервіси<small>Конспект курсу · 12 лекцій</small></span></a>
+  <div class="header-spacer"></div>
+  <button class="search-btn" type="button" data-open-search aria-label="Пошук по курсу"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/></svg><span class="label">Пошук по лекціях</span><kbd>Ctrl K</kbd></button>
+  <button class="icon-btn theme-btn" type="button" aria-label="Перемкнути тему"><svg class="sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg><svg class="moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M21 12.8A9 9 0 1111.2 3a7 7 0 009.8 9.8z"/></svg></button>
+</header>
+<div class="layout">
+<nav class="sidebar" id="sidebar" aria-label="Навігація курсом">
+<div class="side-progress" data-week-progress="w1l1,w1l2,w1l3,w1l4,w1l5,w2l6,w2l7,w2l8,w2l9,w2l10,w3l11,w3l12"><div>Прогрес курсу: <strong class="wp-text">0 з 12</strong></div><div class="bar"><i></i></div></div>
+<div class="side-group"><a class="side-link" href="../../index.html"><span class="side-num">⌂</span><span>Огляд курсу і план</span></a></div>
+<div class="side-group" data-week-progress="w1l1,w1l2,w1l3,w1l4,w1l5"><div class="side-title"><a href="../../weeks/week-1.html">Тиждень 1</a><span class="wk-count wp-text">0 з 5</span></div>
+<a class="side-link" href="../../lectures/week-1/lecture-1.html"><span class="side-num">01</span><span>Вступ до DevOps, SDLC і хмарних моделей</span><span class="side-check" data-check="w1l1" role="img" aria-label="Не опрацьовано"></span></a>
+<a class="side-link" href="../../lectures/week-1/lecture-2.html"><span class="side-num">02</span><span>Linux: команди, користувачі, права</span><span class="side-check" data-check="w1l2" role="img" aria-label="Не опрацьовано"></span></a>
+<a class="side-link" href="../../lectures/week-1/lecture-3.html" aria-current="page"><span class="side-num">03</span><span>Bash: змінні, умови, цикли, функції</span><span class="side-check" data-check="w1l3" role="img" aria-label="Не опрацьовано"></span></a>
+<a class="side-link" href="../../lectures/week-1/lecture-4.html"><span class="side-num">04</span><span>Веб-архітектура: HTTP, REST, N-tier</span><span class="side-check" data-check="w1l4" role="img" aria-label="Не опрацьовано"></span></a>
+<a class="side-link" href="../../lectures/week-1/lecture-5.html"><span class="side-num">05</span><span>LAMP: Apache, MySQL, PHP</span><span class="side-check" data-check="w1l5" role="img" aria-label="Не опрацьовано"></span></a>
+</div>
+<div class="side-group" data-week-progress="w2l6,w2l7,w2l8,w2l9,w2l10"><div class="side-title"><a href="../../weeks/week-2.html">Тиждень 2</a><span class="wk-count wp-text">0 з 5</span></div>
+<a class="side-link" href="../../lectures/week-2/lecture-6.html"><span class="side-num">06</span><span>Мережі: OSI, TCP/IP, IP, NAT, VPN</span><span class="side-check" data-check="w2l6" role="img" aria-label="Не опрацьовано"></span></a>
+<a class="side-link" href="../../lectures/week-2/lecture-7.html"><span class="side-num">07</span><span>Хмари: NIST, моделі, AWS/GCP/Azure</span><span class="side-check" data-check="w2l7" role="img" aria-label="Не опрацьовано"></span></a>
+<a class="side-link" href="../../lectures/week-2/lecture-8.html"><span class="side-num">08</span><span>IaC і Terraform</span><span class="side-check" data-check="w2l8" role="img" aria-label="Не опрацьовано"></span></a>
+<a class="side-link" href="../../lectures/week-2/lecture-9.html"><span class="side-num">09</span><span>Віртуалізація і Docker</span><span class="side-check" data-check="w2l9" role="img" aria-label="Не опрацьовано"></span></a>
+<a class="side-link" href="../../lectures/week-2/lecture-10.html"><span class="side-num">10</span><span>Git і GitHub: версії, гілки, PR</span><span class="side-check" data-check="w2l10" role="img" aria-label="Не опрацьовано"></span></a>
+</div>
+<div class="side-group" data-week-progress="w3l11,w3l12"><div class="side-title"><a href="../../weeks/week-3.html">Тиждень 3</a><span class="wk-count wp-text">0 з 2</span></div>
+<a class="side-link" href="../../lectures/week-3/lecture-11.html"><span class="side-num">11</span><span>CI/CD і Jenkins, Jenkinsfile</span><span class="side-check" data-check="w3l11" role="img" aria-label="Не опрацьовано"></span></a>
+<a class="side-link" href="../../lectures/week-3/lecture-12.html"><span class="side-num">12</span><span>GitHub Actions: workflow і деплой</span><span class="side-check" data-check="w3l12" role="img" aria-label="Не опрацьовано"></span></a>
+</div>
+</nav><div class="backdrop"></div>
+<div class="main">
+<main class="content" id="main">
+<div class="lecture-hero">
+<div class="crumbs"><a href="../../index.html">Курс</a><span>/</span><a href="../../weeks/week-1.html">Тиждень 1</a><span>/</span><span>Лекція 3</span></div>
+<div class="eyebrow">Тиждень 1 · Лекція 3</div>
+<h1>Bash: скрипти, змінні, умови, цикли та функції</h1>
+<p class="lead">Bash — «клей» між утилітами Linux. Він є майже на кожному сервері, тому deployment-скрипти й автоматизацію рутинних дій найчастіше пишуть саме на ньому.</p>
+<div class="meta-row">
+<span class="chip"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>≈ 17 хв читання</span>
+<span class="chip"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M9.5 9.5a2.5 2.5 0 114 2c-1 .7-1.5 1.2-1.5 2.5M12 17h.01"/></svg>7 питань самоперевірки</span>
+<span class="chip" data-status="w1l3"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg><span class="lbl">Не опрацьовано</span></span>
+</div>
+</div>
+<div class="objectives">
+<h2 id="goals">Чого ви навчитесь<a class="h-anchor" href="#goals" aria-label="Посилання на розділ">#</a></h2>
+<ul>
+<li>Створити і запустити bash-скрипт (shebang, права, позиційні параметри).</li>
+<li>Правильно працювати зі змінними: присвоєння без пробілів, різниця <b>"подвійних"</b> і <b>'одинарних'</b> лапок.</li>
+<li>Використовувати спецзмінні <code>$0 $1 $# $@ $? $$</code> та підстановку команд.</li>
+<li>Писати умови <code>if [ … ]</code> з правильними операторами для чисел і рядків.</li>
+<li>Писати цикли <code>for</code>, <code>while</code>, <code>until</code> і функції з <code>local</code>-змінними.</li>
+</ul>
+</div>
+
+<h2 id="shells">Оболонки і чому bash<a class="h-anchor" href="#shells" aria-label="Посилання на розділ">#</a></h2>
+<p><b>Shell (оболонка)</b> — програма, що приймає ваші команди і запускає їх. У Linux є багато оболонок: <code>sh</code> (Bourne), <code>csh</code>, <code>ksh</code>, <code>tcsh</code>, <code>zsh</code>, але найпопулярніша — <b>bash (Bourne Again Shell)</b>. Вона сумісна з <code>sh</code>, взяла найкраще з ksh і csh та відповідає стандарту <b>POSIX</b>.</p>
+<div class="callout"><div class="callout-title">Bash чи Python?</div><p>Питання з чату лекції. Bash «склеює» POSIX-утиліти (<code>grep</code>, <code>cp</code>, <code>systemctl</code>…) і є майже в будь-якій системі, а Python може бути не встановлений (у мінімальних образах на кшталт Alpine навіть bash буває відсутній — там <code>sh</code>). Для коротких сценаріїв розгортання — bash, для складної логіки й обробки даних — Python.</p></div>
+
+<h2 id="first">Перший скрипт<a class="h-anchor" href="#first" aria-label="Посилання на розділ">#</a></h2>
+<p>Перший рядок — <b>shebang</b> <code>#!/bin/bash</code>: він каже ОС, яким інтерпретатором виконувати файл.</p>
+<pre data-lang="bash"><code><span class="c">#!/bin/bash</span>
+<span class="c"># hello.sh — коментар починається з #</span>
+name="DevOps"
+echo "Hello, $name! Сьогодні: $(date +%F)"</code></pre>
+<pre data-lang="bash"><code>chmod +x hello.sh     <span class="c"># дати право на виконання</span>
+./hello.sh            <span class="c"># запуск із поточного каталогу</span>
+bash hello.sh         <span class="c"># або явно через інтерпретатор</span></code></pre>
+
+<h2 id="vars">Змінні та лапки<a class="h-anchor" href="#vars" aria-label="Посилання на розділ">#</a></h2>
+<ul>
+<li>Змінні <b>не оголошуються</b> — створюються при присвоєнні. Значення завжди зберігаються як <b>рядки</b>; арифметика перетворює їх на числа.</li>
+<li>Присвоєння — <b>без пробілів</b> навколо <code>=</code>: <code>count=0</code>. Звернення — через <code>$</code>: <code>$count</code> або <code>${count}</code>.</li>
+<li>Тип не фіксований: <code>count=0</code>, потім <code>count=Sunday</code> — легально, але погана практика. Одна змінна — один тип даних.</li>
+<li><code>\</code> — символ екранування: зберігає буквальне значення наступного символу (<code>\$</code> виведе знак долара).</li>
+</ul>
+<div class="compare">
+<div><h4>"Подвійні лапки"</h4><p>Змінні <b>підставляються</b>.</p><pre data-lang="bash"><code>var="test string"
+echo "Value: $var"
+<span class="c"># Value: test string</span></code></pre></div>
+<div><h4>'Одинарні лапки'</h4><p>Усе <b>буквально</b>, без підстановки.</p><pre data-lang="bash"><code>var="test string"
+echo 'Value: $var'
+<span class="c"># Value: $var</span></code></pre></div>
+</div>
+<p>Рядки з пробілами чи спецсимволами <b>обов'язково</b> беріть у лапки. Ввести значення з клавіатури — команда <code>read</code>:</p>
+<pre data-lang="bash"><code>read -p "Введіть ім'я: " user
+echo "Привіт, $user"</code></pre>
+
+<h3>Змінні середовища</h3>
+<p>Є <b>локальні</b> змінні (лише в поточній оболонці) і <b>змінні середовища (environment)</b>, які задає система і успадковують дочірні процеси. Перелік — команда <code>env</code>; створити свою — <code>export NAME=value</code>.</p>
+<div class="table-wrap"><table>
+<thead><tr><th>Змінна</th><th>Що містить</th></tr></thead>
+<tbody>
+<tr><td><code>PATH</code></td><td>Список каталогів через <code>:</code>, де шукаються команди</td></tr>
+<tr><td><code>HOME</code>, <code>PWD</code></td><td>Домашній і поточний каталог</td></tr>
+<tr><td><code>USER</code>, <code>LOGNAME</code></td><td>Поточний користувач</td></tr>
+<tr><td><code>HOSTNAME</code>, <code>SHELL</code></td><td>Ім'я машини, шлях до оболонки</td></tr>
+<tr><td><code>PS1</code></td><td>Вигляд запрошення: <code>\u</code> користувач, <code>\w</code> каталог, <code>\W</code> його остання частина, <code>\t</code> час, <code>\d</code> дата, <code>\$</code> символ запрошення</td></tr>
+</tbody></table></div>
+<p>Ініціалізаційні файли: <code>/etc/profile</code>, <code>/etc/profile.d/</code>, <code>~/.bash_profile</code> (login-оболонка), <code>~/.bashrc</code> і <code>/etc/bashrc</code> (інтерактивна), <code>~/.bash_logout</code> (вихід).</p>
+
+<h2 id="special">Спеціальні змінні і підстановка команд<a class="h-anchor" href="#special" aria-label="Посилання на розділ">#</a></h2>
+<div class="table-wrap"><table>
+<thead><tr><th>Змінна</th><th>Значення</th></tr></thead>
+<tbody>
+<tr><td><code>$0</code></td><td>Ім'я скрипта</td></tr>
+<tr><td><code>$1 … $9</code>, <code>${10}</code></td><td>Позиційні параметри (аргументи)</td></tr>
+<tr><td><code>$#</code></td><td>Кількість аргументів</td></tr>
+<tr><td><code>"$*"</code></td><td>Усі аргументи <b>одним рядком</b></td></tr>
+<tr><td><code>"$@"</code></td><td>Усі аргументи <b>окремими рядками</b> (безпечно для циклів)</td></tr>
+<tr><td><code>$?</code></td><td>Код завершення останньої команди: <b>0 — успіх</b>, інше — помилка</td></tr>
+<tr><td><code>$$</code></td><td>PID поточного процесу</td></tr>
+</tbody></table></div>
+<pre data-lang="bash"><code><span class="c">#!/bin/bash</span>
+<span class="c"># ./args.sh one two  →  2 / ./args.sh / one</span>
+echo $#
+echo $0
+echo $1</code></pre>
+<p><b>Підстановка команд</b> вставляє вивід команди у змінну. Старий синтаксис — зворотні лапки <code>`cmd`</code> (не плутати з одинарною лапкою!), сучасний і зручніший — <code>$(cmd)</code>:</p>
+<pre data-lang="bash"><code>list=`ls -l`              <span class="c"># як на слайдах</span>
+files=$(ls | wc -l)       <span class="c"># рекомендований синтаксис, можна вкладати</span>
+echo "Файлів: $files"</code></pre>
+
+<h2 id="math">Арифметика<a class="h-anchor" href="#math" aria-label="Посилання на розділ">#</a></h2>
+<p>Вирази обчислюються через <code>$(( вираз ))</code> (старий варіант — <code>$[ вираз ]</code>) або команду <code>let</code>. <b>Bash працює лише з цілими числами</b> — дробових немає.</p>
+<pre data-lang="bash"><code>echo $(( 100 / 3 ))         <span class="c"># 33 — ціла частина!</span>
+myvar="56"
+echo $(( myvar + 12 ))       <span class="c"># 68</span>
+myvar=$(( myvar + 1 ))       <span class="c"># інкремент</span>
+let COUNTER=COUNTER+1        <span class="c"># те саме через let</span></code></pre>
+
+<h2 id="if">Умови: if і вирази test<a class="h-anchor" href="#if" aria-label="Посилання на розділ">#</a></h2>
+<figure><div class="figure">
+<svg class="dg" viewBox="0 0 560 250" role="img" aria-label="Блок-схема if, elif, else: перевірка умови 1, якщо так — гілка then, інакше перевірка умови 2, інакше else, далі fi">
+<defs><marker id="l3a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0L10 5L0 10z" class="arrow-head"/></marker></defs>
+<polygon points="120,20 210,55 120,90 30,55" class="acc"/><text x="120" y="60" text-anchor="middle" class="t-mono">[ умова1 ]</text>
+<polygon points="330,20 420,55 330,90 240,55" class="acc"/><text x="330" y="60" text-anchor="middle" class="t-mono">[ умова2 ]</text>
+<path d="M210 55H236" class="ln" marker-end="url(#l3a)"/><text x="222" y="47" text-anchor="middle" class="t-muted">ні</text>
+<rect x="60" y="130" width="120" height="40" rx="8" class="box"/><text x="120" y="155" text-anchor="middle" class="t-mono">then …</text>
+<rect x="270" y="130" width="120" height="40" rx="8" class="box"/><text x="330" y="155" text-anchor="middle" class="t-mono">elif → then …</text>
+<rect x="430" y="130" width="110" height="40" rx="8" class="box"/><text x="485" y="155" text-anchor="middle" class="t-mono">else …</text>
+<path d="M120 90V126" class="ln" marker-end="url(#l3a)"/><text x="132" y="112" class="t-muted">так</text>
+<path d="M330 90V126" class="ln" marker-end="url(#l3a)"/><text x="342" y="112" class="t-muted">так</text>
+<path d="M420 55H485V126" class="ln" marker-end="url(#l3a)"/><text x="450" y="47" text-anchor="middle" class="t-muted">ні</text>
+<rect x="230" y="205" width="100" height="34" rx="17" class="vio"/><text x="280" y="227" text-anchor="middle" class="t-mono">fi</text>
+<path d="M120 170V222H226" class="ln" marker-end="url(#l3a)"/><path d="M330 170V200" class="ln" marker-end="url(#l3a)"/><path d="M485 170V222H334" class="ln" marker-end="url(#l3a)"/>
+</svg></div>
+<figcaption><b>if / elif / else / fi.</b> Гілки <code>elif</code> і <code>else</code> необов'язкові.</figcaption></figure>
+<pre data-lang="bash"><code>if [ "$myvar" -eq 3 ]; then
+    echo "myvar = 3 як число"
+elif [ "$myvar" = "3" ]; then
+    echo "myvar = 3 як рядок"
+else
+    echo "інше"
+fi
+
+if [ -z "$1" ]; then echo "Порожній параметр"; exit 1; fi</code></pre>
+<div class="callout warn"><div class="callout-title">Синтаксис</div><p><code>[</code> — це команда, тому <b>пробіли обов'язкові</b>: після <code>[</code>, перед <code>]</code> і навколо операторів. <code>[ $a -eq 1 ]</code> ✓, <code>[$a -eq 1]</code> ✗. Якщо <code>then</code>/<code>do</code> на тому ж рядку — перед ним ставте <code>;</code>.</p></div>
+<div class="table-wrap"><table>
+<thead><tr><th>Порівняння</th><th>Числа</th><th>Рядки</th></tr></thead>
+<tbody>
+<tr><td>дорівнює / не дорівнює</td><td><code>-eq</code> / <code>-ne</code></td><td><code>=</code> або <code>==</code> / <code>!=</code></td></tr>
+<tr><td>більше / більше або рівно</td><td><code>-gt</code> / <code>-ge</code></td><td><code>&gt;</code> (за алфавітом)</td></tr>
+<tr><td>менше / менше або рівно</td><td><code>-lt</code> / <code>-le</code></td><td><code>&lt;</code> (за алфавітом)</td></tr>
+<tr><td>довжина &gt; 0 / = 0</td><td>—</td><td><code>-n str</code> / <code>-z str</code></td></tr>
+</tbody></table></div>
+<p>Також є <b>файлові оператори</b>: <code>-d</code> (це каталог), <code>-f</code> (звичайний файл), <code>-e</code> (існує), та <b>логічні</b>: <code>!</code>, <code>&amp;&amp;</code>, <code>||</code>.</p>
+
+<h2 id="loops">Цикли<a class="h-anchor" href="#loops" aria-label="Посилання на розділ">#</a></h2>
+<div class="table-wrap"><table>
+<thead><tr><th>Цикл</th><th>Виконується</th><th>Приклад</th></tr></thead>
+<tbody>
+<tr><td><code>for … in</code></td><td>для кожного елемента списку</td><td>файли, аргументи, сервери</td></tr>
+<tr><td><code>while</code></td><td><b>поки</b> умова істинна</td><td>лічильник, читання рядків</td></tr>
+<tr><td><code>until</code></td><td><b>поки</b> умова хибна (до моменту, коли стане істинною)</td><td>чекати, поки сервіс підніметься</td></tr>
+</tbody></table></div>
+<pre data-lang="bash"><code>for x in one two three; do
+    echo "number $x"
+done
+
+for f in /etc/r*; do                 <span class="c"># перебір файлів за маскою</span>
+    if [ -d "$f" ]; then echo "$f (dir)"; else echo "$f"; fi
+done
+
+COUNTER=0
+while [ $COUNTER -lt 10 ]; do        <span class="c"># 0..9</span>
+    echo "The counter is $COUNTER"
+    COUNTER=$(( COUNTER + 1 ))
+done
+
+n=0
+until [ $n -eq 10 ]; do              <span class="c"># теж 0..9</span>
+    echo $n; n=$(( n + 1 ))
+done</code></pre>
+<p>Серед елементів мови також є <code>select</code> (меню вибору), функції та <b>перехоплення сигналів</b> <code>trap</code> (наприклад, прибрати тимчасові файли при Ctrl+C).</p>
+
+<h2 id="functions">Функції та область видимості<a class="h-anchor" href="#functions" aria-label="Посилання на розділ">#</a></h2>
+<p>За замовчуванням змінні в bash <b>глобальні</b>: функція, що змінює <code>myvar</code>, змінить її для всього скрипта. Щоб змінна жила лише у функції — оголосіть її <code>local</code>.</p>
+<div class="compare">
+<div><h4>Без local</h4><pre data-lang="bash"><code>myvar="hello"
+myfunc() {
+  myvar="one two three"
+  for x in $myvar; do echo $x; done
+}
+myfunc
+echo "$myvar / $x"
+<span class="c"># one two three / three</span></code></pre></div>
+<div><h4>З local</h4><pre data-lang="bash"><code>myvar="hello"
+myfunc() {
+  local x
+  local myvar="one two three"
+  for x in $myvar; do echo $x; done
+}
+myfunc
+echo "$myvar / $x"
+<span class="c"># hello /   (x порожня)</span></code></pre></div>
+</div>
+<p><b>Що повертає функція?</b> Питання з чату: <code>return N</code> повертає лише <b>код завершення 0–255</b> (читається через <code>$?</code>), як у будь-якої команди. Щоб повернути дані, функція виводить їх через <code>echo</code>, а викликач забирає через <code>$(…)</code>:</p>
+<pre data-lang="bash"><code>get_ip() { hostname -I | awk '{print $1}'; }
+is_root() { [ "$(id -u)" -eq 0 ]; }    <span class="c"># код 0 = «істина»</span>
+
+ip=$(get_ip)
+if is_root; then echo "root on $ip"; else echo "not root"; fi</code></pre>
+
+<h2 id="deploy">Практика: мінімальний deployment-скрипт<a class="h-anchor" href="#deploy" aria-label="Посилання на розділ">#</a></h2>
+<p>Результат курсу — уміти написати bash-скрипт розгортання. Ось шаблон, що поєднує все з лекції: аргументи, перевірки, функції, коди завершення.</p>
+<pre data-lang="bash"><code><span class="c">#!/bin/bash</span>
+<span class="c"># deploy.sh &lt;git-url&gt; [branch]  — розгорнути сайт у /var/www/html/app</span>
+set -e                                   <span class="c"># зупинитись на першій помилці</span>
+
+REPO="$1"; BRANCH="${2:-main}"; TARGET=/var/www/html/app
+
+log() { echo "[$(date +%T)] $*"; }
+
+if [ $# -lt 1 ]; then
+    echo "Usage: $0 &lt;git-url&gt; [branch]"; exit 1
+fi
+if [ "$(id -u)" -ne 0 ]; then
+    echo "Run as root (sudo)"; exit 1
+fi
+
+if [ -d "$TARGET/.git" ]; then
+    log "Оновлюю код ($BRANCH)"
+    git -C "$TARGET" pull origin "$BRANCH"
+else
+    log "Клоную $REPO"
+    git clone -b "$BRANCH" "$REPO" "$TARGET"
+fi
+
+chown -R apache:apache "$TARGET"
+systemctl restart httpd
+log "Готово, код завершення: $?"</code></pre>
+
+<h2 id="mistakes">Типові помилки<a class="h-anchor" href="#mistakes" aria-label="Посилання на розділ">#</a></h2>
+<div class="mistakes">
+<div class="mistake"><div class="wrong"><code>name = "Ivan"</code> — з пробілами.</div><div class="right">Bash сприйме <code>name</code> як команду. Правильно: <code>name="Ivan"</code>.</div></div>
+<div class="mistake"><div class="wrong"><code>[ "$a" = 10 ]</code> для порівняння чисел / <code>-eq</code> для рядків.</div><div class="right">Числа: <code>-eq -ne -lt -le -gt -ge</code>. Рядки: <code>= != -z -n</code>. «010» і «10» рівні як числа, але не як рядки.</div></div>
+<div class="mistake"><div class="wrong">Змінна без лапок: <code>[ -z $1 ]</code>, <code>rm $file</code>.</div><div class="right">Якщо значення порожнє або з пробілами — синтаксична помилка чи видалення не того. Пишіть <code>"$1"</code>, <code>"$file"</code>.</div></div>
+<div class="mistake"><div class="wrong"><code>echo $(( 7 / 2 ))</code> дасть 3.5.</div><div class="right">Bash рахує лише цілі: результат <code>3</code>. Для дробів — <code>bc</code> або <code>awk</code>.</div></div>
+<div class="mistake"><div class="wrong"><code>return "текст"</code> поверне рядок із функції.</div><div class="right"><code>return</code> — тільки код 0–255. Дані — через <code>echo</code> і <code>$(func)</code>.</div></div>
+</div>
+<h2 id="quiz">Перевір себе<a class="h-anchor" href="#quiz" aria-label="Посилання на розділ">#</a></h2><p>7 питань на розуміння. Натисніть варіант — одразу побачите правильну відповідь і пояснення.</p><div class="quiz" data-quiz="w1l3"></div><script type="application/json" id="quiz-data">[{"q": "Що виведе скрипт: <code>var=world; echo 'Hello $var'<\/code>?", "options": ["Hello world", "Hello", "Hello $var", "Помилку"], "answer": 2, "explain": "В одинарних лапках змінні не підставляються — текст виводиться буквально. У подвійних було б Hello world."}, {"q": "Скрипт запустили як <code>./backup.sh /data /mnt/usb<\/code>. Чому дорівнює <code>$#<\/code>?", "options": ["1", "2", "0", "3"], "answer": 1, "explain": "$# — кількість позиційних параметрів (аргументів), ім'я скрипта $0 не рахується. Тут два аргументи."}, {"q": "Що означає <code>$? = 0<\/code> після команди?", "options": ["Змінна не визначена", "Команда завершилась успішно", "Команда ще виконується", "Команда завершилась з помилкою"], "answer": 1, "explain": "За конвенцією Unix код завершення 0 — успіх, будь-яке інше значення — помилка."}, {"q": "Яка умова правильно перевіряє, що число в <code>$n<\/code> більше 5?", "options": ["[ $n > 5 ]", "[ \"$n\" -gt 5 ]", "[$n -gt 5]", "[ \"$n\" = 5 ]"], "answer": 1, "explain": "Для чисел — оператор -gt і обов'язкові пробіли всередині дужок. Знак > у [ ] — це порівняння рядків (або навіть перенаправлення)."}, {"q": "Що виведе <code>echo $(( 10 / 4 ))<\/code>?", "options": ["2.5", "3", "Помилку", "2"], "answer": 3, "explain": "Bash виконує лише цілочисельну арифметику, дробова частина відкидається."}, {"q": "Чим цикл <code>until<\/code> відрізняється від <code>while<\/code>?", "options": ["until виконується рівно один раз", "until виконується, поки умова хибна; while — поки істинна", "Нічим", "until перебирає список значень"], "answer": 1, "explain": "while [ умова ] крутиться, поки умова істинна, until [ умова ] — поки вона хибна, тобто до моменту, коли стане істинною."}, {"q": "Навіщо всередині функції писати <code>local myvar=...<\/code>?", "options": ["Щоб функція повернула значення", "Щоб змінна стала змінною середовища", "Щоб пришвидшити виконання", "Щоб змінна існувала лише у функції і не перезаписала глобальну"], "answer": 3, "explain": "Без local змінні bash глобальні, і функція змінила б значення для всього скрипта."}]</script>
+<div class="complete-box"><p>Прочитали і пройшли тест? Позначте лекцію — прогрес оновиться на головній і в меню.</p><button type="button" class="btn primary" data-complete="w1l3" aria-pressed="false"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg><span class="lbl">Позначити як опрацьовану</span></button></div>
+<nav class="pager" aria-label="Попередня і наступна лекції"><a class="prev" href="../../lectures/week-1/lecture-2.html"><small>← Попередня · Лекція 2</small><span>Linux: основи ОС, команди, користувачі та права доступу</span></a><a class="next" href="../../lectures/week-1/lecture-4.html"><small>Наступна · Лекція 4 →</small><span>Архітектура вебзастосунків: HTTP, REST API, N-tier і мікросервіси</span></a></nav>
+<div class="sources-note"><b>Джерела лекції:</b> презентація «Bash Introduction» (31 слайд); чат лекцій 3–4 (питання про функції, return, bash vs Python). <b>Обмеження:</b> MP3-запис лекції не транскрибовано; відео не оброблялося за правилами курсу.</div>
+</main>
+<aside class="toc" aria-label="На цій сторінці"><div class="toc-title">На цій сторінці</div><ol><li><a href="#goals">Чого ви навчитесь</a></li><li><a href="#shells">Оболонки і чому bash</a></li><li><a href="#first">Перший скрипт</a></li><li><a href="#vars">Змінні та лапки</a></li><li><a href="#special">Спеціальні змінні і підстановка команд</a></li><li><a href="#math">Арифметика</a></li><li><a href="#if">Умови: if і вирази test</a></li><li><a href="#loops">Цикли</a></li><li><a href="#functions">Функції та область видимості</a></li><li><a href="#deploy">Практика: мінімальний deployment-скрипт</a></li><li><a href="#mistakes">Типові помилки</a></li><li><a href="#quiz">Перевір себе</a></li></ol></aside>
+</div>
+</div>
+<footer class="site-footer">Навчальний конспект для самопідготовки. Прогрес і результати тестів зберігаються лише в цьому браузері на цьому пристрої (localStorage) і не синхронізуються між пристроями.</footer>
+<div class="search-modal" role="dialog" aria-modal="true" aria-label="Пошук по курсу" aria-hidden="true">
+  <div class="search-panel">
+    <div class="search-input-row"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/></svg><input type="search" placeholder="Пошук по всіх лекціях…" aria-label="Пошуковий запит" autocomplete="off"><kbd style="font:11px var(--mono);color:var(--faint)">Esc</kbd></div>
+    <ul class="search-results"></ul>
+  </div>
+</div>
+<script src="../../js/course-data.js"></script>
+<script src="../../js/progress.js"></script>
+<script src="../../js/navigation.js"></script>
+<script src="../../js/app.js"></script>
+
+</body>
+</html>

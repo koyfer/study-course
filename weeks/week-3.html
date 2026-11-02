@@ -1,0 +1,90 @@
+<!doctype html>
+<html lang="uk">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Тиждень 3: Автоматизація доставки: CI/CD, Jenkins, GitHub Actions · Хмарні технології та сервіси</title>
+<meta name="description" content="Автоматизація доставки: CI/CD, Jenkins, GitHub Actions">
+<meta name="theme-color" content="#0d7a6f">
+<script>try{var t=localStorage.getItem("htc-theme");if(t)document.documentElement.setAttribute("data-theme",t)}catch(e){}</script>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=Onest:wght@400;500;600;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<link rel="icon" href="../assets/icons/favicon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="../css/style.css">
+</head>
+<body data-root="../" >
+<a class="skip-link" href="#main">Перейти до змісту</a>
+<header class="site-header">
+  <button class="icon-btn menu-btn" type="button" aria-label="Відкрити меню курсу" aria-expanded="false" aria-controls="sidebar"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M4 6h16M4 12h16M4 18h16"/></svg></button>
+  <a class="brand" href="../index.html"><svg class="brand-mark" viewBox="0 0 32 32" aria-hidden="true"><rect width="32" height="32" rx="9" fill="var(--accent)"/><path d="M10 21.5h12.2a4.3 4.3 0 00.6-8.56A6 6 0 0011.4 12a4.75 4.75 0 00-1.4 9.5z" fill="none" stroke="#fff" stroke-width="2" stroke-linejoin="round"/><path d="M13 17.2l2.2 2.2 4-4.2" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg><span>Хмарні технології та сервіси<small>Конспект курсу · 12 лекцій</small></span></a>
+  <div class="header-spacer"></div>
+  <button class="search-btn" type="button" data-open-search aria-label="Пошук по курсу"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/></svg><span class="label">Пошук по лекціях</span><kbd>Ctrl K</kbd></button>
+  <button class="icon-btn theme-btn" type="button" aria-label="Перемкнути тему"><svg class="sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg><svg class="moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M21 12.8A9 9 0 1111.2 3a7 7 0 009.8 9.8z"/></svg></button>
+</header>
+<div class="layout">
+<nav class="sidebar" id="sidebar" aria-label="Навігація курсом">
+<div class="side-progress" data-week-progress="w1l1,w1l2,w1l3,w1l4,w1l5,w2l6,w2l7,w2l8,w2l9,w2l10,w3l11,w3l12"><div>Прогрес курсу: <strong class="wp-text">0 з 12</strong></div><div class="bar"><i></i></div></div>
+<div class="side-group"><a class="side-link" href="../index.html"><span class="side-num">⌂</span><span>Огляд курсу і план</span></a></div>
+<div class="side-group" data-week-progress="w1l1,w1l2,w1l3,w1l4,w1l5"><div class="side-title"><a href="../weeks/week-1.html">Тиждень 1</a><span class="wk-count wp-text">0 з 5</span></div>
+<a class="side-link" href="../lectures/week-1/lecture-1.html"><span class="side-num">01</span><span>Вступ до DevOps, SDLC і хмарних моделей</span><span class="side-check" data-check="w1l1" role="img" aria-label="Не опрацьовано"></span></a>
+<a class="side-link" href="../lectures/week-1/lecture-2.html"><span class="side-num">02</span><span>Linux: команди, користувачі, права</span><span class="side-check" data-check="w1l2" role="img" aria-label="Не опрацьовано"></span></a>
+<a class="side-link" href="../lectures/week-1/lecture-3.html"><span class="side-num">03</span><span>Bash: змінні, умови, цикли, функції</span><span class="side-check" data-check="w1l3" role="img" aria-label="Не опрацьовано"></span></a>
+<a class="side-link" href="../lectures/week-1/lecture-4.html"><span class="side-num">04</span><span>Веб-архітектура: HTTP, REST, N-tier</span><span class="side-check" data-check="w1l4" role="img" aria-label="Не опрацьовано"></span></a>
+<a class="side-link" href="../lectures/week-1/lecture-5.html"><span class="side-num">05</span><span>LAMP: Apache, MySQL, PHP</span><span class="side-check" data-check="w1l5" role="img" aria-label="Не опрацьовано"></span></a>
+</div>
+<div class="side-group" data-week-progress="w2l6,w2l7,w2l8,w2l9,w2l10"><div class="side-title"><a href="../weeks/week-2.html">Тиждень 2</a><span class="wk-count wp-text">0 з 5</span></div>
+<a class="side-link" href="../lectures/week-2/lecture-6.html"><span class="side-num">06</span><span>Мережі: OSI, TCP/IP, IP, NAT, VPN</span><span class="side-check" data-check="w2l6" role="img" aria-label="Не опрацьовано"></span></a>
+<a class="side-link" href="../lectures/week-2/lecture-7.html"><span class="side-num">07</span><span>Хмари: NIST, моделі, AWS/GCP/Azure</span><span class="side-check" data-check="w2l7" role="img" aria-label="Не опрацьовано"></span></a>
+<a class="side-link" href="../lectures/week-2/lecture-8.html"><span class="side-num">08</span><span>IaC і Terraform</span><span class="side-check" data-check="w2l8" role="img" aria-label="Не опрацьовано"></span></a>
+<a class="side-link" href="../lectures/week-2/lecture-9.html"><span class="side-num">09</span><span>Віртуалізація і Docker</span><span class="side-check" data-check="w2l9" role="img" aria-label="Не опрацьовано"></span></a>
+<a class="side-link" href="../lectures/week-2/lecture-10.html"><span class="side-num">10</span><span>Git і GitHub: версії, гілки, PR</span><span class="side-check" data-check="w2l10" role="img" aria-label="Не опрацьовано"></span></a>
+</div>
+<div class="side-group" data-week-progress="w3l11,w3l12"><div class="side-title"><a href="../weeks/week-3.html" aria-current="page">Тиждень 3</a><span class="wk-count wp-text">0 з 2</span></div>
+<a class="side-link" href="../lectures/week-3/lecture-11.html"><span class="side-num">11</span><span>CI/CD і Jenkins, Jenkinsfile</span><span class="side-check" data-check="w3l11" role="img" aria-label="Не опрацьовано"></span></a>
+<a class="side-link" href="../lectures/week-3/lecture-12.html"><span class="side-num">12</span><span>GitHub Actions: workflow і деплой</span><span class="side-check" data-check="w3l12" role="img" aria-label="Не опрацьовано"></span></a>
+</div>
+</nav><div class="backdrop"></div>
+<div class="main no-toc">
+<main class="content" id="main">
+<div class="crumbs"><a href="../index.html">Курс</a><span>/</span><span>Тиждень 3</span></div>
+<div class="eyebrow">Тиждень 3</div>
+<h1>Автоматизація доставки: CI/CD, Jenkins, GitHub Actions</h1>
+<p class="lead">2 лекцій · загалом ≈ 26 хв читання.</p>
+<section class="week-block" aria-labelledby="week-3">
+<div class="week-head">
+<div><div class="eyebrow">Тиждень 3 · 2 лекцій · ≈ 26 хв</div><h2 id="week-3"><a href="../weeks/week-3.html" style="color:inherit">Автоматизація доставки: CI/CD, Jenkins, GitHub Actions</a></h2></div>
+<div class="wk-meta" data-week-progress="w3l11,w3l12">Опрацьовано: <b class="wp-text">0 з 2</b><div class="bar"><i></i></div></div>
+</div>
+<div class="cards"><a class="card" href="../lectures/week-3/lecture-11.html">
+<span class="card-num">ЛЕКЦІЯ 11</span>
+<h3>CI/CD і Jenkins: конвеєр збирання, Jenkinsfile і Pipeline as Code</h3>
+<p>Неперервна інтеграція, архітектура CI-сервера, встановлення Jenkins, Jenkinsfile: declarative vs scripted, stages/steps, паралельність, approval, post, parameters, credentials, інструменти.</p>
+<div class="card-foot"><span style="display:inline-flex;width:14px;height:14px"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg></span>≈ 13 хв · 7 питань<span class="side-check" data-check="w3l11" role="img" aria-label="Не опрацьовано"></span></div>
+</a>
+<a class="card" href="../lectures/week-3/lecture-12.html">
+<span class="card-num">ЛЕКЦІЯ 12</span>
+<h3>GitHub Actions: workflow, jobs, runners, secrets і автоматичний деплой</h3>
+<p>Компоненти GitHub Actions (workflow, event, job, step, action, runner), синтаксис YAML, matrix, secrets, self-hosted runners, Marketplace, розбір workflow деплою на Heroku, порівняння з Jenkins.</p>
+<div class="card-foot"><span style="display:inline-flex;width:14px;height:14px"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg></span>≈ 13 хв · 7 питань<span class="side-check" data-check="w3l12" role="img" aria-label="Не опрацьовано"></span></div>
+</a></div>
+</section>
+<h2 id="table">Коротко у таблиці</h2>
+<div class="table-wrap"><table><thead><tr><th>#</th><th>Лекція</th><th>Час</th><th>Статус</th></tr></thead><tbody><tr><td>11</td><td><a href="../lectures/week-3/lecture-11.html">CI/CD і Jenkins: конвеєр збирання, Jenkinsfile і Pipeline as Code</a></td><td>≈ 13 хв</td><td><span class="side-check" data-check="w3l11" role="img" aria-label="Не опрацьовано" style="display:inline-block"></span></td></tr><tr><td>12</td><td><a href="../lectures/week-3/lecture-12.html">GitHub Actions: workflow, jobs, runners, secrets і автоматичний деплой</a></td><td>≈ 13 хв</td><td><span class="side-check" data-check="w3l12" role="img" aria-label="Не опрацьовано" style="display:inline-block"></span></td></tr></tbody></table></div>
+<nav class="pager" aria-label="Інші тижні"><a class="prev" href="week-2.html"><small>← Тиждень 2</small><span>Інфраструктура: мережі, хмари, IaC/Terraform, Docker, Git</span></a></nav>
+</main>
+
+</div>
+</div>
+<footer class="site-footer">Навчальний конспект для самопідготовки. Прогрес і результати тестів зберігаються лише в цьому браузері на цьому пристрої (localStorage) і не синхронізуються між пристроями.</footer>
+<div class="search-modal" role="dialog" aria-modal="true" aria-label="Пошук по курсу" aria-hidden="true">
+  <div class="search-panel">
+    <div class="search-input-row"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/></svg><input type="search" placeholder="Пошук по всіх лекціях…" aria-label="Пошуковий запит" autocomplete="off"><kbd style="font:11px var(--mono);color:var(--faint)">Esc</kbd></div>
+    <ul class="search-results"></ul>
+  </div>
+</div>
+<script src="../js/course-data.js"></script>
+<script src="../js/progress.js"></script>
+<script src="../js/navigation.js"></script>
+<script src="../js/app.js"></script>
+
+</body>
+</html>

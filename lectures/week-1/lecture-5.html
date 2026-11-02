@@ -1,0 +1,213 @@
+<!doctype html>
+<html lang="uk">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Лекція 5. LAMP-стек: Apache, MySQL, PHP і розгортання вебзастосунку · Хмарні технології та сервіси</title>
+<meta name="description" content="Що таке LAMP/LEMP, конфігурація Apache (директиви, модулі, mod_rewrite, .htaccess, логи), встановлення MySQL і Apache на CentOS, розгортання OpenCart, резервні копії mysqldump.">
+<meta name="theme-color" content="#0d7a6f">
+<script>try{var t=localStorage.getItem("htc-theme");if(t)document.documentElement.setAttribute("data-theme",t)}catch(e){}</script>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=Onest:wght@400;500;600;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<link rel="icon" href="../../assets/icons/favicon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="../../css/style.css">
+</head>
+<body data-root="../../" >
+<a class="skip-link" href="#main">Перейти до змісту</a>
+<header class="site-header">
+  <button class="icon-btn menu-btn" type="button" aria-label="Відкрити меню курсу" aria-expanded="false" aria-controls="sidebar"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M4 6h16M4 12h16M4 18h16"/></svg></button>
+  <a class="brand" href="../../index.html"><svg class="brand-mark" viewBox="0 0 32 32" aria-hidden="true"><rect width="32" height="32" rx="9" fill="var(--accent)"/><path d="M10 21.5h12.2a4.3 4.3 0 00.6-8.56A6 6 0 0011.4 12a4.75 4.75 0 00-1.4 9.5z" fill="none" stroke="#fff" stroke-width="2" stroke-linejoin="round"/><path d="M13 17.2l2.2 2.2 4-4.2" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg><span>Хмарні технології та сервіси<small>Конспект курсу · 12 лекцій</small></span></a>
+  <div class="header-spacer"></div>
+  <button class="search-btn" type="button" data-open-search aria-label="Пошук по курсу"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/></svg><span class="label">Пошук по лекціях</span><kbd>Ctrl K</kbd></button>
+  <button class="icon-btn theme-btn" type="button" aria-label="Перемкнути тему"><svg class="sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg><svg class="moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M21 12.8A9 9 0 1111.2 3a7 7 0 009.8 9.8z"/></svg></button>
+</header>
+<div class="layout">
+<nav class="sidebar" id="sidebar" aria-label="Навігація курсом">
+<div class="side-progress" data-week-progress="w1l1,w1l2,w1l3,w1l4,w1l5,w2l6,w2l7,w2l8,w2l9,w2l10,w3l11,w3l12"><div>Прогрес курсу: <strong class="wp-text">0 з 12</strong></div><div class="bar"><i></i></div></div>
+<div class="side-group"><a class="side-link" href="../../index.html"><span class="side-num">⌂</span><span>Огляд курсу і план</span></a></div>
+<div class="side-group" data-week-progress="w1l1,w1l2,w1l3,w1l4,w1l5"><div class="side-title"><a href="../../weeks/week-1.html">Тиждень 1</a><span class="wk-count wp-text">0 з 5</span></div>
+<a class="side-link" href="../../lectures/week-1/lecture-1.html"><span class="side-num">01</span><span>Вступ до DevOps, SDLC і хмарних моделей</span><span class="side-check" data-check="w1l1" role="img" aria-label="Не опрацьовано"></span></a>
+<a class="side-link" href="../../lectures/week-1/lecture-2.html"><span class="side-num">02</span><span>Linux: команди, користувачі, права</span><span class="side-check" data-check="w1l2" role="img" aria-label="Не опрацьовано"></span></a>
+<a class="side-link" href="../../lectures/week-1/lecture-3.html"><span class="side-num">03</span><span>Bash: змінні, умови, цикли, функції</span><span class="side-check" data-check="w1l3" role="img" aria-label="Не опрацьовано"></span></a>
+<a class="side-link" href="../../lectures/week-1/lecture-4.html"><span class="side-num">04</span><span>Веб-архітектура: HTTP, REST, N-tier</span><span class="side-check" data-check="w1l4" role="img" aria-label="Не опрацьовано"></span></a>
+<a class="side-link" href="../../lectures/week-1/lecture-5.html" aria-current="page"><span class="side-num">05</span><span>LAMP: Apache, MySQL, PHP</span><span class="side-check" data-check="w1l5" role="img" aria-label="Не опрацьовано"></span></a>
+</div>
+<div class="side-group" data-week-progress="w2l6,w2l7,w2l8,w2l9,w2l10"><div class="side-title"><a href="../../weeks/week-2.html">Тиждень 2</a><span class="wk-count wp-text">0 з 5</span></div>
+<a class="side-link" href="../../lectures/week-2/lecture-6.html"><span class="side-num">06</span><span>Мережі: OSI, TCP/IP, IP, NAT, VPN</span><span class="side-check" data-check="w2l6" role="img" aria-label="Не опрацьовано"></span></a>
+<a class="side-link" href="../../lectures/week-2/lecture-7.html"><span class="side-num">07</span><span>Хмари: NIST, моделі, AWS/GCP/Azure</span><span class="side-check" data-check="w2l7" role="img" aria-label="Не опрацьовано"></span></a>
+<a class="side-link" href="../../lectures/week-2/lecture-8.html"><span class="side-num">08</span><span>IaC і Terraform</span><span class="side-check" data-check="w2l8" role="img" aria-label="Не опрацьовано"></span></a>
+<a class="side-link" href="../../lectures/week-2/lecture-9.html"><span class="side-num">09</span><span>Віртуалізація і Docker</span><span class="side-check" data-check="w2l9" role="img" aria-label="Не опрацьовано"></span></a>
+<a class="side-link" href="../../lectures/week-2/lecture-10.html"><span class="side-num">10</span><span>Git і GitHub: версії, гілки, PR</span><span class="side-check" data-check="w2l10" role="img" aria-label="Не опрацьовано"></span></a>
+</div>
+<div class="side-group" data-week-progress="w3l11,w3l12"><div class="side-title"><a href="../../weeks/week-3.html">Тиждень 3</a><span class="wk-count wp-text">0 з 2</span></div>
+<a class="side-link" href="../../lectures/week-3/lecture-11.html"><span class="side-num">11</span><span>CI/CD і Jenkins, Jenkinsfile</span><span class="side-check" data-check="w3l11" role="img" aria-label="Не опрацьовано"></span></a>
+<a class="side-link" href="../../lectures/week-3/lecture-12.html"><span class="side-num">12</span><span>GitHub Actions: workflow і деплой</span><span class="side-check" data-check="w3l12" role="img" aria-label="Не опрацьовано"></span></a>
+</div>
+</nav><div class="backdrop"></div>
+<div class="main">
+<main class="content" id="main">
+<div class="lecture-hero">
+<div class="crumbs"><a href="../../index.html">Курс</a><span>/</span><a href="../../weeks/week-1.html">Тиждень 1</a><span>/</span><span>Лекція 5</span></div>
+<div class="eyebrow">Тиждень 1 · Лекція 5</div>
+<h1>LAMP-стек: Apache, MySQL, PHP і розгортання вебзастосунку</h1>
+<p class="lead">LAMP — класичний стек для 3-рівневого вебзастосунку: Linux як ОС, Apache як вебсервер, MySQL для даних і PHP для логіки. На ньому досі працюють WordPress, Moodle і Вікіпедія.</p>
+<div class="meta-row">
+<span class="chip"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>≈ 12 хв читання</span>
+<span class="chip"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M9.5 9.5a2.5 2.5 0 114 2c-1 .7-1.5 1.2-1.5 2.5M12 17h.01"/></svg>7 питань самоперевірки</span>
+<span class="chip" data-status="w1l5"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg><span class="lbl">Не опрацьовано</span></span>
+</div>
+</div>
+<div class="objectives">
+<h2 id="goals">Чого ви навчитесь<a class="h-anchor" href="#goals" aria-label="Посилання на розділ">#</a></h2>
+<ul>
+<li>Пояснити, з чого складається LAMP і чим від нього відрізняється LEMP.</li>
+<li>Орієнтуватися в конфігурації Apache: <code>httpd.conf</code>, <code>DocumentRoot</code>, <code>&lt;Directory&gt;</code>, <code>&lt;VirtualHost&gt;</code>, модулі.</li>
+<li>Розуміти, навіщо <code>mod_rewrite</code>, <code>.htaccess</code> і директива <code>AllowOverride</code>.</li>
+<li>Знайти й прочитати логи Apache (<code>ErrorLog</code>, <code>CustomLog</code>).</li>
+<li>Відтворити послідовність розгортання PHP-застосунку на CentOS і зробити бекап БД.</li>
+</ul>
+</div>
+
+<h2 id="stack">Що таке LAMP<a class="h-anchor" href="#stack" aria-label="Посилання на розділ">#</a></h2>
+<p>LAMP реалізує 3-рівневу архітектуру з лекції 4: <b>клієнт (браузер) → сервер застосунку (вебсервер) → сервер БД</b>.</p>
+<figure><div class="figure wide">
+<svg class="dg" viewBox="0 0 720 210" role="img" aria-label="LAMP: браузер надсилає HTTP-запит до Apache, Apache через модуль PHP виконує скрипт, PHP робить SQL-запит до MySQL, усе працює на Linux">
+<defs><marker id="l5a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" class="arrow-head"/></marker></defs>
+<rect x="20" y="40" width="130" height="80" rx="12" class="acc"/><text x="85" y="76" text-anchor="middle" class="t-bold">Браузер</text><text x="85" y="96" text-anchor="middle" class="t-muted">клієнт</text>
+<rect x="200" y="20" width="500" height="140" rx="14" class="soft"/>
+<rect x="215" y="40" width="135" height="80" rx="12" class="box"/><text x="282" y="70" text-anchor="middle" class="t-bold">A · Apache</text><text x="282" y="90" text-anchor="middle" class="t-muted">вебсервер httpd</text><text x="282" y="106" text-anchor="middle" class="t-muted">:80 / :443</text>
+<rect x="392" y="40" width="125" height="80" rx="12" class="vio"/><text x="454" y="70" text-anchor="middle" class="t-bold">P · PHP</text><text x="454" y="90" text-anchor="middle" class="t-muted">бізнес-логіка</text><text x="454" y="106" text-anchor="middle" class="t-muted">генерує HTML</text>
+<rect x="560" y="40" width="125" height="80" rx="12" class="warm"/><text x="622" y="70" text-anchor="middle" class="t-bold">M · MySQL</text><text x="622" y="90" text-anchor="middle" class="t-muted">реляційна БД</text><text x="622" y="106" text-anchor="middle" class="t-muted">:3306</text>
+<path d="M154 80H216" class="ln" marker-end="url(#l5a)" marker-start="url(#l5a)"/><text x="185" y="72" text-anchor="middle" class="t-small t-mono">HTTP</text>
+<path d="M353 80H389" class="ln" marker-end="url(#l5a)" marker-start="url(#l5a)"/>
+<path d="M520 80H557" class="ln" marker-end="url(#l5a)" marker-start="url(#l5a)"/><text x="538" y="70" text-anchor="middle" class="t-small t-mono">SQL</text>
+<rect x="215" y="132" width="470" height="22" rx="6" class="acc"/><text x="450" y="148" text-anchor="middle" class="t-small t-bold">L · Linux — операційна система для всього стеку</text>
+<text x="360" y="196" text-anchor="middle" class="t-muted">LEMP: те саме, але замість Apache — NGINX («E» від вимови «engine-x»)</text>
+</svg></div>
+<figcaption><b>LAMP = Linux + Apache + MySQL + PHP</b> (історично P — також Perl або Python).</figcaption></figure>
+<div class="term-grid">
+<div class="term"><span class="en">Apache HTTP Server</span><b>Вебсервер</b><p>Виріс із NCSA HTTPd (Роб МакКул). Назву пояснюють як «a patchy server» — сервер із латками. За статистикою зі слайдів (2018) — 43% активних сайтів.</p></div>
+<div class="term"><span class="en">MySQL</span><b>СКБД</b><p>Створена MySQL AB (1995), у 2008 куплена Sun, у 2010 разом із Sun — Oracle. Сумісний форк — MariaDB.</p></div>
+<div class="term"><span class="en">PHP</span><b>Скриптова мова</b><p>Расмус Лердорф, 1994. Ключові версії: PHP 5 (2004), PHP 7 (2015), PHP 8 (2020). Популярний фреймворк — Laravel.</p></div>
+</div>
+<p><b>Чому LAMP досі вивчають?</b> У чаті лекції було гаряче обговорення «застарілості». Позиція інструктора: стек простий, дає швидкий результат і показує принципи, які потім переносяться на NGINX, Node.js чи Java/Tomcat. Близько третини сайтів працює на WordPress, тобто на LAMP. На практиці часто комбінують Apache + NGINX (NGINX спереду як проксі).</p>
+
+<h2 id="config">Конфігурація Apache<a class="h-anchor" href="#config" aria-label="Посилання на розділ">#</a></h2>
+<p>Apache налаштовується <b>директивами</b> в текстових файлах. Головний файл — <code>httpd.conf</code> (у CentOS: <code>/etc/httpd/conf/httpd.conf</code>; у Debian/Ubuntu: <code>/etc/apache2/apache2.conf</code> + каталоги <code>sites-enabled</code>, <code>mods-enabled</code>). Типи файлів (MIME) читаються з <code>mime.types</code> (директива <code>TypesConfig</code>). Віртуальні хости і модулі рекомендують виносити в окремі файли.</p>
+<div class="table-wrap"><table>
+<thead><tr><th>Директива</th><th>Призначення</th></tr></thead>
+<tbody>
+<tr><td><code>DocumentRoot</code></td><td>Каталог, з якого віддаються файли. Шлях з URL додається до нього: <code>/var/www/html</code> + <code>/shop/index.php</code></td></tr>
+<tr><td><code>&lt;Directory&gt;</code></td><td>Група директив для каталогу, його підкаталогів і файлів</td></tr>
+<tr><td><code>&lt;VirtualHost&gt;</code></td><td>Налаштування окремого сайту — кілька доменів на одному сервері</td></tr>
+<tr><td><code>LoadModule</code></td><td>Підключити модуль (кожен модуль має свої директиви)</td></tr>
+<tr><td><code>AllowOverride</code></td><td>Які директиви дозволено перевизначати в <code>.htaccess</code></td></tr>
+<tr><td><code>ErrorLog</code>, <code>CustomLog</code>, <code>LogFormat</code></td><td>Журнал помилок, журнал доступу та його формат</td></tr>
+</tbody></table></div>
+<pre data-lang="apache"><code>&lt;VirtualHost *:80&gt;
+    ServerName shop.example.com
+    DocumentRoot /var/www/html/opencart/upload
+    &lt;Directory /var/www/html/opencart/upload&gt;
+        AllowOverride All          <span class="c"># дозволити .htaccess (потрібно для mod_rewrite)</span>
+        Require all granted
+    &lt;/Directory&gt;
+    ErrorLog  /var/log/httpd/shop-error.log
+    CustomLog /var/log/httpd/shop-access.log combined
+&lt;/VirtualHost&gt;</code></pre>
+
+<h3>Модулі</h3>
+<p>Apache має <b>модульну архітектуру</b>: ядро — <code>mod_core</code>, решта підключаються через <code>LoadModule</code>. Часто використовувані: <code>ssl</code>, <code>rewrite</code>, <code>proxy</code>, <code>userdir</code>, <code>headers</code>, <code>php</code>.</p>
+<ul>
+<li><b>mod_rewrite</b> — переписує URL «на льоту» за правилами на основі регулярних виразів (PCRE). Може мапити URL на файл, робити редирект або внутрішній проксі-запит. Директиви: <code>RewriteEngine</code>, <code>RewriteRule</code>, <code>RewriteCond</code>, <code>RewriteBase</code>, <code>RewriteMap</code>, <code>RewriteOptions</code>. Саме він робить «гарні» URL типу <code>/product/42</code> замість <code>index.php?route=product&amp;id=42</code>.</li>
+<li><b>mod_proxy</b> — перетворює Apache на проксі/шлюз, підтримує протоколи і алгоритми балансування навантаження.</li>
+</ul>
+<pre data-lang="apache"><code>RewriteEngine On
+RewriteCond %{REQUEST_FILENAME} !-f        <span class="c"># якщо такого файла немає…</span>
+RewriteRule ^product/([0-9]+)$ index.php?id=$1 [L]   <span class="c"># …передати в PHP</span></code></pre>
+
+<h3>.htaccess і AllowOverride</h3>
+<figure><div class="figure wide">
+<svg class="dg" viewBox="0 0 720 120" role="img" aria-label="Ієрархія конфігурації: httpd.conf, VirtualHost, Directory, .htaccess; нижчий рівень діє вужче">
+<defs><marker id="l5b" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0L10 5L0 10z" class="arrow-head"/></marker></defs>
+<rect x="20" y="30" width="150" height="50" rx="10" class="box"/><text x="95" y="60" text-anchor="middle" class="t-mono">httpd.conf</text>
+<rect x="200" y="30" width="150" height="50" rx="10" class="box"/><text x="275" y="60" text-anchor="middle" class="t-mono">&lt;VirtualHost&gt;</text>
+<rect x="380" y="30" width="150" height="50" rx="10" class="box"/><text x="455" y="60" text-anchor="middle" class="t-mono">&lt;Directory&gt;</text>
+<rect x="560" y="30" width="140" height="50" rx="10" class="warm"/><text x="630" y="60" text-anchor="middle" class="t-mono">.htaccess</text>
+<path d="M172 55H196" class="ln" marker-end="url(#l5b)"/><path d="M352 55H376" class="ln" marker-end="url(#l5b)"/><path d="M532 55H556" class="ln" marker-end="url(#l5b)"/>
+<text x="95" y="102" text-anchor="middle" class="t-muted">весь сервер</text><text x="275" y="102" text-anchor="middle" class="t-muted">один сайт</text><text x="455" y="102" text-anchor="middle" class="t-muted">каталог</text><text x="630" y="102" text-anchor="middle" class="t-muted">якщо AllowOverride ≠ None</text>
+</svg></div></figure>
+<p><b>.htaccess</b> («розподілений конфіг») — файл із директивами в каталозі сайту, що діє на цей каталог і всі вкладені. Потрібен, коли власник сайту не має root-доступу до сервера. Директива <code>AllowOverride</code> визначає, що з нього застосовувати: при <code>None</code> (і <code>AllowOverrideList None</code>) сервер навіть не шукає <code>.htaccess</code>, при <code>All</code> — дозволено все.</p>
+
+<h3>Логи</h3>
+<ul>
+<li><b>Error log</b> (<code>ErrorLog</code>) — <b>найважливіший</b> журнал: помилки запуску, падіння скриптів, відмови в доступі. Першим дивимося сюди.</li>
+<li><b>Access log</b> (<code>CustomLog</code>) — кожен оброблений запит: IP, час, метод, URL, код статусу, розмір. Формат задає <code>LogFormat</code>.</li>
+</ul>
+<pre data-lang="bash"><code>tail -f /var/log/httpd/error_log           <span class="c"># стежити за помилками в реальному часі</span>
+grep " 500 " /var/log/httpd/access_log     <span class="c"># знайти запити із помилкою сервера</span></code></pre>
+
+<h2 id="deploy">Практика: розгортання OpenCart на CentOS<a class="h-anchor" href="#deploy" aria-label="Посилання на розділ">#</a></h2>
+<p>На лекції розгортали інтернет-магазин OpenCart 2.x. Послідовність — типова для будь-якого PHP-застосунку.</p>
+<ol class="steps">
+<li><b>Підготовка ОС (лише для навчального стенда!).</b> Вимкнути firewalld і SELinux, підключити репозиторій EPEL, за проблем із DNS прописати <code>nameserver 8.8.8.8</code> у <code>/etc/resolv.conf</code>.</li>
+<li><b>MySQL.</b> Додати репозиторій MySQL, встановити <code>mysql-community-server</code>, увімкнути автозапуск і запустити, знайти тимчасовий пароль у <code>/var/log/mysqld.log</code>, запустити <code>mysql_secure_installation</code>.</li>
+<li><b>Користувач і БД.</b> Створити користувача, видати права, створити БД з кодуванням UTF-8.</li>
+<li><b>Apache + PHP.</b> Встановити <code>httpd</code> і пакети PHP (<code>php-mysql</code>, <code>php-gd</code>, <code>php-mbstring</code>…), увімкнути автозапуск; для mod_rewrite змінити <code>AllowOverride None</code> → <code>All</code>.</li>
+<li><b>Код застосунку.</b> Завантажити архів (<code>wget</code>), розпакувати (<code>unzip</code>), скопіювати в <code>/var/www/html</code>, створити <code>config.php</code> з <code>config-dist.php</code>, віддати файли користувачу <code>apache</code>.</li>
+<li><b>Веб-інсталятор.</b> Відкрити <code>http://IP/opencart/upload/install/</code>, ввести параметри БД; після встановлення <b>видалити каталог <code>install/</code></b>.</li>
+</ol>
+<pre data-lang="bash"><code><span class="c"># сервіси керуються через systemctl</span>
+systemctl enable --now mysqld          <span class="c"># автозапуск + старт (enable і start в одній команді)</span>
+systemctl status mysqld
+grep password /var/log/mysqld.log      <span class="c"># тимчасовий пароль root</span>
+mysql_secure_installation
+
+yum -y install httpd php php-mysql php-gd php-mbstring php-xml
+systemctl enable --now httpd
+
+cp -r opencart /var/www/html/
+chmod -R 775 /var/www/html/opencart
+chown -R apache:apache /var/www/html/opencart
+systemctl restart httpd</code></pre>
+<pre data-lang="sql"><code>CREATE USER 'shop'@'localhost' IDENTIFIED BY 'StrongPass!1';   <span class="c">-- локальний доступ</span>
+CREATE USER 'shop'@'%' IDENTIFIED BY 'StrongPass!1';           <span class="c">-- з будь-якого хоста</span>
+GRANT ALL ON opencart.* TO 'shop'@'localhost';
+CREATE DATABASE opencart CHARACTER SET utf8 COLLATE utf8_bin;
+SHOW DATABASES;</code></pre>
+<p><code>'user'@'localhost'</code> і <code>'user'@'%'</code> — <b>різні</b> облікові записи MySQL: перший підключається лише з цього ж сервера, другий — з будь-якої адреси. На слайдах права видаються як <code>GRANT ALL ON *.*</code> (на всі БД) — для стенда ок, для production давайте права лише на потрібну БД.</p>
+<div class="callout warn"><div class="callout-title">Нюанси зі слайдів</div><p>Старий OpenCart 2.x не працював з новим механізмом автентифікації MySQL 8 і з режимом <code>sql_mode = 'MYSQL40'</code>, тому на лекції користувача переводили на <code>mysql_native_password</code> і правили інсталятор. Це приклад реальної DevOps-роботи: сумісність версій. Також нагадування з чату: репозиторії CentOS 7 закриті, частину пакетів доводиться брати з дзеркал — для нових серверів інструктор радить Ubuntu Server.</p></div>
+
+<h2 id="backup">Резервні копії БД<a class="h-anchor" href="#backup" aria-label="Посилання на розділ">#</a></h2>
+<pre data-lang="bash"><code>mysqldump --all-databases &gt; dump.sql                 <span class="c"># усі БД</span>
+mysqldump -u root -p opencart &gt; opencart.sql         <span class="c"># одна БД</span>
+mysql -u root -p opencart &lt; opencart.sql             <span class="c"># відновлення</span></code></pre>
+<p>Зверніть увагу на напрямок перенаправлення з лекції 2: <code>&gt;</code> — вивантажити дамп у файл, <code>&lt;</code> — подати файл на вхід клієнту <code>mysql</code>.</p>
+
+<h2 id="mistakes">Типові помилки<a class="h-anchor" href="#mistakes" aria-label="Посилання на розділ">#</a></h2>
+<div class="mistakes">
+<div class="mistake"><div class="wrong">Правила <code>.htaccess</code> «не працюють», хоча файл на місці.</div><div class="right">Перевірте <code>AllowOverride</code> для каталогу (при <code>None</code> файл ігнорується) і чи завантажено <code>mod_rewrite</code>. Після змін у конфігу — <code>systemctl restart httpd</code>.</div></div>
+<div class="mistake"><div class="wrong">Сайт видає 403/500 — одразу <code>chmod -R 777</code>.</div><div class="right">Спершу <code>error_log</code>. Зазвичай досить віддати файли користувачу вебсервера (<code>chown -R apache:apache</code>) з правами 755/644.</div></div>
+<div class="mistake"><div class="wrong">Вимкнути firewall і SELinux на production, як на лабі.</div><div class="right">На production відкривають лише потрібні порти (80/443) і налаштовують SELinux-контексти, а не вимикають захист.</div></div>
+<div class="mistake"><div class="wrong">Забути видалити <code>install/</code> після встановлення CMS.</div><div class="right">Каталог інсталятора дозволяє перевстановити сайт і перезаписати БД — його видаляють одразу.</div></div>
+</div>
+<h2 id="quiz">Перевір себе<a class="h-anchor" href="#quiz" aria-label="Посилання на розділ">#</a></h2><p>7 питань на розуміння. Натисніть варіант — одразу побачите правильну відповідь і пояснення.</p><div class="quiz" data-quiz="w1l5"></div><script type="application/json" id="quiz-data">[{"q": "Що означає абревіатура LAMP?", "options": ["Linux, Ansible, MongoDB, Python", "Linux, AWS, Mesos, Puppet", "Load balancer, Apache, MySQL, Proxy", "Linux, Apache, MySQL, PHP"], "answer": 3, "explain": "Linux — ОС, Apache — вебсервер, MySQL — СКБД, PHP (історично також Perl/Python) — мова логіки. LEMP — те саме з NGINX."}, {"q": "Яка директива Apache задає каталог, з якого віддаються файли сайту?", "options": ["ServerRoot", "Directory", "AccessFileName", "DocumentRoot"], "answer": 3, "explain": "DocumentRoot — корінь сайту; шлях із URL додається до нього, щоб отримати шлях до файла."}, {"q": "Директиви в .htaccess ігноруються. Найімовірніша причина?", "options": ["Apache не підтримує .htaccess", "Для каталогу встановлено AllowOverride None", "MySQL не запущено", "Файл має розширення .txt"], "answer": 1, "explain": "При AllowOverride None сервер навіть не читає .htaccess. Для правил mod_rewrite зазвичай ставлять AllowOverride All."}, {"q": "Який журнал Apache переглядати першим, коли сайт повертає помилку 500?", "options": ["error log", "mime.types", "/etc/passwd", "access log"], "answer": 0, "explain": "Слайди називають error log найважливішим: туди потрапляють помилки скриптів, конфігурації і відмови в доступі."}, {"q": "Навіщо модуль mod_rewrite?", "options": ["Створювати резервні копії", "Шифрувати трафік", "Керувати користувачами MySQL", "Переписувати URL за правилами на основі регулярних виразів"], "answer": 3, "explain": "mod_rewrite перетворює запитаний URL на шлях до файла, редирект або проксі-запит — так роблять «гарні» URL."}, {"q": "Яка команда відновить БД opencart з файла дампа?", "options": ["mysqldump -u root -p opencart > opencart.sql", "systemctl restore mysqld", "mysql -u root -p opencart < opencart.sql", "mysql --all-databases > dump.sql"], "answer": 2, "explain": "mysqldump створює дамп (вивід у файл через >), а клієнт mysql виконує SQL з файла, поданого на вхід через <."}, {"q": "Чим відрізняються облікові записи 'shop'@'localhost' і 'shop'@'%'?", "options": ["Перший працює тільки з PHP", "Другий має права root", "Нічим", "Перший може підключатися лише з того ж сервера, другий — з будь-якого хоста"], "answer": 3, "explain": "У MySQL обліковий запис = ім'я + хост. % означає будь-який хост, тому це окремий запис із власними правами."}]</script>
+<div class="complete-box"><p>Прочитали і пройшли тест? Позначте лекцію — прогрес оновиться на головній і в меню.</p><button type="button" class="btn primary" data-complete="w1l5" aria-pressed="false"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg><span class="lbl">Позначити як опрацьовану</span></button></div>
+<nav class="pager" aria-label="Попередня і наступна лекції"><a class="prev" href="../../lectures/week-1/lecture-4.html"><small>← Попередня · Лекція 4</small><span>Архітектура вебзастосунків: HTTP, REST API, N-tier і мікросервіси</span></a><a class="next" href="../../lectures/week-2/lecture-6.html"><small>Наступна · Лекція 6 →</small><span>Комп&#x27;ютерні мережі: OSI і TCP/IP, IP-адресація, порти, NAT і VPN</span></a></nav>
+<div class="sources-note"><b>Джерела лекції:</b> презентація «LAMP Stack» (39 слайдів); чат лекції 5 (LAMP vs Node.js, NGINX, CentOS). <b>Обмеження:</b> MP3-запис лекції не транскрибовано; відео для цієї лекції в папці немає.</div>
+</main>
+<aside class="toc" aria-label="На цій сторінці"><div class="toc-title">На цій сторінці</div><ol><li><a href="#goals">Чого ви навчитесь</a></li><li><a href="#stack">Що таке LAMP</a></li><li><a href="#config">Конфігурація Apache</a></li><li><a href="#deploy">Практика: розгортання OpenCart на CentOS</a></li><li><a href="#backup">Резервні копії БД</a></li><li><a href="#mistakes">Типові помилки</a></li><li><a href="#quiz">Перевір себе</a></li></ol></aside>
+</div>
+</div>
+<footer class="site-footer">Навчальний конспект для самопідготовки. Прогрес і результати тестів зберігаються лише в цьому браузері на цьому пристрої (localStorage) і не синхронізуються між пристроями.</footer>
+<div class="search-modal" role="dialog" aria-modal="true" aria-label="Пошук по курсу" aria-hidden="true">
+  <div class="search-panel">
+    <div class="search-input-row"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/></svg><input type="search" placeholder="Пошук по всіх лекціях…" aria-label="Пошуковий запит" autocomplete="off"><kbd style="font:11px var(--mono);color:var(--faint)">Esc</kbd></div>
+    <ul class="search-results"></ul>
+  </div>
+</div>
+<script src="../../js/course-data.js"></script>
+<script src="../../js/progress.js"></script>
+<script src="../../js/navigation.js"></script>
+<script src="../../js/app.js"></script>
+
+</body>
+</html>

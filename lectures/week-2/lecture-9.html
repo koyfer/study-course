@@ -1,0 +1,242 @@
+<!doctype html>
+<html lang="uk">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Лекція 9. Віртуалізація і контейнери: гіпервізор, namespaces, Docker і Dockerfile · Хмарні технології та сервіси</title>
+<meta name="description" content="ВМ vs контейнер, гіпервізор, namespaces і cgroups, архітектура Docker, образ vs контейнер, шари, Dockerfile (RUN/CMD/ENTRYPOINT/EXPOSE), ключові команди і практичний кейс.">
+<meta name="theme-color" content="#0d7a6f">
+<script>try{var t=localStorage.getItem("htc-theme");if(t)document.documentElement.setAttribute("data-theme",t)}catch(e){}</script>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=Onest:wght@400;500;600;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<link rel="icon" href="../../assets/icons/favicon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="../../css/style.css">
+</head>
+<body data-root="../../" >
+<a class="skip-link" href="#main">Перейти до змісту</a>
+<header class="site-header">
+  <button class="icon-btn menu-btn" type="button" aria-label="Відкрити меню курсу" aria-expanded="false" aria-controls="sidebar"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M4 6h16M4 12h16M4 18h16"/></svg></button>
+  <a class="brand" href="../../index.html"><svg class="brand-mark" viewBox="0 0 32 32" aria-hidden="true"><rect width="32" height="32" rx="9" fill="var(--accent)"/><path d="M10 21.5h12.2a4.3 4.3 0 00.6-8.56A6 6 0 0011.4 12a4.75 4.75 0 00-1.4 9.5z" fill="none" stroke="#fff" stroke-width="2" stroke-linejoin="round"/><path d="M13 17.2l2.2 2.2 4-4.2" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg><span>Хмарні технології та сервіси<small>Конспект курсу · 12 лекцій</small></span></a>
+  <div class="header-spacer"></div>
+  <button class="search-btn" type="button" data-open-search aria-label="Пошук по курсу"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/></svg><span class="label">Пошук по лекціях</span><kbd>Ctrl K</kbd></button>
+  <button class="icon-btn theme-btn" type="button" aria-label="Перемкнути тему"><svg class="sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg><svg class="moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M21 12.8A9 9 0 1111.2 3a7 7 0 009.8 9.8z"/></svg></button>
+</header>
+<div class="layout">
+<nav class="sidebar" id="sidebar" aria-label="Навігація курсом">
+<div class="side-progress" data-week-progress="w1l1,w1l2,w1l3,w1l4,w1l5,w2l6,w2l7,w2l8,w2l9,w2l10,w3l11,w3l12"><div>Прогрес курсу: <strong class="wp-text">0 з 12</strong></div><div class="bar"><i></i></div></div>
+<div class="side-group"><a class="side-link" href="../../index.html"><span class="side-num">⌂</span><span>Огляд курсу і план</span></a></div>
+<div class="side-group" data-week-progress="w1l1,w1l2,w1l3,w1l4,w1l5"><div class="side-title"><a href="../../weeks/week-1.html">Тиждень 1</a><span class="wk-count wp-text">0 з 5</span></div>
+<a class="side-link" href="../../lectures/week-1/lecture-1.html"><span class="side-num">01</span><span>Вступ до DevOps, SDLC і хмарних моделей</span><span class="side-check" data-check="w1l1" role="img" aria-label="Не опрацьовано"></span></a>
+<a class="side-link" href="../../lectures/week-1/lecture-2.html"><span class="side-num">02</span><span>Linux: команди, користувачі, права</span><span class="side-check" data-check="w1l2" role="img" aria-label="Не опрацьовано"></span></a>
+<a class="side-link" href="../../lectures/week-1/lecture-3.html"><span class="side-num">03</span><span>Bash: змінні, умови, цикли, функції</span><span class="side-check" data-check="w1l3" role="img" aria-label="Не опрацьовано"></span></a>
+<a class="side-link" href="../../lectures/week-1/lecture-4.html"><span class="side-num">04</span><span>Веб-архітектура: HTTP, REST, N-tier</span><span class="side-check" data-check="w1l4" role="img" aria-label="Не опрацьовано"></span></a>
+<a class="side-link" href="../../lectures/week-1/lecture-5.html"><span class="side-num">05</span><span>LAMP: Apache, MySQL, PHP</span><span class="side-check" data-check="w1l5" role="img" aria-label="Не опрацьовано"></span></a>
+</div>
+<div class="side-group" data-week-progress="w2l6,w2l7,w2l8,w2l9,w2l10"><div class="side-title"><a href="../../weeks/week-2.html">Тиждень 2</a><span class="wk-count wp-text">0 з 5</span></div>
+<a class="side-link" href="../../lectures/week-2/lecture-6.html"><span class="side-num">06</span><span>Мережі: OSI, TCP/IP, IP, NAT, VPN</span><span class="side-check" data-check="w2l6" role="img" aria-label="Не опрацьовано"></span></a>
+<a class="side-link" href="../../lectures/week-2/lecture-7.html"><span class="side-num">07</span><span>Хмари: NIST, моделі, AWS/GCP/Azure</span><span class="side-check" data-check="w2l7" role="img" aria-label="Не опрацьовано"></span></a>
+<a class="side-link" href="../../lectures/week-2/lecture-8.html"><span class="side-num">08</span><span>IaC і Terraform</span><span class="side-check" data-check="w2l8" role="img" aria-label="Не опрацьовано"></span></a>
+<a class="side-link" href="../../lectures/week-2/lecture-9.html" aria-current="page"><span class="side-num">09</span><span>Віртуалізація і Docker</span><span class="side-check" data-check="w2l9" role="img" aria-label="Не опрацьовано"></span></a>
+<a class="side-link" href="../../lectures/week-2/lecture-10.html"><span class="side-num">10</span><span>Git і GitHub: версії, гілки, PR</span><span class="side-check" data-check="w2l10" role="img" aria-label="Не опрацьовано"></span></a>
+</div>
+<div class="side-group" data-week-progress="w3l11,w3l12"><div class="side-title"><a href="../../weeks/week-3.html">Тиждень 3</a><span class="wk-count wp-text">0 з 2</span></div>
+<a class="side-link" href="../../lectures/week-3/lecture-11.html"><span class="side-num">11</span><span>CI/CD і Jenkins, Jenkinsfile</span><span class="side-check" data-check="w3l11" role="img" aria-label="Не опрацьовано"></span></a>
+<a class="side-link" href="../../lectures/week-3/lecture-12.html"><span class="side-num">12</span><span>GitHub Actions: workflow і деплой</span><span class="side-check" data-check="w3l12" role="img" aria-label="Не опрацьовано"></span></a>
+</div>
+</nav><div class="backdrop"></div>
+<div class="main">
+<main class="content" id="main">
+<div class="lecture-hero">
+<div class="crumbs"><a href="../../index.html">Курс</a><span>/</span><a href="../../weeks/week-2.html">Тиждень 2</a><span>/</span><span>Лекція 9</span></div>
+<div class="eyebrow">Тиждень 2 · Лекція 9</div>
+<h1>Віртуалізація і контейнери: гіпервізор, namespaces, Docker і Dockerfile</h1>
+<p class="lead">«Один застосунок — один сервер» — дорого. Віртуалізація ділить залізо між ОС, а контейнери йдуть далі: ділять одне ядро між ізольованими застосунками. Docker зробив контейнери масовими.</p>
+<div class="meta-row">
+<span class="chip"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>≈ 12 хв читання</span>
+<span class="chip"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M9.5 9.5a2.5 2.5 0 114 2c-1 .7-1.5 1.2-1.5 2.5M12 17h.01"/></svg>7 питань самоперевірки</span>
+<span class="chip" data-status="w2l9"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg><span class="lbl">Не опрацьовано</span></span>
+</div>
+</div>
+<div class="objectives">
+<h2 id="goals">Чого ви навчитесь<a class="h-anchor" href="#goals" aria-label="Посилання на розділ">#</a></h2>
+<ul>
+<li>Порівняти віртуальні машини і контейнери за архітектурою та витратою ресурсів.</li>
+<li>Назвати механізми ядра Linux, на яких тримаються контейнери: <b>namespaces</b>, <b>cgroups</b>, <b>capabilities</b>.</li>
+<li>Розрізняти <b>образ</b>, <b>контейнер</b>, <b>registry</b> і пояснити архітектуру Docker Engine.</li>
+<li>Написати Dockerfile і пояснити різницю між <code>RUN</code>, <code>CMD</code>, <code>ENTRYPOINT</code>, <code>EXPOSE</code>.</li>
+<li>Користуватися основними командами: <code>pull</code>, <code>build</code>, <code>run -p</code>, <code>ps</code>, <code>exec</code>, <code>stop</code>, <code>rm</code>, <code>rmi</code>.</li>
+</ul>
+</div>
+
+<h2 id="virtualization">Віртуалізація<a class="h-anchor" href="#virtualization" aria-label="Посилання на розділ">#</a></h2>
+<p>Принцип «один застосунок — один фізичний сервер» означає: багато серверів, ліцензії ОС для кожного і низьке завантаження кожної машини. <b>Розділяй і володарюй</b> — розв'язок дає віртуалізація.</p>
+<div class="callout def"><div class="callout-title">Визначення</div><p><b>Гіпервізор (VMM, virtual machine monitor)</b> — ПЗ, прошивка або залізо, що створює і запускає віртуальні машини. Комп'ютер із гіпервізором — <b>host</b> (хост), кожна ВМ — <b>guest</b> (гість). Приклади: KVM, Xen, VMware, Oracle VirtualBox.</p></div>
+<p>Але для клієнта цінність — <b>застосунок</b>, а не ОС. У кожній ВМ своя повна ОС, яка споживає багато CPU, RAM і диска: <b>OS ≠ business value</b>.</p>
+
+<h2 id="vm-vs-container">ВМ vs контейнер<a class="h-anchor" href="#vm-vs-container" aria-label="Посилання на розділ">#</a></h2>
+<figure><div class="figure wide">
+<svg class="dg" viewBox="0 0 720 260" role="img" aria-label="Зліва: фізична машина, гіпервізор, кілька ВМ, кожна з власною ОС і застосунком. Справа: фізична машина, одна ОС з ядром Linux, контейнери із застосунком і бібліотеками без власного ядра">
+<text x="180" y="20" text-anchor="middle" class="t-bold">Віртуальні машини</text>
+<text x="540" y="20" text-anchor="middle" class="t-bold">Контейнери</text>
+<g text-anchor="middle" class="t-small">
+<rect x="30" y="34" width="95" height="30" rx="6" class="acc"/><text x="77" y="54">App A</text>
+<rect x="133" y="34" width="95" height="30" rx="6" class="acc"/><text x="180" y="54">App B</text>
+<rect x="236" y="34" width="95" height="30" rx="6" class="acc"/><text x="283" y="54">App C</text>
+<rect x="30" y="68" width="95" height="24" rx="6" class="box"/><text x="77" y="84">libs</text>
+<rect x="133" y="68" width="95" height="24" rx="6" class="box"/><text x="180" y="84">libs</text>
+<rect x="236" y="68" width="95" height="24" rx="6" class="box"/><text x="283" y="84">libs</text>
+<rect x="30" y="96" width="95" height="44" rx="6" class="warm"/><text x="77" y="116">Гостьова ОС</text><text x="77" y="132" class="t-muted">+ ядро</text>
+<rect x="133" y="96" width="95" height="44" rx="6" class="warm"/><text x="180" y="116">Гостьова ОС</text><text x="180" y="132" class="t-muted">+ ядро</text>
+<rect x="236" y="96" width="95" height="44" rx="6" class="warm"/><text x="283" y="116">Гостьова ОС</text><text x="283" y="132" class="t-muted">+ ядро</text>
+<rect x="30" y="146" width="301" height="34" rx="6" class="vio"/><text x="180" y="168">Гіпервізор</text>
+<rect x="30" y="186" width="301" height="34" rx="6" class="box"/><text x="180" y="208">Хостова ОС / залізо</text>
+<rect x="390" y="34" width="95" height="30" rx="6" class="acc"/><text x="437" y="54">App A</text>
+<rect x="493" y="34" width="95" height="30" rx="6" class="acc"/><text x="540" y="54">App B</text>
+<rect x="596" y="34" width="95" height="30" rx="6" class="acc"/><text x="643" y="54">App C</text>
+<rect x="390" y="68" width="95" height="24" rx="6" class="box"/><text x="437" y="84">libs v1</text>
+<rect x="493" y="68" width="95" height="24" rx="6" class="box"/><text x="540" y="84">libs v2</text>
+<rect x="596" y="68" width="95" height="24" rx="6" class="box"/><text x="643" y="84">libs</text>
+<rect x="390" y="146" width="301" height="34" rx="6" class="vio"/><text x="540" y="168">Docker Engine</text>
+<rect x="390" y="186" width="301" height="34" rx="6" class="warm"/><text x="540" y="208">ОС хоста — ОДНЕ спільне ядро Linux</text>
+</g>
+<text x="180" y="248" text-anchor="middle" class="t-muted">хвилини старту, гігабайти на ВМ</text>
+<text x="540" y="248" text-anchor="middle" class="t-muted">секунди старту, мегабайти на контейнер</text>
+</svg></div>
+<figcaption><b>Головна різниця:</b> ВМ віртуалізує залізо (у кожної своє ядро), контейнер — ОС (ядро спільне). Контейнери легші, але слабше ізольовані.</figcaption></figure>
+<div class="table-wrap"><table>
+<thead><tr><th></th><th>Віртуальна машина</th><th>Контейнер</th></tr></thead>
+<tbody>
+<tr><td>Що віртуалізує</td><td>Залізо (через гіпервізор)</td><td>ОС (OS-level virtualization)</td></tr>
+<tr><td>Ядро</td><td>Власне в кожній ВМ</td><td>Спільне ядро хоста</td></tr>
+<tr><td>Ресурси</td><td>Багато CPU/RAM/диска на ОС</td><td>Менше CPU, RAM і диска</td></tr>
+<tr><td>Ізоляція</td><td>Сильніша</td><td>Достатня для більшості задач, але слабша</td></tr>
+<tr><td>Інша ОС</td><td>Можна (Windows-гість на Linux-хості)</td><td>Тільки під ядро хоста (Linux-контейнери на Linux)</td></tr>
+</tbody></table></div>
+<p><b>Конфлікт бібліотек:</b> два застосунки на одному сервері потребують різних версій однієї бібліотеки — у спільній ОС конфлікт. У контейнерах кожен застосунок несе свій user space зі своїми версіями.</p>
+
+<h2 id="kernel">Як працюють контейнери: механізми ядра<a class="h-anchor" href="#kernel" aria-label="Посилання на розділ">#</a></h2>
+<p>Контейнери — це <b>можливість Unix-подібних ОС</b>, а не винахід Docker. Docker лише зручна обгортка над функціями ядра.</p>
+<div class="term-grid">
+<div class="term"><span class="en">Namespaces</span><b>Ізоляція «що бачить процес»</b><p><b>PID</b> — свої процеси (усередині свій PID 1), <b>MNT</b> — своя файлова система, <b>NET</b> — своя мережа, <b>USER</b> — свої користувачі й привілеї.</p></div>
+<div class="term"><span class="en">Control groups (cgroups)</span><b>Обмеження ресурсів</b><p>Групують процеси і ставлять ліміти: скільки CPU, RAM, I/O може взяти контейнер.</p></div>
+<div class="term"><span class="en">Capabilities</span><b>Дрібні привілеї</b><p>Замість «усе або нічого» root — окремі дозволи (напр. лише прив'язка до порту &lt; 1024).</p></div>
+</div>
+<div class="callout"><div class="callout-title">Формула зі слайдів</div><p><b>cgroups + namespaces + image = Docker-контейнер</b>. Namespaces дають ізоляцію, cgroups — ліміти, образ — файлову систему із застосунком.</p></div>
+
+<h2 id="docker">Docker: архітектура і терміни<a class="h-anchor" href="#docker" aria-label="Посилання на розділ">#</a></h2>
+<p><b>Docker</b> — набір PaaS-продуктів, що використовують віртуалізацію рівня ОС для постачання ПЗ в пакетах — <b>контейнерах</b>. <b>Docker Engine</b> — клієнт-серверний застосунок: CLI-клієнт спілкується з демоном <code>dockerd</code> через <b>REST API</b>.</p>
+<figure><div class="figure wide">
+<svg class="dg" viewBox="0 0 720 230" role="img" aria-label="Docker client надсилає команди демону через REST API; демон будує образи, запускає контейнери і тягне образи з registry, наприклад Docker Hub">
+<defs><marker id="l9a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" class="arrow-acc"/></marker></defs>
+<rect x="20" y="40" width="160" height="150" rx="12" class="box"/><text x="100" y="64" text-anchor="middle" class="t-bold">Client (CLI)</text>
+<text x="40" y="94" class="t-mono t-small">docker build</text><text x="40" y="118" class="t-mono t-small">docker pull</text><text x="40" y="142" class="t-mono t-small">docker run</text><text x="40" y="166" class="t-mono t-small">docker ps</text>
+<rect x="240" y="20" width="250" height="190" rx="14" class="soft"/><text x="365" y="42" text-anchor="middle" class="t-bold">Docker host · dockerd</text>
+<rect x="258" y="56" width="100" height="136" rx="10" class="vio"/><text x="308" y="78" text-anchor="middle" class="t-bold">Images</text><text x="308" y="104" text-anchor="middle" class="t-small t-mono">python</text><text x="308" y="126" text-anchor="middle" class="t-small t-mono">openjdk:8</text><text x="308" y="148" text-anchor="middle" class="t-small t-mono">serverimage</text>
+<rect x="374" y="56" width="100" height="136" rx="10" class="acc"/><text x="424" y="78" text-anchor="middle" class="t-bold">Containers</text><text x="424" y="104" text-anchor="middle" class="t-small t-mono">myserver</text><text x="424" y="126" text-anchor="middle" class="t-small t-mono">java8</text>
+<path d="M360 124H370" class="ln-acc" marker-end="url(#l9a)"/>
+<rect x="550" y="60" width="150" height="110" rx="12" class="warm"/><text x="625" y="90" text-anchor="middle" class="t-bold">Registry</text><text x="625" y="112" text-anchor="middle" class="t-small">Docker Hub</text><text x="625" y="132" text-anchor="middle" class="t-small t-muted">публічний або</text><text x="625" y="150" text-anchor="middle" class="t-small t-muted">приватний</text>
+<path d="M184 115H236" class="ln-acc" marker-end="url(#l9a)"/><text x="210" y="106" text-anchor="middle" class="t-small t-mono">REST</text>
+<path d="M494 115H546" class="ln-acc" marker-end="url(#l9a)" marker-start="url(#l9a)"/><text x="520" y="106" text-anchor="middle" class="t-small">pull/push</text>
+</svg></div></figure>
+<div class="term-grid">
+<div class="term"><span class="en">Image</span><b>Образ</b><p>Шаблон застосунку: набір файлів і параметрів. <b>Конструкція часу збирання</b> (build time). Не файлова система і не віртуальний диск — по суті tar-архів шарів з ієрархією.</p></div>
+<div class="term"><span class="en">Container</span><b>Контейнер</b><p>Запущений екземпляр образу — ізольований процес на Docker-хості зі спільним ядром. <b>Конструкція часу виконання</b> (runtime).</p></div>
+<div class="term"><span class="en">Registry</span><b>Реєстр</b><p>Мережеве сховище образів, приватне чи публічне. Найбільший публічний — Docker Hub.</p></div>
+<div class="term"><span class="en">Dockerfile</span><b>Рецепт образу</b><p>Текстовий файл з інструкціями, які Docker виконує, щоб зібрати образ.</p></div>
+</div>
+<h3>Шари образу</h3>
+<p>Образ складається з <b>шарів</b>: кожна інструкція Dockerfile — окремий шар, усі шари образу <b>лише для читання</b>. Коли запускається контейнер, зверху додається тонкий <b>записуваний шар</b> — зміни контейнера живуть лише в ньому і зникають разом із контейнером. Спільні шари (напр. базовий <code>python</code>) зберігаються один раз для всіх образів.</p>
+
+<h2 id="dockerfile">Dockerfile<a class="h-anchor" href="#dockerfile" aria-label="Посилання на розділ">#</a></h2>
+<p>Dockerfile схожий на shell-скрипт із ключовими словами: розширює <b>базовий образ</b> (<code>FROM</code>) і дає <b>новий образ</b>. Формат: <code># коментар</code> і <code>ІНСТРУКЦІЯ аргументи</code>. <code>docker build</code> збирає образ з Dockerfile і <b>контексту</b> — набору файлів за шляхом (PATH) або URL Git-репозиторію.</p>
+<div class="table-wrap"><table>
+<thead><tr><th>Інструкція</th><th>Призначення</th></tr></thead>
+<tbody>
+<tr><td><code>FROM</code></td><td>Базовий образ (перша інструкція)</td></tr>
+<tr><td><code>RUN</code></td><td><b>Крок збирання</b>: виконати команду і зафіксувати результат у новому шарі (встановити пакети). Може бути багато</td></tr>
+<tr><td><code>COPY</code> / <code>ADD</code></td><td>Скопіювати файли з контексту в образ (<code>ADD</code> вміє ще URL і розпакування архівів)</td></tr>
+<tr><td><code>WORKDIR</code></td><td>Робочий каталог для наступних інструкцій</td></tr>
+<tr><td><code>ENV</code>, <code>LABEL</code></td><td>Змінні оточення, метадані</td></tr>
+<tr><td><code>EXPOSE</code></td><td><b>Документує</b>, який порт слухає контейнер (саме по собі порт не публікує)</td></tr>
+<tr><td><code>CMD</code></td><td>Команда <b>за замовчуванням</b> при старті контейнера. Діє лише остання; перевизначається: <code>docker run image інша_команда</code></td></tr>
+<tr><td><code>ENTRYPOINT</code></td><td>Головна команда контейнера; <code>CMD</code> тоді стає її аргументами за замовчуванням</td></tr>
+<tr><td><code>VOLUME</code>, <code>HEALTHCHECK</code>, <code>USER</code>…</td><td>Томи для даних, перевірка здоров'я, користувач тощо</td></tr>
+</tbody></table></div>
+
+<h2 id="case">Практичний кейс: Python-вебсервер у контейнері<a class="h-anchor" href="#case" aria-label="Посилання на розділ">#</a></h2>
+<p>Файли з архіву лекції <code>server.zip</code>:</p>
+<div class="compare">
+<div><h4>server.py</h4><pre data-lang="python"><code>#!/usr/bin/env python3
+import http.server
+import socketserver
+
+handler = http.server.SimpleHTTPRequestHandler
+with socketserver.TCPServer(("", 1234), handler) as httpd:
+    httpd.serve_forever()</code></pre></div>
+<div><h4>Dockerfile</h4><pre data-lang="dockerfile"><code>FROM python:latest
+ADD server.py /server/
+ADD index.html /server/
+WORKDIR /server/
+CMD ["python", "./server.py"]
+EXPOSE 1234</code></pre></div>
+</div>
+<pre data-lang="bash"><code>docker build -t serverimage .                               <span class="c"># -t — тег (ім'я) образу, . — контекст</span>
+docker run --name myserver -d -p 1234:1234 serverimage      <span class="c"># -d у фоні, -p ХОСТ:КОНТЕЙНЕР</span>
+curl http://localhost:1234                                  <span class="c"># Hello world!</span></code></pre>
+<figure><div class="figure wide">
+<svg class="dg" viewBox="0 0 720 120" role="img" aria-label="Публікація порту: запит на порт 8282 хоста перенаправляється на порт 8080 всередині контейнера">
+<defs><marker id="l9b" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0L10 5L0 10z" class="arrow-acc"/></marker></defs>
+<rect x="20" y="30" width="140" height="56" rx="10" class="box"/><text x="90" y="54" text-anchor="middle" class="t-bold">Браузер</text><text x="90" y="74" text-anchor="middle" class="t-small t-mono">host-ip:8282</text>
+<rect x="220" y="14" width="480" height="90" rx="14" class="soft"/><text x="236" y="34" class="t-small t-muted">Linux-хост 192.168.198.130</text>
+<rect x="240" y="44" width="100" height="40" rx="8" class="warm"/><text x="290" y="69" text-anchor="middle" class="t-mono">:8282</text>
+<rect x="430" y="40" width="250" height="52" rx="10" class="acc"/><text x="555" y="62" text-anchor="middle" class="t-bold">контейнер java8</text><text x="555" y="80" text-anchor="middle" class="t-mono t-small">застосунок слухає :8080</text>
+<path d="M162 58H236" class="ln-acc" marker-end="url(#l9b)"/><path d="M342 64H426" class="ln-acc" marker-end="url(#l9b)"/>
+<text x="384" y="98" text-anchor="middle" class="t-mono t-small t-acc">-p 8282:8080</text>
+</svg></div><figcaption><b>Мапінг портів:</b> перше число — порт хоста, друге — порт усередині контейнера.</figcaption></figure>
+
+<h2 id="commands">Шпаргалка команд<a class="h-anchor" href="#commands" aria-label="Посилання на розділ">#</a></h2>
+<div class="table-wrap"><table>
+<thead><tr><th>Команда</th><th>Що робить</th></tr></thead>
+<tbody>
+<tr><td><code>docker pull openjdk:8-jdk</code></td><td>Завантажити образ з Docker Hub (тег після <code>:</code>, без тегу — <code>latest</code>)</td></tr>
+<tr><td><code>docker images</code></td><td>Список локальних образів</td></tr>
+<tr><td><code>docker ps</code> / <code>docker ps -a</code></td><td>Запущені / усі контейнери</td></tr>
+<tr><td><code>docker run --name java8 -it openjdk:8-jdk</code></td><td>Створити й запустити контейнер з інтерактивним терміналом (<code>-i</code> вхід, <code>-t</code> TTY)</td></tr>
+<tr><td><code>docker stop &lt;id&gt;</code> / <code>docker start &lt;id&gt;</code></td><td>Зупинити / запустити існуючий контейнер</td></tr>
+<tr><td><code>docker exec -it java8 bash</code></td><td>Виконати команду (shell) у запущеному контейнері</td></tr>
+<tr><td><code>docker cp app.jar java8:/app.jar</code></td><td>Скопіювати файл у контейнер</td></tr>
+<tr><td><code>docker commit &lt;id&gt; imagejava8</code></td><td>Зберегти стан контейнера як новий образ (краще — Dockerfile)</td></tr>
+<tr><td><code>docker logs &lt;id&gt;</code></td><td>Логи контейнера</td></tr>
+<tr><td><code>docker rm &lt;id&gt;</code> / <code>docker rmi &lt;id&gt;</code></td><td>Видалити контейнер / образ</td></tr>
+</tbody></table></div>
+<p>Встановлення на Linux на лекції: <code>curl -fsSL https://get.docker.com/ | sh</code>, далі <code>systemctl enable --now docker</code>. З чату: Docker працює й на Windows; образ той самий, важлива лише архітектура процесора. Альтернативи Docker (наприклад, Podman) використовують ті самі механізми ядра.</p>
+
+<h2 id="mistakes">Типові помилки<a class="h-anchor" href="#mistakes" aria-label="Посилання на розділ">#</a></h2>
+<div class="mistakes">
+<div class="mistake"><div class="wrong">Образ і контейнер — одне й те саме.</div><div class="right">Образ — незмінний шаблон (build time), контейнер — його запущений екземпляр (runtime). З одного образу можна запустити багато контейнерів.</div></div>
+<div class="mistake"><div class="wrong"><code>EXPOSE 1234</code> робить сервіс доступним ззовні.</div><div class="right">EXPOSE лише документує порт. Публікує його <code>docker run -p ХОСТ:КОНТЕЙНЕР</code>.</div></div>
+<div class="mistake"><div class="wrong">Запускати сервер через <code>RUN python server.py</code>.</div><div class="right"><code>RUN</code> виконується під час збирання образу. Команда старту контейнера — <code>CMD</code> або <code>ENTRYPOINT</code> (тому на слайді <code>RUN</code> закоментовано).</div></div>
+<div class="mistake"><div class="wrong">Зберігати дані БД усередині контейнера.</div><div class="right">Записуваний шар зникає з контейнером. Дані виносять у томи (<code>-v</code>/<code>VOLUME</code>).</div></div>
+<div class="mistake"><div class="wrong">Контейнер = «легка ВМ» з власним ядром.</div><div class="right">Контейнери ділять ядро хоста; ізоляцію дають namespaces, а ліміти — cgroups.</div></div>
+</div>
+<h2 id="quiz">Перевір себе<a class="h-anchor" href="#quiz" aria-label="Посилання на розділ">#</a></h2><p>7 питань на розуміння. Натисніть варіант — одразу побачите правильну відповідь і пояснення.</p><div class="quiz" data-quiz="w2l9"></div><script type="application/json" id="quiz-data">[{"q": "Яка головна архітектурна відмінність контейнера від віртуальної машини?", "options": ["Контейнер має власне ядро ОС", "Контейнери використовують спільне ядро ОС хоста", "Контейнер працює тільки в хмарі", "ВМ не потребує гіпервізора"], "answer": 1, "explain": "ВМ віртуалізує залізо і має свою ОС з ядром; контейнер — ізольований процес на спільному ядрі хоста, тому він легший."}, {"q": "Який механізм ядра Linux обмежує, скільки CPU і пам'яті може використати контейнер?", "options": ["cgroups", "capabilities", "SELinux", "namespaces"], "answer": 0, "explain": "Control groups ставлять ліміти ресурсів. Namespaces відповідають за ізоляцію (PID, MNT, NET, USER)."}, {"q": "Що означає <code>-p 8080:80<\/code> у <code>docker run<\/code>?", "options": ["Запустити 8080 копій", "Порт 8080 контейнера → порт 80 хоста", "Порт 8080 хоста → порт 80 контейнера", "Обмежити контейнер 80% CPU"], "answer": 2, "explain": "Формат -p ХОСТ:КОНТЕЙНЕР. Запит на 8080 хоста потрапить на 80 усередині контейнера."}, {"q": "Чим відрізняється RUN від CMD у Dockerfile?", "options": ["RUN виконується під час збирання образу, CMD — команда за замовчуванням при старті контейнера", "RUN можна використати лише один раз", "Нічим", "CMD виконується під час збирання"], "answer": 0, "explain": "RUN створює шар образу на етапі build. CMD задає, що запуститься при docker run; діє лише остання CMD, і її можна перевизначити."}, {"q": "Як отримати shell у запущеному контейнері myserver?", "options": ["docker exec -it myserver bash", "docker run myserver bash", "docker start bash myserver", "docker attach bash"], "answer": 0, "explain": "exec виконує нову команду в уже запущеному контейнері; -it дає інтерактивний термінал."}, {"q": "Що таке Docker Hub?", "options": ["Команда для збирання образів", "Публічний реєстр (registry) образів", "Мережевий драйвер", "Гіпервізор"], "answer": 1, "explain": "Registry зберігає образи; Docker Hub — найвідоміший публічний реєстр, звідки docker pull завантажує образи."}, {"q": "Яка команда показує всі контейнери, включно із зупиненими?", "options": ["docker ps -a", "docker ps", "docker list", "docker images"], "answer": 0, "explain": "docker ps — лише запущені, docker ps -a — усі. docker images показує образи, а не контейнери."}]</script>
+<div class="complete-box"><p>Прочитали і пройшли тест? Позначте лекцію — прогрес оновиться на головній і в меню.</p><button type="button" class="btn primary" data-complete="w2l9" aria-pressed="false"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg><span class="lbl">Позначити як опрацьовану</span></button></div>
+<nav class="pager" aria-label="Попередня і наступна лекції"><a class="prev" href="../../lectures/week-2/lecture-8.html"><small>← Попередня · Лекція 8</small><span>Infrastructure as Code і Terraform: HCL, state, init → plan → apply</span></a><a class="next" href="../../lectures/week-2/lecture-10.html"><small>Наступна · Лекція 10 →</small><span>Системи контролю версій: Git, гілки, Git Flow і pull request</span></a></nav>
+<div class="sources-note"><b>Джерела лекції:</b> презентація «Virtualizations. Containers» (45 слайдів); архів server.zip (Dockerfile, server.py, index.html); чат лекції 9. <b>Обмеження:</b> MP3-запис лекції не транскрибовано; відео не оброблялося за правилами курсу.</div>
+</main>
+<aside class="toc" aria-label="На цій сторінці"><div class="toc-title">На цій сторінці</div><ol><li><a href="#goals">Чого ви навчитесь</a></li><li><a href="#virtualization">Віртуалізація</a></li><li><a href="#vm-vs-container">ВМ vs контейнер</a></li><li><a href="#kernel">Як працюють контейнери: механізми ядра</a></li><li><a href="#docker">Docker: архітектура і терміни</a></li><li><a href="#dockerfile">Dockerfile</a></li><li><a href="#case">Практичний кейс: Python-вебсервер у контейнері</a></li><li><a href="#commands">Шпаргалка команд</a></li><li><a href="#mistakes">Типові помилки</a></li><li><a href="#quiz">Перевір себе</a></li></ol></aside>
+</div>
+</div>
+<footer class="site-footer">Навчальний конспект для самопідготовки. Прогрес і результати тестів зберігаються лише в цьому браузері на цьому пристрої (localStorage) і не синхронізуються між пристроями.</footer>
+<div class="search-modal" role="dialog" aria-modal="true" aria-label="Пошук по курсу" aria-hidden="true">
+  <div class="search-panel">
+    <div class="search-input-row"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/></svg><input type="search" placeholder="Пошук по всіх лекціях…" aria-label="Пошуковий запит" autocomplete="off"><kbd style="font:11px var(--mono);color:var(--faint)">Esc</kbd></div>
+    <ul class="search-results"></ul>
+  </div>
+</div>
+<script src="../../js/course-data.js"></script>
+<script src="../../js/progress.js"></script>
+<script src="../../js/navigation.js"></script>
+<script src="../../js/app.js"></script>
+
+</body>
+</html>

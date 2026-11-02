@@ -1,0 +1,290 @@
+<!doctype html>
+<html lang="uk">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Лекція 2. Linux: основи ОС, команди, користувачі та права доступу · Хмарні технології та сервіси</title>
+<meta name="description" content="Структура каталогів, must-know команди, пакети, pipes і перенаправлення, користувачі й групи, chmod/chown, SSH-ключі.">
+<meta name="theme-color" content="#0d7a6f">
+<script>try{var t=localStorage.getItem("htc-theme");if(t)document.documentElement.setAttribute("data-theme",t)}catch(e){}</script>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=Onest:wght@400;500;600;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<link rel="icon" href="../../assets/icons/favicon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="../../css/style.css">
+</head>
+<body data-root="../../" >
+<a class="skip-link" href="#main">Перейти до змісту</a>
+<header class="site-header">
+  <button class="icon-btn menu-btn" type="button" aria-label="Відкрити меню курсу" aria-expanded="false" aria-controls="sidebar"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M4 6h16M4 12h16M4 18h16"/></svg></button>
+  <a class="brand" href="../../index.html"><svg class="brand-mark" viewBox="0 0 32 32" aria-hidden="true"><rect width="32" height="32" rx="9" fill="var(--accent)"/><path d="M10 21.5h12.2a4.3 4.3 0 00.6-8.56A6 6 0 0011.4 12a4.75 4.75 0 00-1.4 9.5z" fill="none" stroke="#fff" stroke-width="2" stroke-linejoin="round"/><path d="M13 17.2l2.2 2.2 4-4.2" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg><span>Хмарні технології та сервіси<small>Конспект курсу · 12 лекцій</small></span></a>
+  <div class="header-spacer"></div>
+  <button class="search-btn" type="button" data-open-search aria-label="Пошук по курсу"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/></svg><span class="label">Пошук по лекціях</span><kbd>Ctrl K</kbd></button>
+  <button class="icon-btn theme-btn" type="button" aria-label="Перемкнути тему"><svg class="sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg><svg class="moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M21 12.8A9 9 0 1111.2 3a7 7 0 009.8 9.8z"/></svg></button>
+</header>
+<div class="layout">
+<nav class="sidebar" id="sidebar" aria-label="Навігація курсом">
+<div class="side-progress" data-week-progress="w1l1,w1l2,w1l3,w1l4,w1l5,w2l6,w2l7,w2l8,w2l9,w2l10,w3l11,w3l12"><div>Прогрес курсу: <strong class="wp-text">0 з 12</strong></div><div class="bar"><i></i></div></div>
+<div class="side-group"><a class="side-link" href="../../index.html"><span class="side-num">⌂</span><span>Огляд курсу і план</span></a></div>
+<div class="side-group" data-week-progress="w1l1,w1l2,w1l3,w1l4,w1l5"><div class="side-title"><a href="../../weeks/week-1.html">Тиждень 1</a><span class="wk-count wp-text">0 з 5</span></div>
+<a class="side-link" href="../../lectures/week-1/lecture-1.html"><span class="side-num">01</span><span>Вступ до DevOps, SDLC і хмарних моделей</span><span class="side-check" data-check="w1l1" role="img" aria-label="Не опрацьовано"></span></a>
+<a class="side-link" href="../../lectures/week-1/lecture-2.html" aria-current="page"><span class="side-num">02</span><span>Linux: команди, користувачі, права</span><span class="side-check" data-check="w1l2" role="img" aria-label="Не опрацьовано"></span></a>
+<a class="side-link" href="../../lectures/week-1/lecture-3.html"><span class="side-num">03</span><span>Bash: змінні, умови, цикли, функції</span><span class="side-check" data-check="w1l3" role="img" aria-label="Не опрацьовано"></span></a>
+<a class="side-link" href="../../lectures/week-1/lecture-4.html"><span class="side-num">04</span><span>Веб-архітектура: HTTP, REST, N-tier</span><span class="side-check" data-check="w1l4" role="img" aria-label="Не опрацьовано"></span></a>
+<a class="side-link" href="../../lectures/week-1/lecture-5.html"><span class="side-num">05</span><span>LAMP: Apache, MySQL, PHP</span><span class="side-check" data-check="w1l5" role="img" aria-label="Не опрацьовано"></span></a>
+</div>
+<div class="side-group" data-week-progress="w2l6,w2l7,w2l8,w2l9,w2l10"><div class="side-title"><a href="../../weeks/week-2.html">Тиждень 2</a><span class="wk-count wp-text">0 з 5</span></div>
+<a class="side-link" href="../../lectures/week-2/lecture-6.html"><span class="side-num">06</span><span>Мережі: OSI, TCP/IP, IP, NAT, VPN</span><span class="side-check" data-check="w2l6" role="img" aria-label="Не опрацьовано"></span></a>
+<a class="side-link" href="../../lectures/week-2/lecture-7.html"><span class="side-num">07</span><span>Хмари: NIST, моделі, AWS/GCP/Azure</span><span class="side-check" data-check="w2l7" role="img" aria-label="Не опрацьовано"></span></a>
+<a class="side-link" href="../../lectures/week-2/lecture-8.html"><span class="side-num">08</span><span>IaC і Terraform</span><span class="side-check" data-check="w2l8" role="img" aria-label="Не опрацьовано"></span></a>
+<a class="side-link" href="../../lectures/week-2/lecture-9.html"><span class="side-num">09</span><span>Віртуалізація і Docker</span><span class="side-check" data-check="w2l9" role="img" aria-label="Не опрацьовано"></span></a>
+<a class="side-link" href="../../lectures/week-2/lecture-10.html"><span class="side-num">10</span><span>Git і GitHub: версії, гілки, PR</span><span class="side-check" data-check="w2l10" role="img" aria-label="Не опрацьовано"></span></a>
+</div>
+<div class="side-group" data-week-progress="w3l11,w3l12"><div class="side-title"><a href="../../weeks/week-3.html">Тиждень 3</a><span class="wk-count wp-text">0 з 2</span></div>
+<a class="side-link" href="../../lectures/week-3/lecture-11.html"><span class="side-num">11</span><span>CI/CD і Jenkins, Jenkinsfile</span><span class="side-check" data-check="w3l11" role="img" aria-label="Не опрацьовано"></span></a>
+<a class="side-link" href="../../lectures/week-3/lecture-12.html"><span class="side-num">12</span><span>GitHub Actions: workflow і деплой</span><span class="side-check" data-check="w3l12" role="img" aria-label="Не опрацьовано"></span></a>
+</div>
+</nav><div class="backdrop"></div>
+<div class="main">
+<main class="content" id="main">
+<div class="lecture-hero">
+<div class="crumbs"><a href="../../index.html">Курс</a><span>/</span><a href="../../weeks/week-1.html">Тиждень 1</a><span>/</span><span>Лекція 2</span></div>
+<div class="eyebrow">Тиждень 1 · Лекція 2</div>
+<h1>Linux: основи ОС, команди, користувачі та права доступу</h1>
+<p class="lead">Linux — ОС, на якій працює більшість серверів інтернету. Розбираємо мінімум, без якого DevOps-інженер не відкриє жодного сервера: файлова система, команди, права доступу та вхід по SSH.</p>
+<div class="meta-row">
+<span class="chip"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>≈ 14 хв читання</span>
+<span class="chip"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M9.5 9.5a2.5 2.5 0 114 2c-1 .7-1.5 1.2-1.5 2.5M12 17h.01"/></svg>7 питань самоперевірки</span>
+<span class="chip" data-status="w1l2"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg><span class="lbl">Не опрацьовано</span></span>
+</div>
+</div>
+<div class="objectives">
+<h2 id="goals">Чого ви навчитесь<a class="h-anchor" href="#goals" aria-label="Посилання на розділ">#</a></h2>
+<ul>
+<li>Пояснити, чим Linux відрізняється від Windows і де шукати файли в дереві каталогів.</li>
+<li>Впевнено користуватися базовими командами: навігація, файли, процеси, мережа, пакети.</li>
+<li>Комбінувати команди через <b>pipe <code>|</code></b> та перенаправлення <b><code>&gt;</code>, <code>&gt;&gt;</code></b>.</li>
+<li>Керувати користувачами і групами (<code>useradd</code>, <code>usermod</code>, <code>sudo</code>).</li>
+<li>Читати й змінювати права: <code>rwx</code>, числа <code>755</code>, <code>chmod</code>/<code>chown</code>, SUID/SGID/sticky bit.</li>
+<li>Налаштувати вхід на сервер за SSH-ключем.</li>
+</ul>
+</div>
+
+<h2 id="why">Чому саме Linux<a class="h-anchor" href="#why" aria-label="Посилання на розділ">#</a></h2>
+<p><b>Операційна система (ОС)</b> керує залізом і дає програмам спільні сервіси: процеси, пам'ять, файли, мережу, користувачів. Linux належить до сімейства <b>Unix-подібних (*nix)</b> систем. Ядро анонсував Лінус Торвальдс у 1991 році; з 1992 воно поширюється за ліцензією <b>GNU GPL</b> — тоді ж з'явилися перші дистрибутиви.</p>
+<ul>
+<li><b>Безкоштовна і з відкритим кодом.</b> Немає ліцензій на кожен сервер.</li>
+<li><b>Домінує на серверах</b> — за даними зі слайдів, близько 70% інтернет-серверів працюють на *nix. Android теж побудований на ядрі Linux.</li>
+<li>Можна працювати <b>взагалі без графічного інтерфейсу</b> — тільки термінал, що ідеально для серверів.</li>
+</ul>
+<h3>Linux vs Windows: ключові відмінності</h3>
+<div class="table-wrap"><table>
+<thead><tr><th>Linux</th><th>Windows</th></tr></thead>
+<tbody>
+<tr><td>Одне дерево від кореня <code>/</code>, немає дисків <code>C:</code>, <code>D:</code></td><td>Окремі диски з літерами</td></tr>
+<tr><td>Розділювач шляху <code>/</code></td><td><code>\</code></td></tr>
+<tr><td><b>Регістр має значення</b>: <code>File.txt</code> ≠ <code>file.txt</code></td><td>Регістр не враховується</td></tr>
+<tr><td>Суперкористувач — <code>root</code></td><td>Administrator</td></tr>
+<tr><td>Виконуваність файла визначає атрибут <code>x</code></td><td>Розширення <code>.exe</code>, <code>.bat</code>, <code>.cmd</code></td></tr>
+<tr><td>Десятки графічних оболонок або без GUI взагалі</td><td>Одна вбудована GUI</td></tr>
+</tbody></table></div>
+<p>Дистрибутиви поділяються на сімейства, від яких залежить пакетний менеджер: <b>Debian</b> (Debian, Ubuntu, Mint) — <code>dpkg</code>, <code>apt</code>; <b>Red Hat</b> (RHEL, CentOS, Fedora) — <code>rpm</code>, <code>yum</code>.</p>
+
+<h2 id="fs">Структура каталогів<a class="h-anchor" href="#fs" aria-label="Посилання на розділ">#</a></h2>
+<p>У Linux «майже все — файл»: звичайні файли, каталоги, пристрої, навіть більшість команд — це програми-файли в <code>/bin</code>.</p>
+<figure><div class="figure wide">
+<svg class="dg" viewBox="0 0 720 200" role="img" aria-label="Дерево каталогів Linux: корінь та підкаталоги bin, etc, home, lib, media, var">
+<rect x="315" y="14" width="90" height="36" rx="8" class="acc"/><text x="360" y="37" text-anchor="middle" class="t-mono t-bold">/</text>
+<path d="M360 50V72M70 72H650" class="ln"/>
+<g class="ln"><path d="M70 72v20M186 72v20M302 72v20M418 72v20M534 72v20M650 72v20"/></g>
+<g text-anchor="middle">
+<rect x="20" y="92" width="100" height="34" rx="8" class="box"/><text x="70" y="114" class="t-mono">/bin</text><text x="70" y="146" class="t-muted">базові команди</text>
+<rect x="136" y="92" width="100" height="34" rx="8" class="warm"/><text x="186" y="114" class="t-mono">/etc</text><text x="186" y="146" class="t-muted">конфігурації</text>
+<rect x="252" y="92" width="100" height="34" rx="8" class="box"/><text x="302" y="114" class="t-mono">/home</text><text x="302" y="146" class="t-muted">домашні каталоги</text>
+<rect x="368" y="92" width="100" height="34" rx="8" class="box"/><text x="418" y="114" class="t-mono">/lib</text><text x="418" y="146" class="t-muted">спільні бібліотеки</text>
+<rect x="484" y="92" width="100" height="34" rx="8" class="box"/><text x="534" y="114" class="t-mono">/media</text><text x="534" y="146" class="t-muted">флешки, CD</text>
+<rect x="600" y="92" width="100" height="34" rx="8" class="box"/><text x="650" y="114" class="t-mono">/var</text><text x="650" y="146" class="t-muted">логи, дані служб</text>
+<text x="186" y="168" class="t-muted t-mono">/etc/passwd</text><text x="186" y="186" class="t-muted t-mono">/etc/ssh/…</text>
+<text x="302" y="168" class="t-muted t-mono">/home/vivek</text>
+<text x="650" y="168" class="t-muted t-mono">/var/log</text><text x="650" y="186" class="t-muted t-mono">/var/www/html</text>
+</g>
+</svg></div>
+<figcaption><b>Одне дерево від кореня.</b> Конфіги шукайте в <code>/etc</code>, логи — у <code>/var/log</code>, сайти Apache — у <code>/var/www/html</code>.</figcaption></figure>
+
+<h2 id="commands">Команди, які треба знати<a class="h-anchor" href="#commands" aria-label="Посилання на розділ">#</a></h2>
+<p>Більшість команд мають ключі (опції), що змінюють поведінку. Довідка: <code>man &lt;команда&gt;</code>.</p>
+<div class="table-wrap"><table>
+<thead><tr><th>Задача</th><th>Команда</th></tr></thead>
+<tbody>
+<tr><td>Перейти в каталог / на рівень вгору / в корінь / додому</td><td><code>cd dir</code>, <code>cd ..</code>, <code>cd /</code>, <code>cd ~</code></td></tr>
+<tr><td>Список файлів (з прихованими і деталями)</td><td><code>ls -al</code></td></tr>
+<tr><td>Створити порожній файл / каталог</td><td><code>touch f</code>, <code>mkdir d</code></td></tr>
+<tr><td>Копіювати (рекурсивно — каталог)</td><td><code>cp src dst</code>, <code>cp -r dir newdir</code></td></tr>
+<tr><td>Перемістити / перейменувати</td><td><code>mv old new</code>, <code>mv *.c newproj</code></td></tr>
+<tr><td>Видалити файл (з підтвердженням) / порожній каталог</td><td><code>rm f</code>, <code>rm -i f</code>, <code>rmdir d</code></td></tr>
+<tr><td>Переглянути вміст</td><td><code>cat f</code>, <code>more f</code></td></tr>
+<tr><td>Символічне / жорстке посилання</td><td><code>ln -s orig link</code>, <code>ln orig link</code></td></tr>
+<tr><td>Виконати від root / змінити користувача</td><td><code>sudo cmd</code>, <code>su user</code></td></tr>
+<tr><td>Вимкнути / перезавантажити (root)</td><td><code>shutdown -h now</code>, <code>shutdown -r now</code></td></tr>
+<tr><td>Ядро і архітектура / CPU</td><td><code>uname -a</code>, <code>lscpu</code></td></tr>
+<tr><td>Процеси (знімок / у реальному часі)</td><td><code>ps aux</code>, <code>top</code></td></tr>
+<tr><td>Мережеві інтерфейси / поточний користувач</td><td><code>ip addr show</code>, <code>id</code></td></tr>
+</tbody></table></div>
+<p><b>Символічне посилання</b> — «ярлик», що вказує на ім'я файла (зламається, якщо оригінал видалити). <b>Жорстке</b> — ще одне ім'я для тих самих даних на диску (дані живуть, поки є хоч одне ім'я).</p>
+
+<h3>Встановлення і запуск програм</h3>
+<ul>
+<li>Програми встановлюються з <b>репозиторіїв</b> (аналог Google Play): офіційних для дистрибутиву або сторонніх. Встановлювати може <b>лише root</b> (або через <code>sudo</code>).</li>
+<li>Файл запускається, якщо має атрибут <b>x</b> — розширення не важливе. Скрипт у поточному каталозі запускають так: <code>./program.sh</code>.</li>
+</ul>
+<pre data-lang="bash"><code>sudo apt install git        <span class="c"># Debian/Ubuntu</span>
+sudo yum install git        <span class="c"># RHEL/CentOS</span>
+chmod +x program.sh &amp;&amp; ./program.sh</code></pre>
+
+<h2 id="pipes">Pipes і перенаправлення вводу-виводу<a class="h-anchor" href="#pipes" aria-label="Посилання на розділ">#</a></h2>
+<figure><div class="figure wide">
+<svg class="dg" viewBox="0 0 720 170" role="img" aria-label="Pipe передає вивід ps aux на вхід grep apache; перенаправлення записує вивід uname у файл">
+<defs><marker id="l2a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0L10 5L0 10z" class="arrow-acc"/></marker></defs>
+<text x="20" y="24" class="t-bold">Pipe: вихід однієї програми → вхід іншої</text>
+<rect x="20" y="38" width="150" height="40" rx="8" class="box"/><text x="95" y="63" text-anchor="middle" class="t-mono">ps aux</text>
+<path d="M172 58H248" class="ln-acc" marker-end="url(#l2a)"/><text x="210" y="50" text-anchor="middle" class="t-mono t-acc">|</text>
+<rect x="252" y="38" width="170" height="40" rx="8" class="box"/><text x="337" y="63" text-anchor="middle" class="t-mono">grep apache</text>
+<path d="M424 58H500" class="ln-acc" marker-end="url(#l2a)"/>
+<rect x="504" y="38" width="196" height="40" rx="8" class="acc"/><text x="602" y="63" text-anchor="middle">лише процеси apache</text>
+<text x="20" y="112" class="t-bold">Перенаправлення: вихід → файл замість екрана</text>
+<rect x="20" y="124" width="150" height="40" rx="8" class="box"/><text x="95" y="149" text-anchor="middle" class="t-mono">uname -a</text>
+<path d="M172 144H248" class="ln-acc" marker-end="url(#l2a)"/><text x="210" y="136" text-anchor="middle" class="t-mono t-acc">&gt;</text>
+<rect x="252" y="124" width="170" height="40" rx="8" class="warm"/><text x="337" y="149" text-anchor="middle" class="t-mono">mysystem.info</text>
+<text x="440" y="142" class="t-muted"><tspan class="t-mono">&gt;</tspan> перезаписує файл,</text><text x="440" y="160" class="t-muted"><tspan class="t-mono">&gt;&gt;</tspan> дописує в кінець</text>
+</svg></div>
+<figcaption><b>Два механізми.</b> Pipe з'єднує програми, перенаправлення змінює куди йде результат.</figcaption></figure>
+<pre data-lang="bash"><code>ps aux | grep apache          <span class="c"># усі процеси apache</span>
+ls -a | grep myfile           <span class="c"># файли, в імені яких є myfile</span>
+uname -a &gt; mysystem.info      <span class="c"># зберегти інфо про систему у файл</span>
+date &gt;&gt; log.txt               <span class="c"># дописати рядок у кінець log.txt</span></code></pre>
+
+<h2 id="users">Користувачі та групи<a class="h-anchor" href="#users" aria-label="Посилання на розділ">#</a></h2>
+<p>Linux — повністю <b>багатокористувацька</b> ОС. Кожен користувач і група мають ім'я та числовий ідентифікатор (UID/GID). Користувач має одну <b>основну (primary)</b> групу і може мати кілька <b>додаткових (secondary)</b>.</p>
+<ul>
+<li><code>/etc/passwd</code> — облікові записи; <code>/etc/shadow</code> — хеші паролів (читає лише root); <code>/etc/group</code> — групи.</li>
+</ul>
+<pre data-lang="bash"><code>groupadd developers                 <span class="c"># створити групу</span>
+grep developers /etc/group          <span class="c"># перевірити, що група існує</span>
+useradd -G developers vivek         <span class="c"># користувач з додатковою групою</span>
+passwd vivek                        <span class="c"># задати пароль</span>
+id vivek                            <span class="c"># UID, GID і всі групи</span>
+useradd -g developers tony          <span class="c"># -g = основна група</span>
+usermod -a -G ftp tony              <span class="c"># -a -G = ДОДАТИ ще одну групу</span>
+usermod -g www tony                 <span class="c"># змінити основну групу</span>
+chage -d 0 tony                     <span class="c"># змусити змінити пароль при вході</span>
+usermod -L tony                     <span class="c"># заблокувати пароль</span>
+usermod -aG wheel tony              <span class="c"># CentOS: група wheel = права sudo</span></code></pre>
+<div class="callout warn"><div class="callout-title">Пастка</div><p><code>usermod -G ftp tony</code> <b>без</b> <code>-a</code> замінить усі додаткові групи користувача однією <code>ftp</code>. Для додавання завжди пишіть <code>-aG</code>.</p></div>
+
+<h2 id="perms">Права доступу до файлів<a class="h-anchor" href="#perms" aria-label="Посилання на розділ">#</a></h2>
+<p>Кожен файл має <b>власника (u — user)</b>, <b>групу (g)</b> і всіх <b>інших (o — others)</b>. Для кожної категорії — три права: <b>r</b> (read, 4), <b>w</b> (write, 2), <b>x</b> (execute, 1). Число для категорії — сума прав.</p>
+<figure><div class="figure wide">
+<svg class="dg" viewBox="0 0 720 210" role="img" aria-label="Розбір рядка -rwxr-xr--: тип файла, права власника rwx=7, групи r-x=5, інших r--=4, разом 754">
+<g text-anchor="middle" class="t-mono">
+<rect x="40" y="30" width="44" height="50" rx="6" class="box"/><text x="62" y="62" font-size="20">-</text>
+<rect x="100" y="30" width="44" height="50" rx="6" class="acc"/><text x="122" y="62" font-size="20">r</text>
+<rect x="148" y="30" width="44" height="50" rx="6" class="acc"/><text x="170" y="62" font-size="20">w</text>
+<rect x="196" y="30" width="44" height="50" rx="6" class="acc"/><text x="218" y="62" font-size="20">x</text>
+<rect x="262" y="30" width="44" height="50" rx="6" class="vio"/><text x="284" y="62" font-size="20">r</text>
+<rect x="310" y="30" width="44" height="50" rx="6" class="vio"/><text x="332" y="62" font-size="20">-</text>
+<rect x="358" y="30" width="44" height="50" rx="6" class="vio"/><text x="380" y="62" font-size="20">x</text>
+<rect x="424" y="30" width="44" height="50" rx="6" class="warm"/><text x="446" y="62" font-size="20">r</text>
+<rect x="472" y="30" width="44" height="50" rx="6" class="warm"/><text x="494" y="62" font-size="20">-</text>
+<rect x="520" y="30" width="44" height="50" rx="6" class="warm"/><text x="542" y="62" font-size="20">-</text>
+</g>
+<g text-anchor="middle">
+<text x="62" y="102" class="t-muted">тип</text><text x="62" y="118" class="t-muted">- файл, d кат.</text>
+<text x="170" y="102" class="t-bold t-acc">власник (u)</text><text x="170" y="122" class="t-mono">4+2+1 = 7</text>
+<text x="332" y="102" class="t-bold t-vio">група (g)</text><text x="332" y="122" class="t-mono">4+0+1 = 5</text>
+<text x="494" y="102" class="t-bold t-warm">інші (o)</text><text x="494" y="122" class="t-mono">4+0+0 = 4</text>
+</g>
+<rect x="590" y="30" width="110" height="50" rx="10" class="ok"/><text x="645" y="62" text-anchor="middle" class="t-mono t-bold" font-size="22">754</text>
+<text x="40" y="160" class="t-muted">r = 4 (читати) · w = 2 (змінювати) · x = 1 (виконувати / для каталогу — входити в нього)</text>
+<text x="40" y="184" class="t-muted">Перший символ у ls -l: - файл, d каталог, l симлінк, p named pipe, c символьний пристрій, b блочний пристрій</text>
+</svg></div>
+<figcaption><b>Як читати права.</b> Три трійки rwx → три цифри. <code>-rwxr-xr--</code> = <code>754</code>.</figcaption></figure>
+
+<h3>chmod: абсолютна і відносна форма</h3>
+<pre data-lang="bash"><code>chmod 755 deploy.sh        <span class="c"># абсолютно: rwxr-xr-x (попередні права не враховуються)</span>
+chmod 644 index.html       <span class="c"># rw-r--r-- — типово для вебфайлів</span>
+chmod u+x script.sh        <span class="c"># відносно: додати власнику виконання</span>
+chmod go-w file            <span class="c"># забрати запис у групи та інших</span>
+chmod a+r file             <span class="c"># a = all (усім) — додати читання</span>
+chmod -R 775 opencart      <span class="c"># рекурсивно для каталогу</span></code></pre>
+<h3>chown / chgrp: власник і група</h3>
+<pre data-lang="bash"><code>chown tony file1 file2           <span class="c"># змінити власника</span>
+chgrp sales /home/sales/*        <span class="c"># змінити групу</span>
+chown -R tony:www site/          <span class="c"># власник і група рекурсивно</span>
+chown -R apache:apache opencart  <span class="c"># типово: віддати сайт вебсерверу</span></code></pre>
+
+<h3>Спеціальні біти</h3>
+<div class="term-grid">
+<div class="term"><span class="en">SUID — chmod u+s</span><b>Запуск від імені власника</b><p>Напр. <code>/usr/bin/passwd</code> має <code>s</code>: звичайний користувач змінює пароль, а програма пише в <code>/etc/shadow</code> з правами root.</p></div>
+<div class="term"><span class="en">SGID на каталозі — chmod g+s</span><b>Спільна група</b><p>Нові файли в каталозі успадковують групу каталогу — зручно для спільної папки команди.</p></div>
+<div class="term"><span class="en">Sticky bit — chmod +t</span><b>Видаляє лише власник</b><p>У каталог можуть писати всі, але видалити файл може тільки його власник (як <code>/tmp</code>).</p></div>
+</div>
+<p><b>«Темний каталог»</b>: <code>chmod a-r+x darkcat</code> — у каталог можна зайти (<code>cd</code>) і прочитати файл, якщо знаєш його ім'я, але <code>ls</code> видасть <i>Permission denied</i>. Це показує, що <code>r</code> для каталогу — це право <b>бачити список</b>, а <code>x</code> — право <b>входити</b>.</p>
+
+<h3>Приклад: спільна папка для команди</h3>
+<ol class="steps">
+<li>Група і користувачі: <code>groupadd developers</code>, <code>useradd -G developers dev</code>, <code>useradd -G developers test</code>.</li>
+<li>Каталог: <code>mkdir /home/shared &amp;&amp; chgrp developers /home/shared</code>.</li>
+<li>Права групі на запис + SGID: <code>chmod 2775 /home/shared</code> (2 = SGID, далі <code>rwxrwxr-x</code>).</li>
+<li>За потреби sticky bit, щоб не видаляли чужі файли: <code>chmod +t /home/shared</code>.</li>
+</ol>
+
+<h2 id="ssh">Вхід по SSH-ключах<a class="h-anchor" href="#ssh" aria-label="Посилання на розділ">#</a></h2>
+<p><b>SSH (Secure Shell)</b> — протокол захищеного віддаленого доступу, типово <b>TCP-порт 22</b>. Використовує <b>асиметричне шифрування</b>: <b>приватний ключ</b> лишається у вас, <b>публічний</b> кладемо на сервер у <code>~/.ssh/authorized_keys</code>.</p>
+<figure><div class="figure wide">
+<svg class="dg" viewBox="0 0 720 150" role="img" aria-label="SSH: ssh-keygen створює пару ключів, публічний копіюється в authorized_keys на сервері, далі вхід без пароля">
+<defs><marker id="l2b" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0L10 5L0 10z" class="arrow-head"/></marker></defs>
+<rect x="20" y="20" width="230" height="110" rx="12" class="box"/><text x="135" y="44" text-anchor="middle" class="t-bold">Ваш комп'ютер</text>
+<rect x="40" y="58" width="190" height="28" rx="6" class="warm"/><text x="135" y="77" text-anchor="middle" class="t-mono t-small">~/.ssh/id_rsa (приватний)</text>
+<rect x="40" y="92" width="190" height="28" rx="6" class="acc"/><text x="135" y="111" text-anchor="middle" class="t-mono t-small">~/.ssh/id_rsa.pub (публічний)</text>
+<rect x="470" y="20" width="230" height="110" rx="12" class="box"/><text x="585" y="44" text-anchor="middle" class="t-bold">Сервер (sshd, порт 22)</text>
+<rect x="490" y="72" width="190" height="34" rx="6" class="acc"/><text x="585" y="94" text-anchor="middle" class="t-mono t-small">~/.ssh/authorized_keys</text>
+<path d="M234 106H486" class="ln" marker-end="url(#l2b)"/><text x="360" y="98" text-anchor="middle" class="t-mono t-muted">ssh-copy-id</text>
+<path d="M252 50H466" class="ln dash" marker-end="url(#l2b)"/><text x="360" y="42" text-anchor="middle" class="t-mono t-muted">ssh user@host</text>
+</svg></div>
+<figcaption><b>Пара ключів.</b> Приватний ключ нікому не передаємо; на сервер потрапляє лише публічний.</figcaption></figure>
+<pre data-lang="bash"><code>ssh-keygen -t rsa -b 4096                     <span class="c"># створити пару ключів</span>
+ssh-copy-id user@192.168.0.10                 <span class="c"># додати публічний ключ на сервер</span>
+<span class="c"># те саме вручну:</span>
+cat ~/.ssh/id_rsa.pub | ssh user@192.168.0.10 "cat &gt;&gt; ~/.ssh/authorized_keys"
+ssh -i ~/.ssh/id_rsa user@192.168.0.10        <span class="c"># вхід з указаним ключем</span></code></pre>
+<p>На сервері шлях до ключів задає <code>AuthorizedKeysFile .ssh/authorized_keys</code> у <code>/etc/ssh/sshd_config</code>.</p>
+<div class="callout"><div class="callout-title">Віртуалізація</div><p>Для практики Linux зазвичай ставлять у віртуальну машину (наприклад, VirtualBox): гіпервізор відокремлює залізо від гостьових ОС і дозволяє запускати кілька систем одночасно. Детально — у лекції 9.</p></div>
+
+<h2 id="mistakes">Типові помилки<a class="h-anchor" href="#mistakes" aria-label="Посилання на розділ">#</a></h2>
+<div class="mistakes">
+<div class="mistake"><div class="wrong"><code>chmod 777</code> «щоб точно запрацювало».</div><div class="right">Це дає запис усім користувачам — діра в безпеці. Видавайте мінімум: файли 644, каталоги і скрипти 755, а власника задавайте через <code>chown</code>.</div></div>
+<div class="mistake"><div class="wrong">У відносній формі <code>a</code> означає «інші».</div><div class="right"><code>u</code> — власник, <code>g</code> — група, <code>o</code> — інші, <code>a</code> — усі (all) одразу.</div></div>
+<div class="mistake"><div class="wrong"><code>usermod -G group user</code> додає групу.</div><div class="right">Без <code>-a</code> він замінює список груп. Правильно: <code>usermod -aG group user</code>.</div></div>
+<div class="mistake"><div class="wrong">Скрипт <code>script.sh</code> не запускається «бо нема .exe».</div><div class="right">Потрібен атрибут <code>x</code> (<code>chmod +x</code>) і шлях: <code>./script.sh</code> — поточний каталог не входить у <code>PATH</code>.</div></div>
+<div class="mistake"><div class="wrong">Sticky bit ставиться як <code>chmod g+t</code>.</div><div class="right">Sticky bit — це біт для «інших»: <code>chmod +t dir</code> (або <code>o+t</code>, числом — <code>1777</code>). У <code>ls -l</code> видно <code>t</code> в останній позиції.</div></div>
+</div>
+<h2 id="quiz">Перевір себе<a class="h-anchor" href="#quiz" aria-label="Посилання на розділ">#</a></h2><p>7 питань на розуміння. Натисніть варіант — одразу побачите правильну відповідь і пояснення.</p><div class="quiz" data-quiz="w1l2"></div><script type="application/json" id="quiz-data">[{"q": "Які права дає <code>chmod 750 file<\/code>?", "options": ["rw-r-----", "rwxr-x---", "rwxr-xr-x", "rwxrwx---"], "answer": 1, "explain": "7 = 4+2+1 = rwx для власника, 5 = 4+1 = r-x для групи, 0 = --- для інших."}, {"q": "Що виконає <code>ps aux | grep nginx<\/code>?", "options": ["Видалить процеси nginx", "Передасть вивід ps на вхід grep і покаже лише рядки з nginx", "Запустить nginx у фоні", "Запише список процесів у файл grep"], "answer": 1, "explain": "Символ | — це pipe: стандартний вивід першої команди стає вхідними даними другої."}, {"q": "Чим відрізняється <code>&gt;<\/code> від <code>&gt;&gt;<\/code>?", "options": ["Нічим", "&gt; перезаписує файл, &gt;&gt; дописує в кінець", "&gt;&gt; працює тільки під root", "&gt; дописує, &gt;&gt; перезаписує"], "answer": 1, "explain": "Одинарний знак створює файл заново, подвійний додає вивід у кінець наявного файла."}, {"q": "Як додати користувачу tony додаткову групу docker, не втративши інші групи?", "options": ["chgrp docker tony", "usermod -G docker tony", "usermod -aG docker tony", "useradd -g docker tony"], "answer": 2, "explain": "Ключ -a (append) разом з -G додає групу до списку. Без -a список буде замінено."}, {"q": "Де зберігаються хеші паролів користувачів?", "options": ["/etc/shadow", "/etc/passwd", "/etc/group", "/home/user/.password"], "answer": 0, "explain": "/etc/passwd містить облікові записи і доступний на читання всім, а хеші паролів винесено в /etc/shadow, який читає лише root."}, {"q": "Навіщо <code>/usr/bin/passwd<\/code> має біт SUID (s)?", "options": ["Щоб його не можна було видалити", "Щоб файли в каталозі успадковували групу", "Щоб програма виконувалась із правами власника (root) і могла оновити /etc/shadow", "Щоб його бачили тільки адміністратори"], "answer": 2, "explain": "SUID запускає програму з правами власника файла. Так звичайний користувач змінює свій пароль, не маючи прямого доступу до /etc/shadow."}, {"q": "Який файл потрібно доповнити на сервері, щоб увійти по SSH-ключу?", "options": ["/etc/hosts", "~/.bashrc", "~/.ssh/id_rsa", "~/.ssh/authorized_keys"], "answer": 3, "explain": "Публічний ключ клієнта додають у ~/.ssh/authorized_keys користувача на сервері (це й робить ssh-copy-id). Приватний ключ id_rsa лишається у клієнта."}]</script>
+<div class="complete-box"><p>Прочитали і пройшли тест? Позначте лекцію — прогрес оновиться на головній і в меню.</p><button type="button" class="btn primary" data-complete="w1l2" aria-pressed="false"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg><span class="lbl">Позначити як опрацьовану</span></button></div>
+<nav class="pager" aria-label="Попередня і наступна лекції"><a class="prev" href="../../lectures/week-1/lecture-1.html"><small>← Попередня · Лекція 1</small><span>Вступ до DevOps: терміни, SDLC і моделі хмарних сервісів</span></a><a class="next" href="../../lectures/week-1/lecture-3.html"><small>Наступна · Лекція 3 →</small><span>Bash: скрипти, змінні, умови, цикли та функції</span></a></nav>
+<div class="sources-note"><b>Джерела лекції:</b> презентація «Linux Introduction» (39 слайдів). <b>Обмеження:</b> MP3-запис лекції не транскрибовано; відео не оброблялося за правилами курсу.</div>
+</main>
+<aside class="toc" aria-label="На цій сторінці"><div class="toc-title">На цій сторінці</div><ol><li><a href="#goals">Чого ви навчитесь</a></li><li><a href="#why">Чому саме Linux</a></li><li><a href="#fs">Структура каталогів</a></li><li><a href="#commands">Команди, які треба знати</a></li><li><a href="#pipes">Pipes і перенаправлення вводу-виводу</a></li><li><a href="#users">Користувачі та групи</a></li><li><a href="#perms">Права доступу до файлів</a></li><li><a href="#ssh">Вхід по SSH-ключах</a></li><li><a href="#mistakes">Типові помилки</a></li><li><a href="#quiz">Перевір себе</a></li></ol></aside>
+</div>
+</div>
+<footer class="site-footer">Навчальний конспект для самопідготовки. Прогрес і результати тестів зберігаються лише в цьому браузері на цьому пристрої (localStorage) і не синхронізуються між пристроями.</footer>
+<div class="search-modal" role="dialog" aria-modal="true" aria-label="Пошук по курсу" aria-hidden="true">
+  <div class="search-panel">
+    <div class="search-input-row"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/></svg><input type="search" placeholder="Пошук по всіх лекціях…" aria-label="Пошуковий запит" autocomplete="off"><kbd style="font:11px var(--mono);color:var(--faint)">Esc</kbd></div>
+    <ul class="search-results"></ul>
+  </div>
+</div>
+<script src="../../js/course-data.js"></script>
+<script src="../../js/progress.js"></script>
+<script src="../../js/navigation.js"></script>
+<script src="../../js/app.js"></script>
+
+</body>
+</html>
