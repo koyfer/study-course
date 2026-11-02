@@ -274,6 +274,18 @@ svg.dg .fill-muted { fill: var(--faint); }
 .q-opt[disabled] { cursor: default; }
 .q-opt.correct { background: var(--ok-soft); border-color: var(--ok); }
 .q-opt.wrong { background: var(--bad-soft); border-color: var(--bad); }
+.q-tag { display: inline-block; vertical-align: 2px; margin-left: 6px; font-size: 12px; font-weight: 600; letter-spacing: .02em; color: var(--accent); background: var(--accent-soft); border-radius: 999px; padding: 2px 9px; white-space: nowrap; }
+.q.multi .q-opt { position: relative; padding-left: 44px; }
+.q.multi .q-opt::before { content: ""; position: absolute; left: 14px; top: 12px; width: 18px; height: 18px; border: 2px solid var(--border-strong); border-radius: 5px; box-sizing: border-box; background: var(--surface); }
+.q.multi .q-opt.picked { border-color: var(--accent); background: var(--accent-soft); }
+.q.multi .q-opt.picked::before { content: "✓"; color: #fff; background: var(--accent); border-color: var(--accent); font-size: 13px; line-height: 14px; text-align: center; font-weight: 700; }
+.q.multi.answered .q-opt.correct { background: var(--ok-soft); border-color: var(--ok); }
+.q.multi.answered .q-opt.wrong { background: var(--bad-soft); border-color: var(--bad); }
+.q.multi.answered .q-opt.picked.wrong::before { background: var(--bad); border-color: var(--bad); }
+.q.multi.answered .q-opt.picked.correct::before { background: var(--ok); border-color: var(--ok); }
+.q-opt.missed { border-style: dashed; border-width: 2px; }
+.q-check { margin-top: 12px; }
+.q-check[disabled] { opacity: .5; cursor: not-allowed; }
 .q-explain { display: none; margin-top: 12px; font-size: 15px; color: var(--muted); border-top: 1px dashed var(--border-strong); padding-top: 10px; }
 .q.answered .q-explain { display: block; }
 .q-explain b.ok { color: var(--ok); }

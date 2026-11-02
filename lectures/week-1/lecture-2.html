@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Лекція 2. Linux: основи ОС, команди, користувачі та права доступу · Хмарні технології та сервіси</title>
-<meta name="description" content="Структура каталогів, must-know команди, пакети, pipes і перенаправлення, користувачі й групи, chmod/chown, SSH-ключі.">
+<meta name="description" content="Структура каталогів, must-know команди, пакети, потоки stdin/stdout/stderr і перенаправлення, ланцюжки ; &amp;&amp; ||, find/grep/tail/tar/kill, користувачі й групи, /etc/passwd і /etc/shadow, chmod/chown, SSH-ключі.">
 <meta name="theme-color" content="#0d7a6f">
 <script>try{var t=localStorage.getItem("htc-theme");if(t)document.documentElement.setAttribute("data-theme",t)}catch(e){}</script>
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=Onest:wght@400;500;600;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
@@ -51,8 +51,8 @@
 <h1>Linux: основи ОС, команди, користувачі та права доступу</h1>
 <p class="lead">Linux — ОС, на якій працює більшість серверів інтернету. Розбираємо мінімум, без якого DevOps-інженер не відкриє жодного сервера: файлова система, команди, права доступу та вхід по SSH.</p>
 <div class="meta-row">
-<span class="chip"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>≈ 14 хв читання</span>
-<span class="chip"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M9.5 9.5a2.5 2.5 0 114 2c-1 .7-1.5 1.2-1.5 2.5M12 17h.01"/></svg>7 питань самоперевірки</span>
+<span class="chip"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>≈ 20 хв читання</span>
+<span class="chip"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M9.5 9.5a2.5 2.5 0 114 2c-1 .7-1.5 1.2-1.5 2.5M12 17h.01"/></svg>13 питань самоперевірки</span>
 <span class="chip" data-status="w1l2"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg><span class="lbl">Не опрацьовано</span></span>
 </div>
 </div>
@@ -61,7 +61,7 @@
 <ul>
 <li>Пояснити, чим Linux відрізняється від Windows і де шукати файли в дереві каталогів.</li>
 <li>Впевнено користуватися базовими командами: навігація, файли, процеси, мережа, пакети.</li>
-<li>Комбінувати команди через <b>pipe <code>|</code></b> та перенаправлення <b><code>&gt;</code>, <code>&gt;&gt;</code></b>.</li>
+<li>Комбінувати команди через <b>pipe <code>|</code></b>, перенаправлення <b><code>&gt;</code>, <code>&gt;&gt;</code>, <code>2&gt;</code>, <code>2&gt;&amp;1</code></b> та ланцюжки <code>;</code> <code>&amp;&amp;</code> <code>||</code>.</li>
 <li>Керувати користувачами і групами (<code>useradd</code>, <code>usermod</code>, <code>sudo</code>).</li>
 <li>Читати й змінювати права: <code>rwx</code>, числа <code>755</code>, <code>chmod</code>/<code>chown</code>, SUID/SGID/sticky bit.</li>
 <li>Налаштувати вхід на сервер за SSH-ключем.</li>
@@ -160,12 +160,63 @@ chmod +x program.sh &amp;&amp; ./program.sh</code></pre>
 ls -a | grep myfile           <span class="c"># файли, в імені яких є myfile</span>
 uname -a &gt; mysystem.info      <span class="c"># зберегти інфо про систему у файл</span>
 date &gt;&gt; log.txt               <span class="c"># дописати рядок у кінець log.txt</span></code></pre>
+<h3>Три стандартні потоки і всі види перенаправлення</h3>
+<p>Кожна програма має три потоки з номерами (дескрипторами): <b>0 — stdin</b> (вхід, клавіатура), <b>1 — stdout</b> (звичайний вивід), <b>2 — stderr</b> (повідомлення про помилки). Обидва виводи за замовчуванням ідуть на екран, але перенаправляються окремо.</p>
+<div class="table-wrap"><table>
+<thead><tr><th>Запис</th><th>Що робить</th></tr></thead>
+<tbody>
+<tr><td><code>cmd1 | cmd2</code></td><td>stdout <code>cmd1</code> → stdin <code>cmd2</code> (pipe)</td></tr>
+<tr><td><code>cmd &gt; f</code> = <code>cmd 1&gt; f</code></td><td>stdout у файл, файл перезаписується</td></tr>
+<tr><td><code>cmd &gt;&gt; f</code></td><td>stdout дописується в кінець файла</td></tr>
+<tr><td><code>cmd &lt; f</code></td><td>stdin береться з файла (напр. <code>mysql db &lt; dump.sql</code>)</td></tr>
+<tr><td><code>cmd 2&gt; f</code></td><td><b>лише помилки (stderr)</b> у файл <code>f</code>; звичайний вивід лишається на екрані</td></tr>
+<tr><td><code>cmd &gt; f 2&gt;&amp;1</code> або <code>cmd &amp;&gt; f</code></td><td>і stdout, і stderr в один файл</td></tr>
+<tr><td><code>cmd 2&gt; /dev/null</code></td><td>викинути помилки («чорна діра»)</td></tr>
+<tr><td><code>cmd | tee f</code></td><td>показати на екрані <b>і</b> записати у файл</td></tr>
+</tbody></table></div>
+<pre data-lang="bash"><code>find / -name "*.conf" 2&gt; /dev/null     <span class="c"># шукати, не засмічуючи екран «Permission denied»</span>
+./deploy.sh &gt; deploy.log 2&gt;&amp;1          <span class="c"># повний лог: вивід + помилки</span></code></pre>
+
+<h3>Ланцюжки команд: ; &amp; &amp;&amp; ||</h3>
+<div class="table-wrap"><table>
+<thead><tr><th>Запис</th><th>Коли виконується <code>cmd2</code></th></tr></thead>
+<tbody>
+<tr><td><code>cmd1 ; cmd2</code></td><td>завжди, після <code>cmd1</code> (дані не передаються)</td></tr>
+<tr><td><code>cmd1 &amp;&amp; cmd2</code></td><td>лише якщо <code>cmd1</code> <b>успішна</b> (код 0)</td></tr>
+<tr><td><code>cmd1 || cmd2</code></td><td>лише якщо <code>cmd1</code> <b>завершилась помилкою</b></td></tr>
+<tr><td><code>cmd1 &amp; cmd2</code></td><td>одразу: <code>cmd1</code> іде у фон (background)</td></tr>
+</tbody></table></div>
+<pre data-lang="bash"><code>mkdir -p /opt/app &amp;&amp; cd /opt/app          <span class="c"># перейти, тільки якщо каталог створено</span>
+ping -c1 db.local || echo "БД недоступна"   <span class="c"># повідомлення лише при помилці</span></code></pre>
+<p>Не плутайте: тільки <code>|</code> передає <b>дані</b> між командами; <code>;</code>, <code>&amp;&amp;</code>, <code>||</code> керують лише <b>порядком</b> запуску.</p>
+
+<h2 id="more">Ще команди, про які часто питають<a class="h-anchor" href="#more" aria-label="Посилання на розділ">#</a></h2>
+<div class="table-wrap"><table>
+<thead><tr><th>Задача</th><th>Команда</th></tr></thead>
+<tbody>
+<tr><td>Де я / хто я</td><td><code>pwd</code>, <code>whoami</code></td></tr>
+<tr><td>Створити вкладені каталоги</td><td><code>mkdir -p a/b/c</code></td></tr>
+<tr><td>Видалити <b>порожній</b> каталог / каталог з вмістом</td><td><code>rmdir d</code> (або <code>rm -d d</code>) / <code>rm -r d</code>, без підтверджень <code>rm -rf d</code></td></tr>
+<tr><td>Знайти файли за іменем</td><td><code>find /var -name "*.log"</code></td></tr>
+<tr><td>Знайти текст у файлах (рекурсивно, без регістру, з номерами рядків)</td><td><code>grep -rin "error" /var/log</code>; <code>grep -v</code> — рядки <b>без</b> збігу</td></tr>
+<tr><td>Початок / кінець файла; стежити за логом наживо</td><td><code>head -n 20 f</code>, <code>tail -n 20 f</code>, <code>tail -f app.log</code></td></tr>
+<tr><td>Порахувати рядки / слова</td><td><code>wc -l f</code>, <code>wc -w f</code></td></tr>
+<tr><td>Відсортувати / прибрати повтори / вирізати колонку</td><td><code>sort</code>, <code>uniq</code>, <code>cut -d: -f1 /etc/passwd</code></td></tr>
+<tr><td>Гортати великий файл</td><td><code>less f</code> (вихід — <code>q</code>)</td></tr>
+<tr><td>Вільне місце на дисках / розмір каталогу / пам'ять</td><td><code>df -h</code>, <code>du -sh dir</code>, <code>free -h</code></td></tr>
+<tr><td>Завершити процес</td><td><code>kill PID</code> (м'яко, SIGTERM), <code>kill -9 PID</code> (примусово), <code>killall nginx</code></td></tr>
+<tr><td>Архів: створити / розпакувати</td><td><code>tar -czvf a.tar.gz dir</code>, <code>tar -xzvf a.tar.gz</code></td></tr>
+<tr><td>Служби (systemd)</td><td><code>systemctl status|start|stop|restart|enable nginx</code></td></tr>
+<tr><td>Завантажити файл / зробити HTTP-запит</td><td><code>wget URL</code>, <code>curl -I URL</code></td></tr>
+<tr><td>Де лежить програма / історія команд</td><td><code>which python3</code>, <code>history</code></td></tr>
+</tbody></table></div>
 
 <h2 id="users">Користувачі та групи<a class="h-anchor" href="#users" aria-label="Посилання на розділ">#</a></h2>
 <p>Linux — повністю <b>багатокористувацька</b> ОС. Кожен користувач і група мають ім'я та числовий ідентифікатор (UID/GID). Користувач має одну <b>основну (primary)</b> групу і може мати кілька <b>додаткових (secondary)</b>.</p>
 <ul>
 <li><code>/etc/passwd</code> — облікові записи; <code>/etc/shadow</code> — хеші паролів (читає лише root); <code>/etc/group</code> — групи.</li>
 </ul>
+<p>Рядок <code>/etc/passwd</code> має 7 полів через двокрапку: <code>tony:x:1001:1001:Tony:/home/tony:/bin/bash</code> — ім'я, <code>x</code> (пароль винесено в <code>/etc/shadow</code>), UID, GID, коментар, домашній каталог, оболонка. Колись хеш пароля зберігався прямо тут, але <code>/etc/passwd</code> читають усі, тому хеші перенесли в <b><code>/etc/shadow</code></b> (права лише для root).</p>
 <pre data-lang="bash"><code>groupadd developers                 <span class="c"># створити групу</span>
 grep developers /etc/group          <span class="c"># перевірити, що група існує</span>
 useradd -G developers vivek         <span class="c"># користувач з додатковою групою</span>
@@ -264,14 +315,16 @@ ssh -i ~/.ssh/id_rsa user@192.168.0.10        <span class="c"># вхід з ук
 <div class="mistake"><div class="wrong">У відносній формі <code>a</code> означає «інші».</div><div class="right"><code>u</code> — власник, <code>g</code> — група, <code>o</code> — інші, <code>a</code> — усі (all) одразу.</div></div>
 <div class="mistake"><div class="wrong"><code>usermod -G group user</code> додає групу.</div><div class="right">Без <code>-a</code> він замінює список груп. Правильно: <code>usermod -aG group user</code>.</div></div>
 <div class="mistake"><div class="wrong">Скрипт <code>script.sh</code> не запускається «бо нема .exe».</div><div class="right">Потрібен атрибут <code>x</code> (<code>chmod +x</code>) і шлях: <code>./script.sh</code> — поточний каталог не входить у <code>PATH</code>.</div></div>
+<div class="mistake"><div class="wrong"><code>cmd1 &amp;&amp; cmd2</code> або <code>cmd1 ; cmd2</code> передає вивід першої команди другій.</div><div class="right">Дані передає лише <code>|</code>. Інші оператори тільки визначають, чи і коли запуститься друга команда.</div></div>
+<div class="mistake"><div class="wrong"><code>2&gt; file</code> — «записати у файл 2».</div><div class="right">Цифра — номер потоку: <code>2&gt;</code> перенаправляє <b>stderr</b> (помилки). Усе разом — <code>&gt; file 2&gt;&amp;1</code> або <code>&amp;&gt; file</code>.</div></div>
 <div class="mistake"><div class="wrong">Sticky bit ставиться як <code>chmod g+t</code>.</div><div class="right">Sticky bit — це біт для «інших»: <code>chmod +t dir</code> (або <code>o+t</code>, числом — <code>1777</code>). У <code>ls -l</code> видно <code>t</code> в останній позиції.</div></div>
 </div>
-<h2 id="quiz">Перевір себе<a class="h-anchor" href="#quiz" aria-label="Посилання на розділ">#</a></h2><p>7 питань на розуміння. Натисніть варіант — одразу побачите правильну відповідь і пояснення.</p><div class="quiz" data-quiz="w1l2"></div><script type="application/json" id="quiz-data">[{"q": "Які права дає <code>chmod 750 file<\/code>?", "options": ["rw-r-----", "rwxr-x---", "rwxr-xr-x", "rwxrwx---"], "answer": 1, "explain": "7 = 4+2+1 = rwx для власника, 5 = 4+1 = r-x для групи, 0 = --- для інших."}, {"q": "Що виконає <code>ps aux | grep nginx<\/code>?", "options": ["Видалить процеси nginx", "Передасть вивід ps на вхід grep і покаже лише рядки з nginx", "Запустить nginx у фоні", "Запише список процесів у файл grep"], "answer": 1, "explain": "Символ | — це pipe: стандартний вивід першої команди стає вхідними даними другої."}, {"q": "Чим відрізняється <code>&gt;<\/code> від <code>&gt;&gt;<\/code>?", "options": ["Нічим", "&gt; перезаписує файл, &gt;&gt; дописує в кінець", "&gt;&gt; працює тільки під root", "&gt; дописує, &gt;&gt; перезаписує"], "answer": 1, "explain": "Одинарний знак створює файл заново, подвійний додає вивід у кінець наявного файла."}, {"q": "Як додати користувачу tony додаткову групу docker, не втративши інші групи?", "options": ["chgrp docker tony", "usermod -G docker tony", "usermod -aG docker tony", "useradd -g docker tony"], "answer": 2, "explain": "Ключ -a (append) разом з -G додає групу до списку. Без -a список буде замінено."}, {"q": "Де зберігаються хеші паролів користувачів?", "options": ["/etc/shadow", "/etc/passwd", "/etc/group", "/home/user/.password"], "answer": 0, "explain": "/etc/passwd містить облікові записи і доступний на читання всім, а хеші паролів винесено в /etc/shadow, який читає лише root."}, {"q": "Навіщо <code>/usr/bin/passwd<\/code> має біт SUID (s)?", "options": ["Щоб його не можна було видалити", "Щоб файли в каталозі успадковували групу", "Щоб програма виконувалась із правами власника (root) і могла оновити /etc/shadow", "Щоб його бачили тільки адміністратори"], "answer": 2, "explain": "SUID запускає програму з правами власника файла. Так звичайний користувач змінює свій пароль, не маючи прямого доступу до /etc/shadow."}, {"q": "Який файл потрібно доповнити на сервері, щоб увійти по SSH-ключу?", "options": ["/etc/hosts", "~/.bashrc", "~/.ssh/id_rsa", "~/.ssh/authorized_keys"], "answer": 3, "explain": "Публічний ключ клієнта додають у ~/.ssh/authorized_keys користувача на сервері (це й робить ssh-copy-id). Приватний ключ id_rsa лишається у клієнта."}]</script>
+<h2 id="quiz">Перевір себе<a class="h-anchor" href="#quiz" aria-label="Посилання на розділ">#</a></h2><p>13 питань на розуміння. В одиночних питаннях натисніть варіант — одразу побачите правильну відповідь і пояснення. Питання з позначкою <b>«кілька відповідей»</b> влаштовані як у тесті курсу (<i>Select one or more</i>): позначте всі правильні варіанти й натисніть «Перевірити».</p><div class="quiz" data-quiz="w1l2"></div><script type="application/json" id="quiz-data">[{"q": "Які права дає <code>chmod 750 file<\/code>?", "options": ["rw-r-----", "rwxr-x---", "rwxr-xr-x", "rwxrwx---"], "answer": 1, "explain": "7 = 4+2+1 = rwx для власника, 5 = 4+1 = r-x для групи, 0 = --- для інших."}, {"q": "Що виконає <code>ps aux | grep nginx<\/code>?", "options": ["Видалить процеси nginx", "Передасть вивід ps на вхід grep і покаже лише рядки з nginx", "Запустить nginx у фоні", "Запише список процесів у файл grep"], "answer": 1, "explain": "Символ | — це pipe: стандартний вивід першої команди стає вхідними даними другої."}, {"q": "Чим відрізняється <code>&gt;<\/code> від <code>&gt;&gt;<\/code>?", "options": ["Нічим", "&gt; перезаписує файл, &gt;&gt; дописує в кінець", "&gt;&gt; працює тільки під root", "&gt; дописує, &gt;&gt; перезаписує"], "answer": 1, "explain": "Одинарний знак створює файл заново, подвійний додає вивід у кінець наявного файла."}, {"q": "Як додати користувачу tony додаткову групу docker, не втративши інші групи?", "options": ["chgrp docker tony", "usermod -G docker tony", "usermod -aG docker tony", "useradd -g docker tony"], "answer": 2, "explain": "Ключ -a (append) разом з -G додає групу до списку. Без -a список буде замінено."}, {"q": "Яка команда передасть вивід <code>cmd1<\/code> на вхід <code>cmd2<\/code>?", "options": ["<code>cmd1 ; cmd2<\/code>", "<code>cmd1 | cmd2<\/code>", "<code>cmd1 &amp;&amp; cmd2<\/code>", "<code>cmd1 &amp; cmd2<\/code>", "<code>cmd1 || cmd2<\/code>"], "answer": 1, "explain": "Лише pipe | передає дані. ; — послідовно, &amp; — перша у фоні, &amp;&amp; — друга лише при успіху, || — лише при помилці."}, {"q": "Що означає перенаправлення <code>2&gt;abc<\/code>?", "options": ["Записати стандартний потік помилок (stderr) у файл abc", "Записати файл 2 у файл abc", "Записати стандартний вивід (stdout) у abc", "Записати всі дані у файл abc"], "answer": 0, "explain": "2 — дескриптор stderr. Звичайний вивід (1) лишається на екрані. Усе разом: &gt; abc 2&gt;&amp;1 або &amp;&gt; abc."}, {"q": "Якими командами можна видалити <b>порожній<\/b> каталог <code>old<\/code>?", "options": ["<code>rm old<\/code>", "<code>del old<\/code>", "<code>rmdir old<\/code>", "<code>rm -d old<\/code>"], "answer": [2, 3], "explain": "rmdir і rm -d видаляють порожній каталог. Звичайний rm без -r/-d каталоги не видаляє, а del — команда Windows."}, {"q": "Коли виконається <code>cmd2<\/code> у записі <code>cmd1 || cmd2<\/code>?", "options": ["Лише якщо cmd1 успішна", "Лише якщо cmd1 завершилась з помилкою", "Завжди", "Одночасно з cmd1"], "answer": 1, "explain": "|| — логічне «або»: друга команда потрібна, лише коли перша не вдалася (код ≠ 0)."}, {"q": "Як стежити за новими рядками лог-файла в реальному часі?", "options": ["<code>cat -f app.log<\/code>", "<code>wc -l app.log<\/code>", "<code>head app.log<\/code>", "<code>tail -f app.log<\/code>"], "answer": 3, "explain": "tail -f (follow) не завершується і виводить рядки в міру їх появи. head показує початок, wc -l рахує рядки."}, {"q": "Які записи збережуть у <code>out.log<\/code> <b>і<\/b> звичайний вивід, <b>і<\/b> помилки?", "options": ["<code>cmd &gt; out.log 2&gt;&amp;1<\/code>", "<code>cmd &amp;&gt; out.log<\/code>", "<code>cmd &gt; out.log<\/code>", "<code>cmd 2&gt; out.log<\/code>"], "answer": [0, 1], "explain": "2&gt;&amp;1 спрямовує stderr туди ж, куди вже йде stdout; &amp;&gt; — скорочення bash для того самого. Варіанти 3 і 4 зберігають лише один потік."}, {"q": "Де зберігаються хеші паролів користувачів?", "options": ["/etc/passwd", "/etc/group", "/home/user/.password", "/etc/shadow"], "answer": 3, "explain": "/etc/passwd містить облікові записи і доступний на читання всім, а хеші паролів винесено в /etc/shadow, який читає лише root."}, {"q": "Навіщо <code>/usr/bin/passwd<\/code> має біт SUID (s)?", "options": ["Щоб програма виконувалась із правами власника (root) і могла оновити /etc/shadow", "Щоб його не можна було видалити", "Щоб його бачили тільки адміністратори", "Щоб файли в каталозі успадковували групу"], "answer": 0, "explain": "SUID запускає програму з правами власника файла. Так звичайний користувач змінює свій пароль, не маючи прямого доступу до /etc/shadow."}, {"q": "Який файл потрібно доповнити на сервері, щоб увійти по SSH-ключу?", "options": ["~/.ssh/id_rsa", "~/.bashrc", "~/.ssh/authorized_keys", "/etc/hosts"], "answer": 2, "explain": "Публічний ключ клієнта додають у ~/.ssh/authorized_keys користувача на сервері (це й робить ssh-copy-id). Приватний ключ id_rsa лишається у клієнта."}]</script>
 <div class="complete-box"><p>Прочитали і пройшли тест? Позначте лекцію — прогрес оновиться на головній і в меню.</p><button type="button" class="btn primary" data-complete="w1l2" aria-pressed="false"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg><span class="lbl">Позначити як опрацьовану</span></button></div>
 <nav class="pager" aria-label="Попередня і наступна лекції"><a class="prev" href="../../lectures/week-1/lecture-1.html"><small>← Попередня · Лекція 1</small><span>Вступ до DevOps: терміни, SDLC і моделі хмарних сервісів</span></a><a class="next" href="../../lectures/week-1/lecture-3.html"><small>Наступна · Лекція 3 →</small><span>Bash: скрипти, змінні, умови, цикли та функції</span></a></nav>
-<div class="sources-note"><b>Джерела лекції:</b> презентація «Linux Introduction» (39 слайдів). <b>Обмеження:</b> MP3-запис лекції не транскрибовано; відео не оброблялося за правилами курсу.</div>
+<div class="sources-note"><b>Джерела лекції:</b> презентація «Linux Introduction» (39 слайдів); доповнено з довідки GNU Bash і man-сторінок coreutils (потоки, перенаправлення, ланцюжки, додаткові команди) під питання тесту курсу. <b>Обмеження:</b> MP3-запис лекції не транскрибовано; відео не оброблялося за правилами курсу.</div>
 </main>
-<aside class="toc" aria-label="На цій сторінці"><div class="toc-title">На цій сторінці</div><ol><li><a href="#goals">Чого ви навчитесь</a></li><li><a href="#why">Чому саме Linux</a></li><li><a href="#fs">Структура каталогів</a></li><li><a href="#commands">Команди, які треба знати</a></li><li><a href="#pipes">Pipes і перенаправлення вводу-виводу</a></li><li><a href="#users">Користувачі та групи</a></li><li><a href="#perms">Права доступу до файлів</a></li><li><a href="#ssh">Вхід по SSH-ключах</a></li><li><a href="#mistakes">Типові помилки</a></li><li><a href="#quiz">Перевір себе</a></li></ol></aside>
+<aside class="toc" aria-label="На цій сторінці"><div class="toc-title">На цій сторінці</div><ol><li><a href="#goals">Чого ви навчитесь</a></li><li><a href="#why">Чому саме Linux</a></li><li><a href="#fs">Структура каталогів</a></li><li><a href="#commands">Команди, які треба знати</a></li><li><a href="#pipes">Pipes і перенаправлення вводу-виводу</a></li><li><a href="#more">Ще команди, про які часто питають</a></li><li><a href="#users">Користувачі та групи</a></li><li><a href="#perms">Права доступу до файлів</a></li><li><a href="#ssh">Вхід по SSH-ключах</a></li><li><a href="#mistakes">Типові помилки</a></li><li><a href="#quiz">Перевір себе</a></li></ol></aside>
 </div>
 </div>
 <footer class="site-footer">Навчальний конспект для самопідготовки. Прогрес і результати тестів зберігаються лише в цьому браузері на цьому пристрої (localStorage) і не синхронізуються між пристроями.</footer>

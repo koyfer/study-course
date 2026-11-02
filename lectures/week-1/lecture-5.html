@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Лекція 5. LAMP-стек: Apache, MySQL, PHP і розгортання вебзастосунку · Хмарні технології та сервіси</title>
-<meta name="description" content="Що таке LAMP/LEMP, конфігурація Apache (директиви, модулі, mod_rewrite, .htaccess, логи), встановлення MySQL і Apache на CentOS, розгортання OpenCart, резервні копії mysqldump.">
+<meta name="description" content="Що таке LAMP/LEMP, конфігурація Apache (директиви, модулі, mod_rewrite, .htaccess, логи), встановлення MySQL і Apache на CentOS, розгортання OpenCart, резервні копії mysqldump; SQL-мінімум: DDL/DML/DCL, SELECT, WHERE (BETWEEN, IN, LIKE, IS NULL), GROUP BY, JOIN.">
 <meta name="theme-color" content="#0d7a6f">
 <script>try{var t=localStorage.getItem("htc-theme");if(t)document.documentElement.setAttribute("data-theme",t)}catch(e){}</script>
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=Onest:wght@400;500;600;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
@@ -51,8 +51,8 @@
 <h1>LAMP-стек: Apache, MySQL, PHP і розгортання вебзастосунку</h1>
 <p class="lead">LAMP — класичний стек для 3-рівневого вебзастосунку: Linux як ОС, Apache як вебсервер, MySQL для даних і PHP для логіки. На ньому досі працюють WordPress, Moodle і Вікіпедія.</p>
 <div class="meta-row">
-<span class="chip"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>≈ 12 хв читання</span>
-<span class="chip"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M9.5 9.5a2.5 2.5 0 114 2c-1 .7-1.5 1.2-1.5 2.5M12 17h.01"/></svg>7 питань самоперевірки</span>
+<span class="chip"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>≈ 18 хв читання</span>
+<span class="chip"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M9.5 9.5a2.5 2.5 0 114 2c-1 .7-1.5 1.2-1.5 2.5M12 17h.01"/></svg>12 питань самоперевірки</span>
 <span class="chip" data-status="w1l5"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg><span class="lbl">Не опрацьовано</span></span>
 </div>
 </div>
@@ -64,6 +64,7 @@
 <li>Розуміти, навіщо <code>mod_rewrite</code>, <code>.htaccess</code> і директива <code>AllowOverride</code>.</li>
 <li>Знайти й прочитати логи Apache (<code>ErrorLog</code>, <code>CustomLog</code>).</li>
 <li>Відтворити послідовність розгортання PHP-застосунку на CentOS і зробити бекап БД.</li>
+<li>Розрізняти групи SQL-команд (<b>DDL, DML, DCL</b>) і писати базові запити: <code>SELECT … WHERE</code> з <code>BETWEEN</code>, <code>IN</code>, <code>LIKE</code>, <code>IS NULL</code>, а також <code>GROUP BY</code> і <code>JOIN</code>.</li>
 </ul>
 </div>
 
@@ -182,19 +183,70 @@ mysqldump -u root -p opencart &gt; opencart.sql         <span class="c"># одн
 mysql -u root -p opencart &lt; opencart.sql             <span class="c"># відновлення</span></code></pre>
 <p>Зверніть увагу на напрямок перенаправлення з лекції 2: <code>&gt;</code> — вивантажити дамп у файл, <code>&lt;</code> — подати файл на вхід клієнту <code>mysql</code>.</p>
 
+<h2 id="sql">SQL: мінімум, який перевіряють у тестах<a class="h-anchor" href="#sql" aria-label="Посилання на розділ">#</a></h2>
+<p><b>SQL</b> (Structured Query Language) — мова роботи з реляційними БД: MySQL, PostgreSQL, MS SQL, Oracle. Команди SQL поділяють на групи:</p>
+<div class="table-wrap"><table>
+<thead><tr><th>Група</th><th>Для чого</th><th>Команди</th></tr></thead>
+<tbody>
+<tr><td><b>DDL</b> — Data Definition Language</td><td>структура: БД, таблиці, індекси</td><td><code>CREATE</code>, <code>ALTER</code>, <code>DROP</code>, <code>TRUNCATE</code></td></tr>
+<tr><td><b>DML</b> — Data Manipulation Language</td><td>дані в таблицях</td><td><code>SELECT</code>, <code>INSERT</code>, <code>UPDATE</code>, <code>DELETE</code></td></tr>
+<tr><td><b>DCL</b> — Data Control Language</td><td>права доступу</td><td><code>GRANT</code>, <code>REVOKE</code></td></tr>
+<tr><td><b>TCL</b> — Transaction Control Language</td><td>транзакції</td><td><code>COMMIT</code>, <code>ROLLBACK</code></td></tr>
+</tbody></table></div>
+<p>Деякі джерела виносять <code>SELECT</code> в окрему групу <b>DQL</b> (Data Query Language). <code>GRANT</code> з цієї лекції — це DCL, а дамп <code>mysqldump</code> складається з DDL (<code>CREATE TABLE</code>) і DML (<code>INSERT</code>).</p>
+<h3>Анатомія запиту SELECT</h3>
+<pre data-lang="sql"><code>SELECT name, price                 <span class="c">-- які стовпці (* — усі)</span>
+FROM product                       <span class="c">-- з якої таблиці</span>
+WHERE price &gt; 100                  <span class="c">-- фільтр рядків</span>
+ORDER BY price DESC                <span class="c">-- сортування (ASC — за замовчуванням)</span>
+LIMIT 10;                          <span class="c">-- перші 10 рядків (MySQL, PostgreSQL)</span></code></pre>
+<h3>Оператори в WHERE</h3>
+<div class="table-wrap"><table>
+<thead><tr><th>Оператор</th><th>Приклад</th><th>Важливо</th></tr></thead>
+<tbody>
+<tr><td><code>= &lt;&gt; != &lt; &gt; &lt;= &gt;=</code></td><td><code>Id &lt;&gt; 5</code></td><td><code>&lt;&gt;</code> — стандартне «не дорівнює»</td></tr>
+<tr><td><code>BETWEEN a AND b</code></td><td><code>Id BETWEEN 2 AND 4</code></td><td><b>включає обидві межі</b>; спочатку менша: <code>BETWEEN 4 AND 2</code> поверне 0 рядків</td></tr>
+<tr><td><code>IN (…)</code></td><td><code>Id IN (2, 3, 4)</code></td><td>перелік через кому; запису <code>IN (2..4)</code> у SQL немає — помилка синтаксису</td></tr>
+<tr><td><code>LIKE</code></td><td><code>name LIKE 'Lap%'</code></td><td>шаблон рядка: <code>%</code> — будь-яка кількість символів, <code>_</code> — рівно один</td></tr>
+<tr><td><code>IS NULL</code> / <code>IS NOT NULL</code></td><td><code>email IS NULL</code></td><td><code>= NULL</code> не працює — завжди «невідомо»</td></tr>
+<tr><td><code>AND OR NOT</code></td><td><code>a &gt;= 2 AND a &lt;= 4</code></td><td>кожна умова повна: <code>Id &gt;= 2 AND &lt;= 4</code> — помилка</td></tr>
+</tbody></table></div>
+<div class="callout"><div class="callout-title">Типова задача з тесту</div><p>Для цілого <code>Id</code> запит <code>WHERE Id BETWEEN 2 AND 4</code> еквівалентний <code>WHERE Id &gt;= 2 AND Id &lt;= 4</code> і <code>WHERE Id IN (2, 3, 4)</code>. <b>Не</b> еквівалентні: <code>Id &gt; 2 AND Id &lt; 4</code> (лише 3), <code>BETWEEN 4 AND 2</code> (порожньо), <code>IN (2..4)</code> і <code>LIKE 2..4</code> (некоректні).</p></div>
+<h3>Зміна даних, агрегати, групування, JOIN</h3>
+<pre data-lang="sql"><code>INSERT INTO category (Id, name) VALUES (5, 'Laptops');
+UPDATE category SET name = 'Notebooks' WHERE Id = 5;   <span class="c">-- без WHERE зміниться ВСЯ таблиця</span>
+DELETE FROM category WHERE Id = 5;                     <span class="c">-- без WHERE видалить усі рядки</span>
+
+SELECT category_id, COUNT(*) AS cnt, AVG(price)        <span class="c">-- COUNT SUM AVG MIN MAX</span>
+FROM product
+GROUP BY category_id                                    <span class="c">-- групи рядків</span>
+HAVING COUNT(*) &gt; 10;                                  <span class="c">-- фільтр уже по групах</span>
+
+SELECT p.name, c.name
+FROM product p
+INNER JOIN category c ON p.category_id = c.Id;          <span class="c">-- лише рядки з парою в обох таблицях</span></code></pre>
+<ul>
+<li><b>WHERE</b> фільтрує рядки <i>до</i> групування, <b>HAVING</b> — групи <i>після</i> <code>GROUP BY</code>.</li>
+<li><b>INNER JOIN</b> — лише збіги; <b>LEFT JOIN</b> — усі рядки лівої таблиці (+ <code>NULL</code>, якщо пари немає); <b>RIGHT JOIN</b> — навпаки.</li>
+<li><b>PRIMARY KEY</b> — унікальний ідентифікатор рядка; <b>FOREIGN KEY</b> — посилання на ключ іншої таблиці.</li>
+<li><code>DELETE</code> (DML) видаляє рядки, можна з <code>WHERE</code>; <code>TRUNCATE</code> (DDL) швидко очищає всю таблицю; <code>DROP</code> (DDL) видаляє саму таблицю разом зі структурою.</li>
+</ul>
+
 <h2 id="mistakes">Типові помилки<a class="h-anchor" href="#mistakes" aria-label="Посилання на розділ">#</a></h2>
 <div class="mistakes">
+<div class="mistake"><div class="wrong"><code>WHERE email = NULL</code> знайде записи без email.</div><div class="right">З <code>NULL</code> порівнюють лише через <code>IS NULL</code> / <code>IS NOT NULL</code>.</div></div>
+<div class="mistake"><div class="wrong"><code>BETWEEN</code> не включає межі, або порядок меж не важливий.</div><div class="right"><code>BETWEEN 2 AND 4</code> включає 2 і 4; нижня межа має бути першою.</div></div>
 <div class="mistake"><div class="wrong">Правила <code>.htaccess</code> «не працюють», хоча файл на місці.</div><div class="right">Перевірте <code>AllowOverride</code> для каталогу (при <code>None</code> файл ігнорується) і чи завантажено <code>mod_rewrite</code>. Після змін у конфігу — <code>systemctl restart httpd</code>.</div></div>
 <div class="mistake"><div class="wrong">Сайт видає 403/500 — одразу <code>chmod -R 777</code>.</div><div class="right">Спершу <code>error_log</code>. Зазвичай досить віддати файли користувачу вебсервера (<code>chown -R apache:apache</code>) з правами 755/644.</div></div>
 <div class="mistake"><div class="wrong">Вимкнути firewall і SELinux на production, як на лабі.</div><div class="right">На production відкривають лише потрібні порти (80/443) і налаштовують SELinux-контексти, а не вимикають захист.</div></div>
 <div class="mistake"><div class="wrong">Забути видалити <code>install/</code> після встановлення CMS.</div><div class="right">Каталог інсталятора дозволяє перевстановити сайт і перезаписати БД — його видаляють одразу.</div></div>
 </div>
-<h2 id="quiz">Перевір себе<a class="h-anchor" href="#quiz" aria-label="Посилання на розділ">#</a></h2><p>7 питань на розуміння. Натисніть варіант — одразу побачите правильну відповідь і пояснення.</p><div class="quiz" data-quiz="w1l5"></div><script type="application/json" id="quiz-data">[{"q": "Що означає абревіатура LAMP?", "options": ["Linux, Ansible, MongoDB, Python", "Linux, AWS, Mesos, Puppet", "Load balancer, Apache, MySQL, Proxy", "Linux, Apache, MySQL, PHP"], "answer": 3, "explain": "Linux — ОС, Apache — вебсервер, MySQL — СКБД, PHP (історично також Perl/Python) — мова логіки. LEMP — те саме з NGINX."}, {"q": "Яка директива Apache задає каталог, з якого віддаються файли сайту?", "options": ["ServerRoot", "Directory", "AccessFileName", "DocumentRoot"], "answer": 3, "explain": "DocumentRoot — корінь сайту; шлях із URL додається до нього, щоб отримати шлях до файла."}, {"q": "Директиви в .htaccess ігноруються. Найімовірніша причина?", "options": ["Apache не підтримує .htaccess", "Для каталогу встановлено AllowOverride None", "MySQL не запущено", "Файл має розширення .txt"], "answer": 1, "explain": "При AllowOverride None сервер навіть не читає .htaccess. Для правил mod_rewrite зазвичай ставлять AllowOverride All."}, {"q": "Який журнал Apache переглядати першим, коли сайт повертає помилку 500?", "options": ["error log", "mime.types", "/etc/passwd", "access log"], "answer": 0, "explain": "Слайди називають error log найважливішим: туди потрапляють помилки скриптів, конфігурації і відмови в доступі."}, {"q": "Навіщо модуль mod_rewrite?", "options": ["Створювати резервні копії", "Шифрувати трафік", "Керувати користувачами MySQL", "Переписувати URL за правилами на основі регулярних виразів"], "answer": 3, "explain": "mod_rewrite перетворює запитаний URL на шлях до файла, редирект або проксі-запит — так роблять «гарні» URL."}, {"q": "Яка команда відновить БД opencart з файла дампа?", "options": ["mysqldump -u root -p opencart > opencart.sql", "systemctl restore mysqld", "mysql -u root -p opencart < opencart.sql", "mysql --all-databases > dump.sql"], "answer": 2, "explain": "mysqldump створює дамп (вивід у файл через >), а клієнт mysql виконує SQL з файла, поданого на вхід через <."}, {"q": "Чим відрізняються облікові записи 'shop'@'localhost' і 'shop'@'%'?", "options": ["Перший працює тільки з PHP", "Другий має права root", "Нічим", "Перший може підключатися лише з того ж сервера, другий — з будь-якого хоста"], "answer": 3, "explain": "У MySQL обліковий запис = ім'я + хост. % означає будь-який хост, тому це окремий запис із власними правами."}]</script>
+<h2 id="quiz">Перевір себе<a class="h-anchor" href="#quiz" aria-label="Посилання на розділ">#</a></h2><p>12 питань на розуміння. В одиночних питаннях натисніть варіант — одразу побачите правильну відповідь і пояснення. Питання з позначкою <b>«кілька відповідей»</b> влаштовані як у тесті курсу (<i>Select one or more</i>): позначте всі правильні варіанти й натисніть «Перевірити».</p><div class="quiz" data-quiz="w1l5"></div><script type="application/json" id="quiz-data">[{"q": "Що означає абревіатура LAMP?", "options": ["Linux, Ansible, MongoDB, Python", "Linux, AWS, Mesos, Puppet", "Load balancer, Apache, MySQL, Proxy", "Linux, Apache, MySQL, PHP"], "answer": 3, "explain": "Linux — ОС, Apache — вебсервер, MySQL — СКБД, PHP (історично також Perl/Python) — мова логіки. LEMP — те саме з NGINX."}, {"q": "Яка директива Apache задає каталог, з якого віддаються файли сайту?", "options": ["ServerRoot", "Directory", "AccessFileName", "DocumentRoot"], "answer": 3, "explain": "DocumentRoot — корінь сайту; шлях із URL додається до нього, щоб отримати шлях до файла."}, {"q": "Директиви в .htaccess ігноруються. Найімовірніша причина?", "options": ["Apache не підтримує .htaccess", "Для каталогу встановлено AllowOverride None", "MySQL не запущено", "Файл має розширення .txt"], "answer": 1, "explain": "При AllowOverride None сервер навіть не читає .htaccess. Для правил mod_rewrite зазвичай ставлять AllowOverride All."}, {"q": "Який журнал Apache переглядати першим, коли сайт повертає помилку 500?", "options": ["error log", "mime.types", "/etc/passwd", "access log"], "answer": 0, "explain": "Слайди називають error log найважливішим: туди потрапляють помилки скриптів, конфігурації і відмови в доступі."}, {"q": "Навіщо модуль mod_rewrite?", "options": ["Створювати резервні копії", "Шифрувати трафік", "Керувати користувачами MySQL", "Переписувати URL за правилами на основі регулярних виразів"], "answer": 3, "explain": "mod_rewrite перетворює запитаний URL на шлях до файла, редирект або проксі-запит — так роблять «гарні» URL."}, {"q": "Яка команда відновить БД opencart з файла дампа?", "options": ["mysqldump -u root -p opencart > opencart.sql", "systemctl restore mysqld", "mysql -u root -p opencart < opencart.sql", "mysql --all-databases > dump.sql"], "answer": 2, "explain": "mysqldump створює дамп (вивід у файл через >), а клієнт mysql виконує SQL з файла, поданого на вхід через <."}, {"q": "Поле <code>Id<\/code> цілочисельне. Які запити повернуть те саме, що <code>SELECT * FROM Category WHERE Id BETWEEN 2 AND 4<\/code>?", "options": ["<code>… WHERE Id &gt; 2 AND Id &lt; 4<\/code>", "<code>… WHERE Id IN (2..4)<\/code>", "<code>… WHERE Id BETWEEN 4 AND 2<\/code>", "<code>… WHERE Id &gt;= 2 AND &lt;= 4<\/code>", "<code>… WHERE Id &gt;= 2 AND Id &lt;= 4<\/code>", "<code>… WHERE Id IN (2, 3, 4)<\/code>"], "answer": [4, 5], "explain": "BETWEEN включає межі. Строгі нерівності втрачають 2 і 4, BETWEEN 4 AND 2 порожній, а IN (2..4) та «AND &lt;= 4» без лівої частини — синтаксичні помилки."}, {"q": "Які команди належать до DML?", "options": ["DELETE", "INSERT", "CREATE TABLE", "GRANT", "UPDATE"], "answer": [0, 1, 4], "explain": "DML змінює дані (а також SELECT). CREATE — DDL (структура), GRANT — DCL (права)."}, {"q": "Як знайти клієнтів, у яких не заповнено email?", "options": ["<code>WHERE email == ''<\/code>", "<code>WHERE email IS NULL<\/code>", "<code>WHERE email = NULL<\/code>", "<code>WHERE NULL(email)<\/code>"], "answer": 1, "explain": "NULL — «невідоме значення», тож = NULL ніколи не дає істини. Правильно — IS NULL."}, {"q": "Які імена підійдуть під <code>name LIKE 'A_n%'<\/code>?", "options": ["Alan", "Ann", "Andrew", "Anna"], "answer": [1, 3], "explain": "_ — рівно один символ, % — будь-яка кількість. Ann і Anna мають «n» на третій позиції; Andrew — «d», Alan — «a»."}, {"q": "Чим HAVING відрізняється від WHERE?", "options": ["HAVING сортує результат", "HAVING фільтрує групи після GROUP BY, WHERE — рядки до групування", "WHERE працює тільки з числами", "Нічим, це синоніми"], "answer": 1, "explain": "Агрегати на кшталт COUNT(*) &gt; 10 можна перевіряти лише в HAVING, бо до групування їх ще не пораховано."}, {"q": "Чим відрізняються облікові записи 'shop'@'localhost' і 'shop'@'%'?", "options": ["Другий має права root", "Перший може підключатися лише з того ж сервера, другий — з будь-якого хоста", "Нічим", "Перший працює тільки з PHP"], "answer": 1, "explain": "У MySQL обліковий запис = ім'я + хост. % означає будь-який хост, тому це окремий запис із власними правами."}]</script>
 <div class="complete-box"><p>Прочитали і пройшли тест? Позначте лекцію — прогрес оновиться на головній і в меню.</p><button type="button" class="btn primary" data-complete="w1l5" aria-pressed="false"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg><span class="lbl">Позначити як опрацьовану</span></button></div>
 <nav class="pager" aria-label="Попередня і наступна лекції"><a class="prev" href="../../lectures/week-1/lecture-4.html"><small>← Попередня · Лекція 4</small><span>Архітектура вебзастосунків: HTTP, REST API, N-tier і мікросервіси</span></a><a class="next" href="../../lectures/week-2/lecture-6.html"><small>Наступна · Лекція 6 →</small><span>Комп&#x27;ютерні мережі: OSI і TCP/IP, IP-адресація, порти, NAT і VPN</span></a></nav>
-<div class="sources-note"><b>Джерела лекції:</b> презентація «LAMP Stack» (39 слайдів); чат лекції 5 (LAMP vs Node.js, NGINX, CentOS). <b>Обмеження:</b> MP3-запис лекції не транскрибовано; відео для цієї лекції в папці немає.</div>
+<div class="sources-note"><b>Джерела лекції:</b> презентація «LAMP Stack» (39 слайдів); чат лекції 5 (LAMP vs Node.js, NGINX, CentOS); розділ SQL доповнено з документації MySQL 8.0 Reference Manual під питання тесту курсу. <b>Обмеження:</b> MP3-запис лекції не транскрибовано; відео для цієї лекції в папці немає.</div>
 </main>
-<aside class="toc" aria-label="На цій сторінці"><div class="toc-title">На цій сторінці</div><ol><li><a href="#goals">Чого ви навчитесь</a></li><li><a href="#stack">Що таке LAMP</a></li><li><a href="#config">Конфігурація Apache</a></li><li><a href="#deploy">Практика: розгортання OpenCart на CentOS</a></li><li><a href="#backup">Резервні копії БД</a></li><li><a href="#mistakes">Типові помилки</a></li><li><a href="#quiz">Перевір себе</a></li></ol></aside>
+<aside class="toc" aria-label="На цій сторінці"><div class="toc-title">На цій сторінці</div><ol><li><a href="#goals">Чого ви навчитесь</a></li><li><a href="#stack">Що таке LAMP</a></li><li><a href="#config">Конфігурація Apache</a></li><li><a href="#deploy">Практика: розгортання OpenCart на CentOS</a></li><li><a href="#backup">Резервні копії БД</a></li><li><a href="#sql">SQL: мінімум, який перевіряють у тестах</a></li><li><a href="#mistakes">Типові помилки</a></li><li><a href="#quiz">Перевір себе</a></li></ol></aside>
 </div>
 </div>
 <footer class="site-footer">Навчальний конспект для самопідготовки. Прогрес і результати тестів зберігаються лише в цьому браузері на цьому пристрої (localStorage) і не синхронізуються між пристроями.</footer>

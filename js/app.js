@@ -99,10 +99,12 @@
 
     qs.forEach(function (q, qi) {
       var box = document.createElement("div");
-      box.className = "q";
-      var head = '<div class="q-head"><span class="q-n">' + (qi + 1) + '.</span><span>' + q.q + "</span></div>";
+      var multi = Array.isArray(q.answer);
+      box.className = multi ? "q multi" : "q";
+      var head = '<div class="q-head"><span class="q-n">' + (qi + 1) + '.</span><span>' + q.q + (multi ? ' <span class="q-tag">кілька відповідей</span>' : "") + "</span></div>";
       box.innerHTML = head + '<div class="q-opts" role="group" aria-label="Варіанти відповіді"></div><div class="q-explain" aria-live="polite"></div>';
       var opts = box.querySelector(".q-opts");
+      if (multi) { buildMulti(q, box, opts); host.appendChild(box); return; }
       q.options.forEach(function (o, oi) {
         var b = document.createElement("button");
         b.type = "button"; b.className = "q-opt"; b.innerHTML = o;
@@ -124,6 +126,43 @@
       host.appendChild(box);
     });
     host.appendChild(scoreBox);
+
+    function buildMulti(q, box, opts) {
+      var picked = {};
+      var buttons = q.options.map(function (o, oi) {
+        var b = document.createElement("button");
+        b.type = "button"; b.className = "q-opt"; b.innerHTML = o;
+        b.setAttribute("aria-pressed", "false");
+        b.addEventListener("click", function () {
+          if (box.classList.contains("answered")) return;
+          picked[oi] = !picked[oi];
+          b.classList.toggle("picked", picked[oi]);
+          b.setAttribute("aria-pressed", picked[oi] ? "true" : "false");
+          check.disabled = !Object.keys(picked).some(function (k) { return picked[k]; });
+        });
+        opts.appendChild(b);
+        return b;
+      });
+      var check = document.createElement("button");
+      check.type = "button"; check.className = "btn primary q-check"; check.textContent = "Перевірити"; check.disabled = true;
+      check.addEventListener("click", function () {
+        if (box.classList.contains("answered")) return;
+        box.classList.add("answered");
+        var good = true;
+        buttons.forEach(function (x, xi) {
+          x.disabled = true;
+          var should = q.answer.indexOf(xi) !== -1;
+          if (should && picked[xi]) x.classList.add("correct");
+          else if (should) { x.classList.add("correct", "missed"); good = false; }
+          else if (picked[xi]) { x.classList.add("wrong"); good = false; }
+        });
+        check.remove();
+        answered++; if (good) correct++;
+        box.querySelector(".q-explain").innerHTML = (good ? '<b class="ok">Правильно.</b> ' : '<b class="bad">Не зовсім.</b> Правильних варіантів: ' + q.answer.length + ' (пунктиром — ті, що ви пропустили). ') + q.explain;
+        updateScore();
+      });
+      opts.after(check);
+    }
 
     function updateScore() {
       if (answered < qs.length) {
