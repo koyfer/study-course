@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Лекція 1. Вступ до DevOps: терміни, SDLC і моделі хмарних сервісів · Хмарні технології та сервіси</title>
-<meta name="description" content="DevOps: історія, CAMS/CALMS, три шляхи, SRE і DevSecOps; мета і метрики DORA, автоматизація, етапи циклу і середовища, правила CI, CD і deployment pipeline, артефакти і SemVer, стратегії розгортання і відкат, Ansible vs Puppet/Chef, моніторинг і observability, інструменти, IaaS/PaaS/SaaS, SDLC і Agile.">
+<meta name="description" content="DevOps: історія, CAMS/CALMS, три шляхи, наскрізний приклад зміни від задачі до production; мета, потреба і метрики DORA з розрахунком і рівнями 2024; автоматизація, ідемпотентність і анти-патерни; CI, Continuous Delivery (фундаменти, піраміда тестів, quality gates) і Deployment; стратегії розгортання і відкат; SRE (SLO, бюджет помилок, інциденти) і DevSecOps (SAST/DAST/SCA); довідник інструментів і мов; Scrum, Kanban, Waterfall vs Agile vs DevOps; IaaS/PaaS/SaaS; словник.">
 <meta name="theme-color" content="#0d7a6f">
 <script>try{var t=localStorage.getItem("htc-theme");if(t)document.documentElement.setAttribute("data-theme",t)}catch(e){}</script>
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=Onest:wght@400;500;600;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
@@ -49,10 +49,10 @@
 <div class="crumbs"><a href="../../index.html">Курс</a><span>/</span><a href="../../weeks/week-1.html">Тиждень 1</a><span>/</span><span>Лекція 1</span></div>
 <div class="eyebrow">Тиждень 1 · Лекція 1</div>
 <h1>Вступ до DevOps: терміни, SDLC і моделі хмарних сервісів</h1>
-<p class="lead">Навіщо компаніям DevOps-інженери, як DevOps прибирає «стіну непорозуміння» між розробкою та експлуатацією, і де в цій картині хмари.</p>
+<p class="lead">Навіщо компаніям DevOps, як він прибирає «стіну непорозуміння» між розробкою та експлуатацією, як виміряти результат і який інструмент за що відповідає — з наскрізним прикладом реальної зміни та розбором питань тесту.</p>
 <div class="meta-row">
-<span class="chip"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>≈ 42 хв читання</span>
-<span class="chip"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M9.5 9.5a2.5 2.5 0 114 2c-1 .7-1.5 1.2-1.5 2.5M12 17h.01"/></svg>34 питань самоперевірки</span>
+<span class="chip"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>≈ 96 хв читання</span>
+<span class="chip"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M9.5 9.5a2.5 2.5 0 114 2c-1 .7-1.5 1.2-1.5 2.5M12 17h.01"/></svg>42 питань самоперевірки</span>
 <span class="chip" data-status="w1l1"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg><span class="lbl">Не опрацьовано</span></span>
 </div>
 </div>
@@ -70,6 +70,11 @@
 <li>Описати етапи DevOps-циклу, середовища, правила CI, конвеєр розгортання, артефакти і SemVer.</li>
 <li>Порівняти стратегії розгортання: rolling, blue-green, canary, feature flags; пояснити відкат.</li>
 <li>Розрізнити push і pull у керуванні конфігурацією (Ansible vs Puppet/Chef) і три стовпи спостережуваності.</li>
+<li>Розрахувати метрики <b>DORA</b> на даних команди і порівняти з рівнями Elite/High/Medium/Low.</li>
+<li>Відрізнити переваги автоматизації від хибних тверджень і пояснити <b>ідемпотентність</b>.</li>
+<li>Описати піраміду тестів, quality gates і три фундаменти Continuous Delivery.</li>
+<li>Порахувати бюджет помилок для SLO і пояснити різницю SAST, DAST і SCA.</li>
+<li>Розповісти, як працює Scrum і Kanban, і чим DevOps відрізняється від Agile і Waterfall.</li>
 </ul>
 </div>
 
@@ -193,6 +198,69 @@
 <div><h4>Ні</h4><ul><li>Розробники виконують усю роботу Ops замість адмінів.</li><li>Окрема «команда DevOps», що стоїть між Dev і Ops як нова стіна.</li><li>Середовище без контролю змін.</li><li>Реліз цінується більше за якість.</li></ul></div>
 </div>
 
+<h2 id="dora-deep">Метрики DORA на практиці: як рахувати і що вважати добрим результатом<a class="h-anchor" href="#dora-deep" aria-label="Посилання на розділ">#</a></h2>
+<p>DORA (DevOps Research and Assessment) — дослідницька група, яка з 2014 року щороку опитує десятки тисяч інженерів і публікує звіт <i>Accelerate State of DevOps</i>. З цих даних виведено чотири метрики, що разом описують <b>швидкість</b> і <b>стабільність</b> доставки ПЗ. Головний висновок досліджень: швидкість і стабільність <b>не конкурують</b>. Команди, які релізять частіше, водночас мають менше збоїв і швидше відновлюються.</p>
+
+<div class="term-grid">
+<div class="term"><b>Deployment frequency</b> <span class="en">частота розгортань</span><p>Скільки разів за період нова версія потрапляє в production. Вимірює <b>пропускну здатність</b>.</p></div>
+<div class="term"><b>Lead time for changes</b> <span class="en">час виконання змін</span><p>Час від коміту до роботи цього коміту в production. Показує, наскільки «короткий» конвеєр.</p></div>
+<div class="term"><b>Change failure rate</b> <span class="en">частка невдалих змін</span><p>Відсоток розгортань, після яких знадобився відкат, хотфікс або сталася деградація. Вимірює <b>стабільність</b>.</p></div>
+<div class="term"><b>Time to restore / MTTR</b> <span class="en">час відновлення</span><p>Скільки в середньому минає від початку збою до відновлення сервісу. У звіті 2024 — <i>failed deployment recovery time</i>.</p></div>
+</div>
+
+<h3>Розрахунок на реальних даних</h3>
+<p>Команда за квітень (30 днів) зробила такі розгортання в production:</p>
+<div class="table-wrap"><table>
+<thead><tr><th>№</th><th>Коміт зроблено</th><th>У production</th><th>Lead time</th><th>Наслідок</th></tr></thead>
+<tbody>
+<tr><td>1</td><td>01.04 10:00</td><td>01.04 15:00</td><td>5 год</td><td>ок</td></tr>
+<tr><td>2</td><td>03.04 09:00</td><td>04.04 11:00</td><td>26 год</td><td>ок</td></tr>
+<tr><td>3</td><td>08.04 14:00</td><td>08.04 16:00</td><td>2 год</td><td><b>збій</b>: помилка 500 на оплаті, відкат через 40 хв</td></tr>
+<tr><td>4</td><td>10.04 11:00</td><td>10.04 13:00</td><td>2 год</td><td>ок</td></tr>
+<tr><td>5</td><td>15.04 09:00</td><td>16.04 10:00</td><td>25 год</td><td>ок</td></tr>
+<tr><td>6</td><td>22.04 12:00</td><td>22.04 14:00</td><td>2 год</td><td><b>збій</b>: повільні сторінки, хотфікс через 2 год 20 хв</td></tr>
+<tr><td>7</td><td>24.04 10:00</td><td>24.04 12:00</td><td>2 год</td><td>ок</td></tr>
+<tr><td>8</td><td>29.04 15:00</td><td>29.04 18:00</td><td>3 год</td><td>ок</td></tr>
+</tbody></table></div>
+<pre data-lang="text"><code>Deployment frequency = 8 розгортань / 30 днів ≈ 2 на тиждень          → рівень High («від щодня до щотижня»)
+Lead time (медіана)  = відсортуємо: 2,2,2,2,3,5,25,26 → медіана (2+3)/2 = 2,5 год → менше доби (Elite)
+Change failure rate  = 2 невдалі / 8 = 25 %                               → гірше за High (20 %)
+MTTR                 = (40 хв + 140 хв) / 2 = 90 хв                       → менше доби (High)</code></pre>
+<p>Висновок для команди: конвеєр швидкий (lead time короткий), але кожне четверте розгортання ламає production. Наступний крок — посилити автотести (тест оплати мав зловити збій №3) і додати canary-розгортання, щоб збій №6 зачепив 5% користувачів, а не всіх.</p>
+<div class="callout warn"><div class="callout-title">Медіана, а не середнє</div><p>Для lead time беруть <b>медіану</b>: одне «завислe» розгортання на 3 дні сильно зсуне середнє і створить хибне враження. Середнє тут дорівнювало б 8,4 год, медіана — 2,5 год.</p></div>
+
+<h3>Рівні продуктивності (звіт DORA 2024)</h3>
+<div class="table-wrap"><table>
+<thead><tr><th>Рівень</th><th>Частота розгортань</th><th>Lead time</th><th>Частка невдалих змін</th><th>Відновлення</th></tr></thead>
+<tbody>
+<tr><td><b>Elite</b></td><td>на вимогу, кілька разів на день</td><td>менше доби</td><td>≈ 5 %</td><td>менше години</td></tr>
+<tr><td><b>High</b></td><td>від щодня до щотижня</td><td>від доби до тижня</td><td>≈ 20 %</td><td>менше доби</td></tr>
+<tr><td><b>Medium</b></td><td>від щотижня до щомісяця</td><td>від тижня до місяця</td><td>≈ 10 %</td><td>менше доби</td></tr>
+<tr><td><b>Low</b></td><td>від щомісяця до двох разів на рік</td><td>від 1 до 6 місяців</td><td>≈ 40 %</td><td>від тижня до місяця</td></tr>
+</tbody></table></div>
+<p class="note-small">Межі кластерів трохи змінюються щороку; elite-команд менше 20 % опитаних. Не плутайте: метрики вимірюють <b>систему доставки</b>, а не окремих людей. Використовувати їх для рейтингу розробників — шлях до маніпуляцій цифрами.</p>
+
+<h3>Чому ці метрики, а не «кількість рядків коду»</h3>
+<ul>
+<li><b>Рядки коду, кількість комітів, закриті задачі</b> легко накрутити, і вони не кажуть, чи отримав користувач цінність.</li>
+<li>Чотири метрики DORA врівноважують одна одну: якщо команда «женеться» за частотою і ламає production, зросте change failure rate; якщо «перестраховується» і релізить раз на квартал — впаде частота і зросте lead time.</li>
+<li>Їх можна зібрати автоматично: з історії Git (час коміту), з CI/CD (час деплою), з системи інцидентів (час збою і відновлення).</li>
+</ul>
+
+<h3>Як мета DevOps звучить у тестах</h3>
+<div class="table-wrap"><table>
+<thead><tr><th>Формулювання</th><th>Це мета/потреба DevOps?</th><th>Чому</th></tr></thead>
+<tbody>
+<tr><td>Create an environment where releasing more reliable applications, faster and more frequently, can occur</td><td><b>так</b></td><td>класичне визначення мети: і швидкість, і надійність</td></tr>
+<tr><td>Increase deployment frequency</td><td><b>так</b></td><td>перша метрика DORA</td></tr>
+<tr><td>Lower failure rate of new releases</td><td><b>так</b></td><td>change failure rate</td></tr>
+<tr><td>Shortened lead time between fixes</td><td><b>так</b></td><td>lead time for changes</td></tr>
+<tr><td>Faster mean time to recovery</td><td><b>так</b></td><td>MTTR</td></tr>
+<tr><td>Release applications faster, even if quality drops</td><td>ні</td><td>DevOps не жертвує якістю заради швидкості</td></tr>
+<tr><td>Remove the operations team; developers do everything</td><td>ні</td><td>DevOps — співпраця, а не заміна однієї команди іншою</td></tr>
+<tr><td>Have a separate team that only writes documentation for releases</td><td>ні</td><td>документацію автоматизують і ведуть разом із кодом</td></tr>
+</tbody></table></div>
+
 <h2 id="lifecycle">Етапи DevOps-циклу детально<a class="h-anchor" href="#lifecycle" aria-label="Посилання на розділ">#</a></h2>
 <p>Нескінченна петля (див. схему вище) — не просто картинка. На кожному етапі є конкретні дії, артефакти й інструменти. У тестах питають, «що робиться на якому етапі» і «який інструмент для цього».</p>
 <div class="table-wrap"><table>
@@ -219,6 +287,86 @@
 </tbody></table></div>
 <p>Ключова ідея DevOps: середовища мають бути <b>однаковими</b> і створюватися автоматично (IaC, контейнери). Інакше з'являється класичне «у мене на машині працює». Один і той самий артефакт збирається <b>один раз</b> і просувається між середовищами; змінюється лише конфігурація (змінні середовища, секрети).</p>
 
+<h2 id="walkthrough">Наскрізний приклад: одна зміна від задачі до production<a class="h-anchor" href="#walkthrough" aria-label="Посилання на розділ">#</a></h2>
+<p>Абстрактні терміни легше запам'ятати на конкретній історії. Інтернет-магазин, команда з 6 людей, усе налаштовано за DevOps-практиками. Простежимо одну маленьку зміну — «показувати на сторінці товару, скільки одиниць лишилось на складі».</p>
+
+<h3>1. Plan: задача в трекері</h3>
+<pre data-lang="text"><code>SHOP-482  Показувати залишок товару на сторінці
+Як покупець, я хочу бачити «Залишилось 3 шт.», щоб встигнути купити.
+Критерії готовності (acceptance criteria):
+  - якщо залишок ≤ 5, показати «Залишилось N шт.»
+  - якщо 0 — кнопка «Купити» неактивна, текст «Немає в наявності»
+  - функція вмикається прапорцем stock_badge</code></pre>
+<p>Задача маленька — на 1–2 дні. Це навмисно: <b>малі партії</b> (small batches) проходять конвеєр швидко і, якщо щось зламають, легко знайти причину.</p>
+
+<h3>2. Code: гілка, коміт, pull request</h3>
+<pre data-lang="bash"><code>git switch -c feature/SHOP-482-stock-badge     <span class="c"># коротка гілка від main</span>
+<span class="c"># ... пишемо код і тест ...</span>
+git add src/product.py tests/test_product.py
+git commit -m "SHOP-482: show stock badge when stock <= 5"
+git push -u origin feature/SHOP-482-stock-badge
+<span class="c"># на GitHub відкриваємо pull request у main</span></code></pre>
+<p>Pull request автоматично запускає CI. Колега робить <b>code review</b>: читає зміни, лишає коментарі. Це і контроль якості, і обмін знаннями (принцип <b>Sharing</b> з CAMS).</p>
+
+<h3>3. Build + Test: CI-сервер перевіряє зміну</h3>
+<pre data-lang="text"><code>[CI] #1734  feature/SHOP-482-stock-badge
+  ✔ checkout                    2s
+  ✔ install dependencies       38s   (кеш залежностей)
+  ✔ lint (flake8)               6s
+  ✔ unit tests (pytest)        41s   212 passed
+  ✔ SAST scan (semgrep)        19s   0 high
+  ✔ build image shop:1734-a1b2c3d   54s
+  ✔ integration tests          2m10s
+  Total: 4m10s  — можна зливати</code></pre>
+<p>Порядок не випадковий: найшвидші перевірки (lint, unit) йдуть першими — принцип <b>fail fast</b>. Якби тест впав, розробник дізнався б за хвилину, а не наступного дня від тестувальника.</p>
+
+<h3>4. Release: один артефакт для всіх середовищ</h3>
+<p>Після злиття в main CI ще раз збирає образ і публікує його в реєстр із незмінним тегом:</p>
+<pre data-lang="text"><code>registry.example.com/shop:2.14.0      ← семантична версія
+registry.example.com/shop@sha256:9f1c…  ← незмінний відбиток (digest)</code></pre>
+<p>Саме цей образ піде на staging і в production. Його <b>не перезбирають</b> для кожного середовища, змінюється лише конфігурація (адреса БД, ключі, прапорці). Так ми впевнені: в production працює рівно те, що протестували.</p>
+
+<h3>5. Deploy: staging → production</h3>
+<pre data-lang="text"><code>[CD] shop 2.14.0
+  ✔ deploy to staging            1m05s
+  ✔ smoke tests on staging       35s
+  ✔ e2e tests (Playwright)       3m20s
+  ⏸ approval: production          — чекає натискання (Continuous Delivery)
+  ✔ approved by olena.k          10:42
+  ✔ canary 5% traffic            10 хв, error rate 0.2% (норма &lt; 1%)
+  ✔ rollout 100%                 rolling update, 0 downtime</code></pre>
+<p>Крок «approval» — і є різниця між <b>Continuous Delivery</b> (людина натискає кнопку) і <b>Continuous Deployment</b> (кнопки немає, пройшли перевірки — розгортаємо).</p>
+
+<h3>6. Release функції: прапорець</h3>
+<p>Код уже в production, але прапорець <code>stock_badge</code> вимкнений. Продакт-менеджер вмикає його спершу для 10% покупців, дивиться на метрику конверсії, потім — для всіх. Деплой (технічна подія) і реліз (бізнес-подія) розведені в часі.</p>
+
+<h3>7. Operate + Monitor: що бачимо після релізу</h3>
+<pre data-lang="text"><code>Grafana, дашборд «Shop / Product page»
+  requests/s        1 240   (як зазвичай)
+  p95 latency       180 ms  → 410 ms  ⚠  через 20 хв після вмикання прапорця
+  error rate        0.3 %
+Alertmanager: [WARNING] product-page p95 latency &gt; 300ms for 10m</code></pre>
+<p>З'ясовується: для кожного товару сторінка робить окремий запит до складу. Прапорець вимикають за 30 секунд (без деплою!) — затримка повертається до норми. Це і є <b>швидкий зворотний зв'язок</b> (другий шлях DevOps).</p>
+
+<h3>8. Learn: розбір без пошуку винних</h3>
+<pre data-lang="text"><code>Postmortem SHOP-482 (blameless)
+Що сталося:   p95 latency виросла до 410 ms на 25 хв.
+Вплив:        сторінка товару повільніша для 10% користувачів, помилок не було.
+Причина:      N+1 запитів до сервісу складу; навантажувальні тести не покривали сторінку товару.
+Що змінюємо:  - кешувати залишки на 30 с (SHOP-490)
+              - додати сторінку товару в навантажувальний тест (SHOP-491)
+              - алерт на p95 спрацював вчасно — залишаємо як є</code></pre>
+<p>Ніхто не шукає «хто винен». Питання — «що в системі дозволило помилці дійти до production і як це закрити» (третій шлях — безперервне навчання). Нові задачі SHOP-490 і SHOP-491 потрапляють у Plan, і петля DevOps замикається.</p>
+
+<div class="callout def"><div class="callout-title">Що з DevOps ми побачили в одній історії</div>
+<ul>
+<li><b>Culture</b>: рев'ю коду, спільне рішення про прапорець, blameless postmortem.</li>
+<li><b>Automation</b>: CI, збірка образу, деплой, тести, canary — без ручних кроків, крім схвалення.</li>
+<li><b>Lean</b>: маленька задача, коротка гілка, швидкий потік.</li>
+<li><b>Measurement</b>: дашборд, алерт, метрика конверсії.</li>
+<li><b>Sharing</b>: усі бачать статус збірки, postmortem доступний усій компанії.</li>
+</ul></div>
+
 <h2 id="automation">Автоматизація: що вона дає<a class="h-anchor" href="#automation" aria-label="Посилання на розділ">#</a></h2>
 <p>Принцип «автоматизуй усе, що повторюється» — серце DevOps. Автоматизують збірку, тести, створення інфраструктури (IaC), налаштування серверів, деплой, моніторинг і сповіщення.</p>
 <ul>
@@ -227,6 +375,79 @@
 <li><b>Будь-хто може виконати задачу</b> (enables anyone to perform tasks): знання «як розгорнути» записане в скрипті чи пайплайні, а не в голові одного адміна.</li>
 <li><b>Журнал змін</b> (audit trail): видно, хто, що й коли запустив.</li>
 <li>Люди звільняються від рутини і розв'язують справжні проблеми.</li>
+</ul>
+
+<h2 id="automation-deep">Автоматизація детально: що, як і чого вона не дає<a class="h-anchor" href="#automation-deep" aria-label="Посилання на розділ">#</a></h2>
+<h3>Ручна процедура проти автоматизованої</h3>
+<p>Ось як виглядав деплой у багатьох компаніях до DevOps — документ «Інструкція з оновлення» на 3 сторінки:</p>
+<pre data-lang="text"><code>1. Зайти по SSH на web1
+2. cd /var/www/shop &amp;&amp; git pull
+3. Перевірити, що в config.php правильний пароль до БД (на web2 він інший!)
+4. php migrate.php
+5. sudo systemctl restart php-fpm
+6. Повторити 1–5 на web2 і web3, але на web3 migrate НЕ запускати
+7. Відкрити сайт і перевірити, що працює</code></pre>
+<p>Що тут може піти не так: пропущений крок, опечатка, «на web3 migrate не запускати» забули, Петро у відпустці і ніхто не знає, де пароль. Кожен деплой — стрес, тому їх роблять рідко, а рідкі деплої великі й ризиковані.</p>
+<p>Той самий процес у вигляді коду (Ansible playbook, лекція 8):</p>
+<pre data-lang="yaml"><code>- hosts: web
+  serial: 1                         <span class="c"># по одному серверу — сайт не падає</span>
+  tasks:
+    - name: Отримати код потрібної версії
+      git: { repo: "https://github.com/acme/shop.git", dest: /var/www/shop, version: "v2.14.0" }
+    - name: Згенерувати конфіг з шаблону (пароль — із vault)
+      template: { src: config.php.j2, dest: /var/www/shop/config.php }
+    - name: Міграції лише на першому сервері
+      command: php /var/www/shop/migrate.php
+      run_once: true
+    - name: Перезапустити PHP-FPM
+      service: { name: php-fpm, state: restarted }</code></pre>
+<p>Тепер знання записане в репозиторії, деплой запускає будь-хто з команди однією командою або CI-сервер, а історія змін видна в Git.</p>
+
+<h3>Переваги автоматизації — і що до них НЕ належить</h3>
+<div class="table-wrap"><table>
+<thead><tr><th>Твердження</th><th>Перевага?</th><th>Пояснення з прикладом</th></tr></thead>
+<tbody>
+<tr><td>Speed — швидкість</td><td><b>так</b></td><td>розгортання на 50 серверів за 3 хвилини замість дня ручної роботи</td></tr>
+<tr><td>Reliability — надійність</td><td><b>так</b></td><td>скрипт не втомлюється і не пропускає крок о 3-й ночі</td></tr>
+<tr><td>Consistency — узгодженість</td><td><b>так</b></td><td>усі сервери налаштовано однаково, немає «унікальних сніжинок»</td></tr>
+<tr><td>Enables anyone to perform tasks</td><td><b>так</b></td><td>новачок у перший тиждень запускає деплой кнопкою, бо процедура в коді</td></tr>
+<tr><td>Audit trail / журнал</td><td><b>так</b></td><td>у CI видно, хто, коли і яку версію розгорнув</td></tr>
+<tr><td>Scalability — масштабованість</td><td><b>так</b></td><td>той самий код налаштовує 3 або 300 серверів</td></tr>
+<tr><td>Introduces manual errors / adds human error</td><td><b>ні</b></td><td>навпаки, автоматизація <b>прибирає</b> ручні помилки</td></tr>
+<tr><td>Requires an expert to run each deployment</td><td><b>ні</b></td><td>суть у тому, що експерт потрібен для написання, а не для запуску</td></tr>
+<tr><td>Eliminates the need for testing</td><td><b>ні</b></td><td>тести самі автоматизуються, але не зникають</td></tr>
+<tr><td>Guarantees zero bugs</td><td><b>ні</b></td><td>автоматизація повторює процес точно — разом із помилками в ньому</td></tr>
+</tbody></table></div>
+
+<h3>Що автоматизувати першим</h3>
+<p>Корисне правило: автоматизуйте те, що <b>часто повторюється</b>, <b>довго робиться вручну</b> або <b>дорого коштує при помилці</b>.</p>
+<div class="table-wrap"><table>
+<thead><tr><th>Ручна задача</th><th>Автоматизація</th><th>Інструмент</th></tr></thead>
+<tbody>
+<tr><td>Запускати тести перед злиттям</td><td>тести на кожен pull request</td><td>Jenkins, GitHub Actions</td></tr>
+<tr><td>Збирати архів і копіювати на сервер</td><td>збірка Docker-образу і публікація в реєстр</td><td>Docker, CI</td></tr>
+<tr><td>Створювати ВМ у консолі хмари мишкою</td><td>опис інфраструктури кодом</td><td>Terraform</td></tr>
+<tr><td>Ставити пакети і правити конфіги на серверах</td><td>playbook</td><td>Ansible</td></tr>
+<tr><td>Перевіряти, чи живий сайт</td><td>перевірки і алерти</td><td>Nagios, Prometheus + Alertmanager</td></tr>
+<tr><td>Робити бекап БД щоночі</td><td>cron-задача або керований бекап у хмарі</td><td>cron, AWS Backup</td></tr>
+<tr><td>Оновлювати залежності</td><td>бот створює PR з оновленням</td><td>Dependabot, Renovate</td></tr>
+</tbody></table></div>
+
+<h3>Ідемпотентність — головна властивість доброї автоматизації</h3>
+<p>Операція <b>ідемпотентна</b>, якщо її повторний запуск дає той самий результат, що й перший, і нічого не ламає. Порівняйте два bash-скрипти, що мають додати рядок у конфіг:</p>
+<pre data-lang="bash"><code><span class="c"># НЕ ідемпотентно: кожен запуск дописує ще один рядок</span>
+echo "max_connections = 200" &gt;&gt; /etc/app.conf
+
+<span class="c"># Ідемпотентно: дописуємо лише якщо рядка ще немає</span>
+grep -qxF "max_connections = 200" /etc/app.conf || echo "max_connections = 200" &gt;&gt; /etc/app.conf</code></pre>
+<p>Після трьох запусків першого скрипта у файлі буде три однакові рядки; після трьох запусків другого — один. Інструменти керування конфігурацією (Ansible, Puppet, Chef) і Terraform ідемпотентні за задумом: ви описуєте <b>бажаний стан</b>, а не послідовність дій.</p>
+
+<h3>Анти-патерни автоматизації</h3>
+<ul>
+<li><b>Автоматизувати хаос.</b> Якщо процес незрозумілий навіть людям, скрипт лише швидше відтворюватиме безлад. Спершу спростіть процес.</li>
+<li><b>Скрипт на ноутбуці одного інженера.</b> Автоматизація має жити в репозиторії і запускатися з CI, інакше це знову «знання в голові однієї людини».</li>
+<li><b>Секрети в коді.</b> Паролі в playbook або Jenkinsfile потрапляють в історію Git назавжди. Використовуйте Vault, секрети CI, менеджери секретів хмари.</li>
+<li><b>Відсутність відкату.</b> Автоматичний деплой без автоматичного відкату — половина роботи.</li>
 </ul>
 
 <h2 id="cicd">CI, Continuous Delivery і Continuous Deployment<a class="h-anchor" href="#cicd" aria-label="Посилання на розділ">#</a></h2>
@@ -263,6 +484,107 @@
 <div class="callout warn"><div class="callout-title">Пастка в тестах</div><p><b>Збір вимог</b> (gathering requirements) і <b>збір інформації</b> (information gathering) — етапи аналізу в SDLC, а <b>не</b> ознаки continuous delivery. Ознаки CD — автоматизація всього, безперервне вдосконалення, виправлення помилок та експерименти малими релізами.</p></div>
 <h3>Pipeline (конвеєр постачання)</h3>
 <p><b>Pipeline</b> у continuous delivery — це <b>автоматизований робочий процес (workflow)</b>: послідовність етапів, якими проходить кожна зміна — коміт → збірка → автотести → staging → реліз. Кожен етап дає зворотний зв'язок; якщо етап «червоний», зміна далі не йде. У Jenkins pipeline описують у <code>Jenkinsfile</code> (лекція 11), у GitHub Actions — у workflow-файлі YAML (лекція 12). Окремий деплой чи окремий крок — лише <i>частина</i> pipeline.</p>
+
+<h2 id="cd-deep">Continuous Delivery глибше: фундамент, тести і конвеєр у коді<a class="h-anchor" href="#cd-deep" aria-label="Посилання на розділ">#</a></h2>
+<h3>Три фундаменти, без яких CD не працює</h3>
+<p>Сайт continuousdelivery.com (Jez Humble) виділяє три речі, які мають бути налагоджені <b>до</b> того, як команда може безпечно релізити будь-коли:</p>
+<div class="table-wrap"><table>
+<thead><tr><th>Фундамент</th><th>Що означає</th><th>Як перевірити, що він є</th></tr></thead>
+<tbody>
+<tr><td><b>Configuration management</b><br>(керування конфігурацією)</td><td>усе, що потрібно для відтворення системи, лежить у контролі версій: код, тести, скрипти збірки, конфіги, опис інфраструктури, схема БД</td><td>новий сервер або середовище створюється з репозиторію автоматично, без ручних кроків</td></tr>
+<tr><td><b>Continuous integration</b></td><td>усі часто зливають зміни в main, кожен коміт збирається і тестується</td><td>гілки живуть години або дні, а не тижні; зламану збірку лагодять негайно</td></tr>
+<tr><td><b>Continuous testing</b></td><td>автотести різних рівнів запускаються на кожному етапі конвеєра</td><td>команда довіряє «зеленій» збірці і не робить тижневої ручної регресії перед релізом</td></tr>
+</tbody></table></div>
+
+<h3>Переваги CD, які перелічують у тестах і на співбесідах</h3>
+<ul>
+<li><b>Low risk releases</b> — релізи малі й відпрацьовані, тому нудні; blue-green і canary дозволяють випускати без простою.</li>
+<li><b>Faster time to market</b> — від ідеї до користувача дні, а не місяці.</li>
+<li><b>Higher quality</b> — тестування автоматизоване, тестувальники займаються дослідницьким тестуванням, а не повторенням тих самих кліків.</li>
+<li><b>Lower costs</b> — ручні стадії зникають, менше часу на підготовку релізів.</li>
+<li><b>Better products</b> — малі експерименти (A/B-тести) дають фідбек від реальних користувачів.</li>
+<li><b>Happier teams</b> — релізи не вимагають нічних змін і героїзму.</li>
+</ul>
+
+<h3>Піраміда тестування</h3>
+<p>Не всі тести однаково корисні в конвеєрі. Чим вищий рівень — тим тест повільніший, крихкіший і дорожчий, тому таких тестів має бути менше.</p>
+<pre data-lang="text"><code>              /\
+             /E2E\          10–50 тестів: браузер клікає по сайту (Selenium, Playwright). Хвилини.
+            /------\
+           /інтегра-\       сотні: застосунок + справжня БД / черга / інший сервіс. Секунди.
+          /  ційні   \
+         /------------\
+        /   модульні   \    тисячі: одна функція чи клас ізольовано (JUnit, pytest). Мілісекунди.
+       /________________\</code></pre>
+<div class="table-wrap"><table>
+<thead><tr><th>Вид тесту</th><th>Що перевіряє</th><th>Приклад</th></tr></thead>
+<tbody>
+<tr><td>Unit (модульний)</td><td>одну функцію без зовнішніх залежностей</td><td><code>assert price_with_discount(100, 10) == 90</code></td></tr>
+<tr><td>Integration (інтеграційний)</td><td>взаємодію компонентів</td><td>застосунок зберігає замовлення в тестову PostgreSQL і читає його назад</td></tr>
+<tr><td>End-to-end (E2E, UI)</td><td>сценарій користувача цілком</td><td>браузер відкриває сайт, додає товар у кошик, оформлює замовлення</td></tr>
+<tr><td>Smoke (димовий)</td><td>чи система взагалі запустилась</td><td><code>curl -f https://staging.shop/health</code> одразу після деплою</td></tr>
+<tr><td>Regression (регресійний)</td><td>чи не зламалось те, що працювало</td><td>увесь набір автотестів на кожну зміну</td></tr>
+<tr><td>Acceptance / UAT</td><td>чи виконані вимоги бізнесу</td><td>сценарії з критеріїв приймання задачі</td></tr>
+<tr><td>Performance / load</td><td>швидкість під навантаженням</td><td>k6 або JMeter дає 1000 запитів/с, p95 має бути &lt; 300 мс</td></tr>
+<tr><td>Security (SAST, DAST, SCA)</td><td>вразливості коду, застосунку, залежностей</td><td>SonarQube, OWASP ZAP, Trivy, Dependabot</td></tr>
+</tbody></table></div>
+<p><b>Shift left</b> («зсув ліворуч») — переносити перевірки якомога раніше в конвеєрі: дефект, знайдений у модульному тесті за хвилину після коміту, у десятки разів дешевший, ніж той самий дефект, знайдений користувачем.</p>
+
+<h3>Quality gates: коли конвеєр має зупинитись</h3>
+<p>Quality gate (ворота якості) — автоматична умова, без виконання якої зміна далі не піде:</p>
+<ul>
+<li>усі тести пройшли;</li>
+<li>покриття коду тестами не впало нижче, наприклад, 80 %;</li>
+<li>немає вразливостей рівня high/critical у залежностях і образі;</li>
+<li>статичний аналіз не знайшов нових серйозних проблем;</li>
+<li>на staging smoke-тести «зелені», а помилок у логах не побільшало.</li>
+</ul>
+
+<h3>Конвеєр як код: як етапи CD виглядають у файлі</h3>
+<p>Сучасні конвеєри описують у файлі поруч із кодом (Pipeline as Code). Нижче — GitHub Actions; детально синтаксис розберемо в лекціях 11–12, тут важливо побачити відповідність етапам:</p>
+<pre data-lang="yaml"><code>name: shop-ci-cd
+on:
+  push: { branches: [main] }
+jobs:
+  commit-stage:                       <span class="c"># CI: швидкі перевірки, fail fast</span>
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - run: pip install -r requirements.txt
+      - run: flake8 .                 <span class="c"># статичний аналіз</span>
+      - run: pytest -q                <span class="c"># модульні тести</span>
+  build:                              <span class="c"># артефакт збирається ОДИН раз</span>
+    needs: commit-stage
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - run: docker build -t ghcr.io/acme/shop:${{ github.sha }} .
+      - run: docker push ghcr.io/acme/shop:${{ github.sha }}
+  staging:                            <span class="c"># acceptance stage</span>
+    needs: build
+    environment: staging
+    runs-on: ubuntu-latest
+    steps:
+      - run: ./deploy.sh staging ${{ github.sha }}
+      - run: ./smoke-test.sh https://staging.shop
+  production:                         <span class="c"># Continuous Delivery: environment з обов'язковим схваленням</span>
+    needs: staging
+    environment: production
+    runs-on: ubuntu-latest
+    steps:
+      - run: ./deploy.sh production ${{ github.sha }}</code></pre>
+<p>Якщо прибрати обов'язкове схвалення в середовищі <code>production</code>, той самий файл перетвориться на <b>Continuous Deployment</b>.</p>
+
+<h3>CI, CD і CD: три рівні зрілості</h3>
+<div class="table-wrap"><table>
+<thead><tr><th></th><th>Continuous Integration</th><th>Continuous Delivery</th><th>Continuous Deployment</th></tr></thead>
+<tbody>
+<tr><td>Що автоматизовано</td><td>збірка і тести кожного коміту</td><td>+ розгортання на staging, підготовка релізу</td><td>+ розгортання в production</td></tr>
+<tr><td>Хто вирішує про production</td><td>—</td><td>людина (кнопка)</td><td>автоматичні перевірки</td></tr>
+<tr><td>Стан main</td><td>завжди збирається</td><td>завжди готовий до релізу</td><td>завжди в production</td></tr>
+<tr><td>Типова частота релізів</td><td>будь-яка</td><td>коли бізнес вирішить</td><td>десятки разів на день</td></tr>
+<tr><td>Головна вимога</td><td>швидкі надійні тести</td><td>+ автоматизоване розгортання і середовища</td><td>+ дуже добре покриття тестами, моніторинг, автоматичний відкат</td></tr>
+</tbody></table></div>
 
 <h2 id="ci-practices">Практики CI і конвеєр розгортання детально<a class="h-anchor" href="#ci-practices" aria-label="Посилання на розділ">#</a></h2>
 <h3>Правила Continuous Integration</h3>
@@ -334,6 +656,56 @@
 </tbody></table></div>
 <p>Що моніторити в першу чергу — «чотири золоті сигнали» Google SRE: <b>затримка</b> (latency), <b>трафік</b>, <b>помилки</b>, <b>насиченість</b> (saturation — наскільки ресурси близькі до межі). Алерт має вимагати дії людини; алерти, на які ніхто не реагує, лише привчають їх ігнорувати.</p>
 
+<h2 id="sre-numbers">SRE і DevSecOps у цифрах і прикладах<a class="h-anchor" href="#sre-numbers" aria-label="Посилання на розділ">#</a></h2>
+<h3>SLI → SLO → SLA</h3>
+<div class="table-wrap"><table>
+<thead><tr><th>Термін</th><th>Що це</th><th>Приклад для інтернет-магазину</th></tr></thead>
+<tbody>
+<tr><td><b>SLI</b> — Service Level Indicator</td><td>що вимірюємо</td><td>частка HTTP-запитів до <code>/checkout</code>, що завершились без помилки 5xx за 300 мс</td></tr>
+<tr><td><b>SLO</b> — Service Level Objective</td><td>внутрішня ціль для SLI</td><td>99,9 % таких запитів за 30 днів мають бути успішними</td></tr>
+<tr><td><b>SLA</b> — Service Level Agreement</td><td>договір із клієнтом і наслідки його порушення</td><td>доступність 99,5 % на місяць, інакше повертаємо 10 % вартості підписки</td></tr>
+</tbody></table></div>
+<p>SLA завжди м'якший за SLO: ціль усередині команди суворіша, ніж обіцянка клієнту, щоб був запас.</p>
+
+<h3>«Дев'ятки» і бюджет помилок</h3>
+<div class="table-wrap"><table>
+<thead><tr><th>Доступність</th><th>Допустимий простій за рік</th><th>за 30 днів</th><th>за тиждень</th></tr></thead>
+<tbody>
+<tr><td>99 % («дві дев'ятки»)</td><td>3,65 доби</td><td>7,2 год</td><td>1,68 год</td></tr>
+<tr><td>99,9 %</td><td>8,76 год</td><td>43,2 хв</td><td>10,1 хв</td></tr>
+<tr><td>99,95 %</td><td>4,38 год</td><td>21,6 хв</td><td>5 хв</td></tr>
+<tr><td>99,99 %</td><td>52,6 хв</td><td>4,32 хв</td><td>1 хв</td></tr>
+<tr><td>99,999 %</td><td>5,26 хв</td><td>26 с</td><td>6 с</td></tr>
+</tbody></table></div>
+<p>Як порахувати: 30 днів = 43 200 хвилин; 100 % − 99,9 % = 0,1 %; 0,1 % × 43 200 = <b>43,2 хв</b>. Це і є <b>бюджет помилок</b> (error budget) на місяць.</p>
+<p>Як бюджетом користуються: поки він не витрачений, команда релізить у звичному темпі й експериментує. Якщо за перші 10 днів місяця витрачено 40 хвилин з 43, нові функції заморожують, і вся команда займається надійністю, доки бюджет не відновиться. Так SRE переводить вічну суперечку «швидко чи стабільно» в домовленість, яку можна виміряти.</p>
+
+<h3>Toil — рутина, яку треба прибрати</h3>
+<p><b>Toil</b> — ручна, повторювана, автоматизовувана робота, яка не дає довгострокової цінності і росте разом із сервісом: вручну перезапускати сервіс, коли він падає; вручну чистити диск; створювати користувачів за заявками. Google SRE обмежує toil 50 % часу інженера, решту він витрачає на автоматизацію, яка цей toil зменшує.</p>
+
+<h3>Інцидент-менеджмент: як реагують на збій</h3>
+<ol class="steps">
+<li><b>Виявлення.</b> Алерт з моніторингу (а не дзвінок від клієнта). Черговий інженер (on-call) отримує сповіщення.</li>
+<li><b>Оцінка і комунікація.</b> Визначають рівень серйозності (SEV1 — сервіс повністю недоступний, SEV3 — незначна деградація), оновлюють сторінку статусу.</li>
+<li><b>Пом'якшення (mitigation).</b> Спершу повернути сервіс до роботи: відкат, вимкнення прапорця, додаткові сервери. Пошук першопричини — потім.</li>
+<li><b>Відновлення і перевірка.</b> Метрики повернулися до норми, алерти замовкли.</li>
+<li><b>Postmortem без пошуку винних.</b> Хронологія, вплив, першопричина, дії, щоб це не повторилось, з відповідальними і термінами.</li>
+</ol>
+
+<h3>DevSecOps: безпека на кожному етапі</h3>
+<div class="table-wrap"><table>
+<thead><tr><th>Етап</th><th>Перевірка</th><th>Що знаходить</th><th>Інструменти</th></tr></thead>
+<tbody>
+<tr><td>Code</td><td>pre-commit, пошук секретів</td><td>пароль чи API-ключ у коміті</td><td>gitleaks, GitHub secret scanning</td></tr>
+<tr><td>Build</td><td><b>SAST</b> — Static Application Security Testing</td><td>SQL-ін'єкції, небезпечні функції у вихідному коді</td><td>SonarQube, Semgrep, CodeQL</td></tr>
+<tr><td>Build</td><td><b>SCA</b> — Software Composition Analysis</td><td>вразливі версії бібліотек (CVE)</td><td>Dependabot, Snyk, OWASP Dependency-Check</td></tr>
+<tr><td>Build</td><td>сканування образів</td><td>вразливі пакети в Docker-образі</td><td>Trivy, Grype</td></tr>
+<tr><td>Test</td><td><b>DAST</b> — Dynamic Application Security Testing</td><td>вразливості працюючого застосунку (XSS, відкриті адміністративні сторінки)</td><td>OWASP ZAP, Burp Suite</td></tr>
+<tr><td>Deploy</td><td>сканування IaC</td><td>відкритий у світ S3-бакет, порт 22 для 0.0.0.0/0</td><td>Checkov, tfsec</td></tr>
+<tr><td>Operate</td><td>керування секретами, аудит доступів</td><td>прострочені ключі, зайві права</td><td>HashiCorp Vault, AWS Secrets Manager, IAM</td></tr>
+</tbody></table></div>
+<p>Різниця SAST і DAST, яку часто питають: SAST читає <b>вихідний код</b> без запуску («біла скринька»), DAST атакує <b>запущений</b> застосунок ззовні без доступу до коду («чорна скринька»).</p>
+
 <h2 id="tools">Інструменти DevOps за етапами<a class="h-anchor" href="#tools" aria-label="Посилання на розділ">#</a></h2>
 <p>У тестах часто питають «який інструмент для чого» і «які з цих інструментів популярні в DevOps». Правильними будуть усі інструменти з цієї таблиці; неправильними — офісні програми, мови програмування як такі, графічні редактори чи ОС. Знайте по 1–2 назви на кожен етап:</p>
 <div class="table-wrap"><table>
@@ -353,6 +725,70 @@
 <tr><td>Моніторинг і логи</td><td><b>Nagios</b>, Zabbix, <b>Prometheus</b> (метрики) + <b>Grafana</b> (дашборди), ELK</td></tr>
 </tbody></table></div>
 <p><b>Мови скриптів у DevOps:</b> найпопулярніша — <b>Bash</b> (стандарт на Linux-серверах, лекція 3); далі <b>Python</b> (складніша автоматизація, робота з API хмар), <b>PowerShell</b> (Windows), <b>Groovy</b> (Jenkinsfile). <b>YAML</b> і JSON — не мови програмування, а формати конфігурацій (Ansible, GitHub Actions, Kubernetes).</p>
+
+<h2 id="tools-facts">Інструменти DevOps: факти, приклади команд і пастки тестів<a class="h-anchor" href="#tools-facts" aria-label="Посилання на розділ">#</a></h2>
+<p>У тестах типу «Which of the following is used for…» перевіряють, чи знаєте ви <b>призначення</b> інструмента, а іноді — мову, якою він написаний, модель роботи чи формат конфігурації. Таблиця нижче — довідник для таких питань.</p>
+<div class="table-wrap"><table>
+<thead><tr><th>Інструмент</th><th>Призначення</th><th>Написаний на</th><th>Конфігурація / мова опису</th><th>Особливості</th></tr></thead>
+<tbody>
+<tr><td><b>Git</b></td><td>розподілений контроль версій</td><td>C</td><td><code>.gitconfig</code>, <code>.gitignore</code></td><td>створив Лінус Торвальдс у 2005 р. для ядра Linux</td></tr>
+<tr><td><b>Jenkins</b></td><td>CI/CD-сервер, автоматизація збірок</td><td>Java</td><td>Jenkinsfile (Groovy DSL)</td><td>форк Hudson (2011); тисячі плагінів</td></tr>
+<tr><td><b>Maven</b></td><td>збірка і залежності Java</td><td>Java</td><td><code>pom.xml</code></td><td><code>mvn clean package</code> → <code>.jar</code></td></tr>
+<tr><td><b>Gradle</b></td><td>збірка (Java, Kotlin, Android)</td><td>Java/Kotlin</td><td><code>build.gradle</code> (Groovy/Kotlin DSL)</td><td>інкрементальні збірки</td></tr>
+<tr><td><b>Selenium</b></td><td>автоматизація браузера для тестів UI</td><td>Java (є прив'язки до Python, C#, JS)</td><td>код тестів</td><td>WebDriver керує справжнім браузером</td></tr>
+<tr><td><b>JUnit / pytest</b></td><td>модульні тести Java / Python</td><td>Java / Python</td><td>код тестів</td><td>звіти JUnit XML читає Jenkins</td></tr>
+<tr><td><b>SonarQube</b></td><td>статичний аналіз якості й безпеки коду</td><td>Java</td><td><code>sonar-project.properties</code></td><td>quality gate блокує злиття</td></tr>
+<tr><td><b>Docker</b></td><td>контейнеризація: збирання і запуск контейнерів</td><td>Go</td><td>Dockerfile</td><td>образи з шарів; Docker Hub</td></tr>
+<tr><td><b>Kubernetes</b></td><td>оркестрація контейнерів</td><td>Go</td><td>YAML-маніфести</td><td>походить від Google Borg; проєкт CNCF</td></tr>
+<tr><td><b>Ansible</b></td><td>керування конфігурацією, деплой</td><td>Python</td><td>YAML (playbooks)</td><td>agentless, push через SSH; Red Hat</td></tr>
+<tr><td><b>Puppet</b></td><td>керування конфігурацією</td><td>Ruby (сервер — Clojure)</td><td>Puppet DSL (маніфести <code>.pp</code>)</td><td>агент, pull; за замовчуванням раз на 30 хв</td></tr>
+<tr><td><b>Chef</b></td><td>керування конфігурацією</td><td>Ruby (сервер — Erlang)</td><td>Ruby DSL (cookbooks, recipes)</td><td>агент chef-client, pull</td></tr>
+<tr><td><b>SaltStack</b></td><td>керування конфігурацією, віддалене виконання</td><td>Python</td><td>YAML (states)</td><td>агенти-міньйони або SSH</td></tr>
+<tr><td><b>Terraform</b></td><td>інфраструктура як код (provisioning)</td><td>Go</td><td>HCL (<code>.tf</code>)</td><td>HashiCorp; відкритий форк — OpenTofu</td></tr>
+<tr><td><b>Vagrant</b></td><td>відтворювані ВМ для розробки</td><td>Ruby</td><td>Vagrantfile</td><td>HashiCorp; поверх VirtualBox тощо</td></tr>
+<tr><td><b>Nagios</b></td><td>моніторинг доступності хостів і служб</td><td>C</td><td>конфіги об'єктів, плагіни-перевірки</td><td>статуси OK / WARNING / CRITICAL / UNKNOWN</td></tr>
+<tr><td><b>Zabbix</b></td><td>моніторинг серверів і мережі</td><td>C, PHP</td><td>шаблони у вебінтерфейсі</td><td>агенти, тригери, графіки</td></tr>
+<tr><td><b>Prometheus</b></td><td>збір метрик, алерти</td><td>Go</td><td><code>prometheus.yml</code>, PromQL</td><td>pull-модель: сам опитує <code>/metrics</code>; CNCF</td></tr>
+<tr><td><b>Grafana</b></td><td>дашборди і візуалізація</td><td>Go, TypeScript</td><td>дашборди JSON</td><td>джерела: Prometheus, Loki, БД</td></tr>
+<tr><td><b>ELK</b></td><td>збір, пошук, аналіз логів</td><td>Java (Elasticsearch, Logstash), JS (Kibana)</td><td>конфіги pipeline Logstash</td><td>варіант EFK — Fluentd замість Logstash</td></tr>
+<tr><td><b>Nexus / Artifactory</b></td><td>репозиторій артефактів</td><td>Java</td><td>вебінтерфейс, API</td><td>зберігають jar, npm, Docker-образи</td></tr>
+<tr><td><b>Vault</b></td><td>зберігання секретів</td><td>Go</td><td>HCL-політики</td><td>HashiCorp; динамічні облікові дані</td></tr>
+</tbody></table></div>
+
+<h3>Як виглядає робота з кожним інструментом — по одній команді</h3>
+<pre data-lang="bash"><code>git commit -m "fix: price rounding"            <span class="c"># Git: зафіксувати зміну</span>
+mvn clean package                              <span class="c"># Maven: зібрати target/app.jar</span>
+docker build -t shop:1.2 .                     <span class="c"># Docker: зібрати образ за Dockerfile</span>
+docker run -d -p 8080:80 shop:1.2              <span class="c"># Docker: запустити контейнер</span>
+kubectl apply -f deployment.yaml               <span class="c"># Kubernetes: привести кластер до стану з файла</span>
+ansible-playbook -i inventory site.yml         <span class="c"># Ansible: налаштувати сервери з інвентаря</span>
+terraform plan &amp;&amp; terraform apply              <span class="c"># Terraform: показати і застосувати зміни інфраструктури</span>
+puppet agent --test                            <span class="c"># Puppet: агент негайно забирає і застосовує конфігурацію</span>
+check_http -H shop.example.com                 <span class="c"># Nagios-плагін: перевірити, що сайт відповідає</span>
+rate(http_requests_total{status="500"}[5m])    <span class="c"># PromQL: частота помилок 500 за 5 хвилин</span></code></pre>
+
+<h3>Типові пастки в питаннях про інструменти</h3>
+<div class="mistakes">
+<div class="mistake"><div class="wrong">Jenkins — система контролю версій.</div><div class="right">Jenkins — CI/CD-сервер. Він <b>забирає</b> код із Git, але версії не зберігає.</div></div>
+<div class="mistake"><div class="wrong">Docker і Kubernetes — одне й те саме.</div><div class="right">Docker збирає і запускає контейнери на одному хості; Kubernetes керує тисячами контейнерів на кластері хостів.</div></div>
+<div class="mistake"><div class="wrong">Terraform налаштовує софт усередині сервера, а Ansible створює хмарні ресурси.</div><div class="right">Навпаки за основним призначенням: Terraform — provisioning (створити ВМ, мережі, БД), Ansible — configuration management (пакети, файли, служби). Їхні можливості частково перетинаються.</div></div>
+<div class="mistake"><div class="wrong">Nagios і Grafana роблять те саме.</div><div class="right">Nagios перевіряє доступність і надсилає алерти; Grafana — візуалізація даних, які збирає хтось інший (наприклад, Prometheus).</div></div>
+<div class="mistake"><div class="wrong">YAML — мова програмування, яку використовують для DevOps-скриптів.</div><div class="right">YAML — формат даних (конфігурацій). Скрипти пишуть на Bash, Python, PowerShell, Groovy.</div></div>
+<div class="mistake"><div class="wrong">Selenium — інструмент моніторингу production.</div><div class="right">Selenium автоматизує браузер для тестів; моніторинг — Nagios, Zabbix, Prometheus.</div></div>
+</div>
+
+<h3>Мови скриптів у DevOps — детальніше</h3>
+<div class="table-wrap"><table>
+<thead><tr><th>Мова</th><th>Де застосовують</th><th>Приклад задачі</th></tr></thead>
+<tbody>
+<tr><td><b>Bash</b> (shell)</td><td>будь-який Linux-сервер, CI-кроки, Dockerfile, cron</td><td>бекап БД, ротація логів, перевірка місця на диску</td></tr>
+<tr><td><b>Python</b></td><td>складніша логіка, API хмар (boto3), Ansible-модулі</td><td>видалити всі невикористовувані диски в AWS старші за 30 днів</td></tr>
+<tr><td><b>PowerShell</b></td><td>Windows-сервери, Azure</td><td>налаштування IIS, Active Directory</td></tr>
+<tr><td><b>Groovy</b></td><td>Jenkinsfile, Gradle</td><td>опис конвеєра Jenkins</td></tr>
+<tr><td><b>Go</b></td><td>власні CLI-утиліти, оператори Kubernetes</td><td>утиліта, що збирається в один бінарний файл</td></tr>
+<tr><td><b>Ruby</b></td><td>Chef, Vagrant, старші проєкти Puppet</td><td>рецепти Chef</td></tr>
+</tbody></table></div>
+<p>На питання «найпопулярніша мова скриптів у DevOps» правильна відповідь найчастіше <b>Bash</b> (або Python, якщо Bash серед варіантів немає). HTML, CSS, SQL і Java — не мови скриптів для автоматизації інфраструктури.</p>
 
 <h2 id="cloud">Хмари і моделі сервісів [X]aaS<a class="h-anchor" href="#cloud" aria-label="Посилання на розділ">#</a></h2>
 <div class="callout def"><div class="callout-title">Визначення NIST</div><p><b>Хмарні обчислення</b> — модель повсюдного, зручного мережевого доступу <b>на вимогу</b> до спільного пулу конфігурованих ресурсів (мережі, ВМ, сховища, застосунки, сервіси), які можна швидко виділити й звільнити з мінімальними зусиллями з управління.</p></div>
@@ -437,6 +873,66 @@
 </ul>
 <p>Популярні Agile-методології: <b>Scrum</b> (фіксовані спринти, ролі, церемонії), <b>Kanban</b> (безперервний потік задач на дошці з лімітом незавершеної роботи), <b>XP — eXtreme Programming</b> (інженерні практики: парне програмування, TDD, часті релізи).</p>
 
+<h2 id="agile-deep">Agile, Scrum і Kanban детально; Waterfall vs Agile vs DevOps<a class="h-anchor" href="#agile-deep" aria-label="Посилання на розділ">#</a></h2>
+<h3>Scrum: ролі, події, артефакти</h3>
+<div class="table-wrap"><table>
+<thead><tr><th>Що</th><th>Назва</th><th>Суть</th></tr></thead>
+<tbody>
+<tr><td rowspan="3">Ролі<br>(accountabilities)</td><td><b>Product Owner</b></td><td>відповідає за цінність продукту, веде і пріоритезує Product Backlog</td></tr>
+<tr><td><b>Scrum Master</b></td><td>допомагає команді працювати за Scrum, прибирає перешкоди; не начальник</td></tr>
+<tr><td><b>Developers</b></td><td>усі, хто робить інкремент: програмісти, тестувальники, DevOps, дизайнери</td></tr>
+<tr><td rowspan="5">Події<br>(events)</td><td><b>Sprint</b></td><td>фіксований відрізок до місяця (частіше 2 тижні), за який робиться готовий інкремент</td></tr>
+<tr><td><b>Sprint Planning</b></td><td>що і як зробимо в цьому спринті; формуємо Sprint Backlog і ціль спринту</td></tr>
+<tr><td><b>Daily Scrum</b></td><td>15 хвилин щодня: прогрес до цілі спринту, перешкоди</td></tr>
+<tr><td><b>Sprint Review</b></td><td>показ інкременту стейкхолдерам, збір фідбеку</td></tr>
+<tr><td><b>Sprint Retrospective</b></td><td>як покращити наш процес; результат — конкретні дії на наступний спринт</td></tr>
+<tr><td rowspan="3">Артефакти</td><td><b>Product Backlog</b></td><td>упорядкований список усього, що може знадобитися продукту</td></tr>
+<tr><td><b>Sprint Backlog</b></td><td>задачі, обрані на спринт, і план їх виконання</td></tr>
+<tr><td><b>Increment</b></td><td>робочий результат, що відповідає <b>Definition of Done</b></td></tr>
+</tbody></table></div>
+<p><b>Definition of Done</b> (критерій «готово») у DevOps-команді зазвичай включає: код пройшов рев'ю, автотести написані і «зелені», зміна розгорнута на staging, метрики й логи для нової функції додано, документацію оновлено. Без цього «готово на моєму ноутбуці» не вважається готовим.</p>
+
+<h3>User story і критерії приймання</h3>
+<pre data-lang="text"><code>Як &lt;роль&gt;, я хочу &lt;дія&gt;, щоб &lt;цінність&gt;.
+
+Як адміністратор магазину, я хочу отримувати лист, коли товару лишилось менше 5 шт.,
+щоб вчасно дозамовити його.
+
+Критерії приймання (Given / When / Then):
+  Given товар «Навушники X» має залишок 6
+  When  оформлено замовлення на 2 шт.
+  Then  адміністратору надходить лист «Навушники X: залишок 4»</code></pre>
+<p>Обсяг роботи оцінюють <b>story points</b> — відносною складністю (1, 2, 3, 5, 8, 13 за послідовністю Фібоначчі), а не годинами. <b>Velocity</b> — скільки story points команда в середньому закриває за спринт; допомагає планувати.</p>
+
+<h3>Kanban: потік без спринтів</h3>
+<pre data-lang="text"><code>| Backlog      | To Do (WIP 5) | In Progress (WIP 3) | Review (WIP 2) | Done        |
+|--------------|---------------|---------------------|----------------|-------------|
+| SHOP-501     | SHOP-488      | SHOP-482  (Олена)   | SHOP-479       | SHOP-470    |
+| SHOP-502     | SHOP-490      | SHOP-485  (Ігор)    |                | SHOP-472    |
+| SHOP-503     |               | SHOP-487  (Марта)   |                | ...         |</code></pre>
+<ul>
+<li><b>WIP-ліміт</b> (work in progress): у колонці «In Progress» не більше 3 задач. Поки одна не перейде далі, нову не беруть. Це змушує <b>доробляти</b>, а не починати.</li>
+<li><b>Lead time</b> задачі — від появи в To Do до Done; <b>cycle time</b> — від початку роботи до Done.</li>
+<li>Kanban добре підходить командам експлуатації і DevOps: задачі приходять непередбачувано (інциденти, запити), фіксований спринт заважає.</li>
+</ul>
+
+<h3>Waterfall, Agile і DevOps: порівняння</h3>
+<div class="table-wrap"><table>
+<thead><tr><th></th><th>Waterfall</th><th>Agile</th><th>DevOps</th></tr></thead>
+<tbody>
+<tr><td>Головна ідея</td><td>послідовні фази, кожна завершується перед наступною</td><td>короткі ітерації з фідбеком від замовника</td><td>розширює Agile на експлуатацію: швидка і надійна доставка до production</td></tr>
+<tr><td>Кого зближує</td><td>—</td><td>бізнес і розробку</td><td>розробку й експлуатацію (і безпеку, якщо DevSecOps)</td></tr>
+<tr><td>Частота релізів</td><td>один великий реліз наприкінці проєкту</td><td>інкремент кожного спринту (але не завжди в production)</td><td>часто, малими порціями, аж до кількох разів на день</td></tr>
+<tr><td>Ставлення до змін вимог</td><td>дорогі, потребують перегляду плану</td><td>очікувані, вітаються</td><td>очікувані; зміни швидко перевіряються в production</td></tr>
+<tr><td>Тестування</td><td>окрема фаза наприкінці</td><td>у кожній ітерації</td><td>автоматизоване і безперервне на кожному кроці конвеєра</td></tr>
+<tr><td>Фідбек</td><td>наприкінці проєкту</td><td>наприкінці спринту (demo)</td><td>постійно: метрики і моніторинг production</td></tr>
+<tr><td>Коли доречний</td><td>вимоги стабільні, регульовані галузі, фіксований контракт</td><td>вимоги змінюються, потрібен ранній результат</td><td>онлайн-сервіси, які постійно розвиваються</td></tr>
+</tbody></table></div>
+<p>На питання «DevOps є розширенням якої методології?» відповідь — <b>Agile</b>. DevOps не скасовує Scrum чи Kanban: команда може працювати спринтами (Scrum) і при цьому релізити через CI/CD щодня (DevOps).</p>
+
+<h3>ITIL і DevOps</h3>
+<p><b>ITIL</b> — набір практик керування IT-послугами: інциденти, проблеми, зміни (change management), каталог послуг. Класичний change management з тижневим погодженням кожної зміни на комітеті (CAB) конфліктує зі швидкими релізами. DevOps не прибирає контроль змін, а <b>автоматизує</b> його: рев'ю коду, автотести і журнал конвеєра замінюють ручне погодження для типових змін; ручне погодження лишається для рідкісних ризикових.</p>
+
 <h2 id="history">Від хостингу 199x до DevOps-інженера<a class="h-anchor" href="#history" aria-label="Посилання на розділ">#</a></h2>
 <ol class="steps">
 <li><b>199x — власне залізо.</b> Компанія купує сервери, мережу, приміщення, наймає адмінів і платить за все, навіть якщо ресурс простоює.</li>
@@ -460,12 +956,53 @@
 <div class="mistake"><div class="wrong">Jenkins — інструмент контролю версій або моніторингу.</div><div class="right">Jenkins — сервер <b>CI/CD</b>. Контроль версій — Git; моніторинг — Nagios, Prometheus + Grafana.</div></div>
 <div class="mistake"><div class="wrong">Фреймворк — це просто «велика бібліотека».</div><div class="right">Ключова різниця — хто кого викликає: бібліотеку викликаєте ви, фреймворк викликає ваш код.</div></div>
 </div>
-<h2 id="quiz">Перевір себе<a class="h-anchor" href="#quiz" aria-label="Посилання на розділ">#</a></h2><p>34 питань на розуміння. В одиночних питаннях натисніть варіант — одразу побачите правильну відповідь і пояснення. Питання з позначкою <b>«кілька відповідей»</b> влаштовані як у тесті курсу (<i>Select one or more</i>): позначте всі правильні варіанти й натисніть «Перевірити».</p><div class="quiz" data-quiz="w1l1"></div><script type="application/json" id="quiz-data">[{"q": "Яке твердження найкраще описує мету DevOps?", "options": ["Скасувати контроль змін, щоб пришвидшити релізи", "Створити середовище, у якому надійніші застосунки випускаються швидше", "Замінити Agile новою методологією планування", "Перекласти всю роботу експлуатації на розробників", "Створити окрему команду DevOps між розробкою та експлуатацією", "Випускати якомога частіше, навіть ціною якості"], "answer": [1], "explain": "Мета — release more reliable applications faster: і швидкість, і надійність разом. Перекладання роботи, окрема «стіна» з DevOps-команди і відмова від контролю змін — типові антипатерни, а Agile DevOps не замінює, а доповнює."}, {"q": "Які твердження правильно описують DevOps?", "options": ["Окрема посада адміністратора, який відповідає лише за налаштування Docker", "Процес, у якому контроль змін скасовують заради швидкості релізів", "Поєднання культури, практик та інструментів для швидкої й надійної доставки ПЗ", "Автоматизований контроль змін через тести, журнал змін і pipeline", "Конкретний інструмент CI, який встановлюють поруч із репозиторієм", "Тісна співпраця розробки та експлуатації зі спільною відповідальністю за результат"], "answer": [2, 3, 5], "explain": "DevOps — культура + практики + інструменти. Контроль змін не скасовують, а автоматизують. DevOps-інженер — роль, а Docker чи Jenkins — лише інструменти."}, {"q": "Чому компаніям потрібен DevOps?", "options": ["Щоб скоротити час від коміту до production", "Щоб подовжити цикл випуску і зробити релізи більшими", "Щоб зменшити частку невдалих релізів", "Щоб додати більше ручних погоджень перед релізом", "Щоб швидше відновлюватися після збоїв", "Щоб збільшити частоту розгортань"], "answer": [0, 2, 4, 5], "explain": "Саме ці чотири показники міряє DORA: deployment frequency, change failure rate, lead time, time to restore. Ручні погодження і великі рідкісні релізи — те, від чого DevOps відходить."}, {"q": "Які пари «інструмент — категорія» правильні?", "options": ["Grafana — система збірки Java-проєктів", "Ansible — керування конфігурацією", "Git — CI-сервер", "Nagios — моніторинг", "Terraform — інфраструктура як код", "Jenkins — CI/CD"], "answer": [1, 3, 4, 5], "explain": "Git — система контролю версій, а не CI-сервер. Grafana — дашборди і візуалізація метрик; збірка Java — Maven або Gradle."}, {"q": "Які з перелічених інструментів популярні в DevOps?", "options": ["Docker", "Jenkins", "Ansible", "Kubernetes", "Adobe Photoshop", "Microsoft Excel"], "answer": [0, 1, 2, 3], "explain": "CI/CD, керування конфігурацією, контейнери і оркестрація — ядро DevOps-інструментарію. Графічні й офісні програми до нього не належать."}, {"q": "Що <b>не<\/b> є ознакою continuous delivery?", "options": ["Доставка виправлень помилок і експериментів", "Безперервне вдосконалення", "Робота малими партіями змін", "Автоматизація всього (Automate everything)", "Збір інформації (information gathering)", "Збір вимог (gathering requirements)"], "answer": [4, 5], "explain": "Збір вимог і збір інформації — етапи аналізу в SDLC. Принципи CD (continuousdelivery.com): вбудовувати якість, малі партії, рутину робить машина, безперервне вдосконалення, усі відповідальні; CD доставляє будь-які зміни, зокрема виправлення й експерименти."}, {"q": "Що <b>не<\/b> є перевагою автоматизації в DevOps?", "options": ["Надійність і узгодженість результату", "Швидкість", "Вносить ручні помилки", "Щоразу вимагає більше ручних кроків", "Журнал змін: видно, хто що запустив", "Будь-хто з команди може виконати задачу"], "answer": [2, 3], "explain": "Автоматизація навпаки прибирає ручні помилки і ручні кроки. Швидкість, надійність, узгодженість, доступність задачі для будь-кого і audit trail — її переваги."}, {"q": "Що означає pipeline у continuous delivery?", "options": ["Окрема гілка в репозиторії Git, куди зливають готові зміни", "Окремий ручний крок розгортання в production після наради", "Регулярна нарада команди для планування наступного релізу", "Фізичний сервер збірки, на якому встановлено Jenkins", "Автоматизований робочий процес (workflow) доставки змін", "Послідовність етапів, якими проходить зміна від коміту до релізу"], "answer": [4, 5], "explain": "Pipeline — увесь автоматизований конвеєр: збірка, тести, артефакт, розгортання. Деплой — лише один з його етапів, а сервер збірки — місце, де pipeline виконується."}, {"q": "Для чого використовують Jenkins?", "options": ["Моніторинг доступності серверів", "Автоматична збірка і тестування на кожну зміну в репозиторії", "Автоматизація CI/CD", "Контроль версій коду", "Опис хмарної інфраструктури кодом", "Зберігання Docker-образів"], "answer": [1, 2], "explain": "Jenkins — CI/CD-сервер, який запускає pipeline. Контроль версій — Git, моніторинг — Nagios/Prometheus, образи — Docker Hub/Nexus, IaC — Terraform."}, {"q": "Які мови скриптів найпопулярніші в DevOps?", "options": ["YAML", "Bash", "JSON", "Markdown", "Python", "PowerShell"], "answer": [1, 4, 5], "explain": "Bash — стандарт для Linux-серверів, Python — для складнішої автоматизації і роботи з API, PowerShell — у Windows. YAML і JSON — формати даних і конфігурацій, Markdown — розмітка тексту, а не мови скриптів."}, {"q": "Які складові входять до принципів CAMS?", "options": ["Management", "Culture", "Monitoring", "Sharing", "Automation", "Measurement"], "answer": [1, 3, 4, 5], "explain": "CAMS = Culture, Automation, Measurement, Sharing. Моніторинг — одна з практик, що реалізує Measurement, але M у CAMS — саме вимірювання."}, {"q": "Що означає літера L у моделі CALMS?", "options": ["Logging", "Lean", "Leadership", "Load balancing", "Linux"], "answer": [1], "explain": "CALMS = Culture, Automation, Lean, Measurement, Sharing. Lean — ощадливість: малі порції роботи і прибирання втрат (очікування, ручні передачі)."}, {"q": "Які метрики входять до чотирьох ключових метрик DORA?", "options": ["Lead time for changes", "Time to restore service", "Кількість рядків коду за день", "Кількість серверів у production", "Deployment frequency", "Change failure rate"], "answer": [0, 1, 4, 5], "explain": "DORA вимірює швидкість (частота, lead time) і стабільність (частка невдалих змін, час відновлення). Рядки коду і кількість серверів нічого не кажуть про ефективність доставки."}, {"q": "Які твердження про Continuous Delivery і Continuous Deployment правильні?", "options": ["Continuous Delivery обходиться без автоматичних тестів", "Це синоніми", "У Continuous Delivery реліз у production відбувається після ручного схвалення", "Continuous Deployment обов'язково вимагає ручного схвалення", "У Continuous Deployment кожна успішна зміна потрапляє в production автоматично", "Обидва підходи спираються на CI"], "answer": [2, 4, 5], "explain": "Різниця лише в останньому кроці: людина чи автомат вирішує випуск. Без автотестів жоден з підходів не працює."}, {"q": "Які практики належать до правил Continuous Integration?", "options": ["Тести запускаються лише перед релізом", "Робота в окремих гілках місяцями без злиття", "Зламану збірку лагодять негайно", "Кожен коміт запускає збірку на CI-сервері", "Збірка включає автоматичні тести", "Кожен розробник зливає зміни в головну гілку щонайменше раз на день"], "answer": [2, 3, 4, 5], "explain": "Довгі гілки відкладають інтеграцію і конфлікти; тести «лише перед релізом» прибирають швидкий зворотний зв'язок — головну цінність CI."}, {"q": "Які твердження про стратегії розгортання правильні?", "options": ["Rolling update: сервери оновлюються по черзі", "Blue-green не потребує додаткових ресурсів", "Recreate: оновлення без жодного простою", "Feature flag вмикає функцію лише після нового деплою", "Canary: нова версія спершу отримує малу частку трафіку", "Blue-green: два однакові середовища, трафік перемикається на нове після перевірки"], "answer": [0, 4, 5], "explain": "Recreate зупиняє стару версію — простій неминучий. Feature flag вмикається без деплою. Blue-green на час релізу потребує подвійних ресурсів."}, {"q": "Що допомагає швидко відкотитися після невдалого релізу?", "options": ["Робити зміни БД несумісними зі старою версією коду", "Повторно розгорнути попередній збережений артефакт", "Видалити старі артефакти одразу після релізу", "Збирати новий артефакт окремо для кожного середовища", "Вимкнути feature flag нової функції", "Перемкнути трафік назад на «синє» середовище (blue-green)"], "answer": [1, 4, 5], "explain": "Відкат має бути автоматизованим. Старі артефакти потрібні саме для відкату, а зміни схеми БД роблять сумісними з обома версіями."}, {"q": "Які твердження про інструменти керування конфігурацією правильні?", "options": ["Ansible працює лише за моделлю pull", "Puppet описує конфігурацію в YAML-playbooks", "Puppet використовує агента, який забирає конфігурацію з master-сервера (pull)", "Chef описує конфігурацію мовою Ruby", "Ansible працює без агента і підключається до серверів через SSH (push)", "Ansible потребує встановленого агента на кожному сервері"], "answer": [2, 3, 4], "explain": "Ansible — agentless push, YAML-playbooks. Puppet і Chef — pull з агентами; Puppet має власний DSL, Chef — Ruby."}, {"q": "Що означає ідемпотентність в автоматизації інфраструктури?", "options": ["Кожен запуск створює нову копію ресурсу з новим іменем", "Повторний запуск не змінює те, що вже перебуває в бажаному стані", "Команди виконуються одночасно на всіх серверах інвентарю", "Скрипт виконується лише один раз за весь час життя сервера", "Скрипт автоматично відкочує всі зміни при першій помилці"], "answer": [1], "explain": "Ідемпотентний playbook можна запускати скільки завгодно: пакет, що вже встановлено, не перевстановлюється, файл з правильним вмістом не перезаписується."}, {"q": "Що належить до трьох стовпів спостережуваності (observability)?", "options": ["Логи", "Резервні копії", "Трасування (traces)", "Коміти в Git", "Тікети в Jira", "Метрики"], "answer": [0, 2, 5], "explain": "Метрики — числа в часі, логи — події з деталями, трасування — шлях одного запиту через сервіси. Бекапи, тікети й коміти важливі, але до observability не належать."}, {"q": "Які інструменти використовують для моніторингу та візуалізації метрик?", "options": ["Maven", "Zabbix", "Nagios", "Ansible", "Grafana", "Prometheus"], "answer": [1, 2, 4, 5], "explain": "Nagios, Zabbix, Prometheus збирають дані моніторингу, Grafana будує дашборди. Maven — система збірки Java, Ansible — керування конфігурацією."}, {"q": "Які відповідності «сервіс — модель хмари» правильні?", "options": ["Google Docs — PaaS", "Gmail — SaaS", "Heroku — PaaS", "Google Compute Engine — IaaS", "AWS EC2 — IaaS", "AWS Elastic Beanstalk — SaaS"], "answer": [1, 2, 3, 4], "explain": "Elastic Beanstalk — PaaS (середовище запуску вашого коду), Google Docs — SaaS (готовий застосунок)."}, {"q": "Які твердження про моделі хмарних сервісів правильні?", "options": ["В IaaS провайдер встановлює ваш застосунок", "On-Premises означає, що всім керує провайдер", "У PaaS клієнт відповідає лише за застосунок і дані", "У PaaS клієнт встановлює і оновлює ОС", "В IaaS операційною системою керує клієнт", "У SaaS клієнт користується готовим застосунком"], "answer": [2, 4, 5], "explain": "Що вища модель, то більше бере на себе провайдер: IaaS — залізо, мережа, віртуалізація; PaaS — ще й ОС і runtime; SaaS — усе. On-Premises — усім керує сама компанія."}, {"q": "Як хмари змінюють структуру витрат компанії?", "options": ["Капітальні витрати (CapEx) замінюються операційними (OpEx) — оплатою за використання", "Компанія платить фіксовану суму незалежно від того, скільки ресурсів спожито", "Операційні витрати (OpEx) замінюються капітальними (CapEx) — купівлею серверів наперед", "Витрати на інфраструктуру зникають, бо провайдер бере їх на себе повністю", "Сервери все одно доводиться купувати на кілька років наперед, але в оренду"], "answer": [0], "explain": "Замість купівлі заліза наперед компанія платить за фактично використані ресурси. Витрати не зникають, але стають гнучкими."}, {"q": "Які цінності записані в Agile-маніфесті?", "options": ["Дотримання плану важливіше за реагування на зміни", "Працюючий продукт важливіший за вичерпну документацію", "Готовність до змін важливіша за дотримання плану", "Співпраця із замовником важливіша за узгодження контракту", "Люди і взаємодія важливіші за процеси та інструменти", "Вичерпна документація важливіша за працюючий продукт"], "answer": [1, 2, 3, 4], "explain": "Останні два твердження — перевернуті цінності маніфесту."}, {"q": "Які твердження про моделі розробки правильні?", "options": ["В ітеративній моделі кожна ітерація закінчується протестованою версією", "Scrum не використовує ітерацій", "Waterfall — послідовні фази, повернення назад дороге", "Waterfall найкраще підходить, коли вимоги постійно змінюються", "XP використовує парне програмування і TDD", "Kanban працює фіксованими спринтами з ролями Scrum Master і Product Owner"], "answer": [0, 2, 4], "explain": "Фіксовані спринти і ці ролі — у Scrum. Kanban — безперервний потік з лімітом WIP. Waterfall доречний, коли вимоги стабільні."}, {"q": "Які твердження про бібліотеку і фреймворк правильні?", "options": ["Бібліотеку викликає ваш код", "Фреймворк викликає ваш код (інверсія керування)", "Angular — фреймворк", "Chart.js — фреймворк, що диктує архітектуру застосунку", "Фреймворк — просто велика бібліотека без жодних відмінностей"], "answer": [0, 1, 2], "explain": "Головна відмінність — хто кого викликає. Chart.js — бібліотека для графіків, яку можна підключити до будь-якого проєкту."}, {"q": "Що означає абревіатура CRUD?", "options": ["Create, Release, Update, Deploy", "Connect, Read, Use, Disconnect", "Copy, Run, Upload, Deploy", "Commit, Review, Update, Distribute", "Create, Read, Update, Delete"], "answer": [4], "explain": "Чотири базові дії з даними. У REST вони відповідають HTTP-методам POST, GET, PUT/PATCH, DELETE."}, {"q": "Поточна версія застосунку — 2.4.1 (семантичне версіонування). Які твердження правильні?", "options": ["Перша цифра змінюється з кожним виправленням", "2.4.2 — виправлення помилок без нових функцій", "2.5.0 — нова функція, сумісна з попередньою версією", "2.4.2 означає несумісні зміни", "3.0.0 — несумісні зміни API"], "answer": [1, 2, 4], "explain": "MAJOR.MINOR.PATCH: PATCH — виправлення, MINOR — сумісні нові можливості, MAJOR — несумісні зміни."}, {"q": "Які твердження про середовища і артефакти правильні?", "options": ["Тестувати достатньо лише в production", "Для кожного середовища артефакт треба збирати заново", "Staging має бути максимально схожим на production", "Однакові середовища (IaC, контейнери) прибирають проблему «у мене на машині працює»", "Артефакт збирають один раз і просувають між середовищами"], "answer": [2, 3, 4], "explain": "Перезбирання для кожного середовища означає, що в production потрапляє не той артефакт, який перевіряли. Між середовищами змінюється лише конфігурація."}, {"q": "Що входить до «трьох шляхів» DevOps (The Three Ways)?", "options": ["Потік (Flow)", "Водоспад (Waterfall)", "Аутсорсинг експлуатації", "Фаєрвол (Firewall)", "Зворотний зв'язок (Feedback)", "Безперервне навчання і експерименти"], "answer": [0, 4, 5], "explain": "Модель з The Phoenix Project і The DevOps Handbook: швидкий потік роботи до production, швидкий зворотний зв'язок назад і культура навчання."}, {"q": "Які твердження про SRE правильні?", "options": ["SRE забороняє будь-які релізи", "SLA — договір з клієнтом про рівень сервісу", "SLO — цільовий рівень надійності, наприклад 99,9% успішних запитів", "SLI — це юридичний договір з клієнтом", "Бюджет помилок дорівнює 100% мінус SLO"], "answer": [1, 2, 4], "explain": "SLI — виміряний індикатор, SLO — ціль, SLA — договірне зобов'язання. Бюджет помилок якраз дозволяє ризиковані релізи, поки його не вичерпано."}, {"q": "Які твердження про історію DevOps правильні?", "options": ["Рух пов'язують з Патріком Дебуа", "Доповідь Flickr «10+ Deploys per Day» показала співпрацю Dev і Ops", "Перша конференція DevOpsDays відбулась у 2009 році в Генті", "DevOps з'явився до появи Agile", "DevOps винайшла компанія AWS у 2015 році"], "answer": [0, 1, 2], "explain": "DevOps виріс з ідей Agile наприкінці 2000-х. AWS дала популярне визначення, але рух виник раніше і без неї."}, {"q": "Що означає «shift left» у DevSecOps?", "options": ["Переносити перевірки безпеки і якості на ранні етапи конвеєра", "Відкладати перевірки безпеки на кінець, щоб не гальмувати розробку", "Переносити сервери в іншу зону доступності для захисту від атак", "Передавати безпеку окремій команді, яка перевіряє реліз перед запуском", "Переносити терміни релізу, щоб встигнути з аудитом безпеки"], "answer": [0], "explain": "«Ліворуч» — ближче до початку конвеєра: сканування залежностей, статичний аналіз і перевірка секретів запускаються з кожним комітом."}]</script>
+
+<h2 id="glossary">Словник термінів DevOps<a class="h-anchor" href="#glossary" aria-label="Посилання на розділ">#</a></h2>
+<p>Терміни, які трапляються в лекціях і тестах курсу. Англійська назва — така, як у тестах.</p>
+<div class="table-wrap"><table>
+<thead><tr><th>Термін</th><th>English</th><th>Коротко</th></tr></thead>
+<tbody>
+<tr><td>Артефакт</td><td>artifact</td><td>результат збірки, який розгортають: Docker-образ, <code>.jar</code>, архів. Збирається один раз</td></tr>
+<tr><td>Бюджет помилок</td><td>error budget</td><td>допустима частка збоїв: 100 % − SLO</td></tr>
+<tr><td>Відкат</td><td>rollback</td><td>повернення до попередньої робочої версії</td></tr>
+<tr><td>Ворота якості</td><td>quality gate</td><td>автоматична умова, без якої зміна не йде далі конвеєром</td></tr>
+<tr><td>Деплой</td><td>deployment</td><td>технічне розгортання версії в середовищі</td></tr>
+<tr><td>Дрейф конфігурації</td><td>configuration drift</td><td>сервери, що мали бути однаковими, з часом відрізняються через ручні зміни</td></tr>
+<tr><td>Ідемпотентність</td><td>idempotency</td><td>повторне виконання дає той самий результат, що й перше</td></tr>
+<tr><td>Інфраструктура як код</td><td>Infrastructure as Code, IaC</td><td>опис серверів, мереж і сервісів у файлах під контролем версій</td></tr>
+<tr><td>Канарковий реліз</td><td>canary release</td><td>нова версія спершу отримує малу частку трафіку</td></tr>
+<tr><td>Конвеєр</td><td>pipeline</td><td>автоматизований workflow від коміту до production</td></tr>
+<tr><td>Незмінна інфраструктура</td><td>immutable infrastructure</td><td>сервер не оновлюють на місці, а замінюють новим, зібраним з образу</td></tr>
+<tr><td>Неперервна інтеграція</td><td>Continuous Integration, CI</td><td>часте злиття змін у main з автоматичною збіркою і тестами</td></tr>
+<tr><td>Неперервна доставка</td><td>Continuous Delivery</td><td>кожна зміна готова до релізу; production — після схвалення людиною</td></tr>
+<tr><td>Неперервне розгортання</td><td>Continuous Deployment</td><td>кожна зміна, що пройшла перевірки, автоматично йде в production</td></tr>
+<tr><td>Оркестрація</td><td>orchestration</td><td>автоматичне керування багатьма контейнерами або сервісами (Kubernetes)</td></tr>
+<tr><td>Перемикач функцій</td><td>feature flag / toggle</td><td>увімкнення функції без деплою</td></tr>
+<tr><td>Постмортем</td><td>postmortem</td><td>розбір інциденту без пошуку винних</td></tr>
+<tr><td>Реліз</td><td>release</td><td>надання функції користувачам (може не збігатися з деплоєм)</td></tr>
+<tr><td>Рутина</td><td>toil</td><td>ручна повторювана робота, яку варто автоматизувати</td></tr>
+<tr><td>Середовище</td><td>environment</td><td>dev, test, staging, production</td></tr>
+<tr><td>Синьо-зелене розгортання</td><td>blue-green deployment</td><td>два однакові середовища, трафік перемикається між ними</td></tr>
+<tr><td>Спостережуваність</td><td>observability</td><td>здатність зрозуміти стан системи з метрик, логів і трейсів</td></tr>
+<tr><td>Ковзне оновлення</td><td>rolling update</td><td>сервери оновлюються по черзі без простою</td></tr>
+<tr><td>Час виконання змін</td><td>lead time for changes</td><td>від коміту до production</td></tr>
+<tr><td>Час відновлення</td><td>MTTR, time to restore</td><td>від початку збою до відновлення сервісу</td></tr>
+<tr><td>Частка невдалих змін</td><td>change failure rate</td><td>відсоток розгортань, що спричинили збій</td></tr>
+<tr><td>Частота розгортань</td><td>deployment frequency</td><td>як часто нова версія потрапляє в production</td></tr>
+<tr><td>Шаблон «зсув ліворуч»</td><td>shift left</td><td>перенесення тестів і перевірок безпеки на ранні етапи</td></tr>
+<tr><td>Журнал змін</td><td>audit trail</td><td>запис, хто, що і коли змінив</td></tr>
+<tr><td>SLI / SLO / SLA</td><td>Service Level Indicator / Objective / Agreement</td><td>метрика / внутрішня ціль / договір з клієнтом</td></tr>
+<tr><td>GitOps</td><td>GitOps</td><td>бажаний стан системи описано в Git, агент синхронізує його з кластером</td></tr>
+<tr><td>CAMS / CALMS</td><td>Culture, (Lean), Automation, Measurement, Sharing</td><td>принципи DevOps</td></tr>
+<tr><td>SDLC</td><td>Software Development Life Cycle</td><td>фази життєвого циклу ПЗ</td></tr>
+<tr><td>WIP-ліміт</td><td>work in progress limit</td><td>максимум задач у роботі одночасно (Kanban)</td></tr>
+</tbody></table></div>
+<h2 id="quiz">Перевір себе<a class="h-anchor" href="#quiz" aria-label="Посилання на розділ">#</a></h2><p>42 питань на розуміння. В одиночних питаннях натисніть варіант — одразу побачите правильну відповідь і пояснення. Питання з позначкою <b>«кілька відповідей»</b> влаштовані як у тесті курсу (<i>Select one or more</i>): позначте всі правильні варіанти й натисніть «Перевірити».</p><div class="quiz" data-quiz="w1l1"></div><script type="application/json" id="quiz-data">[{"q": "Яке твердження найкраще описує мету DevOps?", "options": ["Відокремити розробку від експлуатації формальною процедурою передачі релізів", "Створити середовище, у якому надійніші застосунки випускаються швидше і частіше", "Збільшити частоту релізів за рахунок скорочення етапу автоматичного тестування", "Скоротити кількість релізів, щоб кожен проходив повний цикл ручного погодження", "Стандартизувати інструменти компанії навколо одного CI-сервера і одного провайдера хмари", "Передати відповідальність за production розробникам і прибрати відділ експлуатації"], "answer": [1], "explain": "Мета DevOps має дві половини одночасно: <b>швидше<\/b> і <b>надійніше<\/b>. Варіант із скороченням тестів жертвує надійністю, а рідкі релізи з ручним погодженням — швидкістю. DevOps не прибирає Ops і не будує між командами формальну «стіну». Набір інструментів — засіб, а не мета."}, {"q": "Які твердження правильно описують DevOps?", "options": ["Методологія управління проєктом, яка замінює Scrum і Kanban", "Окремий відділ між розробкою та експлуатацією, що приймає і перевіряє релізи", "Поєднання культурних принципів, практик та інструментів для швидкої й надійної доставки ПЗ", "Посада, яка в команді замінює системних адміністраторів і тестувальників", "Підхід, у якому зміни йдуть у production без контролю, щоб не гальмувати розробку", "Спільна відповідальність розробки та експлуатації за роботу сервісу в production"], "answer": [2, 5], "explain": "DevOps = культура + практики + інструменти зі спільною відповідальністю. Він доповнює Agile-методології, а не замінює їх. Окремий «відділ DevOps» між Dev і Ops — це нова стіна, а не DevOps. Контроль змін не скасовують, а автоматизують (тести, рев'ю, журнал конвеєра)."}, {"q": "Навіщо компаніям DevOps (need for DevOps)?", "options": ["Скоротити час між виправленнями (shortened lead time between fixes)", "Розділити обов'язки: розробники відповідають за код, експлуатація — за сервери", "Знизити частку невдалих релізів (lower failure rate of new releases)", "Збільшити розмір кожного релізу, щоб рідше турбувати користувачів", "Централізувати всі зміни production через щотижневий комітет погодження (CAB)", "Збільшити частоту розгортань (increase deployment frequency)"], "answer": [0, 2, 5], "explain": "Потреби DevOps збігаються з метриками DORA: частота розгортань, частка невдалих змін, lead time, час відновлення. Щотижневий комітет і великі релізи — саме те, від чого DevOps відходить. Жорсткий поділ «код — ваше, сервери — наші» відтворює «стіну непорозуміння»."}, {"q": "Які з перелічених метрик входять до чотирьох ключових метрик DORA?", "options": ["Code coverage", "Velocity (story points за спринт)", "Lead time for changes", "Mean time between failures (MTBF)", "Time to restore service", "Change failure rate", "Deployment frequency"], "answer": [2, 4, 5, 6], "explain": "Чотири метрики DORA: частота розгортань, lead time, частка невдалих змін і час відновлення. Покриття тестами — корисна метрика якості коду, MTBF — класична метрика надійності обладнання, velocity — метрика планування Scrum; до DORA вони не входять."}, {"q": "За 30 днів команда зробила 20 розгортань у production; 3 з них спричинили інцидент і відкат. Яка change failure rate?", "options": ["6,7 %", "15 %", "3 %", "85 %", "30 %", "10 %"], "answer": [1], "explain": "Change failure rate = невдалі розгортання / усі розгортання = 3 / 20 = 0,15 = <b>15 %<\/b>. 85 % — частка вдалих розгортань. Решта чисел — ділення не на ту величину: 3 інциденти / 30 днів = 10 %, 20 / 3 ≈ 6,7, кількість інцидентів як відсоток = 3 %."}, {"q": "SLO доступності сервісу — 99,9 % за 30 днів. Скільки хвилин простою дозволяє бюджет помилок за цей період?", "options": ["14,4 хв", "7,2 год", "21,6 хв", "8,76 год", "4,32 хв", "43,2 хв"], "answer": [5], "explain": "30 днів = 43 200 хв; бюджет = 100 % − 99,9 % = 0,1 %; 0,1 % × 43 200 = <b>43,2 хв<\/b>. 4,32 хв — для 99,99 %, 21,6 хв — для 99,95 %, 7,2 год — для 99 % за 30 днів, 8,76 год — для 99,9 % за <b>рік<\/b>."}, {"q": "Що <b>не<\/b> є ознакою (feature) continuous delivery?", "options": ["Continuous improvement — безперервне вдосконалення", "Automate everything — рутину виконує машина", "Збір вимог (gathering requirements)", "Збір інформації (information gathering)", "Work in small batches — робота малими партіями змін", "Bug fixes and experiments — доставка виправлень і експериментів"], "answer": [2, 3], "explain": "Принципи CD за continuousdelivery.com: вбудовувати якість, працювати малими партіями, автоматизувати повторюване, безперервно вдосконалюватись, відповідальні всі; CD доставляє зміни будь-якого типу — фічі, виправлення, експерименти. Збір вимог і збір інформації — етапи аналізу в SDLC, а не ознаки CD."}, {"q": "Що <b>не<\/b> є перевагою автоматизації в DevOps?", "options": ["Enables anyone to perform tasks — будь-хто може виконати задачу", "Consistency — узгодженість результату", "Scalability — той самий код налаштовує 3 або 300 серверів", "Reliability — надійність", "Introduces manual errors — вносить ручні помилки", "Speed — швидкість"], "answer": [4], "explain": "Автоматизація <b>прибирає<\/b> ручні помилки, а не вносить їх. Решта — справжні переваги: швидкість, надійність, узгодженість, масштабованість і те, що задачу може виконати будь-хто, бо процедура записана в коді, а не в голові одного адміна."}, {"q": "Що в continuous delivery називають pipeline?", "options": ["Фінальний крок, на якому артефакт копіюють на production-сервери", "Набір гілок Git, через які зміна послідовно проходить перед злиттям у main", "Автоматизований workflow, яким кожна зміна проходить від коміту до production", "Чергу задач у трекері, впорядковану за пріоритетом релізу", "Послідовність ручних погоджень зміни на засіданні Change Advisory Board", "Кластер серверів збірки, об'єднаних під керуванням Jenkins"], "answer": [2], "explain": "Pipeline — увесь автоматизований робочий процес: збірка → тести → артефакт → staging → production, з зворотним зв'язком на кожному етапі. Деплой — лише його останній крок; сервери збірки — інфраструктура, на якій pipeline виконується; ручні погодження — протилежність ідеї конвеєра."}, {"q": "Для чого використовують Jenkins?", "options": ["Щоб збирати метрики серверів і будувати дашборди", "Щоб автоматично збирати і тестувати код після кожного коміту", "Щоб запускати контейнери на кластері вузлів з автомасштабуванням", "Щоб описувати хмарну інфраструктуру у файлах .tf", "Щоб описати конвеєр збірки й розгортання у файлі Jenkinsfile", "Щоб зберігати історію версій вихідного коду"], "answer": [1, 4], "explain": "Jenkins — CI/CD-сервер: він забирає код із Git, збирає, тестує, розгортає; конвеєр описують у Jenkinsfile. Історію версій зберігає Git, метрики і дашборди — Prometheus і Grafana, файли .tf — Terraform, кластер контейнерів — Kubernetes."}, {"q": "Які твердження про DevOps-інструменти правильні?", "options": ["Prometheus отримує метрики лише тоді, коли сервіси самі їх надсилають", "Ansible написаний на Python і описує задачі в YAML-playbook", "Chef працює за push-моделлю через SSH без агента", "Terraform написаний на Ruby і використовує мову HCL", "Jenkins написаний на Java, а конвеєр описують на Groovy DSL", "Puppet описує конфігурацію в YAML і не потребує агента"], "answer": [1, 4], "explain": "Ansible — Python + YAML; Jenkins — Java + Groovy. Puppet має власну DSL і агента (pull). Terraform справді використовує HCL, але написаний на <b>Go<\/b>. Chef — агент chef-client, pull. Prometheus за замовчуванням <b>сам опитує<\/b> сервіси (pull); push можливий лише через Pushgateway."}, {"q": "Які інструменти керування конфігурацією працюють за моделлю pull з агентом на керованому сервері?", "options": ["Vagrant", "Ansible", "Chef", "Puppet", "Terraform", "AWS CloudFormation"], "answer": [2, 3], "explain": "Puppet і Chef ставлять агента, який періодично забирає (pull) конфігурацію з сервера. Ansible — agentless, push через SSH. Terraform і CloudFormation створюють інфраструктуру через API хмари, агентів на серверах не мають. Vagrant готує локальні ВМ для розробки."}, {"q": "Чим Continuous Deployment відрізняється від Continuous Delivery?", "options": ["Continuous Deployment пропускає автотести, бо зміни йдуть у production одразу", "Continuous Deployment стосується інфраструктури, а Delivery — коду застосунку", "Continuous Delivery можна побудувати без CI, а Continuous Deployment — ні", "Різниці немає: це дві назви однієї практики в різних компаніях", "Рішення про розгортання в production приймають автоматичні перевірки, а не людина", "Continuous Delivery розгортає в production автоматично, а Deployment — лише на staging"], "answer": [4], "explain": "Обидва підходи будуються на CI і автотестах. У Delivery кожна зміна готова до релізу, а production — після натискання кнопки людиною. У Deployment кнопки немає: пройшла перевірки — розгорнута. Тестів у Deployment потрібно не менше, а більше."}, {"q": "Які практики належать до правил Continuous Integration?", "options": ["Тести запускає розробник на ноутбуці, а CI-сервер лише пакує збірку", "Повний набір тестів запускають раз на спринт перед релізом", "Кожен коміт у main запускає збірку і тести на CI-сервері", "Функцію розробляють в окремій гілці до повного завершення, хай навіть кілька тижнів", "Розробники інтегрують свої зміни в main щонайменше раз на день", "Зламану збірку лагодять раніше, ніж беруться за нову роботу"], "answer": [2, 4, 5], "explain": "Правила CI (Фаулер): часті злиття в main, самотестована збірка на CI-сервері на кожен коміт, «червону» збірку лагодять негайно. Довгі гілки відкладають інтеграцію, а тести раз на спринт дають зворотний зв'язок надто пізно."}, {"q": "Які твердження про стратегії розгортання правильні?", "options": ["Canary і blue-green однаково потребують повної копії production", "Feature flag вимагає нового деплою, щоб увімкнути функцію", "Rolling update потребує подвійного набору серверів на час оновлення", "Canary спершу спрямовує на нову версію невелику частку користувачів", "Recreate оновлює сервери по черзі, тому обходиться без простою", "Blue-green дозволяє миттєво відкотитися, перемкнувши трафік на попереднє середовище"], "answer": [3, 5], "explain": "Подвійний набір серверів потрібен <b>blue-green<\/b>, а не rolling update. Поступове оновлення по черзі — це rolling; recreate зупиняє все і дає простій. Feature flag вмикають <b>без<\/b> деплою. Canary використовує лише невелику частку потужностей для нової версії."}, {"q": "Яка стратегія передбачає два повністю однакові production-середовища, між якими перемикають трафік?", "options": ["Rolling update", "A/B testing", "Recreate", "Feature toggle", "Canary release", "Blue-green deployment"], "answer": [5], "explain": "Blue-green: «синє» (поточне) і «зелене» (нове) середовища, балансувальник перемикає трафік. Canary і A/B ділять трафік між версіями в межах однієї інфраструктури, rolling оновлює ті самі сервери по черзі, recreate — зупиняє і запускає заново."}, {"q": "Які твердження про артефакти і середовища правильні?", "options": ["Тег latest гарантує, що в production буде та сама версія, що на staging", "Для production артефакт перезбирають з тих самих вихідних кодів з оптимізаціями", "Старі артефакти видаляють одразу після релізу, щоб не плутати версії", "Артефакт — це гілка Git, з якої роблять реліз", "Між середовищами змінюється конфігурація, а не артефакт", "Той самий артефакт просувається зі staging у production без перезбирання"], "answer": [4, 5], "explain": "Build once, deploy many: перезбирання може дати інший результат (нові версії залежностей), тож у production піде не те, що тестували. Старі артефакти потрібні для відкату. Артефакт — результат збірки (образ, jar), а не гілка. Тег <code>latest<\/code> рухомий: між двома деплоями він може вказувати на різні образи; надійно — версія або digest."}, {"q": "Поточна версія — 2.4.1. У релізі додано нову функцію, сумісну з попередніми версіями, і виправлено одну помилку. Яка наступна версія за SemVer?", "options": ["2.4.1-1", "3.4.1", "2.4.2", "2.5.1", "2.5.0", "3.0.0"], "answer": [4], "explain": "MAJOR.MINOR.PATCH: нова сумісна функція збільшує MINOR і <b>обнуляє<\/b> PATCH → 2.5.0. Виправлення в тому самому релізі окремо PATCH не збільшує. 3.0.0 — для несумісних змін; 2.5.1 — помилка «додати обидва»; суфікс <code>-1<\/code> позначає пре-реліз або збірку, а не нову версію."}, {"q": "Які команди ідемпотентні — повторний запуск не змінює результат і не дає помилки?", "options": ["<code>systemctl start nginx<\/code>", "<code>mkdir /opt/app<\/code>", "<code>mkdir -p /opt/app<\/code>", "<code>echo 'max_conn=200' &gt;&gt; /etc/app.conf<\/code>", "<code>ln -sf /opt/app/v2 /opt/app/current<\/code>", "<code>useradd deploy<\/code>"], "answer": [0, 2, 4], "explain": "<code>mkdir -p<\/code> не скаржиться на існуючий каталог; <code>ln -sf<\/code> перезаписує посилання тим самим значенням; <code>systemctl start<\/code> для вже запущеної служби нічого не змінює. <code>&gt;&gt;<\/code> щоразу дописує ще один рядок; <code>useradd<\/code> і <code>mkdir<\/code> без <code>-p<\/code> вдруге завершаться помилкою «already exists»."}, {"q": "Що належить до трьох стовпів спостережуваності (observability)?", "options": ["Логи (logs)", "Алерти (alerts)", "Трасування (traces)", "Резервні копії (backups)", "Дашборди (dashboards)", "Метрики (metrics)"], "answer": [0, 2, 5], "explain": "Три типи телеметрії: метрики, логи, трейси. Алерти і дашборди — способи <b>використати<\/b> ці дані (сповіщення, візуалізація), а не окремий вид даних. Бекапи стосуються відновлення, а не спостережуваності."}, {"q": "Які пари «інструмент — функція» правильні?", "options": ["Zabbix — оркестрація контейнерів на кластері", "Nagios — централізований збір логів і повнотекстовий пошук по них", "Prometheus — збирає метрики, опитуючи <code>/metrics<\/code> сервісів", "Logstash — візуалізація трейсів між мікросервісами", "Kibana — збирає метрики серверів за pull-моделлю", "Grafana — дашборди поверх даних із Prometheus, Loki чи БД"], "answer": [2, 5], "explain": "Логи і повнотекстовий пошук — ELK (Elasticsearch + Logstash + Kibana); Kibana — інтерфейс до Elasticsearch, а не збирач метрик. Nagios і Zabbix — моніторинг доступності й ресурсів; оркестрація — Kubernetes; трейси показують Jaeger, Zipkin, Tempo."}, {"q": "Які твердження про SLI, SLO, SLA правильні?", "options": ["SLO має дорівнювати 100 %, бо будь-який збій неприпустимий", "SLI — договір з клієнтом про компенсацію в разі простою", "SLA зазвичай м'якший за SLO і описує наслідки порушення для клієнта", "Бюджет помилок дорівнює SLA мінус SLO", "SLO — внутрішня ціль, наприклад 99,9 % успішних запитів за 30 днів", "Коли бюджет помилок вичерпано, SRE пришвидшує релізи нових функцій"], "answer": [2, 4], "explain": "SLI — метрика, SLO — ціль, SLA — договір. Бюджет помилок = 100 % − SLO. Вичерпаний бюджет означає паузу в нових функціях і роботу над надійністю. 100 % недосяжні і зупинили б будь-які зміни, тому SLO завжди менше 100 %."}, {"q": "Яка перевірка безпеки аналізує вихідний код без запуску застосунку?", "options": ["Smoke-тест після деплою", "Сканування відкритих портів сервера", "DAST (Dynamic Application Security Testing)", "Навантажувальне тестування", "SAST (Static Application Security Testing)", "Тест на проникнення (penetration test)"], "answer": [4], "explain": "SAST — «біла скринька»: читає код і шукає небезпечні конструкції. DAST і пентест атакують <b>запущений<\/b> застосунок ззовні. Навантажувальний і smoke-тести не про безпеку, а сканування портів перевіряє сервер, а не код."}, {"q": "Що означає «shift left» у DevSecOps і тестуванні?", "options": ["Переносити тести і перевірки безпеки на ранні етапи конвеєра", "Скорочувати конвеєр, прибираючи повільні тести з ранніх етапів", "Передавати перевірку безпеки окремій команді після staging", "Запускати перевірки безпеки на production, де реальні дані", "Зміщувати навантаження на сервери основного регіону", "Переносити релізи на початок спринту, щоб лишався час на виправлення"], "answer": [0], "explain": "«Лівий» край конвеєра — коміт і збірка. Чим раніше знайдено дефект чи вразливість, тим дешевше виправлення. Перевірки після staging чи в production — це якраз «праворуч»; прибирати тести — протилежність ідеї."}, {"q": "Які твердження про піраміду тестування правильні?", "options": ["End-to-end тестів має бути найбільше, бо вони найближчі до користувача", "End-to-end тести найповільніші і найкрихкіші, тому їх небагато", "Smoke-тести замінюють регресійне тестування", "Інтеграційний тест перевіряє одну функцію ізольовано від залежностей", "Модульних тестів має бути найбільше, бо вони найшвидші й найдешевші", "Модульні тести потребують розгорнутої бази даних і мережі"], "answer": [1, 4], "explain": "Основа піраміди — тисячі швидких модульних тестів, вершина — небагато E2E. Ізольовану функцію перевіряє <b>модульний<\/b> тест; інтеграційний перевіряє взаємодію з БД чи іншим сервісом. Smoke лише підтверджує, що система запустилась."}, {"q": "Що continuousdelivery.com називає фундаментами Continuous Delivery?", "options": ["Continuous integration", "Ручна регресія перед кожним релізом", "Configuration management — усе для відтворення системи в контролі версій", "Окрема довгоживуча гілка для кожного середовища", "Continuous testing", "Щотижневий реліз-комітет для погодження змін"], "answer": [0, 2, 4], "explain": "Три фундаменти: керування конфігурацією (все в Git), CI і безперервне тестування. Реліз-комітет і ручна регресія — те, що CD замінює автоматизацією; гілки на середовища суперечать принципу «один артефакт для всіх середовищ»."}, {"q": "Які складові входять до принципів CAMS?", "options": ["Automation", "Culture", "Measurement", "Collaboration", "Sharing", "Security", "Monitoring"], "answer": [0, 1, 2, 4], "explain": "CAMS = Culture, Automation, Measurement, Sharing. Моніторинг — практика всередині Measurement, співпраця — частина Culture, але окремими літерами CAMS вони не є. Security додає DevSecOps, але в CAMS такої літери немає."}, {"q": "Що означає літера L у моделі CALMS?", "options": ["Logging", "Load balancing", "Leadership", "Lifecycle", "Learning", "Lean"], "answer": [5], "explain": "CALMS = Culture, Automation, <b>Lean<\/b>, Measurement, Sharing. Lean — ощадливість: малі партії, менше очікувань і ручних передач. Learning — це третій із «трьох шляхів», а не літера CALMS."}, {"q": "Що входить до «трьох шляхів» DevOps (The Three Ways)?", "options": ["Зворотний зв'язок (Feedback)", "Потік (Flow)", "Стандартизація процесів", "Безпека (Security)", "Автоматизація (Automation)", "Безперервне навчання і експерименти"], "answer": [0, 1, 5], "explain": "The Three Ways з The Phoenix Project і The DevOps Handbook: Flow, Feedback, Continual learning and experimentation. Автоматизація — інструмент першого шляху і літера CAMS, але не окремий «шлях»."}, {"q": "Які відповідності «сервіс — модель хмари» правильні?", "options": ["AWS Elastic Beanstalk — IaaS", "Google Compute Engine — PaaS", "AWS EC2 — IaaS", "Microsoft 365 — PaaS", "Salesforce — SaaS", "Heroku — PaaS"], "answer": [2, 4, 5], "explain": "EC2 і Compute Engine — віртуальні машини, тобто IaaS. Heroku і Elastic Beanstalk — платформи для запуску коду (PaaS). Salesforce і Microsoft 365 — готові застосунки (SaaS)."}, {"q": "У яких моделях саме клієнт встановлює оновлення операційної системи сервера?", "options": ["FaaS (serverless)", "SaaS", "IaaS", "On-Premises", "PaaS"], "answer": [2, 3], "explain": "On-Premises — клієнт керує всім; в IaaS провайдер дає ВМ, а ОС і все вище — клієнта. У PaaS, SaaS і FaaS операційною системою керує провайдер."}, {"q": "Як перехід у хмару змінює структуру витрат компанії?", "options": ["Витрати на інфраструктуру переносяться на бюджет відділу розробки", "Компанія один раз платить за сервери наперед і далі використовує їх безкоштовно", "Капітальні витрати на обладнання (CapEx) замінюються операційними (OpEx) — оплатою за використання", "Витрати стають фіксованими і не залежать від використаних ресурсів", "Операційні витрати (OpEx) замінюються одноразовими капітальними (CapEx)"], "answer": [2], "explain": "Хмара — оренда: платите за фактично використане (OpEx) замість купівлі обладнання наперед (CapEx). Тому рахунок змінюється разом із навантаженням і не буває фіксованим за замовчуванням."}, {"q": "Які цінності записані в Agile-маніфесті?", "options": ["Готовність до змін важливіша за дотримання плану", "Вичерпна документація важливіша за працюючий продукт", "Люди і взаємодія важливіші за процеси та інструменти", "Швидкість релізів важливіша за якість продукту", "Процеси та інструменти важливіші за людей і взаємодію", "Узгодження контракту важливіше за співпрацю із замовником"], "answer": [0, 2], "explain": "Чотири цінності: люди > процеси, працюючий продукт > документація, співпраця із замовником > контракт, реагування на зміни > план. Три неправильні варіанти — ці ж цінності, записані навпаки; «швидкість важливіша за якість» у маніфесті немає."}, {"q": "Які твердження про Scrum правильні?", "options": ["Daily Scrum триває не більше 15 хвилин", "Product Owner упорядковує Product Backlog", "Sprint Retrospective — це показ інкременту замовнику", "Scrum Master призначає задачі розробникам і контролює їх виконання", "Спринт може тривати до трьох місяців", "Kanban — одна з ролей у Scrum-команді"], "answer": [0, 1], "explain": "Scrum Master допомагає команді працювати за Scrum, але не розподіляє задачі. Спринт — до одного місяця. Показ інкременту — Sprint Review; ретроспектива — про покращення процесу. Kanban — окремий метод, а не роль."}, {"q": "Що задає WIP-ліміт у Kanban?", "options": ["Максимальний час виконання однієї задачі", "Скільки задач одночасно може бути в роботі в колонці", "Скільки релізів можна зробити за тиждень", "Скільки людей може працювати над однією задачею", "Максимум story points, які команда бере на спринт", "Скільки календарних днів триває один спринт команди"], "answer": [1], "explain": "WIP (work in progress) обмежує кількість задач у роботі, щоб команда доробляла, а не починала нове. У Kanban немає спринтів і story points як обов'язкових елементів; ліміт стосується кількості задач, а не людей чи часу."}, {"q": "Розширенням якої методології зазвичай вважають DevOps?", "options": ["PRINCE2", "ITIL", "Спіральної моделі", "Waterfall", "Agile", "Six Sigma"], "answer": [4], "explain": "Agile зблизив бізнес і розробку, DevOps поширив ті самі ідеї (короткі цикли, фідбек, співпраця) на експлуатацію. ITIL — практики керування IT-послугами, з якими DevOps взаємодіє; Waterfall, PRINCE2, спіральна модель і Six Sigma — інші підходи."}, {"q": "Які твердження про історію DevOps правильні?", "options": ["Першу конференцію DevOpsDays провели в Генті у 2009 році", "DevOps запропонувала Google разом із Kubernetes у 2014 році", "Книга «Continuous Delivery» вийшла у 2001 році разом з Agile-маніфестом", "Agile-маніфест з'явився пізніше за термін DevOps", "Патрік Дебуа створив Jenkins, щоб автоматизувати релізи", "Доповідь Flickr «10+ Deploys per Day» на конференції Velocity 2009 стала поштовхом до руху"], "answer": [0, 5], "explain": "DevOpsDays — Гент, 2009, організатор Патрік Дебуа; доповідь Олспоу і Гаммонда з Flickr — Velocity 2009. Agile-маніфест — 2001 (раніше DevOps); книга «Continuous Delivery» — 2010. Kubernetes з'явився в 2014, але DevOps старший; Jenkins створив Косуке Кавагуті."}, {"q": "Які твердження про бібліотеку і фреймворк правильні?", "options": ["Фреймворк — це бібліотека з більшою кількістю готових функцій", "Фреймворк викликає ваш код — це інверсія керування", "Бібліотеку викликає ваш код, і керування повертається вам", "Фреймворк зазвичай обирають на старті проєкту, бо він задає архітектуру", "Бібліотеку обирають на старті проєкту, бо вона задає архітектуру", "Chart.js — фреймворк, який диктує структуру всього застосунку"], "answer": [1, 2, 3], "explain": "Ключова різниця — хто кого викликає: бібліотеку викликає ваш код, фреймворк викликає ваш код сам (інверсія керування). Архітектуру задає фреймворк, а не бібліотека; бібліотеку якраз легко додати в наявний проєкт. Розмір не визначальний. Chart.js — бібліотека для графіків; приклад фреймворку — Angular."}, {"q": "Що означає абревіатура CRUD?", "options": ["Create, Read, Update, Delete", "Copy, Read, Undo, Delete", "Connect, Request, Use, Disconnect", "Create, Run, Update, Destroy", "Create, Retrieve, Upload, Deploy", "Commit, Review, Update, Deploy"], "answer": [0], "explain": "CRUD — чотири базові операції над даними: створити, прочитати, оновити, видалити. У REST їм відповідають POST, GET, PUT/PATCH, DELETE."}, {"q": "Після вмикання feature flag затримка сторінки зросла вдвічі. Що найшвидше повертає систему до норми без нового деплою?", "options": ["Відкотити базу даних із нічного бекапу", "Перемкнути DNS на резервний регіон", "Збільшити кількість серверів удвічі", "Перезапустити всі сервери застосунку", "Вимкнути цей feature flag", "Зібрати образ з виправленням і провести його через конвеєр"], "answer": [4], "explain": "Прапорець вимикається за секунди і саме для цього існує: реліз функції відокремлено від деплою. Новий образ потребує проходу конвеєром; відкат БД втратить дані; більше серверів чи перезапуск не усувають причину, а лише маскують її."}, {"q": "Що команда робить першим, коли в production стається інцидент?", "options": ["Повністю з'ясовує першопричину, поки сервіс недоступний", "Створює задачу в беклозі і планує виправлення на наступний спринт", "Пише postmortem з повною хронологією подій", "Знаходить автора зміни, яка спричинила збій, і передає задачу йому", "Повертає сервіс до роботи (відкат, прапорець), причину шукає потім", "Вимикає моніторинг, щоб алерти не заважали роботі"], "answer": [4], "explain": "Спершу mitigation — повернути сервіс користувачам. Першопричину і postmortem роблять після відновлення. Пошук винного суперечить культурі blameless; задача в беклог — один із результатів postmortem, а не перший крок."}, {"q": "Які інструменти призначені саме для зберігання і видачі секретів?", "options": ["AWS Secrets Manager", "Grafana", "Terraform state-файл", "HashiCorp Vault", "Sonatype Nexus", "SonarQube"], "answer": [0, 3], "explain": "Vault і AWS Secrets Manager шифрують секрети, видають їх за правами доступу і ведуть аудит. Nexus — репозиторій артефактів, SonarQube — аналіз коду, Grafana — дашборди. State-файл Terraform якраз <b>може містити<\/b> секрети у відкритому вигляді, тому його треба захищати, але сховищем секретів він не є."}]</script>
 <div class="complete-box"><p>Прочитали і пройшли тест? Позначте лекцію — прогрес оновиться на головній і в меню.</p><button type="button" class="btn primary" data-complete="w1l1" aria-pressed="false"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg><span class="lbl">Позначити як опрацьовану</span></button></div>
 <nav class="pager" aria-label="Попередня і наступна лекції"><a class="next" href="../../lectures/week-1/lecture-2.html"><small>Наступна · Лекція 2 →</small><span>Linux: командний рядок, файлова система, користувачі, права, процеси</span></a></nav>
-<div class="sources-note"><b>Джерела лекції:</b> презентація «Intro. Terminology. SDLC» (40 слайдів); презентація «Who is DevOps» (25 слайдів); програма курсу Teacher’s DevOps Course (PDF); доповнено із зовнішніх джерел під питання тесту курсу: continuousdelivery.com (визначення і принципи CD), метрики DORA (Google Cloud), загальновідомі DevOps-інструменти; The DevOps Handbook (Kim, Humble, Debois, Willis), Martin Fowler «Continuous Integration», Google SRE Book, semver.org. <b>Обмеження:</b> MP3-запис лекції не транскрибовано (немає доступного засобу розпізнавання мовлення); відео не оброблялося за правилами курсу.</div>
+<div class="sources-note"><b>Джерела лекції:</b> презентація «Intro. Terminology. SDLC» (40 слайдів); презентація «Who is DevOps» (25 слайдів); програма курсу Teacher’s DevOps Course (PDF); доповнено із зовнішніх джерел під питання тесту курсу: continuousdelivery.com (визначення і принципи CD), метрики DORA (Google Cloud), загальновідомі DevOps-інструменти; The DevOps Handbook (Kim, Humble, Debois, Willis), Martin Fowler «Continuous Integration», Google SRE Book, semver.org; звіт DORA Accelerate State of DevOps 2024 (рівні продуктивності, за оглядом Octopus Deploy), Scrum Guide 2020, Google SRE Book (SLO, error budget, toil), OWASP (SAST/DAST). <b>Обмеження:</b> MP3-запис лекції не транскрибовано (немає доступного засобу розпізнавання мовлення); відео не оброблялося за правилами курсу.</div>
 </main>
-<aside class="toc" aria-label="На цій сторінці"><div class="toc-title">На цій сторінці</div><ol><li><a href="#goals">Чого ви навчитесь</a></li><li><a href="#software">Програмне забезпечення і CRUD</a></li><li><a href="#devops">Що таке DevOps</a></li><li><a href="#origins">Звідки взявся DevOps і на чому він тримається</a></li><li><a href="#goal">Мета DevOps і як її виміряти</a></li><li><a href="#lifecycle">Етапи DevOps-циклу детально</a></li><li><a href="#automation">Автоматизація: що вона дає</a></li><li><a href="#cicd">CI, Continuous Delivery і Continuous Deployment</a></li><li><a href="#ci-practices">Практики CI і конвеєр розгортання детально</a></li><li><a href="#strategies">Стратегії розгортання і відкат</a></li><li><a href="#config-monitoring">Керування конфігурацією і моніторинг</a></li><li><a href="#tools">Інструменти DevOps за етапами</a></li><li><a href="#cloud">Хмари і моделі сервісів [X]aaS</a></li><li><a href="#framework">Бібліотека vs фреймворк</a></li><li><a href="#sdlc">SDLC і моделі розробки</a></li><li><a href="#history">Від хостингу 199x до DevOps-інженера</a></li><li><a href="#mistakes">Типові помилки</a></li><li><a href="#quiz">Перевір себе</a></li></ol></aside>
+<aside class="toc" aria-label="На цій сторінці"><div class="toc-title">На цій сторінці</div><ol><li><a href="#goals">Чого ви навчитесь</a></li><li><a href="#software">Програмне забезпечення і CRUD</a></li><li><a href="#devops">Що таке DevOps</a></li><li><a href="#origins">Звідки взявся DevOps і на чому він тримається</a></li><li><a href="#goal">Мета DevOps і як її виміряти</a></li><li><a href="#dora-deep">Метрики DORA на практиці: як рахувати і що вважати добрим результатом</a></li><li><a href="#lifecycle">Етапи DevOps-циклу детально</a></li><li><a href="#walkthrough">Наскрізний приклад: одна зміна від задачі до production</a></li><li><a href="#automation">Автоматизація: що вона дає</a></li><li><a href="#automation-deep">Автоматизація детально: що, як і чого вона не дає</a></li><li><a href="#cicd">CI, Continuous Delivery і Continuous Deployment</a></li><li><a href="#cd-deep">Continuous Delivery глибше: фундамент, тести і конвеєр у коді</a></li><li><a href="#ci-practices">Практики CI і конвеєр розгортання детально</a></li><li><a href="#strategies">Стратегії розгортання і відкат</a></li><li><a href="#config-monitoring">Керування конфігурацією і моніторинг</a></li><li><a href="#sre-numbers">SRE і DevSecOps у цифрах і прикладах</a></li><li><a href="#tools">Інструменти DevOps за етапами</a></li><li><a href="#tools-facts">Інструменти DevOps: факти, приклади команд і пастки тестів</a></li><li><a href="#cloud">Хмари і моделі сервісів [X]aaS</a></li><li><a href="#framework">Бібліотека vs фреймворк</a></li><li><a href="#sdlc">SDLC і моделі розробки</a></li><li><a href="#agile-deep">Agile, Scrum і Kanban детально; Waterfall vs Agile vs DevOps</a></li><li><a href="#history">Від хостингу 199x до DevOps-інженера</a></li><li><a href="#mistakes">Типові помилки</a></li><li><a href="#glossary">Словник термінів DevOps</a></li><li><a href="#quiz">Перевір себе</a></li></ol></aside>
 </div>
 </div>
 <footer class="site-footer">Навчальний конспект для самопідготовки. Прогрес і результати тестів зберігаються лише в цьому браузері на цьому пристрої (localStorage) і не синхронізуються між пристроями.</footer>
