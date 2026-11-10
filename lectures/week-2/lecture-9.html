@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Лекція 9. Віртуалізація і контейнери: гіпервізор, namespaces, Docker і Dockerfile · Хмарні технології та сервіси</title>
-<meta name="description" content="ВМ vs контейнер, гіпервізор, namespaces і cgroups, архітектура Docker, образ vs контейнер, шари, Dockerfile (RUN/CMD/ENTRYPOINT/EXPOSE), ключові команди і практичний кейс; гіпервізори типу 1/2, шари образу, томи, Docker Compose, основи Kubernetes.">
+<meta name="description" content="ВМ vs контейнер, гіпервізор, namespaces і cgroups, архітектура Docker, образ vs контейнер, шари, Dockerfile (RUN/CMD/ENTRYPOINT/EXPOSE), ключові команди і практичний кейс; гіпервізори типу 1/2, шари образу, томи, Docker Compose, основи Kubernetes; shell/exec, CMD vs ENTRYPOINT, ARG/ENV, multi-stage build, найкращі практики, реєстри і digest, опції docker run, мережі, коди виходу; архітектура Kubernetes, об&#x27;єкти, маніфест Deployment + Service, probes, kubectl, Helm.">
 <meta name="theme-color" content="#0d7a6f">
 <script>try{var t=localStorage.getItem("htc-theme");if(t)document.documentElement.setAttribute("data-theme",t)}catch(e){}</script>
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=Onest:wght@400;500;600;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
@@ -26,13 +26,13 @@
 <div class="side-group"><a class="side-link" href="../../index.html"><span class="side-num">⌂</span><span>Огляд курсу і план</span></a></div>
 <div class="side-group" data-week-progress="w1l1,w1l2,w1l3,w1l4,w1l5"><div class="side-title"><a href="../../weeks/week-1.html">Тиждень 1</a><span class="wk-count wp-text">0 з 5</span></div>
 <a class="side-link" href="../../lectures/week-1/lecture-1.html"><span class="side-num">01</span><span>Вступ до DevOps, SDLC і хмарних моделей</span><span class="side-check" data-check="w1l1" role="img" aria-label="Не опрацьовано"></span></a>
-<a class="side-link" href="../../lectures/week-1/lecture-2.html"><span class="side-num">02</span><span>Linux: команди, користувачі, права</span><span class="side-check" data-check="w1l2" role="img" aria-label="Не опрацьовано"></span></a>
+<a class="side-link" href="../../lectures/week-1/lecture-2.html"><span class="side-num">02</span><span>Linux CLI: файли, пошук, права, процеси</span><span class="side-check" data-check="w1l2" role="img" aria-label="Не опрацьовано"></span></a>
 <a class="side-link" href="../../lectures/week-1/lecture-3.html"><span class="side-num">03</span><span>Bash: змінні, умови, цикли, функції</span><span class="side-check" data-check="w1l3" role="img" aria-label="Не опрацьовано"></span></a>
 <a class="side-link" href="../../lectures/week-1/lecture-4.html"><span class="side-num">04</span><span>Веб-архітектура: HTTP, REST, N-tier</span><span class="side-check" data-check="w1l4" role="img" aria-label="Не опрацьовано"></span></a>
-<a class="side-link" href="../../lectures/week-1/lecture-5.html"><span class="side-num">05</span><span>LAMP: Apache, MySQL, PHP</span><span class="side-check" data-check="w1l5" role="img" aria-label="Не опрацьовано"></span></a>
+<a class="side-link" href="../../lectures/week-1/lecture-5.html"><span class="side-num">05</span><span>LAMP, Apache/Nginx і SQL</span><span class="side-check" data-check="w1l5" role="img" aria-label="Не опрацьовано"></span></a>
 </div>
 <div class="side-group" data-week-progress="w2l6,w2l7,w2l8,w2l9,w2l10"><div class="side-title"><a href="../../weeks/week-2.html">Тиждень 2</a><span class="wk-count wp-text">0 з 5</span></div>
-<a class="side-link" href="../../lectures/week-2/lecture-6.html"><span class="side-num">06</span><span>Мережі: OSI, TCP/IP, IP, NAT, VPN</span><span class="side-check" data-check="w2l6" role="img" aria-label="Не опрацьовано"></span></a>
+<a class="side-link" href="../../lectures/week-2/lecture-6.html"><span class="side-num">06</span><span>Мережі: OSI, IPv4/IPv6, DHCP, DNS, NAT</span><span class="side-check" data-check="w2l6" role="img" aria-label="Не опрацьовано"></span></a>
 <a class="side-link" href="../../lectures/week-2/lecture-7.html"><span class="side-num">07</span><span>Хмари: NIST, моделі, AWS/GCP/Azure</span><span class="side-check" data-check="w2l7" role="img" aria-label="Не опрацьовано"></span></a>
 <a class="side-link" href="../../lectures/week-2/lecture-8.html"><span class="side-num">08</span><span>IaC і Terraform</span><span class="side-check" data-check="w2l8" role="img" aria-label="Не опрацьовано"></span></a>
 <a class="side-link" href="../../lectures/week-2/lecture-9.html" aria-current="page"><span class="side-num">09</span><span>Віртуалізація і Docker</span><span class="side-check" data-check="w2l9" role="img" aria-label="Не опрацьовано"></span></a>
@@ -51,8 +51,8 @@
 <h1>Віртуалізація і контейнери: гіпервізор, namespaces, Docker і Dockerfile</h1>
 <p class="lead">«Один застосунок — один сервер» — дорого. Віртуалізація ділить залізо між ОС, а контейнери йдуть далі: ділять одне ядро між ізольованими застосунками. Docker зробив контейнери масовими.</p>
 <div class="meta-row">
-<span class="chip"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>≈ 16 хв читання</span>
-<span class="chip"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M9.5 9.5a2.5 2.5 0 114 2c-1 .7-1.5 1.2-1.5 2.5M12 17h.01"/></svg>11 питань самоперевірки</span>
+<span class="chip"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>≈ 36 хв читання</span>
+<span class="chip"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M9.5 9.5a2.5 2.5 0 114 2c-1 .7-1.5 1.2-1.5 2.5M12 17h.01"/></svg>24 питань самоперевірки</span>
 <span class="chip" data-status="w2l9"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg><span class="lbl">Не опрацьовано</span></span>
 </div>
 </div>
@@ -65,6 +65,9 @@
 <li>Написати Dockerfile і пояснити різницю між <code>RUN</code>, <code>CMD</code>, <code>ENTRYPOINT</code>, <code>EXPOSE</code>.</li>
 <li>Користуватися основними командами: <code>pull</code>, <code>build</code>, <code>run -p</code>, <code>ps</code>, <code>exec</code>, <code>stop</code>, <code>rm</code>, <code>rmi</code>.</li>
 <li>Розрізняти гіпервізори типу 1 і 2, пояснити шари образу і томи, підняти стек через Docker Compose і назвати базові об'єкти Kubernetes.</li>
+<li>Розрізняти shell і exec форми, CMD і ENTRYPOINT, ARG і ENV, COPY і ADD; писати багатоетапний Dockerfile за найкращими практиками.</li>
+<li>Запускати контейнери з потрібними опціями, мережами, томами, обмеженнями; публікувати образи в реєстр; діагностувати за кодами виходу.</li>
+<li>Пояснити архітектуру Kubernetes і об'єкти Pod, Deployment, Service, Ingress, ConfigMap, Secret; писати маніфест і користуватися kubectl.</li>
 </ul>
 </div>
 
@@ -163,6 +166,66 @@
 <tr><td><code>VOLUME</code>, <code>HEALTHCHECK</code>, <code>USER</code>…</td><td>Томи для даних, перевірка здоров'я, користувач тощо</td></tr>
 </tbody></table></div>
 
+<h2 id="dockerfile-deep">Dockerfile детально: CMD vs ENTRYPOINT, багатоетапна збірка, найкращі практики<a class="h-anchor" href="#dockerfile-deep" aria-label="Посилання на розділ">#</a></h2>
+<h3>Форми shell і exec</h3>
+<div class="table-wrap"><table>
+<thead><tr><th>Форма</th><th>Запис</th><th>Як запускається</th></tr></thead>
+<tbody>
+<tr><td><b>exec</b> (рекомендована)</td><td><code>CMD ["python", "app.py"]</code></td><td>програма стає процесом з PID 1 і отримує сигнали (<code>docker stop</code> → SIGTERM) напряму</td></tr>
+<tr><td><b>shell</b></td><td><code>CMD python app.py</code></td><td>загортається в <code>/bin/sh -c "python app.py"</code>; PID 1 — оболонка, яка може не передати SIGTERM застосунку, і контейнер зупиниться лише через 10 с примусово</td></tr>
+</tbody></table></div>
+<h3>CMD vs ENTRYPOINT: що виконається</h3>
+<div class="table-wrap"><table>
+<thead><tr><th>Dockerfile</th><th><code>docker run img</code></th><th><code>docker run img --help</code></th></tr></thead>
+<tbody>
+<tr><td><code>CMD ["nginx", "-g", "daemon off;"]</code></td><td><code>nginx -g daemon off;</code></td><td><code>--help</code> (CMD повністю замінено, найімовірніше помилка)</td></tr>
+<tr><td><code>ENTRYPOINT ["curl"]</code></td><td><code>curl</code></td><td><code>curl --help</code></td></tr>
+<tr><td><code>ENTRYPOINT ["curl"]</code> + <code>CMD ["https://example.com"]</code></td><td><code>curl https://example.com</code></td><td><code>curl --help</code> (CMD — аргументи за замовчуванням, їх замінено)</td></tr>
+</tbody></table></div>
+<p>Правило: <b>ENTRYPOINT</b> — «що це за програма», <b>CMD</b> — «аргументи за замовчуванням». ENTRYPOINT перевизначається лише явно: <code>docker run --entrypoint sh img</code>.</p>
+<h3>Інші пари, які плутають</h3>
+<ul>
+<li><b>ARG vs ENV</b>: <code>ARG VERSION=1.2</code> існує лише під час збирання (<code>docker build --build-arg VERSION=1.3</code>); <code>ENV APP_ENV=prod</code> зберігається в образі і доступна в запущеному контейнері (перевизначається <code>docker run -e</code>).</li>
+<li><b>COPY vs ADD</b>: використовуйте <code>COPY</code>; <code>ADD</code> додатково розпаковує локальні tar-архіви і завантажує URL, що робить збірку менш передбачуваною.</li>
+<li><b>RUN vs CMD</b>: <code>RUN</code> виконується під час <b>збирання</b> і фіксує результат у шарі; <code>CMD</code> — під час <b>запуску</b> контейнера.</li>
+<li><b>EXPOSE vs <code>-p</code></b>: <code>EXPOSE 8080</code> лише документує порт; відкриває його назовні лише <code>docker run -p 8282:8080</code>.</li>
+</ul>
+<h3>Багатоетапна збірка (multi-stage build)</h3>
+<p>Інструменти збирання (компілятор, dev-залежності) не потрібні в production-образі. Багатоетапна збірка використовує кілька <code>FROM</code>: у першому етапі збирають, у фінальний копіюють лише результат.</p>
+<pre data-lang="dockerfile"><code><span class="c"># ---- етап 1: збірка ----</span>
+FROM node:20 AS build
+WORKDIR /app
+COPY package*.json ./
+RUN npm ci                           <span class="c"># залежності — окремим шаром, кешується</span>
+COPY . .
+RUN npm run build                    <span class="c"># результат у /app/dist</span>
+
+<span class="c"># ---- етап 2: лише статичні файли за nginx ----</span>
+FROM nginx:1.27-alpine
+COPY --from=build /app/dist /usr/share/nginx/html
+EXPOSE 80
+HEALTHCHECK CMD wget -qO- http://localhost/ || exit 1</code></pre>
+<p>Образ <code>node:20</code> важить понад 1 ГБ, а фінальний на <code>nginx:alpine</code> — десятки мегабайт: менше завантажувати, менше вразливостей.</p>
+<h3>Найкращі практики</h3>
+<ol class="steps">
+<li><b>Невеликий базовий образ</b> з фіксованою версією: <code>python:3.12-slim</code>, <code>alpine:3.20</code>, distroless. Тег <code>latest</code> змінюється без попередження.</li>
+<li><b>Порядок шарів</b>: те, що рідко змінюється (залежності), — вище; код — нижче.</li>
+<li><b>Об'єднуйте команди і прибирайте кеш у тому самому RUN</b>: <code>RUN apt-get update &amp;&amp; apt-get install -y --no-install-recommends curl &amp;&amp; rm -rf /var/lib/apt/lists/*</code>. Файл, видалений у наступному шарі, однаково лишається в попередньому.</li>
+<li><b>Не root</b>: <code>RUN useradd -r app</code> і <code>USER app</code>.</li>
+<li><b>Секрети не в образ</b>: жодних паролів в <code>ENV</code> чи скопійованих файлах — їх видно в <code>docker history</code>. Передавайте під час запуску (змінні оточення, Docker secrets, Kubernetes Secrets).</li>
+<li><b><code>.dockerignore</code></b>: <code>.git</code>, <code>node_modules</code>, <code>.env</code>, логи — менший контекст і швидша збірка.</li>
+<li><b>Один процес на контейнер</b>: вебсервер і БД — в окремих контейнерах.</li>
+</ol>
+<h3>Теги, реєстри, публікація</h3>
+<pre data-lang="bash"><code>docker build -t myapp:1.4.2 .                    <span class="c"># зібрати з тегом</span>
+docker tag myapp:1.4.2 ghcr.io/anna/myapp:1.4.2  <span class="c"># додати тег з адресою реєстру</span>
+docker login ghcr.io                             <span class="c"># автентифікація (Docker Hub — просто docker login)</span>
+docker push ghcr.io/anna/myapp:1.4.2             <span class="c"># опублікувати</span>
+docker pull nginx@sha256:4c0fdaa8b6341bfdeca5f18f7837462c80cff90527ee35ef185571e1c327beac   <span class="c"># за digest — незмінний образ</span>
+docker history myapp:1.4.2                       <span class="c"># шари і команди, що їх створили</span>
+docker image inspect myapp:1.4.2                 <span class="c"># метадані: ENV, CMD, ENTRYPOINT, шари</span></code></pre>
+<p>Повне ім'я образу: <code>[реєстр/][простір/]ім'я[:тег|@digest]</code>. Без реєстру — Docker Hub, без тегу — <code>latest</code>. Тег можна перепризначити на інший образ, digest (<code>sha256:…</code>) — ні.</p>
+
 <h2 id="case">Практичний кейс: Python-вебсервер у контейнері<a class="h-anchor" href="#case" aria-label="Посилання на розділ">#</a></h2>
 <p>Файли з архіву лекції <code>server.zip</code>:</p>
 <div class="compare">
@@ -211,6 +274,58 @@ curl http://localhost:1234                                  <span class="c"># He
 </tbody></table></div>
 <p>Встановлення на Linux на лекції: <code>curl -fsSL https://get.docker.com/ | sh</code>, далі <code>systemctl enable --now docker</code>. З чату: Docker працює й на Windows; образ той самий, важлива лише архітектура процесора. Альтернативи Docker (наприклад, Podman) використовують ті самі механізми ядра.</p>
 
+<h2 id="runtime">Запуск контейнерів: опції, мережі, діагностика<a class="h-anchor" href="#runtime" aria-label="Посилання на розділ">#</a></h2>
+<h3>Опції <code>docker run</code></h3>
+<div class="table-wrap"><table>
+<thead><tr><th>Опція</th><th>Значення</th><th>Приклад</th></tr></thead>
+<tbody>
+<tr><td><code>-d</code></td><td>у фоні (detached)</td><td><code>docker run -d nginx</code></td></tr>
+<tr><td><code>-it</code></td><td>інтерактивно з терміналом</td><td><code>docker run -it ubuntu bash</code></td></tr>
+<tr><td><code>--name</code></td><td>ім'я контейнера</td><td><code>--name web</code></td></tr>
+<tr><td><code>-p хост:контейнер</code></td><td>опублікувати порт</td><td><code>-p 8080:80</code>; <code>-p 127.0.0.1:8080:80</code> — лише локально</td></tr>
+<tr><td><code>-e</code>, <code>--env-file</code></td><td>змінні оточення</td><td><code>-e DB_HOST=db</code></td></tr>
+<tr><td><code>-v</code>, <code>--mount</code></td><td>том або каталог хоста</td><td><code>-v data:/var/lib/mysql</code></td></tr>
+<tr><td><code>--rm</code></td><td>видалити контейнер після зупинки</td><td>для разових задач</td></tr>
+<tr><td><code>--restart</code></td><td>політика перезапуску: <code>no</code>, <code>on-failure</code>, <code>always</code>, <code>unless-stopped</code></td><td><code>--restart unless-stopped</code></td></tr>
+<tr><td><code>--network</code></td><td>до якої мережі підключити</td><td><code>--network appnet</code></td></tr>
+<tr><td><code>-m</code>, <code>--cpus</code></td><td>обмеження пам'яті і CPU (cgroups)</td><td><code>-m 512m --cpus 1.5</code></td></tr>
+</tbody></table></div>
+<p>Схему публікації порту <code>-p 8282:8080</code> див. у розділі «Практичний кейс» вище: запит на порт хоста перенаправляється на порт усередині контейнера.</p>
+<h3>Мережі Docker</h3>
+<div class="table-wrap"><table>
+<thead><tr><th>Драйвер</th><th>Поведінка</th></tr></thead>
+<tbody>
+<tr><td><b>bridge</b> (за замовчуванням)</td><td>контейнери в приватній мережі <code>172.17.0.0/16</code> на хості; назовні — через NAT і <code>-p</code></td></tr>
+<tr><td><b>користувацька bridge</b> (<code>docker network create appnet</code>)</td><td>те саме, плюс <b>вбудований DNS</b>: контейнери знаходять один одного за іменами. Саме так працює Compose</td></tr>
+<tr><td><b>host</b></td><td>контейнер використовує мережевий стек хоста напряму, без ізоляції і без <code>-p</code></td></tr>
+<tr><td><b>none</b></td><td>без мережі</td></tr>
+</tbody></table></div>
+<pre data-lang="bash"><code>docker network create appnet
+docker run -d --name db  --network appnet -e POSTGRES_PASSWORD=secret postgres:16
+docker run -d --name api --network appnet -e DB_HOST=db -p 8080:8080 myapi:1.0
+<span class="c"># api звертається до бази за адресою db:5432 — ім'я розв'язує DNS Docker</span></code></pre>
+<h3>Життєвий цикл і діагностика</h3>
+<p>Стани контейнера: <i>created</i> → <i>running</i> → <i>paused</i> / <i>exited</i> → видалений. Контейнер живе, поки працює його головний процес (PID 1): процес завершився — контейнер перейшов у <i>exited</i>.</p>
+<div class="table-wrap"><table>
+<thead><tr><th>Команда</th><th>Навіщо</th></tr></thead>
+<tbody>
+<tr><td><code>docker ps -a</code></td><td>стан і код виходу: <i>Exited (1)</i></td></tr>
+<tr><td><code>docker logs -f --tail 100 web</code></td><td>stdout/stderr контейнера наживо</td></tr>
+<tr><td><code>docker inspect web</code></td><td>повна конфігурація: IP, томи, змінні, політика перезапуску</td></tr>
+<tr><td><code>docker exec -it web sh</code></td><td>зайти всередину запущеного контейнера</td></tr>
+<tr><td><code>docker stats</code></td><td>CPU, пам'ять, мережа кожного контейнера наживо</td></tr>
+<tr><td><code>docker system df</code> / <code>docker system prune</code></td><td>скільки місця займають образи і контейнери / прибрати невикористане</td></tr>
+</tbody></table></div>
+<div class="table-wrap"><table>
+<thead><tr><th>Код виходу</th><th>Типова причина</th></tr></thead>
+<tbody>
+<tr><td>0</td><td>процес завершився нормально (наприклад, CMD — разова команда, а не сервер)</td></tr>
+<tr><td>1</td><td>помилка застосунку — дивіться <code>docker logs</code></td></tr>
+<tr><td>125 / 126 / 127</td><td>помилка самого Docker / команда не виконувана / команду не знайдено в образі</td></tr>
+<tr><td>137</td><td>убитий SIGKILL: перевищено ліміт пам'яті (OOM) або <code>docker kill</code></td></tr>
+<tr><td>143</td><td>завершено SIGTERM (<code>docker stop</code>)</td></tr>
+</tbody></table></div>
+
 <h2 id="more">Типи гіпервізорів, шари, томи, Compose і Kubernetes<a class="h-anchor" href="#more" aria-label="Посилання на розділ">#</a></h2>
 <div class="compare">
 <div><h4>Гіпервізор типу 1 (bare-metal)</h4><p>Ставиться прямо на залізо замість ОС. Для дата-центрів і хмар. <b>VMware ESXi, Microsoft Hyper-V, Xen, KVM</b>.</p></div>
@@ -243,8 +358,85 @@ volumes:
 </div>
 <p>Керують через <code>kubectl</code>: <code>kubectl apply -f app.yaml</code>, <code>kubectl get pods</code>. Маніфести — декларативний YAML.</p>
 
+<h2 id="k8s">Kubernetes детальніше<a class="h-anchor" href="#k8s" aria-label="Посилання на розділ">#</a></h2>
+<h3>Архітектура кластера</h3>
+<div class="table-wrap"><table>
+<thead><tr><th>Компонент</th><th>Де</th><th>Роль</th></tr></thead>
+<tbody>
+<tr><td><b>kube-apiserver</b></td><td>control plane</td><td>єдина точка входу: усі команди <code>kubectl</code> і компоненти спілкуються через його API</td></tr>
+<tr><td><b>etcd</b></td><td>control plane</td><td>розподілене сховище «ключ-значення» з усім станом кластера</td></tr>
+<tr><td><b>kube-scheduler</b></td><td>control plane</td><td>обирає вузол для кожного нового поду (за ресурсами, правилами)</td></tr>
+<tr><td><b>kube-controller-manager</b></td><td>control plane</td><td>контролери, що постійно приводять реальний стан до бажаного (немає 3 реплік — створити)</td></tr>
+<tr><td><b>kubelet</b></td><td>кожен вузол</td><td>агент, що запускає контейнери подів через container runtime (containerd)</td></tr>
+<tr><td><b>kube-proxy</b></td><td>кожен вузол</td><td>правила мережі для Service</td></tr>
+</tbody></table></div>
+<h3>Основні об'єкти</h3>
+<div class="table-wrap"><table>
+<thead><tr><th>Об'єкт</th><th>Призначення</th></tr></thead>
+<tbody>
+<tr><td><b>Pod</b></td><td>один або кілька контейнерів зі спільною IP і томами; ефемерний</td></tr>
+<tr><td><b>ReplicaSet</b></td><td>тримає задану кількість однакових подів</td></tr>
+<tr><td><b>Deployment</b></td><td>керує ReplicaSet-ами: rolling update і rollback (<code>kubectl rollout undo</code>)</td></tr>
+<tr><td><b>Service</b></td><td>стабільне ім'я і IP для набору подів: <b>ClusterIP</b> (лише всередині кластера), <b>NodePort</b> (порт на кожному вузлі), <b>LoadBalancer</b> (хмарний балансувальник)</td></tr>
+<tr><td><b>Ingress</b></td><td>HTTP-маршрутизація ззовні: домени і шляхи → сервіси, TLS</td></tr>
+<tr><td><b>ConfigMap</b> / <b>Secret</b></td><td>конфігурація / секрети, що передаються в под як змінні або файли</td></tr>
+<tr><td><b>Namespace</b></td><td>логічний поділ кластера (dev, staging, команди)</td></tr>
+<tr><td><b>PersistentVolume / PVC</b></td><td>постійне сховище для даних, що переживає перезапуск подів</td></tr>
+<tr><td>StatefulSet, DaemonSet, Job, CronJob</td><td>для БД зі стабільними іменами / по поду на кожному вузлі / разові й періодичні задачі</td></tr>
+</tbody></table></div>
+<h3>Маніфест: Deployment + Service</h3>
+<pre data-lang="yaml"><code>apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: web
+spec:
+  replicas: 3                       <span class="c"># бажаний стан: три поди</span>
+  selector:
+    matchLabels: { app: web }
+  template:
+    metadata:
+      labels: { app: web }
+    spec:
+      containers:
+        - name: web
+          image: ghcr.io/anna/myapp:1.4.2
+          ports: [{ containerPort: 8080 }]
+          resources:
+            requests: { cpu: 100m, memory: 128Mi }
+            limits:   { memory: 256Mi }
+          readinessProbe:           <span class="c"># под отримує трафік лише коли готовий</span>
+            httpGet: { path: /health, port: 8080 }
+          livenessProbe:            <span class="c"># завис — kubelet перезапустить контейнер</span>
+            httpGet: { path: /health, port: 8080 }
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: web
+spec:
+  selector: { app: web }            <span class="c"># трафік на поди з міткою app=web</span>
+  ports: [{ port: 80, targetPort: 8080 }]
+  type: ClusterIP</code></pre>
+<h3>kubectl: найчастіші команди</h3>
+<pre data-lang="bash"><code>kubectl apply -f app.yaml                 <span class="c"># створити/оновити об'єкти з маніфесту (декларативно)</span>
+kubectl get pods -o wide                  <span class="c"># поди, вузли, IP</span>
+kubectl describe pod web-7c9d…            <span class="c"># події: чому под не стартує (ImagePullBackOff, CrashLoopBackOff)</span>
+kubectl logs -f deploy/web                <span class="c"># логи</span>
+kubectl exec -it web-7c9d… -- sh          <span class="c"># shell у контейнері</span>
+kubectl scale deploy/web --replicas=5     <span class="c"># масштабування</span>
+kubectl set image deploy/web web=ghcr.io/anna/myapp:1.4.3   <span class="c"># rolling update</span>
+kubectl rollout status deploy/web ; kubectl rollout undo deploy/web
+kubectl port-forward svc/web 8080:80      <span class="c"># доступ до сервісу з ноутбука</span></code></pre>
+<p><b>Helm</b> — пакетний менеджер Kubernetes: «чарт» — шаблон маніфестів зі змінними; <code>helm install</code> розгортає цілий застосунок (наприклад, Prometheus) однією командою. Для навчання кластер запускають локально: minikube, kind, k3d, Docker Desktop.</p>
+
 <h2 id="mistakes">Типові помилки<a class="h-anchor" href="#mistakes" aria-label="Посилання на розділ">#</a></h2>
 <div class="mistakes">
+<div class="mistake"><div class="wrong"><code>EXPOSE 80</code> у Dockerfile відкриває порт назовні.</div><div class="right">EXPOSE лише документує порт. Назовні його публікує <code>docker run -p 8080:80</code>.</div></div>
+<div class="mistake"><div class="wrong">Видалити файл у наступному RUN — і образ стане меншим.</div><div class="right">Попередній шар уже містить файл. Чистити кеш треба в тому самому RUN або використовувати multi-stage build.</div></div>
+<div class="mistake"><div class="wrong">Пароль БД можна покласти в <code>ENV</code> у Dockerfile.</div><div class="right">Його видно в <code>docker history</code> та <code>inspect</code>. Секрети передають під час запуску.</div></div>
+<div class="mistake"><div class="wrong">Контейнер з кодом виходу 137 «впав через помилку в коді».</div><div class="right">137 = 128 + 9: процес вбито SIGKILL, найчастіше через перевищення ліміту пам'яті (OOM).</div></div>
+<div class="mistake"><div class="wrong">Service в Kubernetes — це контейнер.</div><div class="right">Service — стабільна адреса і балансування для набору подів, обраних за мітками.</div></div>
+
 <div class="mistake"><div class="wrong">Дані, записані всередині контейнера, переживуть його видалення.</div><div class="right">Контейнер ефемерний. Усе важливе — у volume або bind mount.</div></div>
 <div class="mistake"><div class="wrong">Образ і контейнер — одне й те саме.</div><div class="right">Образ — незмінний шаблон (build time), контейнер — його запущений екземпляр (runtime). З одного образу можна запустити багато контейнерів.</div></div>
 <div class="mistake"><div class="wrong"><code>EXPOSE 1234</code> робить сервіс доступним ззовні.</div><div class="right">EXPOSE лише документує порт. Публікує його <code>docker run -p ХОСТ:КОНТЕЙНЕР</code>.</div></div>
@@ -252,12 +444,12 @@ volumes:
 <div class="mistake"><div class="wrong">Зберігати дані БД усередині контейнера.</div><div class="right">Записуваний шар зникає з контейнером. Дані виносять у томи (<code>-v</code>/<code>VOLUME</code>).</div></div>
 <div class="mistake"><div class="wrong">Контейнер = «легка ВМ» з власним ядром.</div><div class="right">Контейнери ділять ядро хоста; ізоляцію дають namespaces, а ліміти — cgroups.</div></div>
 </div>
-<h2 id="quiz">Перевір себе<a class="h-anchor" href="#quiz" aria-label="Посилання на розділ">#</a></h2><p>11 питань на розуміння. В одиночних питаннях натисніть варіант — одразу побачите правильну відповідь і пояснення. Питання з позначкою <b>«кілька відповідей»</b> влаштовані як у тесті курсу (<i>Select one or more</i>): позначте всі правильні варіанти й натисніть «Перевірити».</p><div class="quiz" data-quiz="w2l9"></div><script type="application/json" id="quiz-data">[{"q": "Яка головна архітектурна відмінність контейнера від віртуальної машини?", "options": ["Контейнер має власне ядро ОС", "Контейнери використовують спільне ядро ОС хоста", "Контейнер працює тільки в хмарі", "ВМ не потребує гіпервізора"], "answer": 1, "explain": "ВМ віртуалізує залізо і має свою ОС з ядром; контейнер — ізольований процес на спільному ядрі хоста, тому він легший."}, {"q": "Який механізм ядра Linux обмежує, скільки CPU і пам'яті може використати контейнер?", "options": ["cgroups", "capabilities", "SELinux", "namespaces"], "answer": 0, "explain": "Control groups ставлять ліміти ресурсів. Namespaces відповідають за ізоляцію (PID, MNT, NET, USER)."}, {"q": "Що означає <code>-p 8080:80<\/code> у <code>docker run<\/code>?", "options": ["Запустити 8080 копій", "Порт 8080 контейнера → порт 80 хоста", "Порт 8080 хоста → порт 80 контейнера", "Обмежити контейнер 80% CPU"], "answer": 2, "explain": "Формат -p ХОСТ:КОНТЕЙНЕР. Запит на 8080 хоста потрапить на 80 усередині контейнера."}, {"q": "Чим відрізняється RUN від CMD у Dockerfile?", "options": ["RUN виконується під час збирання образу, CMD — команда за замовчуванням при старті контейнера", "RUN можна використати лише один раз", "Нічим", "CMD виконується під час збирання"], "answer": 0, "explain": "RUN створює шар образу на етапі build. CMD задає, що запуститься при docker run; діє лише остання CMD, і її можна перевизначити."}, {"q": "Як отримати shell у запущеному контейнері myserver?", "options": ["docker exec -it myserver bash", "docker run myserver bash", "docker start bash myserver", "docker attach bash"], "answer": 0, "explain": "exec виконує нову команду в уже запущеному контейнері; -it дає інтерактивний термінал."}, {"q": "Що таке Docker Hub?", "options": ["Команда для збирання образів", "Публічний реєстр (registry) образів", "Мережевий драйвер", "Гіпервізор"], "answer": 1, "explain": "Registry зберігає образи; Docker Hub — найвідоміший публічний реєстр, звідки docker pull завантажує образи."}, {"q": "Які з цих гіпервізорів належать до <b>типу 1<\/b> (bare-metal)?", "options": ["Oracle VirtualBox", "VMware ESXi", "VMware Workstation", "Microsoft Hyper-V"], "answer": [1, 3], "explain": "ESXi і Hyper-V працюють прямо на залізі. VirtualBox і Workstation — програми всередині звичайної ОС (тип 2)."}, {"q": "Навіщо Docker Compose?", "options": ["Віртуалізувати залізо", "Описати й запустити кілька пов'язаних контейнерів одним YAML-файлом", "Зібрати образ без Dockerfile", "Замінити Kubernetes у великому кластері"], "answer": 1, "explain": "Compose піднімає, наприклад, web + db однією командою docker compose up."}, {"q": "Що таке Pod у Kubernetes?", "options": ["Найменша одиниця розгортання: один або кілька контейнерів", "Фізичний сервер кластера", "Образ контейнера в registry", "Файл з паролями"], "answer": 0, "explain": "Под — обгортка над контейнером(ами) зі спільною мережею. Сервер кластера — це node."}, {"q": "Як зберегти дані MySQL-контейнера після його видалення?", "options": ["Запускати з -d", "Нічого — дані зберігаються самі", "Підключити volume до /var/lib/mysql", "Додати EXPOSE 3306"], "answer": 2, "explain": "Файлова система контейнера зникає разом з ним. Volume живе окремо і переживає видалення контейнера."}, {"q": "Яка команда показує всі контейнери, включно із зупиненими?", "options": ["docker ps", "docker images", "docker list", "docker ps -a"], "answer": 3, "explain": "docker ps — лише запущені, docker ps -a — усі. docker images показує образи, а не контейнери."}]</script>
+<h2 id="quiz">Перевір себе<a class="h-anchor" href="#quiz" aria-label="Посилання на розділ">#</a></h2><p>24 питань на розуміння. В одиночних питаннях натисніть варіант — одразу побачите правильну відповідь і пояснення. Питання з позначкою <b>«кілька відповідей»</b> влаштовані як у тесті курсу (<i>Select one or more</i>): позначте всі правильні варіанти й натисніть «Перевірити».</p><div class="quiz" data-quiz="w2l9"></div><script type="application/json" id="quiz-data">[{"q": "Які твердження про віртуальні машини і контейнери правильні?", "options": ["Контейнери на одному хості використовують спільне ядро", "Контейнер стартує за секунди, ВМ — довше", "Кожна ВМ має власне ядро ОС", "Контейнер завжди містить повну копію ОС з ядром", "Контейнер ізолюється механізмами ядра namespaces і cgroups"], "answer": [0, 1, 2, 4], "explain": "Образ контейнера містить лише файли користувацького простору; ядро спільне з хостом."}, {"q": "Які відповідності «механізм ядра — призначення» правильні?", "options": ["cgroups — шифрування трафіку між контейнерами", "Union FS / overlayfs — шари образу", "namespaces — обмеження використання пам'яті", "cgroups — обмеження ресурсів (CPU, пам'ять)", "namespaces — ізоляція того, що бачить процес (PID, мережа, файлова система)"], "answer": [1, 3, 4], "explain": "Обмеження ресурсів — cgroups, видимість — namespaces."}, {"q": "Які гіпервізори належать до типу 1 (bare-metal)?", "options": ["Oracle VirtualBox", "VMware Workstation", "VMware ESXi", "Microsoft Hyper-V", "Xen", "KVM"], "answer": [2, 3, 4, 5], "explain": "VirtualBox і Workstation — тип 2: працюють як програми всередині звичайної ОС."}, {"q": "Які твердження про образ і контейнер правильні?", "options": ["Видалення контейнера видаляє і образ", "Зміни в контейнері автоматично записуються в образ", "Образ — незмінний шаблон, контейнер — запущений екземпляр образу", "З одного образу можна запустити багато контейнерів", "Образ складається з шарів лише для читання"], "answer": [2, 3, 4], "explain": "Контейнер має тонкий записуваний шар поверх образу; образ при цьому не змінюється."}, {"q": "Яка різниця між RUN і CMD у Dockerfile?", "options": ["CMD виконується під час docker build", "Діє лише остання інструкція CMD", "RUN виконується під час збирання образу", "CMD задає команду за замовчуванням під час запуску контейнера", "RUN можна використати в Dockerfile лише один раз"], "answer": [1, 2, 3], "explain": "RUN може бути скільки завгодно, кожен створює шар."}, {"q": "Dockerfile містить <code>ENTRYPOINT [\"curl\"]<\/code> і <code>CMD [\"https://example.com\"]<\/code>. Що виконається?", "options": ["<code>docker run img --help<\/code> → --help як окрема команда", "<code>docker run img --help<\/code> → curl --help", "<code>docker run img<\/code> → лише https://example.com як команда", "<code>docker run img<\/code> → curl https://example.com", "ENTRYPOINT ігнорується, якщо є CMD"], "answer": [1, 3], "explain": "CMD стає аргументами ENTRYPOINT за замовчуванням і замінюється аргументами docker run."}, {"q": "Чому для CMD рекомендують exec-форму <code>[\"python\", \"app.py\"]<\/code>?", "options": ["Exec-форма робить образ меншим удвічі", "Exec-форма автоматично встановлює python", "Програма стає процесом з PID 1 і напряму отримує SIGTERM від docker stop", "Shell-форма заборонена в Dockerfile", "Немає проміжної оболонки /bin/sh -c"], "answer": [2, 4], "explain": "У shell-формі PID 1 — оболонка, яка може не передати сигнал, і контейнер зупиниться лише примусово."}, {"q": "Які твердження про ARG і ENV правильні?", "options": ["ENV можна перевизначити через <code>docker run -e<\/code>", "ARG існує лише під час збирання образу", "ENV зберігається в образі і доступна в контейнері", "ARG передають через <code>--build-arg<\/code>", "ARG доступна в запущеному контейнері як змінна оточення"], "answer": [0, 1, 2, 3], "explain": "Після збирання ARG зникає."}, {"q": "Що робить інструкція EXPOSE 8080?", "options": ["Документує, що застосунок у контейнері слухає порт 8080", "Сама по собі не публікує порт на хості", "Відкриває порт 8080 у фаєрволі хоста", "Перенаправляє порт 80 хоста на 8080 контейнера", "Забороняє інші порти"], "answer": [0, 1], "explain": "Публікує порт <code>docker run -p хост:контейнер<\/code>."}, {"q": "Що дає багатоетапна збірка (multi-stage build)?", "options": ["Копіювання результатів між етапами через <code>COPY --from=<\/code>", "Автоматичне розгортання в Kubernetes", "Фінальний образ без компіляторів і dev-залежностей", "Менший розмір і менше вразливостей", "Можливість запускати кілька процесів в одному контейнері"], "answer": [0, 2, 3], "explain": "Кілька FROM у Dockerfile; у фінальний образ потрапляє лише потрібне."}, {"q": "Які практики роблять Dockerfile кращим?", "options": ["Очищати кеш apt у тому самому RUN", "Фіксувати версію базового образу замість latest", "Ставити встановлення залежностей вище за копіювання коду", "Копіювати в образ каталог .git, щоб знати версію коду", "Запускати застосунок не від root (USER)", "Зберігати паролі в ENV, щоб вони були доступні всім контейнерам"], "answer": [0, 1, 2, 4], "explain": "Секрети в ENV видно в docker history; .git додає розмір і може містити чутливі дані — його виключають через .dockerignore."}, {"q": "Як запустити nginx у фоні з публікацією порту 80 контейнера на порт 8080 хоста?", "options": ["<code>docker run -p 8080:80 -d --name web nginx<\/code>", "<code>docker run -d -p 80:8080 nginx<\/code>", "<code>docker run -d -p 8080:80 nginx<\/code>", "<code>docker run -it -p nginx 8080:80<\/code>", "<code>docker run -d --expose 8080 nginx<\/code>"], "answer": [0, 2], "explain": "Формат -p хост:контейнер; порядок опцій не важливий. --expose лише документує порт."}, {"q": "Які твердження про томи (volumes) правильні?", "options": ["<code>-v pgdata:/var/lib/postgresql/data<\/code> — іменований том", "Без тому дані БД у контейнері зберігаються назавжди після docker rm", "Дані в томі переживають видалення контейнера", "<code>-v /home/me/site:/usr/share/nginx/html<\/code> — bind mount каталогу хоста", "Том — це шар образу"], "answer": [0, 2, 3], "explain": "Записуваний шар контейнера зникає разом з ним."}, {"q": "Які твердження про мережі Docker правильні?", "options": ["Compose не створює мережу для сервісів", "У користувацькій bridge-мережі контейнери знаходять один одного за іменами", "Мережа host використовує мережевий стек хоста без ізоляції", "За замовчуванням контейнери отримують адреси з 172.17.0.0/16", "Контейнери в мережі none мають доступ до інтернету"], "answer": [1, 2, 3], "explain": "none — без мережі; Compose створює спільну мережу проєкту з DNS за іменами сервісів."}, {"q": "Контейнер постійно перезапускається з кодом виходу 137. Що найімовірніше?", "options": ["Застосунок завершився успішно, а Docker просто перезапустив його", "Помилка синтаксису в Dockerfile під час збирання образу", "Команду, вказану в CMD, не знайдено всередині образу", "Контейнер зупинено командою docker kill", "Процес вбито SIGKILL через перевищення ліміту пам'яті (OOM)"], "answer": [3, 4], "explain": "137 = 128 + 9 (SIGKILL). Команду не знайдено — 127, успіх — 0."}, {"q": "Які команди допомагають діагностувати контейнер?", "options": ["<code>docker push<\/code>", "<code>docker exec -it … sh<\/code>", "<code>docker logs<\/code>", "<code>docker stats<\/code>", "<code>docker inspect<\/code>", "<code>docker rmi<\/code>"], "answer": [1, 2, 3, 4], "explain": "push публікує образ, rmi видаляє образ."}, {"q": "Які твердження про теги й реєстри правильні?", "options": ["Тег не можна перепризначити на інший образ", "Без тегу використовується latest", "Digest sha256 однозначно визначає незмінний образ", "Без реєстру в імені образ береться з Docker Hub", "docker push завантажує образ з реєстру на ваш комп'ютер"], "answer": [1, 2, 3], "explain": "Тег можна перевісити на новий образ — тому для відтворюваності використовують digest. push публікує, pull завантажує."}, {"q": "Які твердження про Docker Compose правильні?", "options": ["Сервіси звертаються один до одного за іменами", "Compose замінює Dockerfile і не вміє збирати образи", "<code>docker compose up -d<\/code> піднімає всі сервіси у фоні", "<code>docker compose down<\/code> зупиняє і видаляє контейнери", "Описує кілька сервісів одним YAML-файлом"], "answer": [0, 2, 3, 4], "explain": "Compose може збирати образи (build: .)."}, {"q": "Які компоненти належать до control plane Kubernetes?", "options": ["etcd", "kube-proxy", "kube-scheduler", "kube-controller-manager", "kube-apiserver", "kubelet"], "answer": [0, 2, 3, 4], "explain": "kubelet і kube-proxy працюють на кожному робочому вузлі."}, {"q": "Які відповідності «об'єкт Kubernetes — призначення» правильні?", "options": ["Namespace — фізичний сервер кластера", "ConfigMap — образ контейнера", "Pod — найменша одиниця розгортання: один або кілька контейнерів", "Service — стабільна адреса і балансування для набору подів", "Deployment — керує репліками подів і rolling update", "Secret — зберігання паролів і ключів"], "answer": [2, 3, 4, 5], "explain": "ConfigMap — конфігурація, Namespace — логічний поділ кластера."}, {"q": "Які типи Service існують у Kubernetes?", "options": ["NodePort", "ClusterIP", "ExternalName", "DockerBridge", "LoadBalancer", "PublicIP"], "answer": [0, 1, 2, 4], "explain": "ClusterIP — внутрішній, NodePort — порт на вузлах, LoadBalancer — хмарний балансувальник, ExternalName — DNS-псевдонім."}, {"q": "Чим відрізняються readinessProbe і livenessProbe?", "options": ["Liveness визначає, чи треба перезапустити завислий контейнер", "Liveness вирішує, на який вузол поставити под", "Readiness визначає, чи можна надсилати поду трафік", "Readiness перезапускає контейнер"], "answer": [0, 2], "explain": "Вибір вузла — робота scheduler."}, {"q": "Які команди kubectl виконають rolling update і відкат?", "options": ["<code>kubectl set image deploy/web web=myapp:1.4.3<\/code>", "<code>kubectl get pods<\/code>", "<code>kubectl rollout undo deploy/web<\/code>", "<code>kubectl delete pods --all<\/code>", "<code>kubectl apply -f app.yaml<\/code> зі зміненим тегом образу"], "answer": [0, 2, 4], "explain": "delete pods просто перестворить поди з тим самим образом; get лише показує стан."}, {"q": "Що таке Helm?", "options": ["Container runtime, що запускає контейнери на вузлах кластера", "Реєстр Docker-образів для приватних кластерів", "Пакетний менеджер для Kubernetes", "Інструмент, що розгортає застосунок з шаблонів маніфестів (чартів)", "Компонент control plane, що обирає вузол для поду"], "answer": [2, 3], "explain": "Runtime — containerd або CRI-O, реєстр — Docker Hub, GHCR, ECR."}]</script>
 <div class="complete-box"><p>Прочитали і пройшли тест? Позначте лекцію — прогрес оновиться на головній і в меню.</p><button type="button" class="btn primary" data-complete="w2l9" aria-pressed="false"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg><span class="lbl">Позначити як опрацьовану</span></button></div>
 <nav class="pager" aria-label="Попередня і наступна лекції"><a class="prev" href="../../lectures/week-2/lecture-8.html"><small>← Попередня · Лекція 8</small><span>Infrastructure as Code і Terraform: HCL, state, init → plan → apply</span></a><a class="next" href="../../lectures/week-2/lecture-10.html"><small>Наступна · Лекція 10 →</small><span>Системи контролю версій: Git, гілки, Git Flow і pull request</span></a></nav>
-<div class="sources-note"><b>Джерела лекції:</b> презентація «Virtualizations. Containers» (45 слайдів); архів server.zip (Dockerfile, server.py, index.html); чат лекції 9; розділ про типи гіпервізорів, томи, Compose і Kubernetes доповнено з документації Docker і kubernetes.io. <b>Обмеження:</b> MP3-запис лекції не транскрибовано; відео не оброблялося за правилами курсу.</div>
+<div class="sources-note"><b>Джерела лекції:</b> презентація «Virtualizations. Containers» (45 слайдів); архів server.zip (Dockerfile, server.py, index.html); чат лекції 9; розділ про типи гіпервізорів, томи, Compose і Kubernetes доповнено з документації Docker і kubernetes.io; Docker documentation (Dockerfile reference, docker run, networking), Kubernetes documentation. <b>Обмеження:</b> MP3-запис лекції не транскрибовано; відео не оброблялося за правилами курсу.</div>
 </main>
-<aside class="toc" aria-label="На цій сторінці"><div class="toc-title">На цій сторінці</div><ol><li><a href="#goals">Чого ви навчитесь</a></li><li><a href="#virtualization">Віртуалізація</a></li><li><a href="#vm-vs-container">ВМ vs контейнер</a></li><li><a href="#kernel">Як працюють контейнери: механізми ядра</a></li><li><a href="#docker">Docker: архітектура і терміни</a></li><li><a href="#dockerfile">Dockerfile</a></li><li><a href="#case">Практичний кейс: Python-вебсервер у контейнері</a></li><li><a href="#commands">Шпаргалка команд</a></li><li><a href="#more">Типи гіпервізорів, шари, томи, Compose і Kubernetes</a></li><li><a href="#mistakes">Типові помилки</a></li><li><a href="#quiz">Перевір себе</a></li></ol></aside>
+<aside class="toc" aria-label="На цій сторінці"><div class="toc-title">На цій сторінці</div><ol><li><a href="#goals">Чого ви навчитесь</a></li><li><a href="#virtualization">Віртуалізація</a></li><li><a href="#vm-vs-container">ВМ vs контейнер</a></li><li><a href="#kernel">Як працюють контейнери: механізми ядра</a></li><li><a href="#docker">Docker: архітектура і терміни</a></li><li><a href="#dockerfile">Dockerfile</a></li><li><a href="#dockerfile-deep">Dockerfile детально: CMD vs ENTRYPOINT, багатоетапна збірка, найкращі практики</a></li><li><a href="#case">Практичний кейс: Python-вебсервер у контейнері</a></li><li><a href="#commands">Шпаргалка команд</a></li><li><a href="#runtime">Запуск контейнерів: опції, мережі, діагностика</a></li><li><a href="#more">Типи гіпервізорів, шари, томи, Compose і Kubernetes</a></li><li><a href="#k8s">Kubernetes детальніше</a></li><li><a href="#mistakes">Типові помилки</a></li><li><a href="#quiz">Перевір себе</a></li></ol></aside>
 </div>
 </div>
 <footer class="site-footer">Навчальний конспект для самопідготовки. Прогрес і результати тестів зберігаються лише в цьому браузері на цьому пристрої (localStorage) і не синхронізуються між пристроями.</footer>

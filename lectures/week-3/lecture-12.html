@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Лекція 12. GitHub Actions: workflow, jobs, runners, secrets і автоматичний деплой · Хмарні технології та сервіси</title>
-<meta name="description" content="Компоненти GitHub Actions (workflow, event, job, step, action, runner), синтаксис YAML, matrix, secrets, self-hosted runners, Marketplace, розбір workflow деплою на Heroku, порівняння з Jenkins; тригери schedule і workflow_dispatch, needs, if, кеш і артефакти.">
+<meta name="description" content="Компоненти GitHub Actions (workflow, event, job, step, action, runner), синтаксис YAML, matrix, secrets, self-hosted runners, Marketplace, розбір workflow деплою на Heroku, порівняння з Jenkins; тригери schedule і workflow_dispatch, needs, if, кеш і артефакти; контексти і вирази, outputs, GITHUB_OUTPUT/GITHUB_ENV, функції статусу, permissions, concurrency, services, environments зі схваленням, OIDC, безпека дій, reusable workflows; повний конвеєр з матрицею, GHCR і деплоєм.">
 <meta name="theme-color" content="#0d7a6f">
 <script>try{var t=localStorage.getItem("htc-theme");if(t)document.documentElement.setAttribute("data-theme",t)}catch(e){}</script>
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=Onest:wght@400;500;600;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
@@ -26,13 +26,13 @@
 <div class="side-group"><a class="side-link" href="../../index.html"><span class="side-num">⌂</span><span>Огляд курсу і план</span></a></div>
 <div class="side-group" data-week-progress="w1l1,w1l2,w1l3,w1l4,w1l5"><div class="side-title"><a href="../../weeks/week-1.html">Тиждень 1</a><span class="wk-count wp-text">0 з 5</span></div>
 <a class="side-link" href="../../lectures/week-1/lecture-1.html"><span class="side-num">01</span><span>Вступ до DevOps, SDLC і хмарних моделей</span><span class="side-check" data-check="w1l1" role="img" aria-label="Не опрацьовано"></span></a>
-<a class="side-link" href="../../lectures/week-1/lecture-2.html"><span class="side-num">02</span><span>Linux: команди, користувачі, права</span><span class="side-check" data-check="w1l2" role="img" aria-label="Не опрацьовано"></span></a>
+<a class="side-link" href="../../lectures/week-1/lecture-2.html"><span class="side-num">02</span><span>Linux CLI: файли, пошук, права, процеси</span><span class="side-check" data-check="w1l2" role="img" aria-label="Не опрацьовано"></span></a>
 <a class="side-link" href="../../lectures/week-1/lecture-3.html"><span class="side-num">03</span><span>Bash: змінні, умови, цикли, функції</span><span class="side-check" data-check="w1l3" role="img" aria-label="Не опрацьовано"></span></a>
 <a class="side-link" href="../../lectures/week-1/lecture-4.html"><span class="side-num">04</span><span>Веб-архітектура: HTTP, REST, N-tier</span><span class="side-check" data-check="w1l4" role="img" aria-label="Не опрацьовано"></span></a>
-<a class="side-link" href="../../lectures/week-1/lecture-5.html"><span class="side-num">05</span><span>LAMP: Apache, MySQL, PHP</span><span class="side-check" data-check="w1l5" role="img" aria-label="Не опрацьовано"></span></a>
+<a class="side-link" href="../../lectures/week-1/lecture-5.html"><span class="side-num">05</span><span>LAMP, Apache/Nginx і SQL</span><span class="side-check" data-check="w1l5" role="img" aria-label="Не опрацьовано"></span></a>
 </div>
 <div class="side-group" data-week-progress="w2l6,w2l7,w2l8,w2l9,w2l10"><div class="side-title"><a href="../../weeks/week-2.html">Тиждень 2</a><span class="wk-count wp-text">0 з 5</span></div>
-<a class="side-link" href="../../lectures/week-2/lecture-6.html"><span class="side-num">06</span><span>Мережі: OSI, TCP/IP, IP, NAT, VPN</span><span class="side-check" data-check="w2l6" role="img" aria-label="Не опрацьовано"></span></a>
+<a class="side-link" href="../../lectures/week-2/lecture-6.html"><span class="side-num">06</span><span>Мережі: OSI, IPv4/IPv6, DHCP, DNS, NAT</span><span class="side-check" data-check="w2l6" role="img" aria-label="Не опрацьовано"></span></a>
 <a class="side-link" href="../../lectures/week-2/lecture-7.html"><span class="side-num">07</span><span>Хмари: NIST, моделі, AWS/GCP/Azure</span><span class="side-check" data-check="w2l7" role="img" aria-label="Не опрацьовано"></span></a>
 <a class="side-link" href="../../lectures/week-2/lecture-8.html"><span class="side-num">08</span><span>IaC і Terraform</span><span class="side-check" data-check="w2l8" role="img" aria-label="Не опрацьовано"></span></a>
 <a class="side-link" href="../../lectures/week-2/lecture-9.html"><span class="side-num">09</span><span>Віртуалізація і Docker</span><span class="side-check" data-check="w2l9" role="img" aria-label="Не опрацьовано"></span></a>
@@ -51,8 +51,8 @@
 <h1>GitHub Actions: workflow, jobs, runners, secrets і автоматичний деплой</h1>
 <p class="lead">GitHub Actions — CI/CD, вбудований просто в GitHub: конвеєр описується YAML-файлом у репозиторії і запускається на події на кшталт push чи pull request. Розбираємо компоненти і реальний workflow «тести → збірка → деплой».</p>
 <div class="meta-row">
-<span class="chip"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>≈ 16 хв читання</span>
-<span class="chip"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M9.5 9.5a2.5 2.5 0 114 2c-1 .7-1.5 1.2-1.5 2.5M12 17h.01"/></svg>10 питань самоперевірки</span>
+<span class="chip"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>≈ 35 хв читання</span>
+<span class="chip"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M9.5 9.5a2.5 2.5 0 114 2c-1 .7-1.5 1.2-1.5 2.5M12 17h.01"/></svg>22 питань самоперевірки</span>
 <span class="chip" data-status="w3l12"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg><span class="lbl">Не опрацьовано</span></span>
 </div>
 </div>
@@ -64,6 +64,9 @@
 <li>Використати <b>matrix</b> для тестування на кількох версіях і <b>secrets</b> для токенів.</li>
 <li>Розібрати workflow «тести → збірка → деплой на Heroku» рядок за рядком.</li>
 <li>Порівняти GitHub Actions і Jenkins.</li>
+<li>Використовувати контексти й вирази <code>${{ }}</code>, outputs кроків і jobs, <code>GITHUB_OUTPUT</code>, <code>GITHUB_ENV</code>, функції статусу <code>failure()</code>/<code>always()</code>.</li>
+<li>Налаштувати середовища зі схваленням, мінімальні <code>permissions</code>, OIDC до хмари, concurrency, services-контейнери.</li>
+<li>Написати повний workflow: матриця тестів, збірка і публікація образу в GHCR, деплой у staging і production.</li>
 </ul>
 </div>
 
@@ -122,6 +125,101 @@
 <tr><td><code>env</code></td><td>Змінні оточення кроку/job</td></tr>
 </tbody></table></div>
 <p><code>actions/checkout</code> завантажує код репозиторію і гілки, на якій запущено workflow — <b>без нього в runner немає вашого коду</b>. <code>actions/setup-node</code> встановлює Node.js потрібної версії. Вихідний код будь-якої дії можна переглянути на GitHub за назвою (версія — після <code>@</code>).</p>
+
+<h2 id="contexts">Вирази, контексти, outputs і змінні оточення<a class="h-anchor" href="#contexts" aria-label="Посилання на розділ">#</a></h2>
+<p>Вирази в workflow пишуть у <code>${{ … }}</code>. Усередині доступні <b>контексти</b> — об'єкти з інформацією про запуск.</p>
+<div class="table-wrap"><table>
+<thead><tr><th>Контекст</th><th>Що містить</th><th>Приклад</th></tr></thead>
+<tbody>
+<tr><td><code>github</code></td><td>подія, репозиторій, гілка, коміт, автор</td><td><code>github.ref</code>, <code>github.sha</code>, <code>github.event_name</code>, <code>github.actor</code></td></tr>
+<tr><td><code>env</code></td><td>змінні оточення з <code>env:</code></td><td><code>env.IMAGE</code></td></tr>
+<tr><td><code>vars</code> / <code>secrets</code></td><td>несекретні змінні / секрети з налаштувань репозиторію</td><td><code>vars.REGION</code>, <code>secrets.DOCKER_TOKEN</code></td></tr>
+<tr><td><code>matrix</code></td><td>поточна комбінація матриці</td><td><code>matrix.node</code></td></tr>
+<tr><td><code>steps</code></td><td>результати і outputs попередніх кроків з <code>id</code></td><td><code>steps.meta.outputs.tag</code></td></tr>
+<tr><td><code>needs</code></td><td>результати і outputs jobs-залежностей</td><td><code>needs.build.outputs.version</code></td></tr>
+<tr><td><code>runner</code></td><td>інформація про runner</td><td><code>runner.os</code></td></tr>
+<tr><td><code>inputs</code></td><td>параметри ручного запуску або reusable workflow</td><td><code>inputs.environment</code></td></tr>
+</tbody></table></div>
+<h3>Передача значень між кроками і jobs</h3>
+<pre data-lang="yaml"><code>jobs:
+  build:
+    runs-on: ubuntu-latest
+    outputs:
+      version: ${{ steps.meta.outputs.version }}        <span class="c"># зробити output кроку output-ом job</span>
+    steps:
+      - id: meta
+        run: echo "version=1.4.${{ github.run_number }}" &gt;&gt; "$GITHUB_OUTPUT"
+      - run: echo "DEPLOY_ENV=staging" &gt;&gt; "$GITHUB_ENV"   <span class="c"># змінна для всіх наступних кроків job</span>
+      - run: echo "Версія ${{ steps.meta.outputs.version }}, середовище $DEPLOY_ENV"
+      - run: echo "### Зібрано ${{ steps.meta.outputs.version }}" &gt;&gt; "$GITHUB_STEP_SUMMARY"   <span class="c"># звіт на сторінці запуску</span>
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+      - run: echo "Деплою ${{ needs.build.outputs.version }}"</code></pre>
+<p>Стандартні змінні оточення runner: <code>GITHUB_SHA</code>, <code>GITHUB_REF</code>, <code>GITHUB_REPOSITORY</code>, <code>GITHUB_RUN_NUMBER</code>, <code>GITHUB_WORKSPACE</code>, <code>RUNNER_OS</code>. Різниця записів: <code>${{ env.X }}</code> підставляє GitHub <b>до</b> запуску кроку, а <code>$X</code> розкриває shell під час виконання.</p>
+<h3>Умови і функції статусу</h3>
+<pre data-lang="yaml"><code>- name: Notify on failure
+  if: failure()                                        <span class="c"># лише якщо попередній крок впав</span>
+  run: ./notify.sh "Build failed: ${{ github.sha }}"
+- name: Cleanup
+  if: always()                                         <span class="c"># завжди, навіть після помилки чи скасування</span>
+  run: docker compose down
+- name: Only on tags
+  if: startsWith(github.ref, 'refs/tags/v')
+  run: echo "Release ${{ github.ref_name }}"</code></pre>
+<p>За замовчуванням кожен крок має неявну умову <code>success()</code>: після першої помилки решта кроків пропускається. Функції: <code>success()</code>, <code>failure()</code>, <code>always()</code>, <code>cancelled()</code>; рядкові <code>contains()</code>, <code>startsWith()</code>, <code>endsWith()</code>, <code>format()</code>, <code>toJSON()</code>.</p>
+<h3>Інші корисні ключі</h3>
+<div class="table-wrap"><table>
+<thead><tr><th>Ключ</th><th>Призначення</th></tr></thead>
+<tbody>
+<tr><td><code>timeout-minutes</code></td><td>обмежити час job або кроку (за замовчуванням job — 360 хв)</td></tr>
+<tr><td><code>continue-on-error: true</code></td><td>не вважати падіння кроку провалом job</td></tr>
+<tr><td><code>concurrency</code></td><td>не запускати одночасно два деплої: <code>concurrency: { group: deploy-prod, cancel-in-progress: false }</code></td></tr>
+<tr><td><code>permissions</code></td><td>права <code>GITHUB_TOKEN</code>: <code>contents: read</code>, <code>packages: write</code> — давайте мінімум</td></tr>
+<tr><td><code>services</code></td><td>допоміжні контейнери для job: БД для інтеграційних тестів</td></tr>
+<tr><td><code>environment</code></td><td>середовище з правилами захисту (див. нижче)</td></tr>
+<tr><td><code>defaults.run.working-directory</code></td><td>каталог, у якому виконуються <code>run</code>-кроки</td></tr>
+</tbody></table></div>
+<pre data-lang="yaml"><code>jobs:
+  integration:
+    runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres:16
+        env: { POSTGRES_PASSWORD: test }
+        ports: ["5432:5432"]
+        options: &gt;-
+          --health-cmd "pg_isready" --health-interval 5s --health-retries 10
+    steps:
+      - uses: actions/checkout@v4
+      - run: pytest tests/integration    <span class="c"># тести бачать БД на localhost:5432</span></code></pre>
+
+<h2 id="environments">Середовища, схвалення і безпека<a class="h-anchor" href="#environments" aria-label="Посилання на розділ">#</a></h2>
+<h3>Environments: Continuous Delivery в GitHub Actions</h3>
+<p>У <b>Settings → Environments</b> створюють середовища (<code>staging</code>, <code>production</code>) з правилами захисту: <b>required reviewers</b> (хтось має натиснути «Approve»), таймер очікування, дозволені гілки, окремі секрети середовища. Job з <code>environment: production</code> зупиняється і чекає схвалення — це аналог кроку <code>input</code> у Jenkins.</p>
+<pre data-lang="yaml"><code>deploy-prod:
+  needs: deploy-staging
+  runs-on: ubuntu-latest
+  environment:
+    name: production
+    url: https://shop.example.com
+  steps:
+    - run: ./deploy.sh production</code></pre>
+<h3>Безпека workflow</h3>
+<ul>
+<li><b>Мінімальні права</b> <code>GITHUB_TOKEN</code> через <code>permissions:</code> на рівні workflow або job.</li>
+<li><b>OIDC замість довгоживучих ключів</b>: workflow отримує короткоживучий токен від хмари (AWS, Azure, GCP) через <code>permissions: id-token: write</code> і дію на кшталт <code>aws-actions/configure-aws-credentials</code>. Ключі доступу не зберігаються в secrets взагалі.</li>
+<li><b>Фіксуйте сторонні дії</b> на повний SHA коміту (<code>uses: org/action@a1b2c3…</code>) або хоча б мажорну версію від перевіреного автора: тег може бути перезаписаний.</li>
+<li>Секрети <b>не передаються</b> у workflow, запущені з pull request з форків. Тригер <code>pull_request_target</code> їх отримує — тому в ньому ніколи не виконують код із PR.</li>
+<li><b>Dependabot</b> оновлює і залежності застосунку, і версії дій у workflow (<code>.github/dependabot.yml</code>).</li>
+</ul>
+<h3>Повторне використання</h3>
+<ul>
+<li><b>Reusable workflow</b>: файл з <code>on: workflow_call</code>, який викликають з інших workflow як job: <code>uses: org/ci/.github/workflows/build.yml@main</code>.</li>
+<li><b>Composite action</b>: набір кроків, оформлений як власна дія з <code>action.yml</code>.</li>
+<li><b>Starter workflows</b> і Marketplace — готові шаблони і дії.</li>
+</ul>
 
 <h2 id="example">Розбір: тести, збірка і деплой на Heroku<a class="h-anchor" href="#example" aria-label="Посилання на розділ">#</a></h2>
 <p>Workflow зі сторінки курсу (Node.js-застосунок):</p>
@@ -251,20 +349,101 @@ jobs:
 <li>Розклад <code>schedule</code> використовує формат cron (як у Linux) і час UTC.</li>
 </ul>
 
+<h2 id="full-workflow">Повний workflow: тести з матрицею → Docker-образ у GHCR → деплой зі схваленням<a class="h-anchor" href="#full-workflow" aria-label="Посилання на розділ">#</a></h2>
+<pre data-lang="yaml"><code>name: CI/CD
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+permissions:
+  contents: read
+  packages: write                       <span class="c"># публікація образу в GitHub Container Registry</span>
+
+env:
+  IMAGE: ghcr.io/${{ github.repository }}
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        python: ["3.11", "3.12"]        <span class="c"># дві паралельні копії job</span>
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python }}
+          cache: pip
+      - run: pip install -r requirements.txt
+      - run: pytest --junitxml=report.xml
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: report-${{ matrix.python }}
+          path: report.xml
+
+  image:
+    needs: test
+    if: github.event_name == 'push'      <span class="c"># для PR лише тести</span>
+    runs-on: ubuntu-latest
+    outputs:
+      tag: ${{ steps.vars.outputs.tag }}
+    steps:
+      - uses: actions/checkout@v4
+      - id: vars
+        run: echo "tag=${GITHUB_SHA::7}" &gt;&gt; "$GITHUB_OUTPUT"
+      - uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+      - uses: docker/build-push-action@v6
+        with:
+          push: true
+          tags: ${{ env.IMAGE }}:${{ steps.vars.outputs.tag }}
+
+  deploy-staging:
+    needs: image
+    runs-on: ubuntu-latest
+    environment: staging
+    steps:
+      - run: echo "deploy ${{ env.IMAGE }}:${{ needs.image.outputs.tag }} to staging"
+
+  deploy-production:
+    needs: [image, deploy-staging]
+    runs-on: ubuntu-latest
+    environment: production              <span class="c"># зупиниться до схвалення рецензентом</span>
+    concurrency: production
+    steps:
+      - run: echo "deploy ${{ env.IMAGE }}:${{ needs.image.outputs.tag }} to production"</code></pre>
+<h3>Що тут відбувається</h3>
+<ol class="steps">
+<li>На кожен push у <code>main</code> і кожен pull request запускається <b>test</b> у двох версіях Python паралельно; звіти зберігаються як артефакти навіть при падінні тестів (<code>if: always()</code>).</li>
+<li>Лише для push (не для PR) job <b>image</b> збирає Docker-образ з тегом за коротким хешем коміту і публікує в GHCR, використовуючи вбудований <code>GITHUB_TOKEN</code> з правом <code>packages: write</code>.</li>
+<li><b>deploy-staging</b> розгортає автоматично (Continuous Deployment у staging).</li>
+<li><b>deploy-production</b> чекає схвалення в середовищі <code>production</code> (Continuous Delivery); <code>concurrency</code> не дає запустити два деплої одночасно.</li>
+</ol>
+<p>Порівняйте з конвеєром Jenkins з лекції 11: етапи ті самі, різниця — у синтаксисі (YAML замість Groovy), у тому, хто підтримує сервер (GitHub замість вас), і в механізмі схвалення (environment замість <code>input</code>).</p>
+
 <h2 id="mistakes">Типові помилки<a class="h-anchor" href="#mistakes" aria-label="Посилання на розділ">#</a></h2>
 <div class="mistakes">
+<div class="mistake"><div class="wrong">Файли, створені в одному job, доступні в наступному.</div><div class="right">Кожен job стартує на чистому runner. Передавайте файли артефактами, значення — через outputs.</div></div>
+<div class="mistake"><div class="wrong">Сторонню дію безпечно підключати за тегом <code>@main</code>.</div><div class="right">Гілку і тег можуть змінити. Фіксуйте дію на SHA коміту або перевірену мажорну версію.</div></div>
+<div class="mistake"><div class="wrong">Для доступу до AWS треба зберегти ключі в secrets.</div><div class="right">Краще OIDC: короткоживучі облікові дані видаються на кожен запуск, довгоживучих ключів немає.</div></div>
+
 <div class="mistake"><div class="wrong">Файл у <code>.github/workflow/</code> — і нічого не запускається.</div><div class="right">Правильний каталог — <code>.github/workflows/</code> (у множині), формат — YAML (<code>.yml</code>/<code>.yaml</code>).</div></div>
 <div class="mistake"><div class="wrong">Забути <code>actions/checkout</code> і дивуватися, що <code>yarn install</code> не знаходить <code>package.json</code>.</div><div class="right">Runner стартує порожнім — код треба завантажити першим кроком.</div></div>
 <div class="mistake"><div class="wrong"><code>uses</code> і <code>run</code> в одному кроці.</div><div class="right">Кожен крок — або дія (<code>uses</code>), або команда (<code>run</code>). Розділіть на два кроки.</div></div>
 <div class="mistake"><div class="wrong">Вставити API-ключ прямо в YAML.</div><div class="right">Репозиторій (і його історія) може бути публічним. Ключ — у Secrets, у файлі — лише <code>${{ secrets.NAME }}</code>.</div></div>
 <div class="mistake"><div class="wrong">Помилки відступів у YAML.</div><div class="right">YAML чутливий до відступів: лише пробіли, однакова вкладеність для елементів одного рівня.</div></div>
 </div>
-<h2 id="quiz">Перевір себе<a class="h-anchor" href="#quiz" aria-label="Посилання на розділ">#</a></h2><p>10 питань на розуміння. В одиночних питаннях натисніть варіант — одразу побачите правильну відповідь і пояснення. Питання з позначкою <b>«кілька відповідей»</b> влаштовані як у тесті курсу (<i>Select one or more</i>): позначте всі правильні варіанти й натисніть «Перевірити».</p><div class="quiz" data-quiz="w3l12"></div><script type="application/json" id="quiz-data">[{"q": "У якому каталозі репозиторію мають лежати workflow-файли GitHub Actions?", "options": ["/workflows/", ".github/workflow/", ".github/workflows/", "ci/"], "answer": 2, "explain": "GitHub шукає YAML-файли саме в .github/workflows/ (у множині)."}, {"q": "Що таке runner?", "options": ["Подія push", "YAML-файл з описом процесу", "Сервер, що виконує jobs workflow", "Готова дія з Marketplace"], "answer": 2, "explain": "Runner — машина, де виконуються jobs: GitHub-hosted (ubuntu-latest тощо) або self-hosted."}, {"q": "Навіщо крок <code>uses: actions/checkout<\/code>?", "options": ["Публікує реліз", "Перевіряє орфографію", "Створює нову гілку", "Завантажує код репозиторію в runner"], "answer": 3, "explain": "Runner стартує без вашого коду; checkout отримує репозиторій і гілку, на якій запущено workflow."}, {"q": "Що дає <code>strategy: matrix: node-version: [14.x, 16.x]<\/code>?", "options": ["Нічого, це коментар", "Job виконається двічі — для Node 14 і Node 16", "Встановить обидві версії в одному job", "Обере найновішу версію"], "answer": 1, "explain": "Matrix створює окремий запуск job для кожної комбінації параметрів; значення доступне як ${{ matrix.node-version }}."}, {"q": "Як правильно використати API-ключ Heroku у workflow?", "options": ["Записати ключ у YAML", "Зберегти в Settings → Secrets і звертатись через ${{ secrets.HEROKU_API_KEY }}", "Передати в назві коміту", "Додати в README"], "answer": 1, "explain": "Secrets зберігаються зашифрованими і маскуються в логах; у файлі лише посилання на них."}, {"q": "Чим відрізняються ключі <code>uses<\/code> і <code>run<\/code> у кроці?", "options": ["run працює лише на Windows", "Це синоніми", "uses — готова дія, run — shell-команда; в одному кроці лише одне з них", "uses — shell-команда, run — готова дія"], "answer": 2, "explain": "uses підключає action (власник/репо@версія), run виконує команду в shell runner-а."}, {"q": "Як за замовчуванням виконуються кілька jobs в одному workflow?", "options": ["Завжди послідовно в порядку запису", "Лише по одному на день", "Паралельно; послідовність задають через needs", "На одному й тому самому runner"], "answer": 2, "explain": "Без needs jobs стартують одночасно на окремих runner-ах."}, {"q": "Який тригер додає кнопку ручного запуску workflow?", "options": ["<code>schedule<\/code>", "<code>workflow_dispatch<\/code>", "<code>push<\/code>", "<code>pull_request<\/code>"], "answer": 1, "explain": "workflow_dispatch дозволяє запустити workflow вручну з вкладки Actions (і через API)."}, {"q": "Як передати зібрані файли з job <code>build<\/code> у job <code>deploy<\/code>?", "options": ["Записати в /tmp — deploy їх побачить", "Через змінну середовища", "Ніяк, це неможливо", "upload-artifact у build і download-artifact у deploy"], "answer": 3, "explain": "Кожен job працює на окремому чистому runner, тому файли передають артефактами."}, {"q": "Яка подія запускає workflow з прикладу лекції?", "options": ["Розклад cron", "Push у гілку master", "Ручний запуск", "Pull request у будь-яку гілку"], "answer": 1, "explain": "Блок on: push: branches: [master] — workflow запускається на кожен push у master."}]</script>
+<h2 id="quiz">Перевір себе<a class="h-anchor" href="#quiz" aria-label="Посилання на розділ">#</a></h2><p>22 питань на розуміння. В одиночних питаннях натисніть варіант — одразу побачите правильну відповідь і пояснення. Питання з позначкою <b>«кілька відповідей»</b> влаштовані як у тесті курсу (<i>Select one or more</i>): позначте всі правильні варіанти й натисніть «Перевірити».</p><div class="quiz" data-quiz="w3l12"></div><script type="application/json" id="quiz-data">[{"q": "Які відповідності «компонент GitHub Actions — опис» правильні?", "options": ["Runner — YAML-файл з описом кроків", "Workflow — автоматизований процес у YAML-файлі в .github/workflows", "Action — віртуальна машина, на якій виконується job", "Event — подія, що запускає workflow (push, pull_request)", "Job — набір кроків, що виконується на одному runner", "Step — окрема команда (run) або дія (uses)"], "answer": [1, 3, 4, 5], "explain": "Runner — машина, що виконує jobs; action — готовий повторно використовуваний крок."}, {"q": "Де мають лежати файли workflow?", "options": ["У будь-якому каталозі, якщо файл має розширення .yml", "<code>.github/workflows/<\/code> у корені репозиторію", "<code>workflows/<\/code> у корені репозиторію", "<code>.github/actions/<\/code> у корені репозиторію", "<code>.workflows/<\/code> у корені репозиторію"], "answer": [1], "explain": "GitHub шукає workflow лише в .github/workflows/ (файли .yml або .yaml)."}, {"q": "Для чого крок <code>uses: actions/checkout@v4<\/code>?", "options": ["Створює нову гілку для результатів збірки", "Перевіряє код лінтером перед запуском інших кроків", "Публікує реліз після успішної збірки", "Завантажує код репозиторію в runner", "Без нього в робочому каталозі runner немає вашого коду"], "answer": [3, 4], "explain": "Runner стартує порожнім; checkout клонує потрібний коміт."}, {"q": "Які тригери (on:) існують у GitHub Actions?", "options": ["on_commit_message", "pull_request", "every_minute", "push", "workflow_dispatch — ручний запуск", "schedule (cron)"], "answer": [1, 3, 4, 5], "explain": "Останні два — вигадані назви."}, {"q": "Які твердження про jobs правильні?", "options": ["Кожен job стартує на чистому runner", "<code>needs<\/code> робить job залежним від іншого", "За замовчуванням jobs виконуються паралельно", "<code>needs<\/code> запускає jobs паралельно", "Файли між jobs передаються автоматично"], "answer": [0, 1, 2], "explain": "Файли передають через upload-artifact / download-artifact."}, {"q": "Що робить strategy.matrix?", "options": ["Об'єднує всі jobs workflow в один послідовний job", "Шифрує секрети для кожної копії job окремо", "Копії виконуються паралельно", "Поточне значення доступне як <code>${{ matrix.ім'я }}<\/code>", "Запускає копії job з різними параметрами (версії мов, ОС)"], "answer": [2, 3, 4], "explain": "Наприклад, matrix.python: [\"3.11\", \"3.12\"] дасть дві копії job."}, {"q": "Як правильно використати секрет у workflow?", "options": ["Звернутися як <code>$MY_TOKEN<\/code> без оголошення", "Значення маскується в логах", "Створити його в Settings → Secrets and variables → Actions", "Звернутися як <code>${{ secrets.MY_TOKEN }}<\/code>", "Записати токен прямо в YAML"], "answer": [1, 2, 3], "explain": "Секрет стає змінною оточення лише якщо явно передати його через env."}, {"q": "Які твердження про GITHUB_TOKEN правильні?", "options": ["Дає доступ до поточного репозиторію", "Права можна обмежити ключем permissions", "Його треба створювати вручну в налаштуваннях", "Автоматично створюється для кожного запуску", "Він діє вічно і його треба ротувати вручну"], "answer": [0, 1, 3], "explain": "Токен короткоживучий: діє лише під час запуску."}, {"q": "Як передати значення з кроку в наступні кроки і в інший job?", "options": ["Через глобальну змінну bash, що зберігається між jobs", "Через <code>echo ::set-env<\/code>, який досі рекомендований", "Оголосити outputs job і читати через <code>needs.&lt;job&gt;.outputs.name<\/code>", "Звернутися як <code>steps.&lt;id&gt;.outputs.name<\/code>", "Записати <code>name=value<\/code> у файл <code>$GITHUB_OUTPUT<\/code> у кроці з id"], "answer": [2, 3, 4], "explain": "Змінні shell не переживають завершення кроку; старі команди ::set-env і ::set-output вимкнено з міркувань безпеки."}, {"q": "Що роблять функції статусу в if?", "options": ["<code>success()<\/code> — неявна умова кожного кроку", "<code>cancelled()<\/code> — запустити workflow повторно", "<code>always()<\/code> — виконати завжди, навіть після помилки", "<code>always()<\/code> — повторювати крок до успіху", "<code>failure()<\/code> — виконати крок, лише якщо попередній впав"], "answer": [0, 2, 4], "explain": "cancelled() перевіряє, чи запуск скасовано."}, {"q": "Як реалізувати ручне схвалення перед деплоєм у production?", "options": ["Створити environment production з required reviewers", "Встановити <code>timeout-minutes: 0<\/code>, щоб job чекав нескінченно", "Job чекатиме, поки рецензент натисне Approve", "Додати крок <code>input:<\/code> з переліком рецензентів, як у Jenkins", "Вказати <code>environment: production<\/code> у job деплою"], "answer": [0, 2, 4], "explain": "input — крок Jenkins; у GitHub Actions його роль виконують environments."}, {"q": "Які практики підвищують безпеку workflow?", "options": ["Фіксація сторонніх дій на SHA коміту", "Давати всім workflow permissions: write-all", "Мінімальні permissions для GITHUB_TOKEN", "OIDC до хмари замість довгоживучих ключів", "Ніколи не виконувати код із PR у pull_request_target"], "answer": [0, 2, 3, 4], "explain": "Надлишкові права збільшують шкоду від зламаної дії або залежності."}, {"q": "Чим відрізняються кеш і артефакти?", "options": ["Кеш прискорює повторні запуски (залежності npm/pip)", "Артефакти зберігають результати запуску (збірку, звіти) і передають між jobs", "Кеш гарантовано зберігається назавжди", "Артефакти можна завантажити зі сторінки запуску", "Артефакти автоматично комітяться в репозиторій"], "answer": [0, 1, 3], "explain": "Кеш може бути витіснений; артефакти мають строк зберігання і в репозиторій не потрапляють."}, {"q": "Що дає self-hosted runner?", "options": ["Виконання jobs на власній машині або ВМ", "Безкоштовне обслуговування сервера від GitHub", "Доступ до внутрішньої мережі компанії", "Власне залізо, наприклад з GPU", "Автоматичну безпеку для публічних репозиторіїв з PR із форків"], "answer": [0, 2, 3], "explain": "Self-hosted runner для публічних репозиторіїв небезпечний: чужий PR може виконати код на вашій машині. Машину обслуговуєте ви."}, {"q": "Що робить <code>concurrency: production<\/code>?", "options": ["Запускає job удвічі швидше, розподіляючи кроки між runner-ами", "Не дає запустити одночасно два запуски з однією групою", "Запускає копії job на кількох runner з різними параметрами", "Захищає від паралельних деплоїв у production"], "answer": [1, 3], "explain": "Паралельні копії — це matrix."}, {"q": "Як підключити БД для інтеграційних тестів у job?", "options": ["Сервіс доступний з кроків на localhost з опублікованим портом", "Через ключ services з образом postgres", "Встановити БД у кожному кроці заново вручну — єдиний спосіб", "Через upload-artifact"], "answer": [0, 1], "explain": "services запускає допоміжні контейнери на час job."}, {"q": "Які відмінності GitHub Actions і Jenkins правильні?", "options": ["GitHub Actions не підтримує матриці, а Jenkins підтримує", "Workflow GitHub Actions — YAML, Jenkinsfile — Groovy", "Обидва підтримують власні (self-hosted) машини для збірок", "Jenkins можна використовувати лише з репозиторіями на GitHub", "GitHub Actions — хмарний сервіс GitHub, Jenkins — сервер, який ви підтримуєте самі"], "answer": [1, 2, 4], "explain": "Jenkins працює з будь-яким Git-сервером; матриці в Actions є."}, {"q": "Що таке reusable workflow і composite action?", "options": ["Обидва механізми зменшують дублювання конфігурації", "Composite action — набір кроків, оформлений як власна дія з action.yml", "Reusable workflow викликається з інших workflow через <code>on: workflow_call<\/code>", "Composite action запускає окремий runner для кожного кроку", "Це платні тарифи GitHub для великих організацій"], "answer": [0, 1, 2], "explain": "Це механізми повторного використання, доступні безкоштовно."}, {"q": "Розклад <code>schedule: - cron: \"0 3 * * 1\"<\/code> означає:", "options": ["Щопонеділка о 03:00 за UTC", "Кожні 3 години по понеділках", "Третього числа кожного місяця", "Щодня о 03:00 за київським часом"], "answer": [0], "explain": "Поля cron: хвилина, година, день місяця, місяць, день тижня (1 — понеділок). Час у GitHub Actions — UTC."}, {"q": "Чим відрізняються <code>${{ env.X }}<\/code> і <code>$X<\/code> у кроці run?", "options": ["<code>$X<\/code> підставляє GitHub, а <code>${{ env.X }}<\/code> — shell", "<code>${{ env.X }}<\/code> підставляє GitHub до запуску кроку", "Секрети в скриптах безпечніше передавати через env і використовувати <code>$X<\/code>", "<code>$X<\/code> розкриває shell під час виконання", "Різниці немає: обидва записи обробляються однаково"], "answer": [1, 2, 3], "explain": "Пряма підстановка ${{ }} вставляє значення в текст скрипта, що відкриває ризик ін'єкцій для недовірених даних."}, {"q": "Що робить Dependabot?", "options": ["Розгортає застосунок у production після оновлення", "Створює PR для оновлення вразливих і застарілих залежностей", "Автоматично зливає PR без перевірок і рев'ю", "Налаштовується файлом .github/dependabot.yml", "Може оновлювати версії дій у workflow"], "answer": [1, 3, 4], "explain": "Dependabot лише пропонує оновлення через PR, які проходять звичайні перевірки."}, {"q": "У повному workflow лекції job image має <code>if: github.event_name == 'push'<\/code>. Що це означає?", "options": ["Для pull request виконуються лише тести", "Job ніколи не виконається", "Образ публікується тільки після push (у main)", "Образ збирається для кожного PR і публікується"], "answer": [0, 2], "explain": "Для PR перевірки запускаються, але артефакти в реєстр не публікуються."}]</script>
 <div class="complete-box"><p>Прочитали і пройшли тест? Позначте лекцію — прогрес оновиться на головній і в меню.</p><button type="button" class="btn primary" data-complete="w3l12" aria-pressed="false"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg><span class="lbl">Позначити як опрацьовану</span></button></div>
 <nav class="pager" aria-label="Попередня і наступна лекції"><a class="prev" href="../../lectures/week-3/lecture-11.html"><small>← Попередня · Лекція 11</small><span>CI/CD і Jenkins: конвеєр збирання, Jenkinsfile і Pipeline as Code</span></a></nav>
-<div class="sources-note"><b>Джерела лекції:</b> збережена сторінка курсу «Workflow GitAction deploy on Heroku» (YAML-приклад); PDF «DevOps_GitAction (new)» з папки лекції 11; чат лекції 12; розділ про тригери, needs, кеш і артефакти доповнено з документації GitHub Actions (docs.github.com). <b>Обмеження:</b> Для лекції немає презентації: основне джерело — сторінка з прикладом workflow і PDF про GitHub Actions. MP3-записи (лекція 12 і окремий запис «GitAction») не транскрибовано, тому пояснення лектора не враховані; розділи про Pages-деплой і актуальні версії дій додано як довідкові.</div>
+<div class="sources-note"><b>Джерела лекції:</b> збережена сторінка курсу «Workflow GitAction deploy on Heroku» (YAML-приклад); PDF «DevOps_GitAction (new)» з папки лекції 11; чат лекції 12; розділ про тригери, needs, кеш і артефакти доповнено з документації GitHub Actions (docs.github.com); GitHub Docs: Workflow syntax, Contexts, Environments, Security hardening for GitHub Actions. <b>Обмеження:</b> Для лекції немає презентації: основне джерело — сторінка з прикладом workflow і PDF про GitHub Actions. MP3-записи (лекція 12 і окремий запис «GitAction») не транскрибовано, тому пояснення лектора не враховані; розділи про Pages-деплой і актуальні версії дій додано як довідкові.</div>
 </main>
-<aside class="toc" aria-label="На цій сторінці"><div class="toc-title">На цій сторінці</div><ol><li><a href="#goals">Чого ви навчитесь</a></li><li><a href="#what">Що таке GitHub Actions</a></li><li><a href="#components">Компоненти</a></li><li><a href="#enable">Як увімкнути</a></li><li><a href="#syntax">Синтаксис: ключі workflow</a></li><li><a href="#example">Розбір: тести, збірка і деплой на Heroku</a></li><li><a href="#secrets">Secrets, обмеження, self-hosted runners</a></li><li><a href="#pages">Довідково: деплой статичного сайту на GitHub Pages</a></li><li><a href="#vs-jenkins">GitHub Actions vs Jenkins</a></li><li><a href="#more">Тригери, залежності jobs, умови, кеш і артефакти</a></li><li><a href="#mistakes">Типові помилки</a></li><li><a href="#quiz">Перевір себе</a></li></ol></aside>
+<aside class="toc" aria-label="На цій сторінці"><div class="toc-title">На цій сторінці</div><ol><li><a href="#goals">Чого ви навчитесь</a></li><li><a href="#what">Що таке GitHub Actions</a></li><li><a href="#components">Компоненти</a></li><li><a href="#enable">Як увімкнути</a></li><li><a href="#syntax">Синтаксис: ключі workflow</a></li><li><a href="#contexts">Вирази, контексти, outputs і змінні оточення</a></li><li><a href="#environments">Середовища, схвалення і безпека</a></li><li><a href="#example">Розбір: тести, збірка і деплой на Heroku</a></li><li><a href="#secrets">Secrets, обмеження, self-hosted runners</a></li><li><a href="#pages">Довідково: деплой статичного сайту на GitHub Pages</a></li><li><a href="#vs-jenkins">GitHub Actions vs Jenkins</a></li><li><a href="#more">Тригери, залежності jobs, умови, кеш і артефакти</a></li><li><a href="#full-workflow">Повний workflow: тести з матрицею → Docker-образ у GHCR → деплой зі схваленням</a></li><li><a href="#mistakes">Типові помилки</a></li><li><a href="#quiz">Перевір себе</a></li></ol></aside>
 </div>
 </div>
 <footer class="site-footer">Навчальний конспект для самопідготовки. Прогрес і результати тестів зберігаються лише в цьому браузері на цьому пристрої (localStorage) і не синхронізуються між пристроями.</footer>

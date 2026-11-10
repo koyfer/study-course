@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Лекція 3. Bash: скрипти, змінні, умови, цикли та функції · Хмарні технології та сервіси</title>
-<meta name="description" content="Shebang, змінні й лапки, змінні середовища, спецзмінні $1/$#/$?, підстановка команд, арифметика, test-вирази, цикли, функції і local, case, файлові перевірки, grep/sed/awk і cron.">
+<meta name="description" content="Оболонки і bash, shebang, способи запуску (./, bash, source), коди виходу, set -euo pipefail і налагодження; змінні, лапки, спецзмінні, підстановка команд, розкриття параметрів, масиви, арифметика; [ ], [[ ]], (( )) і оператори test; цикли for/while/until, читання файлів, break/continue; функції і local; case; read, printf, getopts, trap; cron; практичні скрипти.">
 <meta name="theme-color" content="#0d7a6f">
 <script>try{var t=localStorage.getItem("htc-theme");if(t)document.documentElement.setAttribute("data-theme",t)}catch(e){}</script>
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=Onest:wght@400;500;600;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
@@ -26,13 +26,13 @@
 <div class="side-group"><a class="side-link" href="../../index.html"><span class="side-num">⌂</span><span>Огляд курсу і план</span></a></div>
 <div class="side-group" data-week-progress="w1l1,w1l2,w1l3,w1l4,w1l5"><div class="side-title"><a href="../../weeks/week-1.html">Тиждень 1</a><span class="wk-count wp-text">0 з 5</span></div>
 <a class="side-link" href="../../lectures/week-1/lecture-1.html"><span class="side-num">01</span><span>Вступ до DevOps, SDLC і хмарних моделей</span><span class="side-check" data-check="w1l1" role="img" aria-label="Не опрацьовано"></span></a>
-<a class="side-link" href="../../lectures/week-1/lecture-2.html"><span class="side-num">02</span><span>Linux: команди, користувачі, права</span><span class="side-check" data-check="w1l2" role="img" aria-label="Не опрацьовано"></span></a>
+<a class="side-link" href="../../lectures/week-1/lecture-2.html"><span class="side-num">02</span><span>Linux CLI: файли, пошук, права, процеси</span><span class="side-check" data-check="w1l2" role="img" aria-label="Не опрацьовано"></span></a>
 <a class="side-link" href="../../lectures/week-1/lecture-3.html" aria-current="page"><span class="side-num">03</span><span>Bash: змінні, умови, цикли, функції</span><span class="side-check" data-check="w1l3" role="img" aria-label="Не опрацьовано"></span></a>
 <a class="side-link" href="../../lectures/week-1/lecture-4.html"><span class="side-num">04</span><span>Веб-архітектура: HTTP, REST, N-tier</span><span class="side-check" data-check="w1l4" role="img" aria-label="Не опрацьовано"></span></a>
-<a class="side-link" href="../../lectures/week-1/lecture-5.html"><span class="side-num">05</span><span>LAMP: Apache, MySQL, PHP</span><span class="side-check" data-check="w1l5" role="img" aria-label="Не опрацьовано"></span></a>
+<a class="side-link" href="../../lectures/week-1/lecture-5.html"><span class="side-num">05</span><span>LAMP, Apache/Nginx і SQL</span><span class="side-check" data-check="w1l5" role="img" aria-label="Не опрацьовано"></span></a>
 </div>
 <div class="side-group" data-week-progress="w2l6,w2l7,w2l8,w2l9,w2l10"><div class="side-title"><a href="../../weeks/week-2.html">Тиждень 2</a><span class="wk-count wp-text">0 з 5</span></div>
-<a class="side-link" href="../../lectures/week-2/lecture-6.html"><span class="side-num">06</span><span>Мережі: OSI, TCP/IP, IP, NAT, VPN</span><span class="side-check" data-check="w2l6" role="img" aria-label="Не опрацьовано"></span></a>
+<a class="side-link" href="../../lectures/week-2/lecture-6.html"><span class="side-num">06</span><span>Мережі: OSI, IPv4/IPv6, DHCP, DNS, NAT</span><span class="side-check" data-check="w2l6" role="img" aria-label="Не опрацьовано"></span></a>
 <a class="side-link" href="../../lectures/week-2/lecture-7.html"><span class="side-num">07</span><span>Хмари: NIST, моделі, AWS/GCP/Azure</span><span class="side-check" data-check="w2l7" role="img" aria-label="Не опрацьовано"></span></a>
 <a class="side-link" href="../../lectures/week-2/lecture-8.html"><span class="side-num">08</span><span>IaC і Terraform</span><span class="side-check" data-check="w2l8" role="img" aria-label="Не опрацьовано"></span></a>
 <a class="side-link" href="../../lectures/week-2/lecture-9.html"><span class="side-num">09</span><span>Віртуалізація і Docker</span><span class="side-check" data-check="w2l9" role="img" aria-label="Не опрацьовано"></span></a>
@@ -51,8 +51,8 @@
 <h1>Bash: скрипти, змінні, умови, цикли та функції</h1>
 <p class="lead">Bash — «клей» між утилітами Linux. Він є майже на кожному сервері, тому deployment-скрипти й автоматизацію рутинних дій найчастіше пишуть саме на ньому.</p>
 <div class="meta-row">
-<span class="chip"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>≈ 20 хв читання</span>
-<span class="chip"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M9.5 9.5a2.5 2.5 0 114 2c-1 .7-1.5 1.2-1.5 2.5M12 17h.01"/></svg>11 питань самоперевірки</span>
+<span class="chip"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>≈ 54 хв читання</span>
+<span class="chip"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M9.5 9.5a2.5 2.5 0 114 2c-1 .7-1.5 1.2-1.5 2.5M12 17h.01"/></svg>31 питань самоперевірки</span>
 <span class="chip" data-status="w1l3"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg><span class="lbl">Не опрацьовано</span></span>
 </div>
 </div>
@@ -64,6 +64,10 @@
 <li>Використовувати спецзмінні <code>$0 $1 $# $@ $? $$</code> та підстановку команд.</li>
 <li>Писати умови <code>if [ … ]</code> з правильними операторами для чисел і рядків.</li>
 <li>Писати цикли <code>for</code>, <code>while</code>, <code>until</code> і функції з <code>local</code>-змінними.</li>
+<li>Розуміти різницю між <code>./script.sh</code>, <code>bash script.sh</code> і <code>source script.sh</code>, коди виходу і «суворий режим» <code>set -euo pipefail</code>.</li>
+<li>Використовувати розкриття параметрів (<code>${var:-default}</code>, <code>${f%.txt}</code>), масиви, <code>[[ ]]</code> і <code>(( ))</code>.</li>
+<li>Читати файли рядок за рядком, розбирати опції через <code>getopts</code>, прибирати за собою через <code>trap</code>.</li>
+<li>Ставити скрипти в cron і писати практичні скрипти: бекап з ротацією, моніторинг диска, перевірку сайтів.</li>
 </ul>
 </div>
 
@@ -80,6 +84,54 @@ echo "Hello, $name! Сьогодні: $(date +%F)"</code></pre>
 <pre data-lang="bash"><code>chmod +x hello.sh     <span class="c"># дати право на виконання</span>
 ./hello.sh            <span class="c"># запуск із поточного каталогу</span>
 bash hello.sh         <span class="c"># або явно через інтерпретатор</span></code></pre>
+
+<h2 id="run">Як запускається скрипт: shebang, підоболонка, source, коди виходу<a class="h-anchor" href="#run" aria-label="Посилання на розділ">#</a></h2>
+<h3>Чотири способи запуску і різниця між ними</h3>
+<div class="table-wrap"><table>
+<thead><tr><th>Спосіб</th><th>Потрібне право <code>x</code>?</th><th>Хто виконує</th><th>Де виконується</th></tr></thead>
+<tbody>
+<tr><td><code>./deploy.sh</code></td><td>так</td><td>інтерпретатор з shebang (<code>#!/bin/bash</code>)</td><td>новий дочірній процес (підоболонка)</td></tr>
+<tr><td><code>/opt/scripts/deploy.sh</code></td><td>так</td><td>те саме, абсолютний шлях</td><td>дочірній процес</td></tr>
+<tr><td><code>bash deploy.sh</code></td><td>ні (досить <code>r</code>)</td><td>явно вказаний bash, shebang ігнорується</td><td>дочірній процес</td></tr>
+<tr><td><code>source deploy.sh</code> або <code>. deploy.sh</code></td><td>ні</td><td><b>поточна</b> оболонка</td><td>у <b>поточному</b> процесі</td></tr>
+</tbody></table></div>
+<p>Різниця між підоболонкою і <code>source</code> принципова. Дочірній процес отримує <b>копію</b> змінних середовища; усе, що скрипт змінить (змінні, поточний каталог), зникне після його завершення. <code>source</code> виконує команди у вашій оболонці, тож зміни лишаються — тому так перечитують <code>~/.bashrc</code> або підвантажують файл зі змінними:</p>
+<pre data-lang="bash"><code>$ cat setenv.sh
+export APP_ENV=staging
+cd /opt/app
+
+$ ./setenv.sh ; echo "$APP_ENV" ; pwd     <span class="c"># порожньо; каталог не змінився</span>
+$ source setenv.sh ; echo "$APP_ENV" ; pwd   <span class="c"># staging; /opt/app</span></code></pre>
+<h3>Shebang</h3>
+<ul>
+<li><code>#!/bin/bash</code> — конкретний шлях до bash.</li>
+<li><code>#!/usr/bin/env bash</code> — знайти bash у <code>PATH</code>; переносніше (macOS, NixOS, bash у <code>/usr/local/bin</code>).</li>
+<li><code>#!/bin/sh</code> — POSIX-оболонка. У Debian/Ubuntu це <code>dash</code>, який не знає bash-розширень (<code>[[ ]]</code>, масиви, <code>{1..5}</code>): скрипт з bash-синтаксисом під <code>sh</code> впаде з помилками.</li>
+<li>Shebang має бути <b>першим рядком</b>, без пробілів перед <code>#!</code>. Файл, створений у Windows, може мати кінці рядків <code>\r\n</code> — тоді Linux шукатиме інтерпретатор <code>bash\r</code> і видасть <i>bad interpreter</i>. Лікується <code>sed -i 's/\r$//' script.sh</code> або <code>dos2unix</code>.</li>
+</ul>
+<h3>Коди завершення: <code>exit</code></h3>
+<p>Скрипт, як і будь-яка команда, повертає код виходу: <code>exit 0</code> — успіх, <code>exit 1</code> (або 2–255) — помилка. Без явного <code>exit</code> повертається код <b>останньої виконаної команди</b>. CI-системи (Jenkins, GitHub Actions) вважають крок проваленим саме за ненульовим кодом.</p>
+<div class="table-wrap"><table>
+<thead><tr><th>Код</th><th>Значення за домовленістю</th></tr></thead>
+<tbody>
+<tr><td>0</td><td>успіх</td></tr>
+<tr><td>1</td><td>загальна помилка</td></tr>
+<tr><td>2</td><td>неправильне використання (помилкові аргументи, синтаксис)</td></tr>
+<tr><td>126</td><td>команду знайдено, але вона не виконувана (немає права <code>x</code>)</td></tr>
+<tr><td>127</td><td>команду не знайдено (<i>command not found</i>)</td></tr>
+<tr><td>128 + N</td><td>процес завершено сигналом N: 130 — Ctrl+C (SIGINT, 2), 137 — <code>kill -9</code> (9)</td></tr>
+</tbody></table></div>
+<h3>«Суворий режим» і налагодження</h3>
+<pre data-lang="bash"><code><span class="c">#!/usr/bin/env bash</span>
+set -euo pipefail
+<span class="c"># -e          вийти, щойно будь-яка команда поверне ненульовий код</span>
+<span class="c"># -u          помилка при зверненні до неіснуючої змінної (захист від rm -rf "$DIR/" з порожнім DIR)</span>
+<span class="c"># -o pipefail код конвеєра = код першої впалої команди, а не лише останньої</span></code></pre>
+<p>Без <code>pipefail</code> конвеєр <code>false | true</code> повертає 0, тож помилку в середині <code>curl … | tar xz</code> ніхто не помітить. Нюанс <code>set -e</code>: він не спрацьовує для команд в умовах <code>if</code>, у лівій частині <code>&amp;&amp;</code>/<code>||</code> — це навмисно.</p>
+<pre data-lang="bash"><code>bash -n script.sh     <span class="c"># перевірити синтаксис, не виконуючи</span>
+bash -x script.sh     <span class="c"># трасування: кожна команда друкується з + після підстановок</span>
+set -x ... set +x     <span class="c"># увімкнути / вимкнути трасування на ділянці скрипта</span>
+shellcheck script.sh  <span class="c"># статичний аналізатор: знаходить незахищені лапками змінні, помилки в [ ] тощо</span></code></pre>
 
 <h2 id="vars">Змінні та лапки<a class="h-anchor" href="#vars" aria-label="Посилання на розділ">#</a></h2>
 <ul>
@@ -112,6 +164,40 @@ echo "Привіт, $user"</code></pre>
 <tr><td><code>PS1</code></td><td>Вигляд запрошення: <code>\u</code> користувач, <code>\w</code> каталог, <code>\W</code> його остання частина, <code>\t</code> час, <code>\d</code> дата, <code>\$</code> символ запрошення</td></tr>
 </tbody></table></div>
 <p>Ініціалізаційні файли: <code>/etc/profile</code>, <code>/etc/profile.d/</code>, <code>~/.bash_profile</code> (login-оболонка), <code>~/.bashrc</code> і <code>/etc/bashrc</code> (інтерактивна), <code>~/.bash_logout</code> (вихід).</p>
+
+<h2 id="expansion">Розкриття параметрів і масиви<a class="h-anchor" href="#expansion" aria-label="Посилання на розділ">#</a></h2>
+<p>Bash уміє обробляти значення змінних прямо при підстановці, без виклику зовнішніх програм. Ці конструкції постійно зустрічаються в скриптах розгортання і Dockerfile.</p>
+<div class="table-wrap"><table>
+<thead><tr><th>Вираз</th><th>Результат</th><th>Приклад (<code>file=/var/log/app.log.gz</code>)</th></tr></thead>
+<tbody>
+<tr><td><code>${var:-default}</code></td><td>значення, а якщо змінна порожня або не задана — <code>default</code> (змінна не змінюється)</td><td><code>${BRANCH:-main}</code></td></tr>
+<tr><td><code>${var:=default}</code></td><td>те саме, але ще й присвоює default змінній</td><td><code>: ${PORT:=8080}</code></td></tr>
+<tr><td><code>${var:?повідомлення}</code></td><td>якщо порожня — вийти з помилкою</td><td><code>rm -rf "${DIR:?DIR not set}/"*</code></td></tr>
+<tr><td><code>${#var}</code></td><td>довжина рядка</td><td><code>${#file}</code> → 19</td></tr>
+<tr><td><code>${var#шаблон}</code> / <code>${var##шаблон}</code></td><td>прибрати найкоротший / найдовший збіг <b>з початку</b></td><td><code>${file##*/}</code> → <code>app.log.gz</code> (як <code>basename</code>)</td></tr>
+<tr><td><code>${var%шаблон}</code> / <code>${var%%шаблон}</code></td><td>прибрати найкоротший / найдовший збіг <b>з кінця</b></td><td><code>${file%/*}</code> → <code>/var/log</code> (як <code>dirname</code>); <code>${file%%.*}</code> → <code>/var/log/app</code></td></tr>
+<tr><td><code>${var/старе/нове}</code>, <code>${var//старе/нове}</code></td><td>замінити перший / усі збіги</td><td><code>${file//\//_}</code> → <code>_var_log_app.log.gz</code></td></tr>
+<tr><td><code>${var:зсув:довжина}</code></td><td>підрядок</td><td><code>${file:5:3}</code> → <code>log</code></td></tr>
+<tr><td><code>${var^^}</code> / <code>${var,,}</code></td><td>усі літери великі / малі</td><td><code>${ENV^^}</code> → <code>PROD</code></td></tr>
+</tbody></table></div>
+<pre data-lang="bash"><code>for f in *.jpeg; do
+    mv -- "$f" "${f%.jpeg}.jpg"          <span class="c"># масове перейменування розширення</span>
+done
+backup="db_$(date +%F).sql"              <span class="c"># db_2026-11-07.sql</span>
+echo "Архів: ${backup%.sql}.tar.gz"</code></pre>
+<h3>Масиви</h3>
+<pre data-lang="bash"><code>servers=(web1 web2 db1)              <span class="c"># індексований масив</span>
+echo "${servers[0]}"                 <span class="c"># web1 (індекси з нуля)</span>
+echo "${servers[@]}"                 <span class="c"># усі елементи</span>
+echo "${#servers[@]}"                <span class="c"># кількість: 3</span>
+servers+=(cache1)                    <span class="c"># додати елемент</span>
+for s in "${servers[@]}"; do ssh "$s" uptime; done
+
+declare -A port                      <span class="c"># асоціативний масив (bash 4+)</span>
+port[http]=80; port[https]=443
+echo "${port[https]}"                <span class="c"># 443</span>
+for k in "${!port[@]}"; do echo "$k → ${port[$k]}"; done</code></pre>
+<p>Чому <code>"${arr[@]}"</code> у лапках: кожен елемент передається окремим словом, навіть якщо містить пробіл. <code>${arr[*]}</code> склеює все в один рядок.</p>
 
 <h2 id="special">Спеціальні змінні і підстановка команд<a class="h-anchor" href="#special" aria-label="Посилання на розділ">#</a></h2>
 <div class="table-wrap"><table>
@@ -180,6 +266,61 @@ if [ -z "$1" ]; then echo "Порожній параметр"; exit 1; fi</code>
 </tbody></table></div>
 <p>Також є <b>файлові оператори</b>: <code>-d</code> (це каталог), <code>-f</code> (звичайний файл), <code>-e</code> (існує), та <b>логічні</b>: <code>!</code>, <code>&amp;&amp;</code>, <code>||</code>.</p>
 
+<h2 id="tests">Три види умов: <code>[ ]</code>, <code>[[ ]]</code>, <code>(( ))</code><a class="h-anchor" href="#tests" aria-label="Посилання на розділ">#</a></h2>
+<p>Після <code>if</code> може стояти <b>будь-яка команда</b>: bash дивиться лише на її код виходу (0 — «істина»). <code>[</code> — це звичайна команда (синонім <code>test</code>), яка повертає 0 або 1. Тому <code>if grep -q nginx /etc/passwd; then …</code> — повноцінна умова без жодних дужок.</p>
+<div class="table-wrap"><table>
+<thead><tr><th></th><th><code>[ … ]</code> (test)</th><th><code>[[ … ]]</code></th><th><code>(( … ))</code></th></tr></thead>
+<tbody>
+<tr><td>Що це</td><td>команда POSIX, працює в <code>sh</code></td><td>ключове слово bash</td><td>арифметичний вираз bash</td></tr>
+<tr><td>Для чого</td><td>рядки, числа (<code>-eq</code>), файли</td><td>рядки, шаблони, регулярні вирази, файли</td><td>лише цілі числа</td></tr>
+<tr><td>Порівняння чисел</td><td><code>[ "$a" -gt 5 ]</code></td><td><code>[[ $a -gt 5 ]]</code></td><td><code>(( a &gt; 5 ))</code> — звичні знаки</td></tr>
+<tr><td>Логічні І / АБО</td><td><code>[ … ] &amp;&amp; [ … ]</code> (застаріле <code>-a</code>, <code>-o</code>)</td><td><code>[[ … &amp;&amp; … ]]</code></td><td><code>(( a &gt; 1 &amp;&amp; a &lt; 9 ))</code></td></tr>
+<tr><td>Лапки навколо змінних</td><td><b>обов'язкові</b></td><td>бажані, але порожня змінна не ламає синтаксис</td><td>не потрібні, <code>$</code> можна не писати</td></tr>
+<tr><td>Шаблони</td><td>ні</td><td><code>[[ $f == *.log ]]</code></td><td>—</td></tr>
+<tr><td>Регулярні вирази</td><td>ні</td><td><code>[[ $v =~ ^[0-9]+$ ]]</code></td><td>—</td></tr>
+<tr><td>Знаки <code>&lt;</code> <code>&gt;</code></td><td>треба екранувати <code>\&gt;</code>, інакше це перенаправлення у файл!</td><td>порівнюють рядки за абеткою</td><td>порівнюють числа</td></tr>
+</tbody></table></div>
+<h3>Чому лапки в <code>[ ]</code> обов'язкові</h3>
+<pre data-lang="bash"><code>name=""
+[ $name = "admin" ]      <span class="c"># перетворюється на [ = "admin" ] → помилка «unary operator expected»</span>
+[ "$name" = "admin" ]    <span class="c"># [ "" = "admin" ] → коректно, хибність</span>
+file="my report.txt"
+[ -f $file ]             <span class="c"># [ -f my report.txt ] → «too many arguments»</span>
+[ -f "$file" ]           <span class="c"># правильно</span></code></pre>
+<h3>Пастка: рядки vs числа</h3>
+<pre data-lang="bash"><code>a="010"; b="10"
+[ "$a" -eq "$b" ] &amp;&amp; echo "рівні як числа"      <span class="c"># виведе</span>
+[ "$a" = "$b" ]   &amp;&amp; echo "рівні як рядки"      <span class="c"># не виведе</span>
+[ "$a" &gt; "$b" ]                                 <span class="c"># НЕ порівняння: створить файл з ім'ям «10»!</span></code></pre>
+<h3>Повний перелік операторів test</h3>
+<div class="table-wrap"><table>
+<thead><tr><th>Оператор</th><th>Істина, якщо…</th></tr></thead>
+<tbody>
+<tr><td><code>-e f</code></td><td>файл існує (будь-якого типу)</td></tr>
+<tr><td><code>-f f</code> / <code>-d f</code> / <code>-L f</code></td><td>звичайний файл / каталог / символічне посилання</td></tr>
+<tr><td><code>-r f</code> / <code>-w f</code> / <code>-x f</code></td><td>поточний користувач може читати / писати / виконувати</td></tr>
+<tr><td><code>-s f</code></td><td>файл існує і не порожній</td></tr>
+<tr><td><code>f1 -nt f2</code> / <code>f1 -ot f2</code></td><td>f1 новіший / старіший за f2</td></tr>
+<tr><td><code>-z s</code> / <code>-n s</code></td><td>рядок порожній / непорожній</td></tr>
+<tr><td><code>s1 = s2</code>, <code>s1 != s2</code></td><td>рядки рівні / різні</td></tr>
+<tr><td><code>n1 -eq n2</code>, <code>-ne</code>, <code>-lt</code>, <code>-le</code>, <code>-gt</code>, <code>-ge</code></td><td>числові =, ≠, &lt;, ≤, &gt;, ≥</td></tr>
+<tr><td><code>! вираз</code></td><td>заперечення</td></tr>
+</tbody></table></div>
+<h3>Розібраний приклад: перевірка аргументів скрипта</h3>
+<pre data-lang="bash"><code><span class="c">#!/usr/bin/env bash</span>
+<span class="c"># ./resize.sh &lt;файл&gt; &lt;ширина&gt;</span>
+if [[ $# -ne 2 ]]; then
+    echo "Використання: $0 &lt;файл&gt; &lt;ширина&gt;" &gt;&amp;2      <span class="c"># повідомлення про помилку — у stderr</span>
+    exit 2
+fi
+file=$1; width=$2
+[[ -f $file ]]          || { echo "Файл $file не знайдено" &gt;&amp;2; exit 1; }
+[[ $width =~ ^[0-9]+$ ]] || { echo "Ширина має бути числом" &gt;&amp;2; exit 1; }
+if (( width &lt; 16 || width &gt; 4096 )); then
+    echo "Ширина поза межами 16–4096" &gt;&amp;2; exit 1
+fi
+echo "OK: $file → ${width}px"</code></pre>
+
 <h2 id="loops">Цикли<a class="h-anchor" href="#loops" aria-label="Посилання на розділ">#</a></h2>
 <div class="table-wrap"><table>
 <thead><tr><th>Цикл</th><th>Виконується</th><th>Приклад</th></tr></thead>
@@ -207,6 +348,49 @@ until [ $n -eq 10 ]; do              <span class="c"># теж 0..9</span>
     echo $n; n=$(( n + 1 ))
 done</code></pre>
 <p>Серед елементів мови також є <code>select</code> (меню вибору), функції та <b>перехоплення сигналів</b> <code>trap</code> (наприклад, прибрати тимчасові файли при Ctrl+C).</p>
+
+<h2 id="loops-more">Цикли детальніше: діапазони, читання файлів, break і continue<a class="h-anchor" href="#loops-more" aria-label="Посилання на розділ">#</a></h2>
+<h3>Різні форми for</h3>
+<pre data-lang="bash"><code>for i in 1 2 3 4 5; do echo $i; done            <span class="c"># явний список</span>
+for i in {1..5}; do echo $i; done               <span class="c"># діапазон (розкриття дужок)</span>
+for i in {0..20..5}; do echo $i; done           <span class="c"># з кроком: 0 5 10 15 20</span>
+for i in $(seq 1 5); do echo $i; done           <span class="c"># через seq (діапазон можна задати змінними)</span>
+for (( i=0; i&lt;5; i++ )); do echo $i; done       <span class="c"># C-стиль: 0..4</span>
+for arg in "$@"; do echo "Аргумент: $arg"; done <span class="c"># усі аргументи скрипта</span>
+for f in *.log; do gzip "$f"; done              <span class="c"># файли за шаблоном</span>
+for u in $(cut -d: -f1 /etc/passwd); do …; done  <span class="c"># вивід команди (розбивається за пробілами!)</span></code></pre>
+<p><code>{1..$n}</code> <b>не працює</b>: розкриття дужок відбувається раніше за підстановку змінних. Для змінних меж — <code>seq 1 "$n"</code> або C-стиль.</p>
+<h3>Читання файла рядок за рядком</h3>
+<pre data-lang="bash"><code>while IFS= read -r line; do
+    echo "Рядок: $line"
+done &lt; servers.txt
+<span class="c"># IFS= — не обрізати пробіли на краях; -r — не трактувати \ як екранування</span>
+
+<span class="c"># CSV: ім'я;група</span>
+while IFS=';' read -r name group; do
+    sudo useradd -m -G "$group" "$name"
+done &lt; users.csv</code></pre>
+<p>Чому не <code>for line in $(cat file)</code>: такий цикл розбиває текст за <b>будь-якими пробілами</b>, а не за рядками, і рядок «John Smith» стане двома ітераціями.</p>
+<h3><code>break</code>, <code>continue</code> і нескінченні цикли</h3>
+<pre data-lang="bash"><code>for f in /var/log/*.log; do
+    [[ -s $f ]] || continue          <span class="c"># порожній — пропустити, перейти до наступного</span>
+    grep -q "FATAL" "$f" &amp;&amp; { echo "Знайдено в $f"; break; }   <span class="c"># знайшли — вийти з циклу</span>
+done
+
+<span class="c"># чекати, поки сервіс підніметься, але не довше 30 спроб</span>
+attempt=0
+until curl -fsS http://localhost:8080/health &gt;/dev/null; do
+    (( ++attempt &gt;= 30 )) &amp;&amp; { echo "Сервіс не стартував" &gt;&amp;2; exit 1; }
+    sleep 2
+done
+echo "Сервіс готовий після $attempt спроб"
+
+while true; do date; sleep 60; done     <span class="c"># нескінченний цикл, вихід — Ctrl+C або break</span></code></pre>
+<h3><code>select</code>: просте меню</h3>
+<pre data-lang="bash"><code>PS3="Оберіть середовище: "
+select env in dev staging prod; do
+    [[ -n $env ]] &amp;&amp; { echo "Деплой у $env"; break; }
+done</code></pre>
 
 <h2 id="functions">Функції та область видимості<a class="h-anchor" href="#functions" aria-label="Посилання на розділ">#</a></h2>
 <p>За замовчуванням змінні в bash <b>глобальні</b>: функція, що змінює <code>myvar</code>, змінить її для всього скрипта. Щоб змінна жила лише у функції — оголосіть її <code>local</code>.</p>
@@ -236,7 +420,53 @@ is_root() { [ "$(id -u)" -eq 0 ]; }    <span class="c"># код 0 = «істин
 ip=$(get_ip)
 if is_root; then echo "root on $ip"; else echo "not root"; fi</code></pre>
 
-<h2 id="extra">case, файлові перевірки, обробка тексту і cron<a class="h-anchor" href="#extra" aria-label="Посилання на розділ">#</a></h2>
+<h2 id="io">Ввід, вивід, опції скрипта і trap<a class="h-anchor" href="#io" aria-label="Посилання на розділ">#</a></h2>
+<h3><code>read</code> і <code>printf</code></h3>
+<pre data-lang="bash"><code>read -p "Ім'я: " name                 <span class="c"># з підказкою</span>
+read -s -p "Пароль: " pass; echo      <span class="c"># -s: не показувати ввід</span>
+read -t 10 -p "Продовжити? [y/N] " ans || ans=n   <span class="c"># -t: тайм-аут 10 с</span>
+read -r a b c &lt;&lt;&lt; "1 2 3"             <span class="c"># розбити рядок на змінні</span>
+
+printf "%-10s %5d\n" "nginx" 812     <span class="c"># форматований вивід: ширина колонок, числа</span>
+printf "%.2f\n" 3.14159              <span class="c"># 3.14 — printf уміє дроби, а $(( )) ні</span>
+echo -e "рядок1\nрядок2"             <span class="c"># -e: інтерпретувати \n, \t</span>
+echo "Помилка!" &gt;&amp;2                  <span class="c"># повідомлення про помилку — у stderr</span></code></pre>
+<p>Дробові обчислення: <code>echo "scale=2; 7/2" | bc</code> → <code>3.50</code> або <code>awk 'BEGIN{print 7/2}'</code> → <code>3.5</code>.</p>
+<h3>Розбір опцій: <code>getopts</code></h3>
+<pre data-lang="bash"><code><span class="c">#!/usr/bin/env bash</span>
+<span class="c"># ./backup.sh -d /var/www -k 7 -v</span>
+dir=/var/www; keep=5; verbose=0
+while getopts "d:k:vh" opt; do          <span class="c"># двокрапка після літери = опція зі значенням</span>
+    case $opt in
+        d) dir=$OPTARG ;;
+        k) keep=$OPTARG ;;
+        v) verbose=1 ;;
+        h) echo "Usage: $0 [-d dir] [-k days] [-v]"; exit 0 ;;
+        *) exit 2 ;;
+    esac
+done
+shift $((OPTIND - 1))                    <span class="c"># прибрати оброблені опції; решта — у "$@"</span>
+(( verbose )) &amp;&amp; echo "dir=$dir keep=$keep"</code></pre>
+<h3><code>shift</code></h3>
+<p><code>shift</code> зсуває позиційні параметри вліво: <code>$2</code> стає <code>$1</code>, а <code>$#</code> зменшується на 1. Зручно для обробки аргументів у циклі <code>while (( $# )); do …; shift; done</code>.</p>
+<h3><code>trap</code>: прибирання при виході і сигналах</h3>
+<pre data-lang="bash"><code>tmp=$(mktemp -d)                         <span class="c"># безпечний тимчасовий каталог</span>
+trap 'rm -rf "$tmp"' EXIT                <span class="c"># виконається при будь-якому виході зі скрипта</span>
+trap 'echo "Перервано"; exit 130' INT TERM
+
+curl -fsSL https://example.com/app.tar.gz -o "$tmp/app.tar.gz"
+tar -xzf "$tmp/app.tar.gz" -C /opt/app
+<span class="c"># tmp буде видалено навіть якщо tar впаде або натиснуть Ctrl+C</span></code></pre>
+<h3>Логування в скриптах</h3>
+<pre data-lang="bash"><code>LOG=/var/log/deploy.log
+log() { printf '[%s] %s\n' "$(date '+%F %T')" "$*" | tee -a "$LOG"; }
+die() { log "ПОМИЛКА: $*"; exit 1; }
+
+log "Початок деплою"
+systemctl restart nginx || die "nginx не перезапустився"
+exec &gt; &gt;(tee -a "$LOG") 2&gt;&amp;1             <span class="c"># з цього місця весь вивід скрипта дублюється в лог</span></code></pre>
+
+<h2 id="extra">case і обробка тексту<a class="h-anchor" href="#extra" aria-label="Посилання на розділ">#</a></h2>
 <h3>case — вибір із кількох варіантів</h3>
 <pre data-lang="bash"><code>case "$1" in
   start)   systemctl start nginx ;;
@@ -244,29 +474,58 @@ if is_root; then echo "root on $ip"; else echo "not root"; fi</code></pre>
   restart) systemctl restart nginx ;;
   *)       echo "Usage: $0 {start|stop|restart}"; exit 1 ;;
 esac</code></pre>
-<p>Кожна гілка закінчується <code>;;</code>, <code>*)</code> — «усе інше», блок закривається словом <code>esac</code> (case навпаки, як <code>fi</code> для <code>if</code>).</p>
-<h3>Файлові перевірки в умовах</h3>
-<div class="table-wrap"><table>
-<thead><tr><th>Оператор</th><th>Істина, якщо…</th><th>Оператор</th><th>Істина, якщо…</th></tr></thead>
-<tbody>
-<tr><td><code>-e f</code></td><td>існує</td><td><code>-r f</code></td><td>є право читати</td></tr>
-<tr><td><code>-f f</code></td><td>звичайний файл</td><td><code>-w f</code></td><td>є право писати</td></tr>
-<tr><td><code>-d f</code></td><td>каталог</td><td><code>-x f</code></td><td>є право виконувати</td></tr>
-<tr><td><code>-s f</code></td><td>не порожній</td><td><code>! -e f</code></td><td>не існує</td></tr>
-</tbody></table></div>
-<p><code>[[ … ]]</code> — розширена версія <code>[ … ]</code> у bash: дозволяє <code>&amp;&amp;</code>/<code>||</code> усередині та шаблони (<code>[[ $f == *.log ]]</code>) і менш вибаглива до лапок.</p>
+<p>Кожна гілка закінчується <code>;;</code>, <code>*)</code> — «усе інше», блок закривається словом <code>esac</code> (case навпаки, як <code>fi</code> для <code>if</code>). У гілках можна писати шаблони і кілька варіантів через <code>|</code>:</p>
+<pre data-lang="bash"><code>case "$answer" in
+  [Yy]|[Yy]es) echo "Продовжуємо" ;;
+  [Nn]*)       echo "Скасовано"; exit 0 ;;
+  "")          echo "Порожня відповідь" ;;
+  *)           echo "Не зрозумів" ;;
+esac
+case "$file" in
+  *.tar.gz|*.tgz) tar -xzf "$file" ;;
+  *.zip)          unzip "$file" ;;
+esac</code></pre>
 <h3>Обробка тексту: grep, sed, awk, cut</h3>
 <pre data-lang="bash"><code>grep -c "ERROR" app.log                      <span class="c"># скільки рядків з ERROR</span>
 sed 's/http:/https:/g' site.conf             <span class="c"># замінити текст (вивід на екран)</span>
 sed -i 's/8080/80/' app.conf                 <span class="c"># -i — змінити файл на місці</span>
 awk '{print $1}' access.log | sort | uniq -c | sort -nr | head   <span class="c"># топ IP-адрес у лозі</span>
 cut -d: -f1 /etc/passwd                      <span class="c"># лише імена користувачів</span></code></pre>
-<h3>cron — запуск скриптів за розкладом</h3>
-<p>Регулярні задачі (бекап, очищення логів) ставлять у <b>cron</b>: <code>crontab -e</code> — редагувати, <code>crontab -l</code> — переглянути. Рядок має 5 полів часу і команду:</p>
-<pre data-lang="bash"><code><span class="c"># хв  год  день  міс  день_тижня  команда</span>
-0     2    *     *    *           /opt/scripts/backup.sh &gt;&gt; /var/log/backup.log 2&gt;&amp;1
-*/15  *    *     *    1-5         /opt/scripts/check.sh   <span class="c"># кожні 15 хв, пн–пт</span></code></pre>
-<p>Той самий формат використовують Jenkins (тригер <i>Build periodically</i>) і GitHub Actions (<code>on: schedule</code>).</p>
+<p><code>sed</code>, <code>awk</code>, <code>cut</code>, <code>sort</code>, <code>uniq</code> детально розібрано в лекції 2 (розділ «Обробка тексту в конвеєрах»). Короткі правила для <code>awk</code>: <code>$1</code>, <code>$2</code> — поля рядка (за замовчуванням розділені пробілами), <code>-F:</code> — інший роздільник, <code>NR</code> — номер рядка, <code>NF</code> — кількість полів, <code>$NF</code> — останнє поле.</p>
+<pre data-lang="bash"><code>awk -F: '$3 &gt;= 1000 {print $1, $6}' /etc/passwd        <span class="c"># звичайні користувачі та їхні домашні каталоги</span>
+awk '{sum += $10} END {print sum/1024/1024 " MB"}' access.log   <span class="c"># сумарний обсяг відповідей</span>
+sed -n '/BEGIN/,/END/p' file                          <span class="c"># рядки між маркерами</span>
+sed -i.bak 's/^PermitRootLogin.*/PermitRootLogin no/' /etc/ssh/sshd_config   <span class="c"># змінити з резервною копією .bak</span></code></pre>
+
+<h2 id="cron">cron детально<a class="h-anchor" href="#cron" aria-label="Посилання на розділ">#</a></h2>
+<p>Демон <b>cron</b> щохвилини перевіряє таблиці задач (crontab) і запускає те, чий час настав.</p>
+<pre data-lang="text"><code>┌───────────── хвилина (0–59)
+│ ┌─────────── година (0–23)
+│ │ ┌───────── день місяця (1–31)
+│ │ │ ┌─────── місяць (1–12 або jan–dec)
+│ │ │ │ ┌───── день тижня (0–7, де 0 і 7 — неділя, або sun–sat)
+│ │ │ │ │
+* * * * *  команда</code></pre>
+<div class="table-wrap"><table>
+<thead><tr><th>Запис</th><th>Значення</th></tr></thead>
+<tbody>
+<tr><td><code>*</code></td><td>будь-яке значення</td></tr>
+<tr><td><code>*/15</code></td><td>кожні 15 одиниць (хвилин, годин…)</td></tr>
+<tr><td><code>1-5</code></td><td>діапазон (пн–пт у полі дня тижня)</td></tr>
+<tr><td><code>1,15</code></td><td>перелік</td></tr>
+<tr><td><code>0 2 * * *</code></td><td>щодня о 02:00</td></tr>
+<tr><td><code>30 8 * * 1-5</code></td><td>о 08:30 у будні</td></tr>
+<tr><td><code>0 0 1 * *</code></td><td>опівночі першого числа кожного місяця</td></tr>
+<tr><td><code>*/5 * * * *</code></td><td>кожні 5 хвилин</td></tr>
+<tr><td><code>@reboot</code>, <code>@daily</code>, <code>@hourly</code>, <code>@weekly</code></td><td>спеціальні рядки: після старту системи, раз на день тощо</td></tr>
+</tbody></table></div>
+<pre data-lang="bash"><code>crontab -e              <span class="c"># редагувати свою таблицю</span>
+crontab -l              <span class="c"># переглянути</span>
+crontab -r              <span class="c"># видалити ВСЮ таблицю (обережно, легко сплутати з -e)</span>
+sudo crontab -u www-data -l   <span class="c"># таблиця іншого користувача</span>
+ls /etc/cron.d /etc/cron.daily   <span class="c"># системні задачі (у /etc/crontab є ще поле користувача)</span></code></pre>
+<div class="callout warn"><div class="callout-title">Чому скрипт працює вручну, але не в cron</div><p>Cron запускає команди з мінімальним середовищем: короткий <code>PATH</code> (часто лише <code>/usr/bin:/bin</code>), поточний каталог — домашній, без змінних з <code>~/.bashrc</code>. Тому в crontab пишіть <b>абсолютні шляхи</b> до скриптів і програм, задавайте потрібні змінні у скрипті й обов'язково перенаправляйте вивід у лог (<code>&gt;&gt; /var/log/job.log 2&gt;&amp;1</code>) — інакше помилок не побачите. Знак <code>%</code> у crontab має спеціальне значення, його екранують: <code>date +\%F</code>.</p></div>
+<p>Альтернатива cron у сучасних дистрибутивах — <b>systemd timers</b> (<code>systemctl list-timers</code>): логи в journald, залежності від інших служб, пропущені запуски наздоганяються після ввімкнення.</p>
 
 <h2 id="deploy">Практика: мінімальний deployment-скрипт<a class="h-anchor" href="#deploy" aria-label="Посилання на розділ">#</a></h2>
 <p>Результат курсу — уміти написати bash-скрипт розгортання. Ось шаблон, що поєднує все з лекції: аргументи, перевірки, функції, коди завершення.</p>
@@ -297,20 +556,78 @@ chown -R apache:apache "$TARGET"
 systemctl restart httpd
 log "Готово, код завершення: $?"</code></pre>
 
+<h2 id="examples">Розібрані скрипти для реальних задач<a class="h-anchor" href="#examples" aria-label="Посилання на розділ">#</a></h2>
+<h3>1. Резервна копія з ротацією</h3>
+<pre data-lang="bash"><code><span class="c">#!/usr/bin/env bash</span>
+<span class="c"># backup.sh — архів каталогу сайту і дамп БД; зберігати останні 7 днів</span>
+set -euo pipefail
+SRC=/var/www/html
+DEST=/backup
+KEEP_DAYS=7
+STAMP=$(date +%F_%H%M)
+
+mkdir -p "$DEST"
+tar -czf "$DEST/site_$STAMP.tar.gz" -C "$SRC" .
+mysqldump --single-transaction shop | gzip &gt; "$DEST/db_$STAMP.sql.gz"
+find "$DEST" -name "*.gz" -mtime +"$KEEP_DAYS" -delete   <span class="c"># ротація: старші за 7 днів</span>
+echo "Бекап $STAMP готовий: $(du -sh "$DEST" | cut -f1)"
+<span class="c"># crontab: 0 3 * * * /opt/scripts/backup.sh &gt;&gt; /var/log/backup.log 2&gt;&amp;1</span></code></pre>
+<h3>2. Попередження про заповнений диск</h3>
+<pre data-lang="bash"><code><span class="c">#!/usr/bin/env bash</span>
+LIMIT=85
+df -P -x tmpfs -x devtmpfs | tail -n +2 | while read -r fs size used avail pct mount; do
+    usage=${pct%\%}                         <span class="c"># "91%" → 91</span>
+    if (( usage &gt;= LIMIT )); then
+        echo "УВАГА: $mount заповнено на $usage% ($fs)" &gt;&amp;2
+    fi
+done</code></pre>
+<h3>3. Перевірка доступності сайтів</h3>
+<pre data-lang="bash"><code><span class="c">#!/usr/bin/env bash</span>
+urls=("https://example.com" "https://example.org/health")
+fail=0
+for u in "${urls[@]}"; do
+    code=$(curl -s -o /dev/null -w '%{http_code}' --max-time 5 "$u" || echo 000)
+    if [[ $code == 2* ]]; then
+        printf '%-35s OK (%s)\n' "$u" "$code"
+    else
+        printf '%-35s FAIL (%s)\n' "$u" "$code"; fail=1
+    fi
+done
+exit $fail          <span class="c"># ненульовий код — сигнал для CI або моніторингу</span></code></pre>
+<h3>4. Створення користувачів зі списку</h3>
+<pre data-lang="bash"><code><span class="c">#!/usr/bin/env bash</span>
+<span class="c"># users.txt: по одному логіну в рядку</span>
+[[ $EUID -eq 0 ]] || { echo "Потрібен root" &gt;&amp;2; exit 1; }
+while IFS= read -r u; do
+    [[ -z $u || $u == \#* ]] &amp;&amp; continue          <span class="c"># пропустити порожні рядки і коментарі</span>
+    if id "$u" &amp;&gt;/dev/null; then
+        echo "$u вже існує"
+    else
+        useradd -m -s /bin/bash "$u" &amp;&amp; echo "створено $u"
+    fi
+done &lt; users.txt</code></pre>
+
 <h2 id="mistakes">Типові помилки<a class="h-anchor" href="#mistakes" aria-label="Посилання на розділ">#</a></h2>
 <div class="mistakes">
+<div class="mistake"><div class="wrong">Скрипт, запущений як <code>./setenv.sh</code>, змінить змінні й каталог поточного терміналу.</div><div class="right">Він працює в дочірньому процесі, і зміни зникають. Щоб змінити поточну оболонку — <code>source setenv.sh</code> або <code>. setenv.sh</code>.</div></div>
+<div class="mistake"><div class="wrong"><code>[ "$a" &gt; "$b" ]</code> порівнює рядки.</div><div class="right">У <code>[ ]</code> знак <code>&gt;</code> — перенаправлення у файл. Пишіть <code>[[ $a &gt; $b ]]</code> або <code>[ "$a" \&gt; "$b" ]</code>; для чисел — <code>-gt</code> або <code>(( a &gt; b ))</code>.</div></div>
+<div class="mistake"><div class="wrong"><code>for i in {1..$n}</code> пройде від 1 до n.</div><div class="right">Розкриття дужок відбувається до підстановки змінних. Використовуйте <code>seq 1 "$n"</code> або <code>for ((i=1; i&lt;=n; i++))</code>.</div></div>
+<div class="mistake"><div class="wrong"><code>for line in $(cat file)</code> читає файл по рядках.</div><div class="right">Він розбиває текст за будь-якими пробілами. По рядках: <code>while IFS= read -r line; do …; done &lt; file</code>.</div></div>
+<div class="mistake"><div class="wrong">Скрипт з <code>#!/bin/sh</code> може використовувати <code>[[ ]]</code> і масиви.</div><div class="right">У Debian/Ubuntu <code>sh</code> — це <code>dash</code> без bash-розширень. Для них потрібен <code>#!/bin/bash</code>.</div></div>
+<div class="mistake"><div class="wrong">Задача в cron бачить той самий <code>PATH</code>, що й ваш термінал.</div><div class="right">Середовище cron мінімальне. Пишіть абсолютні шляхи і перенаправляйте вивід у лог.</div></div>
+
 <div class="mistake"><div class="wrong"><code>name = "Ivan"</code> — з пробілами.</div><div class="right">Bash сприйме <code>name</code> як команду. Правильно: <code>name="Ivan"</code>.</div></div>
 <div class="mistake"><div class="wrong"><code>[ "$a" = 10 ]</code> для порівняння чисел / <code>-eq</code> для рядків.</div><div class="right">Числа: <code>-eq -ne -lt -le -gt -ge</code>. Рядки: <code>= != -z -n</code>. «010» і «10» рівні як числа, але не як рядки.</div></div>
 <div class="mistake"><div class="wrong">Змінна без лапок: <code>[ -z $1 ]</code>, <code>rm $file</code>.</div><div class="right">Якщо значення порожнє або з пробілами — синтаксична помилка чи видалення не того. Пишіть <code>"$1"</code>, <code>"$file"</code>.</div></div>
 <div class="mistake"><div class="wrong"><code>echo $(( 7 / 2 ))</code> дасть 3.5.</div><div class="right">Bash рахує лише цілі: результат <code>3</code>. Для дробів — <code>bc</code> або <code>awk</code>.</div></div>
 <div class="mistake"><div class="wrong"><code>return "текст"</code> поверне рядок із функції.</div><div class="right"><code>return</code> — тільки код 0–255. Дані — через <code>echo</code> і <code>$(func)</code>.</div></div>
 </div>
-<h2 id="quiz">Перевір себе<a class="h-anchor" href="#quiz" aria-label="Посилання на розділ">#</a></h2><p>11 питань на розуміння. В одиночних питаннях натисніть варіант — одразу побачите правильну відповідь і пояснення. Питання з позначкою <b>«кілька відповідей»</b> влаштовані як у тесті курсу (<i>Select one or more</i>): позначте всі правильні варіанти й натисніть «Перевірити».</p><div class="quiz" data-quiz="w1l3"></div><script type="application/json" id="quiz-data">[{"q": "Що виведе скрипт: <code>var=world; echo 'Hello $var'<\/code>?", "options": ["Hello world", "Hello", "Hello $var", "Помилку"], "answer": 2, "explain": "В одинарних лапках змінні не підставляються — текст виводиться буквально. У подвійних було б Hello world."}, {"q": "Скрипт запустили як <code>./backup.sh /data /mnt/usb<\/code>. Чому дорівнює <code>$#<\/code>?", "options": ["1", "2", "0", "3"], "answer": 1, "explain": "$# — кількість позиційних параметрів (аргументів), ім'я скрипта $0 не рахується. Тут два аргументи."}, {"q": "Що означає <code>$? = 0<\/code> після команди?", "options": ["Змінна не визначена", "Команда завершилась успішно", "Команда ще виконується", "Команда завершилась з помилкою"], "answer": 1, "explain": "За конвенцією Unix код завершення 0 — успіх, будь-яке інше значення — помилка."}, {"q": "Яка умова правильно перевіряє, що число в <code>$n<\/code> більше 5?", "options": ["[ $n > 5 ]", "[ \"$n\" -gt 5 ]", "[$n -gt 5]", "[ \"$n\" = 5 ]"], "answer": 1, "explain": "Для чисел — оператор -gt і обов'язкові пробіли всередині дужок. Знак > у [ ] — це порівняння рядків (або навіть перенаправлення)."}, {"q": "Що виведе <code>echo $(( 10 / 4 ))<\/code>?", "options": ["2.5", "3", "Помилку", "2"], "answer": 3, "explain": "Bash виконує лише цілочисельну арифметику, дробова частина відкидається."}, {"q": "Чим цикл <code>until<\/code> відрізняється від <code>while<\/code>?", "options": ["until виконується рівно один раз", "until виконується, поки умова хибна; while — поки істинна", "Нічим", "until перебирає список значень"], "answer": 1, "explain": "while [ умова ] крутиться, поки умова істинна, until [ умова ] — поки вона хибна, тобто до моменту, коли стане істинною."}, {"q": "Яким словом закривається блок <code>case<\/code>?", "options": ["end", "esac", "done", "fi"], "answer": 1, "explain": "case … esac (як if … fi). done закриває цикли."}, {"q": "Які перевірки істинні для звичайного файла <code>/etc/hosts<\/code>, що існує?", "options": ["<code>[ -z /etc/hosts ]<\/code>", "<code>[ -d /etc/hosts ]<\/code>", "<code>[ -e /etc/hosts ]<\/code>", "<code>[ -f /etc/hosts ]<\/code>"], "answer": [2, 3], "explain": "-e — існує, -f — звичайний файл. -d істинне лише для каталогу, а -z перевіряє, що рядок порожній."}, {"q": "Що означає рядок crontab <code>0 2 * * * /opt/backup.sh<\/code>?", "options": ["Запускати щодня о 02:00", "Запускати кожні 2 хвилини", "Запускати 2-го числа кожного місяця", "Запускати двічі на день"], "answer": 0, "explain": "Поля: хвилина=0, година=2, далі «будь-який» день, місяць і день тижня — тобто щодня о 2:00."}, {"q": "Яка команда замінить у файлі всі <code>http:<\/code> на <code>https:<\/code> прямо на диску?", "options": ["<code>awk 's/http:/https:/' site.conf<\/code>", "<code>cut -d: -f1 site.conf<\/code>", "<code>grep -i http: site.conf<\/code>", "<code>sed -i 's/http:/https:/g' site.conf<\/code>"], "answer": 3, "explain": "sed — потоковий редактор; s/старе/нове/g замінює всі входження, -i записує результат у файл."}, {"q": "Навіщо всередині функції писати <code>local myvar=...<\/code>?", "options": ["Щоб змінна стала змінною середовища", "Щоб функція повернула значення", "Щоб пришвидшити виконання", "Щоб змінна існувала лише у функції і не перезаписала глобальну"], "answer": 3, "explain": "Без local змінні bash глобальні, і функція змінила б значення для всього скрипта."}]</script>
+<h2 id="quiz">Перевір себе<a class="h-anchor" href="#quiz" aria-label="Посилання на розділ">#</a></h2><p>31 питань на розуміння. В одиночних питаннях натисніть варіант — одразу побачите правильну відповідь і пояснення. Питання з позначкою <b>«кілька відповідей»</b> влаштовані як у тесті курсу (<i>Select one or more</i>): позначте всі правильні варіанти й натисніть «Перевірити».</p><div class="quiz" data-quiz="w1l3"></div><script type="application/json" id="quiz-data">[{"q": "Що таке bash?", "options": ["Мова сценаріїв для автоматизації задач", "Командна оболонка (shell) Unix/Linux — інтерпретатор команд", "Ядро операційної системи Linux, що керує процесами", "Графічна оболонка робочого столу для серверів", "Скорочення від Bourne Again SHell", "Текстовий редактор Linux для конфігураційних файлів"], "answer": [0, 1, 4], "explain": "Bash — оболонка, що інтерпретує команди в терміналі і водночас мова скриптів. Ядро — Linux, редактори — nano, vim, графічні оболонки — GNOME, KDE."}, {"q": "Які рядки коректно присвоюють змінній name значення Ivan Petrenko?", "options": ["<code>name=Ivan Petrenko<\/code>", "<code>name=Ivan\\ Petrenko<\/code>", "<code>$name=\"Ivan Petrenko\"<\/code>", "<code>name=\"Ivan Petrenko\"<\/code>", "<code>name='Ivan Petrenko'<\/code>", "<code>name = \"Ivan Petrenko\"<\/code>"], "answer": [1, 3, 4], "explain": "Присвоєння — без пробілів навколо <code>=<\/code> і без <code>$<\/code>. Пробіл у значенні треба захистити лапками або екрануванням. <code>name=Ivan Petrenko<\/code> встановить змінну лише для команди <code>Petrenko<\/code>, яку bash спробує запустити."}, {"q": "Змінна <code>var=\"test\"<\/code>. Що виведуть команди?", "options": ["<code>echo 'Value: $var'<\/code> → Value: test", "<code>echo \"Value: $var\"<\/code> → Value: test", "<code>echo \"Value: \\$var\"<\/code> → Value: $var", "<code>echo 'Value: $var'<\/code> → Value: $var", "<code>echo \"Value: $var\"<\/code> → Value: $var"], "answer": [1, 2, 3], "explain": "У подвійних лапках змінні підставляються, в одинарних — ні; <code>\\$<\/code> екранує знак долара."}, {"q": "Скрипт запущено як <code>./args.sh one two three<\/code>. Які твердження правильні?", "options": ["<code>$0<\/code> містить ім'я скрипта", "<code>$#<\/code> дорівнює 3", "<code>$1<\/code> дорівнює one", "<code>$0<\/code> дорівнює one", "<code>$#<\/code> дорівнює 4", "<code>$3<\/code> порожня"], "answer": [0, 1, 2], "explain": "<code>$#<\/code> — кількість аргументів без імені скрипта, <code>$0<\/code> — сам скрипт, <code>$1…$3<\/code> — аргументи: one, two, three."}, {"q": "Що містить змінна <code>$?<\/code>?", "options": ["Код завершення останньої виконаної команди", "Усі аргументи скрипта одним рядком", "PID поточного процесу оболонки", "Кількість аргументів, переданих скрипту", "0, якщо остання команда завершилась успішно"], "answer": [0, 4], "explain": "<code>$?<\/code> — exit status; 0 означає успіх. PID — <code>$$<\/code>, кількість аргументів — <code>$#<\/code>, усі аргументи — <code>$*<\/code> або <code>$@<\/code>."}, {"q": "Які записи виконують підстановку виводу команди в змінну?", "options": ["<code>files=`ls | wc -l`<\/code>", "<code>files=$(ls | wc -l)<\/code>", "<code>files=\"ls | wc -l\"<\/code>", "<code>files='ls | wc -l'<\/code>", "<code>files=${ls | wc -l}<\/code>"], "answer": [0, 1], "explain": "Підстановка команд — <code>$(…)<\/code> або зворотні лапки. В одинарних і подвійних лапках вийде просто текст. <code>${…}<\/code> — розкриття змінних, а не запуск команд."}, {"q": "Що виведе <code>echo $(( 7 / 2 ))<\/code>?", "options": ["Помилку синтаксису", "4", "7/2", "3", "3.5"], "answer": [3], "explain": "Арифметика bash цілочисельна: дробова частина відкидається. Для 3.5 — <code>awk 'BEGIN{print 7/2}'<\/code> або <code>bc<\/code>."}, {"q": "Які умови перевіряють, що змінна a, яка містить число, більша за 5?", "options": ["<code>[ \"$a\" -gt 5 ]<\/code>", "<code>(( a &gt; 5 ))<\/code>", "<code>[ \"$a\" &gt; 5 ]<\/code>", "<code>[ \"$a\" -ge 5 ]<\/code>", "<code>[ $a = 5 ]<\/code>", "<code>[[ $a -gt 5 ]]<\/code>"], "answer": [0, 1, 5], "explain": "Для чисел у <code>[ ]<\/code> і <code>[[ ]]<\/code> — <code>-gt<\/code>, у <code>(( ))<\/code> — звичайний <code>&gt;<\/code>. У <code>[ ]<\/code> знак <code>&gt;<\/code> стане перенаправленням у файл «5». <code>-ge<\/code> — «більше або дорівнює»."}, {"q": "Які оператори використовують для порівняння <b>рядків<\/b> у <code>[ ]<\/code>?", "options": ["<code>=<\/code>", "<code>!=<\/code>", "<code>-z<\/code>", "<code>-n<\/code>", "<code>-lt<\/code>", "<code>-eq<\/code>"], "answer": [0, 1, 2, 3], "explain": "<code>=<\/code> і <code>!=<\/code> порівнюють рядки, <code>-z<\/code> — рядок порожній, <code>-n<\/code> — непорожній. <code>-eq<\/code>, <code>-lt<\/code> та інші — для цілих чисел: «010» і «10» рівні як числа (<code>-eq<\/code>), але різні як рядки (<code>=<\/code>)."}, {"q": "Які оператори test перевіряють файли?", "options": ["<code>-e<\/code> — існує", "<code>-x<\/code> — є право на виконання", "<code>-d<\/code> — каталог", "<code>-f<\/code> — звичайний файл", "<code>-n<\/code> — файл новий", "<code>-z<\/code> — файл порожній"], "answer": [0, 1, 2, 3], "explain": "<code>-z<\/code> і <code>-n<\/code> перевіряють довжину <b>рядка<\/b>. Непорожній файл — <code>-s<\/code>, «новіший за» — <code>-nt<\/code>."}, {"q": "Які записи синтаксично правильні?", "options": ["<code>if [-f \"$f\"]; then echo ok; fi<\/code>", "<code>if [ -f \"$f\" ]; then echo ok; end<\/code>", "<code>if [ -f \"$f\" ]; then echo ok; fi<\/code>", "<code>if grep -q root /etc/passwd; then echo yes; fi<\/code>", "<code>if [[ $f == *.log ]]; then echo log; fi<\/code>", "<code>if [ -f \"$f\" ] then echo ok; fi<\/code>"], "answer": [2, 3, 4], "explain": "Після <code>if<\/code> може стояти будь-яка команда, зокрема grep. <code>[<\/code> — команда, тому потрібні пробіли. Перед <code>then<\/code> на тому ж рядку — <code>;<\/code>. Блок закривається <code>fi<\/code>, а не <code>end<\/code>."}, {"q": "Які цикли виведуть числа від 1 до 5?", "options": ["<code>for i in $(seq 1 5); do echo $i; done<\/code>", "<code>for (( i=1; i&lt;=5; i++ )); do echo $i; done<\/code>", "<code>for i in {1..5}; do echo $i; done<\/code>", "<code>n=5; for i in {1..$n}; do echo $i; done<\/code>", "<code>for (( i=0; i&lt;5; i++ )); do echo $i; done<\/code>"], "answer": [0, 1, 2], "explain": "<code>{1..$n}<\/code> не розкривається, бо дужки обробляються раніше за змінні — виведе буквально {1..5}. Останній цикл виведе 0–4."}, {"q": "Які твердження про цикли while і until правильні?", "options": ["<code>until<\/code> виконується, поки умова хибна", "<code>continue<\/code> переходить до наступної ітерації", "<code>continue<\/code> завершує скрипт", "<code>break<\/code> виходить із циклу", "<code>while<\/code> виконується, поки умова істинна", "<code>until<\/code> виконується, поки умова істинна"], "answer": [0, 1, 3, 4], "explain": "until — «доки не стане істинною». continue лише пропускає решту поточної ітерації."}, {"q": "Як правильно прочитати файл servers.txt по рядках?", "options": ["<code>for line in $(cat servers.txt); do echo \"$line\"; done<\/code>", "<code>while read -r line; do echo \"$line\"; done &lt; servers.txt<\/code>", "<code>read servers.txt<\/code>", "<code>while read line &gt; servers.txt; do echo $line; done<\/code>", "<code>while IFS= read -r line; do echo \"$line\"; done &lt; servers.txt<\/code>"], "answer": [1, 4], "explain": "Цикл while з перенаправленням файла на вхід читає по рядку (IFS= ще й зберігає пробіли на краях). <code>for … $(cat)<\/code> розбиває текст за всіма пробілами. <code>&gt;<\/code> замість <code>&lt;<\/code> перезапише файл."}, {"q": "Які твердження про функції в bash правильні?", "options": ["<code>return \"текст\"<\/code> повертає рядок", "<code>local<\/code> робить змінну видимою лише всередині функції", "Змінні за замовчуванням глобальні", "<code>return<\/code> повертає код завершення 0–255", "Дані функція повертає через вивід (<code>echo<\/code>), який забирають <code>$(func)<\/code>", "Аргументи функції доступні як <code>$ARG1<\/code>, <code>$ARG2<\/code>"], "answer": [1, 2, 3, 4], "explain": "return приймає лише число. Аргументи функції — <code>$1<\/code>, <code>$2<\/code>, <code>$@<\/code>, як у скрипта."}, {"q": "Як правильно завершується блок case і кожна його гілка?", "options": ["Гілка — <code>break<\/code>, блок — <code>end<\/code>", "Гілка — <code>done<\/code>, блок — <code>esac<\/code>", "Гілка — <code>;;<\/code>, блок — <code>esac<\/code>", "Гілка — <code>;;<\/code>, блок — <code>done<\/code>", "Гілка — <code>;<\/code>, блок — <code>fi<\/code>"], "answer": [2], "explain": "case … in шаблон) команди ;; … esac. <code>fi<\/code> закриває if, <code>done<\/code> — цикли."}, {"q": "Які способи запуску скрипта deploy.sh виконають його в <b>поточній<\/b> оболонці, тож змінені змінні й каталог залишаться після завершення?", "options": ["<code>source deploy.sh<\/code>", "<code>exec ./deploy.sh<\/code>", "<code>sh deploy.sh<\/code>", "<code>bash deploy.sh<\/code>", "<code>./deploy.sh<\/code>", "<code>. deploy.sh<\/code>"], "answer": [0, 5], "explain": "source і крапка виконують команди в поточному процесі. Інші способи запускають дочірній процес; exec замінює поточну оболонку скриптом, і після його завершення термінал закриється."}, {"q": "Скрипт без права <code>x<\/code>. Як його все одно запустити?", "options": ["<code>sh script.sh<\/code>", "<code>source script.sh<\/code>", "<code>./script.sh<\/code>", "<code>script.sh<\/code>", "<code>bash script.sh<\/code>", "<code>exec script.sh<\/code>"], "answer": [0, 1, 4], "explain": "Інтерпретатору достатньо права читання: він сам читає файл (sh — якщо в скрипті лише POSIX-синтаксис). <code>./script.sh<\/code> вимагає <code>x<\/code> (інакше «Permission denied», код 126); без шляху скрипт не знайдеться в PATH; <code>exec<\/code> теж шукає файл у PATH і потребує права x."}, {"q": "Які твердження про shebang правильні?", "options": ["Shebang можна розмістити будь-де у файлі", "<code>#!/usr/bin/env bash<\/code> шукає bash у PATH", "Shebang ігнорується, якщо запускати <code>bash script.sh<\/code>", "<code>#!/bin/sh<\/code> у Ubuntu гарантує підтримку <code>[[ ]]<\/code> і масивів", "Це перший рядок файла, що вказує інтерпретатор"], "answer": [1, 2, 4], "explain": "Shebang діє лише на першому рядку. У Ubuntu <code>/bin/sh<\/code> — це dash без bash-розширень."}, {"q": "Що роблять опції <code>set -euo pipefail<\/code>?", "options": ["<code>-u<\/code>: запускати скрипт від імені поточного користувача", "<code>-e<\/code>: виводити кожну команду перед виконанням", "<code>pipefail<\/code>: заборонити використання pipe", "<code>pipefail<\/code>: конвеєр вважається проваленим, якщо впала будь-яка його команда", "<code>-u<\/code>: помилка при зверненні до незаданої змінної", "<code>-e<\/code>: завершити скрипт, якщо команда повернула ненульовий код"], "answer": [3, 4, 5], "explain": "Трасування команд вмикає <code>-x<\/code>. <code>-u<\/code> — unset variables are errors."}, {"q": "Які коди завершення мають стандартне значення в bash?", "options": ["126 — команда не виконувана (немає права x)", "130 — перервано Ctrl+C", "1 — успіх", "0 — успіх", "127 — команду не знайдено", "255 — команду не знайдено"], "answer": [0, 1, 3, 4], "explain": "Ненульовий код — помилка. 130 = 128 + 2 (SIGINT)."}, {"q": "<code>file=/var/log/app.log.gz<\/code>. Які результати розкриття правильні?", "options": ["<code>${file%.*}<\/code> → /var/log/app", "<code>${file%%.*}<\/code> → /var/log/app", "<code>${file##*/}<\/code> → app.log.gz", "<code>${file#*/}<\/code> → app.log.gz", "<code>${#file}<\/code> → 19", "<code>${file%/*}<\/code> → /var/log"], "answer": [1, 2, 4, 5], "explain": "<code>#<\/code> прибирає найкоротший збіг з початку: <code>${file#*/}<\/code> → var/log/app.log.gz. <code>%<\/code> — найкоротший з кінця: <code>${file%.*}<\/code> → /var/log/app.log."}, {"q": "Що поверне <code>${BRANCH:-main}<\/code>?", "options": ["Значення BRANCH і одночасно присвоїть їй main, якщо вона порожня", "Помилку і вихід зі скрипта, якщо BRANCH не задана", "Завжди рядок main, навіть якщо BRANCH задана", "Значення BRANCH, якщо змінна задана і непорожня", "Рядок main, якщо BRANCH порожня або не задана"], "answer": [3, 4], "explain": "<code>:-<\/code> підставляє значення за замовчуванням, не змінюючи змінну. Помилку при відсутності дає <code>:?<\/code>."}, {"q": "Які твердження про масиви bash правильні?", "options": ["Індекси масивів починаються з 1", "<code>\"${arr[@]}\"<\/code> передає кожен елемент окремим словом", "<code>${#arr[@]}<\/code> — кількість елементів", "<code>${arr[0]}<\/code> — перший елемент", "<code>arr=(a b c)<\/code> створює індексований масив", "<code>$arr<\/code> повертає всі елементи"], "answer": [1, 2, 3, 4], "explain": "Індексація з нуля; <code>$arr<\/code> без індексу дорівнює <code>${arr[0]}<\/code>."}, {"q": "Що робить <code>trap 'rm -rf \"$tmp\"' EXIT<\/code>?", "options": ["Спрацьовує лише при натисканні Ctrl+C, але не при помилці", "Видаляє тимчасовий каталог при будь-якому завершенні скрипта", "Забороняє вихід зі скрипта, доки каталог не буде видалено", "Спрацьовує і при помилці, і при нормальному виході", "Видаляє каталог одразу, щойно bash доходить до цього рядка"], "answer": [1, 3], "explain": "trap реєструє обробник; EXIT — псевдосигнал «вихід зі скрипта з будь-якої причини». Для Ctrl+C окремо — INT."}, {"q": "Які записи crontab правильні?", "options": ["<code>0 2 * * *<\/code> — щодня о 02:00", "<code>30 8 * * 1-5<\/code> — о 08:30 у будні", "<code>* * * * * *<\/code> — щосекунди", "<code>*/15 * * * *<\/code> — кожні 15 хвилин", "<code>2 0 * * *<\/code> — щодня о 02:00", "<code>0 0 1 * *<\/code> — щонеділі опівночі"], "answer": [0, 1, 3], "explain": "Поля: хвилина, година, день місяця, місяць, день тижня. <code>0 0 1 * *<\/code> — першого числа кожного місяця; <code>2 0 * * *<\/code> — о 00:02; шостого поля секунд у cron немає."}, {"q": "Чому скрипт може працювати вручну, але не працювати з cron?", "options": ["Cron запускає задачі лише від root", "Не завантажуються змінні з ~/.bashrc", "Cron не вміє запускати bash-скрипти", "У cron мінімальний PATH, і програми не знаходяться за коротким іменем", "Поточний каталог — домашній, а не каталог скрипта"], "answer": [1, 3, 4], "explain": "Рішення: абсолютні шляхи, явні змінні у скрипті, вивід у лог. Cron запускає будь-які команди від імені власника crontab."}, {"q": "Як вивести повідомлення про помилку в stderr?", "options": ["<code>echo \"Помилка\" &gt;&amp;2<\/code>", "<code>echo \"Помилка\" 2&gt;&amp;1<\/code>", "<code>printf 'Помилка\\n' 1&gt;&amp;2<\/code>", "<code>stderr \"Помилка\"<\/code>", "<code>echo \"Помилка\" &gt; 2<\/code>"], "answer": [0, 2], "explain": "<code>&gt;&amp;2<\/code> (= <code>1&gt;&amp;2<\/code>) спрямовує stdout команди туди, куди йде stderr. <code>2&gt;&amp;1<\/code> робить навпаки, <code>&gt; 2<\/code> створить файл «2», команди stderr немає."}, {"q": "Які команди допомагають налагодити bash-скрипт?", "options": ["<code>set +x<\/code> — увімкнути трасування", "<code>bash -n script.sh<\/code> — перевірити синтаксис без виконання", "<code>shellcheck script.sh<\/code> — статичний аналіз", "<code>bash -x script.sh<\/code> — друкувати команди під час виконання", "<code>bash -d script.sh<\/code> — покроковий дебагер"], "answer": [1, 2, 3], "explain": "<code>set -x<\/code> вмикає трасування, <code>set +x<\/code> вимикає. Опції <code>-d<\/code> для покрокового дебагу в bash немає."}, {"q": "Які твердження про <code>read<\/code> правильні?", "options": ["<code>read -t 10<\/code> чекає ввід не довше 10 секунд", "<code>read -s<\/code> не показує введені символи", "<code>read -p \"Ім'я: \" name<\/code> показує підказку і записує ввід у name", "<code>read<\/code> читає файл, ім'я якого передано аргументом", "<code>read -r<\/code> вимикає читання"], "answer": [0, 1, 2], "explain": "read читає з stdin; щоб читати файл, його перенаправляють: <code>read line &lt; file<\/code>. <code>-r<\/code> лише забороняє трактувати зворотну риску як екранування."}, {"q": "Чим відрізняються <code>\"$@\"<\/code> і <code>\"$*\"<\/code>?", "options": ["Вони повністю однакові, різниця лише в історичному написанні", "<code>\"$@\"<\/code> передає кожен аргумент окремим словом", "<code>\"$@\"<\/code> містить лише перший аргумент, а <code>\"$*\"<\/code> — усі інші", "<code>\"$*\"<\/code> склеює всі аргументи в один рядок", "Для перебору аргументів у циклі правильно використовувати <code>\"$@\"<\/code>"], "answer": [1, 3, 4], "explain": "Аргумент \"my file.txt\" у <code>\"$@\"<\/code> лишається одним словом; без лапок обидва варіанти розіб'ють його на два."}]</script>
 <div class="complete-box"><p>Прочитали і пройшли тест? Позначте лекцію — прогрес оновиться на головній і в меню.</p><button type="button" class="btn primary" data-complete="w1l3" aria-pressed="false"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg><span class="lbl">Позначити як опрацьовану</span></button></div>
-<nav class="pager" aria-label="Попередня і наступна лекції"><a class="prev" href="../../lectures/week-1/lecture-2.html"><small>← Попередня · Лекція 2</small><span>Linux: основи ОС, команди, користувачі та права доступу</span></a><a class="next" href="../../lectures/week-1/lecture-4.html"><small>Наступна · Лекція 4 →</small><span>Архітектура вебзастосунків: HTTP, REST API, N-tier і мікросервіси</span></a></nav>
-<div class="sources-note"><b>Джерела лекції:</b> презентація «Bash Introduction» (31 слайд); чат лекцій 3–4 (питання про функції, return, bash vs Python); доповнено з довідки GNU Bash і man-сторінок grep/sed/awk/cron (case, файлові перевірки, обробка тексту, розклад). <b>Обмеження:</b> MP3-запис лекції не транскрибовано; відео не оброблялося за правилами курсу.</div>
+<nav class="pager" aria-label="Попередня і наступна лекції"><a class="prev" href="../../lectures/week-1/lecture-2.html"><small>← Попередня · Лекція 2</small><span>Linux: командний рядок, файлова система, користувачі, права, процеси</span></a><a class="next" href="../../lectures/week-1/lecture-4.html"><small>Наступна · Лекція 4 →</small><span>Архітектура вебзастосунків: HTTP, REST API, N-tier і мікросервіси</span></a></nav>
+<div class="sources-note"><b>Джерела лекції:</b> презентація «Bash Introduction» (31 слайд); чат лекцій 3–4 (питання про функції, return, bash vs Python); доповнено з довідки GNU Bash і man-сторінок grep/sed/awk/cron (case, файлові перевірки, обробка тексту, розклад); GNU Bash Reference Manual, man crontab(5), ShellCheck wiki. <b>Обмеження:</b> MP3-запис лекції не транскрибовано; відео не оброблялося за правилами курсу.</div>
 </main>
-<aside class="toc" aria-label="На цій сторінці"><div class="toc-title">На цій сторінці</div><ol><li><a href="#goals">Чого ви навчитесь</a></li><li><a href="#shells">Оболонки і чому bash</a></li><li><a href="#first">Перший скрипт</a></li><li><a href="#vars">Змінні та лапки</a></li><li><a href="#special">Спеціальні змінні і підстановка команд</a></li><li><a href="#math">Арифметика</a></li><li><a href="#if">Умови: if і вирази test</a></li><li><a href="#loops">Цикли</a></li><li><a href="#functions">Функції та область видимості</a></li><li><a href="#extra">case, файлові перевірки, обробка тексту і cron</a></li><li><a href="#deploy">Практика: мінімальний deployment-скрипт</a></li><li><a href="#mistakes">Типові помилки</a></li><li><a href="#quiz">Перевір себе</a></li></ol></aside>
+<aside class="toc" aria-label="На цій сторінці"><div class="toc-title">На цій сторінці</div><ol><li><a href="#goals">Чого ви навчитесь</a></li><li><a href="#shells">Оболонки і чому bash</a></li><li><a href="#first">Перший скрипт</a></li><li><a href="#run">Як запускається скрипт: shebang, підоболонка, source, коди виходу</a></li><li><a href="#vars">Змінні та лапки</a></li><li><a href="#expansion">Розкриття параметрів і масиви</a></li><li><a href="#special">Спеціальні змінні і підстановка команд</a></li><li><a href="#math">Арифметика</a></li><li><a href="#if">Умови: if і вирази test</a></li><li><a href="#tests">Три види умов: [ ] , [[ ]] , (( ))</a></li><li><a href="#loops">Цикли</a></li><li><a href="#loops-more">Цикли детальніше: діапазони, читання файлів, break і continue</a></li><li><a href="#functions">Функції та область видимості</a></li><li><a href="#io">Ввід, вивід, опції скрипта і trap</a></li><li><a href="#extra">case і обробка тексту</a></li><li><a href="#cron">cron детально</a></li><li><a href="#deploy">Практика: мінімальний deployment-скрипт</a></li><li><a href="#examples">Розібрані скрипти для реальних задач</a></li><li><a href="#mistakes">Типові помилки</a></li><li><a href="#quiz">Перевір себе</a></li></ol></aside>
 </div>
 </div>
 <footer class="site-footer">Навчальний конспект для самопідготовки. Прогрес і результати тестів зберігаються лише в цьому браузері на цьому пристрої (localStorage) і не синхронізуються між пристроями.</footer>

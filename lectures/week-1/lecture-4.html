@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Лекція 4. Архітектура вебзастосунків: HTTP, REST API, N-tier і мікросервіси · Хмарні технології та сервіси</title>
-<meta name="description" content="Клієнт-сервер, як працює HTTP, методи GET/POST/PUT/DELETE, URL vs URI, cookies, 2/3/N-tier, frontend/backend, AJAX, JSON, REST і curl, моноліт vs мікросервіси; HTTPS/TLS, вебсервер vs сервер застосунку, балансування, кеш і CDN.">
+<meta name="description" content="Клієнт-сервер, як працює HTTP, методи GET/POST/PUT/DELETE, URL vs URI, cookies, 2/3/N-tier, frontend/backend, AJAX, JSON, REST і curl, моноліт vs мікросервіси; HTTPS/TLS, вебсервер vs сервер застосунку, балансування, кеш і CDN; коди статусу і заголовки, curl -v, HTTP/1.1–3, сесії і кукі, Basic/Bearer/JWT/OAuth, CORS, принципи REST і проєктування API, SOAP/GraphQL/gRPC, мікросервіси і Twelve-Factor, forward/reverse proxy, L4/L7, TLS-рукостискання.">
 <meta name="theme-color" content="#0d7a6f">
 <script>try{var t=localStorage.getItem("htc-theme");if(t)document.documentElement.setAttribute("data-theme",t)}catch(e){}</script>
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=Onest:wght@400;500;600;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
@@ -26,13 +26,13 @@
 <div class="side-group"><a class="side-link" href="../../index.html"><span class="side-num">⌂</span><span>Огляд курсу і план</span></a></div>
 <div class="side-group" data-week-progress="w1l1,w1l2,w1l3,w1l4,w1l5"><div class="side-title"><a href="../../weeks/week-1.html">Тиждень 1</a><span class="wk-count wp-text">0 з 5</span></div>
 <a class="side-link" href="../../lectures/week-1/lecture-1.html"><span class="side-num">01</span><span>Вступ до DevOps, SDLC і хмарних моделей</span><span class="side-check" data-check="w1l1" role="img" aria-label="Не опрацьовано"></span></a>
-<a class="side-link" href="../../lectures/week-1/lecture-2.html"><span class="side-num">02</span><span>Linux: команди, користувачі, права</span><span class="side-check" data-check="w1l2" role="img" aria-label="Не опрацьовано"></span></a>
+<a class="side-link" href="../../lectures/week-1/lecture-2.html"><span class="side-num">02</span><span>Linux CLI: файли, пошук, права, процеси</span><span class="side-check" data-check="w1l2" role="img" aria-label="Не опрацьовано"></span></a>
 <a class="side-link" href="../../lectures/week-1/lecture-3.html"><span class="side-num">03</span><span>Bash: змінні, умови, цикли, функції</span><span class="side-check" data-check="w1l3" role="img" aria-label="Не опрацьовано"></span></a>
 <a class="side-link" href="../../lectures/week-1/lecture-4.html" aria-current="page"><span class="side-num">04</span><span>Веб-архітектура: HTTP, REST, N-tier</span><span class="side-check" data-check="w1l4" role="img" aria-label="Не опрацьовано"></span></a>
-<a class="side-link" href="../../lectures/week-1/lecture-5.html"><span class="side-num">05</span><span>LAMP: Apache, MySQL, PHP</span><span class="side-check" data-check="w1l5" role="img" aria-label="Не опрацьовано"></span></a>
+<a class="side-link" href="../../lectures/week-1/lecture-5.html"><span class="side-num">05</span><span>LAMP, Apache/Nginx і SQL</span><span class="side-check" data-check="w1l5" role="img" aria-label="Не опрацьовано"></span></a>
 </div>
 <div class="side-group" data-week-progress="w2l6,w2l7,w2l8,w2l9,w2l10"><div class="side-title"><a href="../../weeks/week-2.html">Тиждень 2</a><span class="wk-count wp-text">0 з 5</span></div>
-<a class="side-link" href="../../lectures/week-2/lecture-6.html"><span class="side-num">06</span><span>Мережі: OSI, TCP/IP, IP, NAT, VPN</span><span class="side-check" data-check="w2l6" role="img" aria-label="Не опрацьовано"></span></a>
+<a class="side-link" href="../../lectures/week-2/lecture-6.html"><span class="side-num">06</span><span>Мережі: OSI, IPv4/IPv6, DHCP, DNS, NAT</span><span class="side-check" data-check="w2l6" role="img" aria-label="Не опрацьовано"></span></a>
 <a class="side-link" href="../../lectures/week-2/lecture-7.html"><span class="side-num">07</span><span>Хмари: NIST, моделі, AWS/GCP/Azure</span><span class="side-check" data-check="w2l7" role="img" aria-label="Не опрацьовано"></span></a>
 <a class="side-link" href="../../lectures/week-2/lecture-8.html"><span class="side-num">08</span><span>IaC і Terraform</span><span class="side-check" data-check="w2l8" role="img" aria-label="Не опрацьовано"></span></a>
 <a class="side-link" href="../../lectures/week-2/lecture-9.html"><span class="side-num">09</span><span>Віртуалізація і Docker</span><span class="side-check" data-check="w2l9" role="img" aria-label="Не опрацьовано"></span></a>
@@ -51,8 +51,8 @@
 <h1>Архітектура вебзастосунків: HTTP, REST API, N-tier і мікросервіси</h1>
 <p class="lead">Майже все сучасне ПЗ — вебзастосунки або клієнти вебсервісів. Щоб розгортати й підтримувати їх, треба розуміти, як браузер говорить із сервером і з яких шарів складається система.</p>
 <div class="meta-row">
-<span class="chip"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>≈ 17 хв читання</span>
-<span class="chip"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M9.5 9.5a2.5 2.5 0 114 2c-1 .7-1.5 1.2-1.5 2.5M12 17h.01"/></svg>11 питань самоперевірки</span>
+<span class="chip"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>≈ 38 хв читання</span>
+<span class="chip"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M9.5 9.5a2.5 2.5 0 114 2c-1 .7-1.5 1.2-1.5 2.5M12 17h.01"/></svg>25 питань самоперевірки</span>
 <span class="chip" data-status="w1l4"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg><span class="lbl">Не опрацьовано</span></span>
 </div>
 </div>
@@ -65,6 +65,11 @@
 <li>Порівняти 2-tier, 3-tier і N-tier архітектури, frontend і backend, монолітну та мікросервісну.</li>
 <li>Спроєктувати REST-ендпоінти для CRUD і викликати їх через <code>curl</code>.</li>
 <li>Пояснити HTTPS/TLS, різницю між вебсервером і сервером застосунку, роль балансувальника, кешу і CDN.</li>
+<li>Знати коди статусу HTTP і заголовки, читати вивід <code>curl -v</code>, розрізняти версії HTTP/1.1, 2 і 3.</li>
+<li>Пояснити сесії і кукі (HttpOnly, Secure, SameSite), Basic, Bearer/JWT, OAuth і CORS.</li>
+<li>Спроєктувати REST API з правильними методами і кодами відповіді; знати SOAP, GraphQL, gRPC.</li>
+<li>Порівняти моноліт і мікросервіси, синхронну й асинхронну взаємодію, правила Twelve-Factor.</li>
+<li>Розрізняти forward і reverse proxy, балансування L4 і L7, описати TLS-рукостискання і ланцюжок сертифікатів.</li>
 </ul>
 </div>
 
@@ -128,6 +133,69 @@ Set-Cookie: session=abc123
 <text x="20" y="108" class="t-muted">Загальний вигляд: схема://хост:порт/шлях?ключ=значення&amp;ключ2=значення2#фрагмент</text>
 </svg></div></figure>
 
+<h2 id="http-deep">HTTP детально: коди статусу, заголовки, версії<a class="h-anchor" href="#http-deep" aria-label="Посилання на розділ">#</a></h2>
+<h3>Коди статусу, які треба знати</h3>
+<div class="table-wrap"><table>
+<thead><tr><th>Код</th><th>Назва</th><th>Коли</th></tr></thead>
+<tbody>
+<tr><td colspan="3"><b>1xx — інформаційні</b>: 100 Continue, 101 Switching Protocols (перехід на WebSocket)</td></tr>
+<tr><td><b>200</b></td><td>OK</td><td>успіх, дані в тілі</td></tr>
+<tr><td><b>201</b></td><td>Created</td><td>ресурс створено (відповідь на POST), часто з заголовком <code>Location</code></td></tr>
+<tr><td><b>204</b></td><td>No Content</td><td>успіх без тіла (типово для DELETE)</td></tr>
+<tr><td><b>301</b> / <b>308</b></td><td>Moved Permanently / Permanent Redirect</td><td>ресурс переїхав назавжди (http → https), браузер і пошуковики запам'ятовують</td></tr>
+<tr><td><b>302</b> / <b>307</b></td><td>Found / Temporary Redirect</td><td>тимчасовий редирект (після логіну)</td></tr>
+<tr><td><b>304</b></td><td>Not Modified</td><td>ресурс не змінився з минулого запиту — бери з кешу</td></tr>
+<tr><td><b>400</b></td><td>Bad Request</td><td>некоректний запит (зламаний JSON, бракує поля)</td></tr>
+<tr><td><b>401</b></td><td>Unauthorized</td><td>не автентифіковано: немає або неправильний логін/токен</td></tr>
+<tr><td><b>403</b></td><td>Forbidden</td><td>автентифіковано, але прав немає (або права файлів на сервері)</td></tr>
+<tr><td><b>404</b></td><td>Not Found</td><td>ресурсу немає</td></tr>
+<tr><td><b>405</b></td><td>Method Not Allowed</td><td>метод не підтримується для цього ресурсу</td></tr>
+<tr><td><b>409</b></td><td>Conflict</td><td>конфлікт стану (такий email уже є)</td></tr>
+<tr><td><b>429</b></td><td>Too Many Requests</td><td>перевищено ліміт запитів (rate limiting)</td></tr>
+<tr><td><b>500</b></td><td>Internal Server Error</td><td>необроблена помилка в коді сервера</td></tr>
+<tr><td><b>502</b></td><td>Bad Gateway</td><td>проксі отримав погану відповідь від бекенду або не зміг з'єднатися</td></tr>
+<tr><td><b>503</b></td><td>Service Unavailable</td><td>сервіс перевантажений або на обслуговуванні</td></tr>
+<tr><td><b>504</b></td><td>Gateway Timeout</td><td>проксі не дочекався відповіді бекенду</td></tr>
+</tbody></table></div>
+<p>Швидке правило: <b>4xx</b> — «винен клієнт» (повторення того самого запиту не допоможе), <b>5xx</b> — «винен сервер» (можна повторити пізніше). Різниця 401/403: 401 — «хто ви?», 403 — «я знаю, хто ви, але вам не можна».</p>
+<h3>Важливі заголовки</h3>
+<div class="table-wrap"><table>
+<thead><tr><th>Заголовок</th><th>Де</th><th>Призначення</th></tr></thead>
+<tbody>
+<tr><td><code>Host</code></td><td>запит</td><td>ім'я сайту; обов'язковий в HTTP/1.1, саме за ним працюють віртуальні хости на одній IP</td></tr>
+<tr><td><code>User-Agent</code></td><td>запит</td><td>браузер / клієнт</td></tr>
+<tr><td><code>Accept</code> / <code>Content-Type</code></td><td>запит / обидва</td><td>який формат клієнт приймає / в якому форматі тіло (<code>application/json</code>, <code>text/html</code>, <code>multipart/form-data</code>)</td></tr>
+<tr><td><code>Content-Length</code></td><td>обидва</td><td>розмір тіла в байтах</td></tr>
+<tr><td><code>Authorization</code></td><td>запит</td><td><code>Basic …</code> або <code>Bearer &lt;token&gt;</code></td></tr>
+<tr><td><code>Cookie</code> / <code>Set-Cookie</code></td><td>запит / відповідь</td><td>передача і встановлення кукі</td></tr>
+<tr><td><code>Location</code></td><td>відповідь</td><td>адреса редиректу або створеного ресурсу</td></tr>
+<tr><td><code>Cache-Control</code>, <code>ETag</code>, <code>Last-Modified</code></td><td>відповідь</td><td>правила кешування і «відбиток» версії ресурсу</td></tr>
+<tr><td><code>X-Forwarded-For</code></td><td>запит (від проксі)</td><td>справжня IP клієнта за балансувальником</td></tr>
+<tr><td><code>Strict-Transport-Security</code></td><td>відповідь</td><td>HSTS: надалі звертатися лише по HTTPS</td></tr>
+</tbody></table></div>
+<h3>Як подивитися сирий обмін</h3>
+<pre data-lang="bash"><code>$ curl -v https://example.com/ -o /dev/null
+*   Trying 93.184.215.14:443...               <span class="c"># DNS уже розв'язано, TCP-з'єднання</span>
+* SSL connection using TLSv1.3                 <span class="c"># TLS-рукостискання</span>
+&gt; GET / HTTP/2                                 <span class="c"># &gt; — що надіслав клієнт</span>
+&gt; Host: example.com
+&gt; User-Agent: curl/8.5.0
+&gt; Accept: */*
+&lt; HTTP/2 200                                   <span class="c"># &lt; — що відповів сервер</span>
+&lt; content-type: text/html; charset=UTF-8
+&lt; cache-control: max-age=604800
+&lt; content-length: 1256</code></pre>
+<p>Інші корисні ключі: <code>curl -I</code> (лише заголовки, метод HEAD), <code>curl -L</code> (йти за редиректами), <code>curl -w '%{http_code}\n' -o /dev/null -s URL</code> (лише код статусу — для скриптів перевірки), <code>curl -k</code> (ігнорувати помилку сертифіката — лише для тестів).</p>
+<h3>Версії HTTP</h3>
+<div class="table-wrap"><table>
+<thead><tr><th>Версія</th><th>Що нового</th></tr></thead>
+<tbody>
+<tr><td>HTTP/1.0 (1996)</td><td>нове TCP-з'єднання на кожен запит</td></tr>
+<tr><td>HTTP/1.1 (1997)</td><td>постійні з'єднання (keep-alive), обов'язковий <code>Host</code>, chunked-передача</td></tr>
+<tr><td>HTTP/2 (2015)</td><td>бінарний формат, <b>мультиплексування</b> багатьох запитів в одному з'єднанні, стиснення заголовків</td></tr>
+<tr><td>HTTP/3 (2022)</td><td>працює поверх <b>QUIC (UDP)</b>: швидше встановлення з'єднання, немає блокування всіх потоків через одну втрату пакета</td></tr>
+</tbody></table></div>
+
 <h2 id="methods">HTTP-методи<a class="h-anchor" href="#methods" aria-label="Посилання на розділ">#</a></h2>
 <p>Методи («дієслова») показують, що зробити з ресурсом: <code>GET</code>, <code>POST</code>, <code>PUT</code>, <code>PATCH</code>, <code>DELETE</code>, <code>HEAD</code>, <code>OPTIONS</code>, <code>TRACE</code>, <code>CONNECT</code>. Метод може бути <b>безпечним</b> (не змінює дані), <b>ідемпотентним</b> (повтор дає той самий результат) і <b>кешованим</b>.</p>
 <div class="table-wrap"><table>
@@ -160,6 +228,35 @@ Set-Cookie: session=abc123
 <path d="M87 140H631" class="ln" marker-end="url(#l4c)"/><text x="360" y="134" text-anchor="middle" class="t-small">2-й запит + <tspan class="t-mono t-acc">Cookie: session=abc123</tspan> → сервер «впізнав» клієнта</text>
 <text x="360" y="172" text-anchor="middle" class="t-muted">Стан зберігає клієнт; кукі передаються відкритим текстом, якщо немає HTTPS</text>
 </svg></div></figure>
+
+<h2 id="auth">Сесії, автентифікація і CORS<a class="h-anchor" href="#auth" aria-label="Посилання на розділ">#</a></h2>
+<h3>Як stateless-протокол «пам'ятає» користувача</h3>
+<ol class="steps">
+<li>Користувач надсилає логін і пароль (<code>POST /login</code>).</li>
+<li>Сервер перевіряє їх, створює <b>сесію</b> (запис у Redis або БД з ID сесії) і відповідає <code>Set-Cookie: session=9f2c…; HttpOnly; Secure; SameSite=Lax</code>.</li>
+<li>Браузер автоматично додає <code>Cookie: session=9f2c…</code> до кожного наступного запиту на цей домен.</li>
+<li>Сервер за ID знаходить сесію і знає, хто це. Вихід — сесію видаляють.</li>
+</ol>
+<div class="table-wrap"><table>
+<thead><tr><th>Атрибут cookie</th><th>Значення</th></tr></thead>
+<tbody>
+<tr><td><code>Expires</code> / <code>Max-Age</code></td><td>строк життя; без них — «сесійна» кукі до закриття браузера</td></tr>
+<tr><td><code>HttpOnly</code></td><td>JavaScript не бачить кукі — захист від крадіжки через XSS</td></tr>
+<tr><td><code>Secure</code></td><td>передається лише по HTTPS</td></tr>
+<tr><td><code>SameSite=Lax|Strict|None</code></td><td>чи надсилати кукі з запитами з інших сайтів — захист від CSRF</td></tr>
+<tr><td><code>Domain</code>, <code>Path</code></td><td>для яких адрес діє кукі</td></tr>
+</tbody></table></div>
+<h3>Способи автентифікації в API</h3>
+<div class="table-wrap"><table>
+<thead><tr><th>Спосіб</th><th>Як працює</th><th>Коли</th></tr></thead>
+<tbody>
+<tr><td><b>Basic Auth</b></td><td><code>Authorization: Basic base64(login:password)</code>. Base64 — кодування, а не шифрування!</td><td>лише поверх HTTPS, прості внутрішні сервіси</td></tr>
+<tr><td><b>API key</b></td><td>статичний ключ у заголовку (<code>X-API-Key</code>)</td><td>машина-машина, публічні API</td></tr>
+<tr><td><b>Bearer token / JWT</b></td><td><code>Authorization: Bearer eyJhbGci…</code>; JWT — підписаний токен з даними (хто, до коли діє), сервер перевіряє підпис без звернення до БД</td><td>SPA, мобільні застосунки, мікросервіси</td></tr>
+<tr><td><b>OAuth 2.0 / OpenID Connect</b></td><td>вхід через стороннього провайдера («Увійти через Google»), застосунок отримує токен доступу, а не пароль</td><td>сторонні інтеграції, SSO</td></tr>
+</tbody></table></div>
+<h3>CORS</h3>
+<p>Браузер за замовчуванням не дає JavaScript зі сторінки <code>https://app.example.com</code> читати відповіді API з <b>іншого</b> походження (origin = схема + хост + порт), наприклад <code>https://api.example.com</code>. <b>CORS</b> (Cross-Origin Resource Sharing) — механізм, яким сервер API дозволяє це заголовком <code>Access-Control-Allow-Origin: https://app.example.com</code>. Для «складних» запитів (PUT, DELETE, власні заголовки) браузер спершу надсилає попередній запит <code>OPTIONS</code> (preflight). Помилка CORS видна лише в браузері: <code>curl</code> її не відтворить, бо CORS — правило браузера, а не сервера.</p>
 
 <h2 id="tiers">2-tier, 3-tier, N-tier<a class="h-anchor" href="#tiers" aria-label="Посилання на розділ">#</a></h2>
 <figure><div class="figure wide">
@@ -242,11 +339,89 @@ curl -X POST https://api.example.com/signin \
 curl -i -H "Authorization: Bearer &lt;token&gt;" -X GET https://api.example.com/user/32</code></pre>
 <p>Ключі curl: <code>-X</code> — метод, <code>-H</code> — заголовок, <code>-d</code> — тіло, <code>-i</code> — показати заголовки відповіді. Зручно поєднувати з <code>jq</code> для читабельного JSON.</p>
 
+<h2 id="rest-deep">REST детально: принципи, проєктування API, альтернативи<a class="h-anchor" href="#rest-deep" aria-label="Посилання на розділ">#</a></h2>
+<h3>Шість обмежень REST (Рой Філдінг, 2000)</h3>
+<div class="table-wrap"><table>
+<thead><tr><th>Обмеження</th><th>Суть</th></tr></thead>
+<tbody>
+<tr><td><b>Client-server</b></td><td>інтерфейс і зберігання даних розділені, розвиваються незалежно</td></tr>
+<tr><td><b>Stateless</b></td><td>кожен запит містить усе потрібне для обробки (токен, параметри); сервер не тримає стан клієнта між запитами — тому серверів можна додавати скільки завгодно</td></tr>
+<tr><td><b>Cacheable</b></td><td>відповіді позначають, чи можна їх кешувати</td></tr>
+<tr><td><b>Uniform interface</b></td><td>ресурси ідентифікуються URI, дії — стандартні HTTP-методи, представлення — JSON/XML</td></tr>
+<tr><td><b>Layered system</b></td><td>клієнт не знає, чи говорить напряму із сервером, чи через проксі, CDN, балансувальник</td></tr>
+<tr><td><b>Code on demand</b> (необов'язкове)</td><td>сервер може передати клієнту код для виконання (JavaScript)</td></tr>
+</tbody></table></div>
+<h3>Проєктування ендпоінтів: повний CRUD</h3>
+<div class="table-wrap"><table>
+<thead><tr><th>Операція</th><th>Запит</th><th>Успішна відповідь</th><th>Типові помилки</th></tr></thead>
+<tbody>
+<tr><td>Список</td><td><code>GET /api/v1/products?category=2&amp;page=2&amp;limit=20</code></td><td>200 + масив</td><td>400 (неправильний параметр)</td></tr>
+<tr><td>Один ресурс</td><td><code>GET /api/v1/products/42</code></td><td>200 + об'єкт</td><td>404</td></tr>
+<tr><td>Створити</td><td><code>POST /api/v1/products</code> + JSON</td><td><b>201 Created</b> + <code>Location: /api/v1/products/43</code></td><td>400, 409, 422</td></tr>
+<tr><td>Замінити</td><td><code>PUT /api/v1/products/42</code> + повний JSON</td><td>200 або 204</td><td>404, 400</td></tr>
+<tr><td>Частково змінити</td><td><code>PATCH /api/v1/products/42</code> + <code>{"price": 990}</code></td><td>200</td><td>404, 400</td></tr>
+<tr><td>Видалити</td><td><code>DELETE /api/v1/products/42</code></td><td><b>204 No Content</b></td><td>404</td></tr>
+</tbody></table></div>
+<p>Домовленості: іменники в множині (<code>/products</code>, не <code>/getProducts</code>), дія — це метод, а не частина URL; вкладеність для зв'язків (<code>/orders/7/items</code>); фільтри, сортування і пагінація — у параметрах запиту; версія API в шляху (<code>/v1/</code>) або заголовку.</p>
+<pre data-lang="json"><code>POST /api/v1/products
+Content-Type: application/json
+
+{ "name": "Pixel 9", "price": 899, "category_id": 2 }
+
+HTTP/1.1 201 Created
+Location: /api/v1/products/43
+
+{ "id": 43, "name": "Pixel 9", "price": 899, "category_id": 2 }</code></pre>
+<h3>Ідемпотентність на практиці</h3>
+<p>Мережа ненадійна: клієнт може не отримати відповідь і повторити запит. Повторний <code>PUT /products/42</code> із тими самими даними дає той самий стан — безпечно. Повторний <code>POST /orders</code> створить <b>друге</b> замовлення — тому платіжні API приймають заголовок <code>Idempotency-Key</code>, щоб розпізнати повтор. <code>DELETE</code> ідемпотентний за станом: після першого виклику ресурсу немає, і після другого теж (хоча код відповіді може бути 404).</p>
+<h3>Альтернативи REST</h3>
+<div class="table-wrap"><table>
+<thead><tr><th>Підхід</th><th>Суть</th><th>Де</th></tr></thead>
+<tbody>
+<tr><td><b>SOAP</b></td><td>XML-повідомлення за суворою схемою (WSDL), часто поверх HTTP</td><td>банки, корпоративні системи старшого покоління</td></tr>
+<tr><td><b>GraphQL</b></td><td>один ендпоінт; клієнт сам описує, які поля потрібні</td><td>фронтенди зі складними даними (GitHub API v4)</td></tr>
+<tr><td><b>gRPC</b></td><td>бінарний протокол поверх HTTP/2 з контрактом Protocol Buffers</td><td>швидкий зв'язок між мікросервісами</td></tr>
+<tr><td><b>WebSocket</b></td><td>постійне двостороннє з'єднання</td><td>чати, онлайн-ігри, біржові котирування</td></tr>
+</tbody></table></div>
+<p>Документують REST API за специфікацією <b>OpenAPI</b> (раніше Swagger): з одного YAML-файла генерується інтерактивна документація, клієнти і тести.</p>
+
 <h2 id="micro">Моноліт vs мікросервіси<a class="h-anchor" href="#micro" aria-label="Посилання на розділ">#</a></h2>
 <div class="compare">
 <div><h4>Монолітна архітектура</h4><ul><li>Один застосунок: інтерфейс, логіка і доступ до даних в одній програмі на одній платформі.</li><li>Просто розробити і розгорнути на старті.</li><li>Важко масштабувати частинами; одна помилка може покласти все.</li></ul></div>
 <div><h4>Мікросервіси</h4><ul><li>Набір малих незалежних сервісів (користувачі, замовлення, оплата), кожен зі своєю БД, спілкуються через API.</li><li>Масштабуються і розгортаються окремо.</li><li>Складніше: мережа, моніторинг, оркестрація → тут і потрібні Docker та CI/CD.</li></ul></div>
 </div>
+
+<h2 id="micro-deep">Моноліт і мікросервіси детально<a class="h-anchor" href="#micro-deep" aria-label="Посилання на розділ">#</a></h2>
+<div class="table-wrap"><table>
+<thead><tr><th></th><th>Моноліт</th><th>Мікросервіси</th></tr></thead>
+<tbody>
+<tr><td>Структура</td><td>один застосунок, одна кодова база, одна БД</td><td>багато маленьких сервісів, кожен зі своєю відповідальністю і, в ідеалі, своєю БД</td></tr>
+<tr><td>Розгортання</td><td>увесь застосунок разом</td><td>кожен сервіс незалежно, багато разів на день</td></tr>
+<tr><td>Масштабування</td><td>копіюємо весь застосунок</td><td>лише ті сервіси, що навантажені</td></tr>
+<tr><td>Технології</td><td>одна мова/фреймворк</td><td>свої для кожного сервісу</td></tr>
+<tr><td>Збій</td><td>помилка може покласти все</td><td>ізольований (якщо правильно спроєктовано)</td></tr>
+<tr><td>Складність</td><td>простий старт, локальні виклики функцій</td><td>мережеві виклики, розподілені транзакції, моніторинг, трасування — потрібна зріла DevOps-культура</td></tr>
+<tr><td>Коли обирати</td><td>новий продукт, мала команда</td><td>великий продукт, багато команд, різне навантаження на частини</td></tr>
+</tbody></table></div>
+<h3>Як сервіси спілкуються</h3>
+<ul>
+<li><b>Синхронно</b>: REST або gRPC — сервіс чекає відповіді. Просто, але ланцюжок викликів падає, якщо падає будь-яка ланка.</li>
+<li><b>Асинхронно</b>: через брокер повідомлень (<b>RabbitMQ</b>, <b>Apache Kafka</b>, AWS SQS) — сервіс публікує подію «замовлення створено», інші обробляють, коли зможуть. Сервіси слабше зв'язані, піки навантаження згладжуються.</li>
+<li><b>API Gateway</b> — єдина точка входу для клієнтів: маршрутизація до сервісів, автентифікація, rate limiting (Kong, AWS API Gateway, Nginx).</li>
+<li><b>Service discovery</b> — сервіси знаходять один одного за іменем, а не фіксованою IP (DNS у Kubernetes, Consul).</li>
+</ul>
+<h3>Twelve-Factor App: як писати застосунки для хмари</h3>
+<p>Набір правил від Heroku, на яких тримаються контейнери і PaaS. Найважливіші для DevOps:</p>
+<ol class="steps">
+<li><b>Одна кодова база</b> в Git — багато розгортань (dev, staging, prod).</li>
+<li><b>Залежності оголошені явно</b> (<code>requirements.txt</code>, <code>package.json</code>), нічого не береться «з системи».</li>
+<li><b>Конфігурація — у змінних середовища</b>, а не в коді (паролі БД, адреси сервісів).</li>
+<li><b>Зовнішні служби</b> (БД, черга, кеш) — підключувані ресурси за URL.</li>
+<li><b>Build, release, run</b> — суворо розділені етапи.</li>
+<li><b>Процеси без стану</b> (stateless); стан — у БД або кеші.</li>
+<li><b>Логи — потік у stdout</b>, а збирає їх середовище виконання.</li>
+<li><b>Dev/prod parity</b> — середовища якомога схожі.</li>
+</ol>
 
 <h2 id="infra">HTTPS, вебсервер і сервер застосунку, балансування, кеш<a class="h-anchor" href="#infra" aria-label="Посилання на розділ">#</a></h2>
 <h3>HTTPS і TLS</h3>
@@ -268,20 +443,48 @@ curl -i -H "Authorization: Bearer &lt;token&gt;" -X GET https://api.example.com/
 <li><b>Серверний кеш</b> (Redis, Memcached) — готові результати важких запитів до БД.</li>
 </ul>
 
+<h2 id="proxy-tls">Проксі, балансування L4/L7 і TLS детально<a class="h-anchor" href="#proxy-tls" aria-label="Посилання на розділ">#</a></h2>
+<div class="compare">
+<div><h4>Forward proxy</h4><ul><li>стоїть <b>біля клієнтів</b> і ходить в інтернет від їхнього імені</li><li>фільтрація, кешування, приховування клієнтів</li><li>корпоративний проксі, Squid</li></ul></div>
+<div><h4>Reverse proxy</h4><ul><li>стоїть <b>перед серверами</b> і приймає запити від імені сервісу</li><li>TLS-термінація, балансування, кеш, захист бекендів</li><li>Nginx, HAProxy, Traefik, Cloudflare</li></ul></div>
+</div>
+<div class="table-wrap"><table>
+<thead><tr><th></th><th>Балансування L4 (транспортне)</th><th>Балансування L7 (прикладне)</th></tr></thead>
+<tbody>
+<tr><td>На що дивиться</td><td>IP і порт (TCP/UDP)</td><td>вміст HTTP: шлях, заголовки, кукі</td></tr>
+<tr><td>Можливості</td><td>дуже швидко, будь-який TCP-протокол (БД, SMTP)</td><td>маршрутизація <code>/api</code> → API-сервіс, <code>/static</code> → CDN; TLS-термінація, переписування заголовків</td></tr>
+<tr><td>Приклади</td><td>AWS Network Load Balancer, HAProxy у режимі tcp</td><td>AWS Application Load Balancer, Nginx, Traefik</td></tr>
+</tbody></table></div>
+<p><b>Sticky sessions</b> (прив'язка сесії) — балансувальник відправляє клієнта завжди на той самий сервер (за кукі або IP). Це милиця для застосунків, що тримають сесію в пам'яті; краще зробити застосунок stateless.</p>
+<h3>TLS-рукостискання (TLS 1.3, спрощено)</h3>
+<ol class="steps">
+<li><b>ClientHello</b>: клієнт називає підтримувані версії й шифри, ім'я сайту (SNI) і свою частину обміну ключами.</li>
+<li><b>ServerHello + сертифікат</b>: сервер обирає шифр, надсилає свою частину обміну ключами і <b>сертифікат</b>.</li>
+<li>Клієнт <b>перевіряє сертифікат</b>: підпис довіреного центру сертифікації (CA), ім'я домену, строк дії, чи не відкликано.</li>
+<li>Обидві сторони обчислюють спільний <b>сеансовий ключ</b> (алгоритм Діффі–Геллмана); далі дані шифруються швидким симетричним шифром (AES, ChaCha20).</li>
+</ol>
+<p><b>Ланцюжок довіри</b>: сертифікат сайту підписаний проміжним CA, той — кореневим CA, який вбудовано в ОС або браузер. Якщо сервер не віддає проміжний сертифікат, частина клієнтів побачить помилку. Перевірити: <code>openssl s_client -connect example.com:443 -servername example.com</code>; строк дії: <code>… | openssl x509 -noout -dates</code>.</p>
+<p><b>TLS-термінація</b> на балансувальнику: шифрування знімається на вході, а до бекендів трафік іде по внутрішній мережі (іноді знову шифрується — end-to-end TLS). Так сертифікат зберігається в одному місці, а не на кожному сервері.</p>
+
 <h2 id="mistakes">Типові помилки<a class="h-anchor" href="#mistakes" aria-label="Посилання на розділ">#</a></h2>
 <div class="mistakes">
+<div class="mistake"><div class="wrong">401 і 403 — одне й те саме.</div><div class="right">401 — не автентифіковано (хто ви?), 403 — автентифіковано, але немає прав.</div></div>
+<div class="mistake"><div class="wrong">Basic Auth шифрує пароль.</div><div class="right">Base64 — лише кодування, його декодує будь-хто. Basic Auth безпечний тільки поверх HTTPS.</div></div>
+<div class="mistake"><div class="wrong">POST ідемпотентний, бо «просто надсилає дані».</div><div class="right">Повторний POST зазвичай створює ще один ресурс. Ідемпотентні GET, PUT, DELETE, HEAD.</div></div>
+<div class="mistake"><div class="wrong">Помилку CORS можна відтворити через curl.</div><div class="right">CORS — правило браузера. curl отримає відповідь, а браузер не дасть JavaScript її прочитати без заголовка Access-Control-Allow-Origin.</div></div>
+
 <div class="mistake"><div class="wrong">HTTPS — окремий протокол замість HTTP.</div><div class="right">Це той самий HTTP, загорнутий у шифрований канал TLS (порт 443).</div></div>
 <div class="mistake"><div class="wrong">POST безпечний, бо дані «сховані».</div><div class="right">POST лише не показує дані в URL. Без HTTPS тіло запиту передається відкритим текстом, як і кукі.</div></div>
 <div class="mistake"><div class="wrong">Сервер сам пам'ятає, що я залогінений.</div><div class="right">HTTP stateless. «Пам'ять» забезпечують cookies/токени, які клієнт надсилає з кожним запитом.</div></div>
 <div class="mistake"><div class="wrong">URL і URI — різні непов'язані речі.</div><div class="right">URL — підмножина URI: ідентифікатор, що ще й вказує розташування ресурсу.</div></div>
 <div class="mistake"><div class="wrong">Видаляти через <code>GET /deleteBook?id=3</code> — нормально.</div><div class="right">Технічно можливо, але порушує семантику: GET має бути безпечним (його кешують, префетчать). Для видалення — <code>DELETE /book/3</code>.</div></div>
 </div>
-<h2 id="quiz">Перевір себе<a class="h-anchor" href="#quiz" aria-label="Посилання на розділ">#</a></h2><p>11 питань на розуміння. В одиночних питаннях натисніть варіант — одразу побачите правильну відповідь і пояснення. Питання з позначкою <b>«кілька відповідей»</b> влаштовані як у тесті курсу (<i>Select one or more</i>): позначте всі правильні варіанти й натисніть «Перевірити».</p><div class="quiz" data-quiz="w1l4"></div><script type="application/json" id="quiz-data">[{"q": "Що означає, що HTTP — stateless-протокол?", "options": ["Він не використовує TCP", "Сервер не зберігає інформацію про попередні запити клієнта", "Відповідь завжди однакова", "Він не підтримує заголовки"], "answer": 1, "explain": "Кожен запит обробляється незалежно. Стан (наприклад, сесію) підтримують через cookies чи токени, які клієнт надсилає щоразу."}, {"q": "Де передаються дані HTML-форми з методом GET?", "options": ["У тілі запиту", "У рядку URI після знака ?", "У заголовку Cookie", "У відповіді сервера"], "answer": 1, "explain": "При GET пари ключ=значення додаються до URI, тому їх видно в адресному рядку і довжина обмежена. POST передає дані в тілі."}, {"q": "Який REST-запит правильно оновлює всю книгу з id 3?", "options": ["POST /book/3/update", "PUT /book/3", "GET /book/3", "DELETE /book/3"], "answer": 1, "explain": "PUT замінює ресурс за його URL повністю (дані — в тілі запиту). PATCH змінює лише окремі поля."}, {"q": "Чим 3-tier архітектура відрізняється від 2-tier?", "options": ["Використовує тільки AJAX", "Не має клієнта", "Працює без HTTP", "Має окремий сервер бази даних"], "answer": 3, "explain": "3-tier: клієнт → сервер застосунку → окремий сервер БД. У 2-tier дані обробляє сам вебсервер."}, {"q": "Яка головна ідея AJAX?", "options": ["Замінити HTTP на XML", "Асинхронно обмінюватися даними з сервером і оновлювати частину сторінки без перезавантаження", "Зберігати стан на сервері", "Генерувати HTML лише на сервері"], "answer": 1, "explain": "JavaScript у браузері надсилає фонові запити (XML/JSON) і оновлює лише потрібні елементи сторінки."}, {"q": "Яке твердження про URL і URI правильне?", "options": ["URL — підвид URI, що вказує розташування ресурсу", "URN завжди містить https://", "Це синоніми", "URI — підвид URL"], "answer": 0, "explain": "URI ідентифікує ресурс; URL і URN — його різновиди. URL додатково вказує, де ресурс і як до нього дістатися."}, {"q": "Який порт за замовчуванням у HTTPS і що додає TLS?", "options": ["8080; кешування сторінок", "22; віддалений доступ до терміналу", "80; лише стиснення даних", "443; шифрування, цілісність і перевірку сервера сертифікатом"], "answer": 3, "explain": "HTTPS = HTTP + TLS на порту 443. Порт 80 — звичайний HTTP, 22 — SSH."}, {"q": "Які коди статусу означають помилку на боці <b>клієнта<\/b>?", "options": ["403 Forbidden", "400 Bad Request", "301 Moved Permanently", "500 Internal Server Error", "404 Not Found"], "answer": [0, 1, 4], "explain": "4xx — помилка клієнта, 5xx — сервера, 3xx — перенаправлення."}, {"q": "Які інструменти зазвичай працюють як reverse proxy або балансувальник?", "options": ["NGINX", "HAProxy", "MySQL", "Git"], "answer": [0, 1], "explain": "NGINX і HAProxy розподіляють запити між серверами. MySQL — СКБД, Git — система контролю версій."}, {"q": "Навіщо CDN?", "options": ["Роздавати статичні файли з серверів, ближчих до користувача", "Компілювати backend-код", "Зберігати паролі користувачів", "Замінити DNS"], "answer": 0, "explain": "CDN кешує статику по всьому світу: сторінки вантажаться швидше, а ваш сервер отримує менше запитів."}, {"q": "Яка команда надішле POST-запит з JSON-тілом?", "options": ["curl -X POST -H \"Content-Type: application/json\" -d '{\"a\":1}' https://api/x", "curl -X GET -d '{\"a\":1}' https://api/x", "curl -i https://api/x", "curl -H POST https://api/x"], "answer": 0, "explain": "-X задає метод, -H — заголовок Content-Type, -d — тіло запиту."}]</script>
+<h2 id="quiz">Перевір себе<a class="h-anchor" href="#quiz" aria-label="Посилання на розділ">#</a></h2><p>25 питань на розуміння. В одиночних питаннях натисніть варіант — одразу побачите правильну відповідь і пояснення. Питання з позначкою <b>«кілька відповідей»</b> влаштовані як у тесті курсу (<i>Select one or more</i>): позначте всі правильні варіанти й натисніть «Перевірити».</p><div class="quiz" data-quiz="w1l4"></div><script type="application/json" id="quiz-data">[{"q": "Які твердження про протокол HTTP правильні?", "options": ["Транзакцію завжди ініціює клієнт", "HTTP за замовчуванням працює на UDP-порту 53", "HTTP — протокол без стану (stateless)", "Сервер сам надсилає дані клієнту без запиту", "Метадані передаються в заголовках"], "answer": [0, 2, 4], "explain": "HTTP — request-response: сервер лише відповідає. Типові порти — TCP 80 (HTTP) і 443 (HTTPS); 53 — DNS."}, {"q": "Які відповідності «метод HTTP — CRUD» правильні?", "options": ["PATCH — Create", "POST — Create", "GET — Read", "PUT — Update (повна заміна)", "HEAD — Delete", "DELETE — Delete"], "answer": [1, 2, 3, 5], "explain": "PATCH — часткове оновлення, HEAD — як GET, але без тіла відповіді."}, {"q": "Які HTTP-методи є ідемпотентними?", "options": ["PUT", "DELETE", "POST", "GET", "HEAD"], "answer": [0, 1, 3, 4], "explain": "Повтор GET, PUT, DELETE, HEAD дає той самий стан. Повторний POST зазвичай створює ще один ресурс; PATCH ідемпотентний не гарантовано."}, {"q": "Які твердження про GET і POST у HTML-формах правильні?", "options": ["POST без HTTPS шифрує дані", "Дані GET видно в історії браузера і логах сервера", "POST передає дані в тілі запиту", "Розмір даних GET протоколом не обмежено на практиці", "GET передає дані в рядку URL після ?"], "answer": [1, 2, 4], "explain": "POST без TLS передає дані відкритим текстом, просто не в URL. Довжину URL обмежують браузери і сервери."}, {"q": "Які коди статусу означають помилку на боці клієнта?", "options": ["401 Unauthorized", "500 Internal Server Error", "404 Not Found", "403 Forbidden", "502 Bad Gateway", "400 Bad Request"], "answer": [0, 2, 3, 5], "explain": "4xx — помилка клієнта, 5xx — сервера (500 — необроблена помилка коду, 502 — проксі не отримав нормальної відповіді від бекенду)."}, {"q": "Який код поверне правильно спроєктований REST API у відповідь на успішний POST, що створив ресурс?", "options": ["302 Found", "204 No Content", "404 Not Found", "200 OK", "201 Created"], "answer": [4], "explain": "201 разом із заголовком Location, що вказує на новий ресурс. 204 типовий для DELETE."}, {"q": "Чим відрізняються 401 і 403?", "options": ["401 — ресурс не знайдено за вказаною адресою", "403 — клієнт відомий, але не має прав на ресурс", "403 — сервер перевантажений і тимчасово не обробляє запити", "403 також повертає Apache, якщо вебсервер не має прав на файл", "401 — клієнт не автентифікований: немає або неправильні облікові дані"], "answer": [1, 3, 4], "explain": "Не знайдено — 404, перевантаження — 503."}, {"q": "Які коди описують перенаправлення?", "options": ["302 Found", "301 Moved Permanently", "429 Too Many Requests", "304 Not Modified", "307 Temporary Redirect"], "answer": [0, 1, 4], "explain": "304 належить до 3xx, але не є перенаправленням на іншу адресу. 429 — перевищення ліміту запитів."}, {"q": "Що робить заголовок Host у запиті HTTP/1.1?", "options": ["Повідомляє ім'я сайту, до якого звертається клієнт", "Передає токен авторизації користувача для API", "Дозволяє розміщувати багато сайтів (віртуальних хостів) на одній IP", "Передає серверу справжню IP-адресу клієнта за проксі", "Повідомляє серверу, в якому форматі передано тіло запиту"], "answer": [0, 2], "explain": "IP клієнта бачить TCP, а через проксі — X-Forwarded-For. Тип вмісту — Content-Type, токен — Authorization."}, {"q": "Які атрибути кукі підвищують безпеку?", "options": ["HttpOnly — JavaScript не бачить кукі", "Path=/ — кукі шифрується", "Secure — кукі передається лише по HTTPS", "SameSite — обмежує надсилання кукі з запитами з інших сайтів", "Max-Age=0 — кукі зберігається назавжди"], "answer": [0, 2, 3], "explain": "Max-Age=0 видаляє кукі. Path лише обмежує шляхи, для яких діє кукі."}, {"q": "Які твердження про автентифікацію в API правильні?", "options": ["Bearer-токен передають у заголовку Authorization", "Base64 надійно шифрує пароль", "JWT — підписаний токен, підпис якого сервер перевіряє", "Basic Auth передає логін і пароль у Base64, тому безпечний лише поверх HTTPS", "OAuth 2.0 передає стороннім застосункам пароль користувача"], "answer": [0, 2, 3], "explain": "OAuth видає токен доступу замість пароля. Base64 — кодування, не шифрування."}, {"q": "Що таке CORS?", "options": ["Захист сервера від DDoS-атак з інших доменів", "Перевірка, яку виконує браузер, тому curl її не відтворює", "Формат обміну даними між сервісами, що замінює JSON", "Протокол шифрування трафіку між браузером і сервером замість TLS", "Механізм, яким сервер дозволяє JavaScript з іншого походження читати його відповіді", "Причина, з якої браузер надсилає попередній запит OPTIONS (preflight)"], "answer": [1, 4, 5], "explain": "Сервер дозволяє доступ заголовком Access-Control-Allow-Origin."}, {"q": "Які обмеження (constraints) входять до архітектурного стилю REST?", "options": ["Client-server", "Cacheable", "Uniform interface", "Stateless", "Збереження сесії клієнта на сервері", "Обов'язковий формат XML"], "answer": [0, 1, 2, 3], "explain": "REST не прив'язаний до XML (найчастіше JSON) і якраз вимагає відсутності стану клієнта на сервері."}, {"q": "Які ендпоінти відповідають домовленостям REST?", "options": ["<code>GET /api/v1/createOrder<\/code>", "<code>POST /api/v1/deleteProduct?id=42<\/code>", "<code>GET /api/v1/products/42<\/code>", "<code>GET /api/v1/orders/7/items<\/code>", "<code>DELETE /api/v1/products/42<\/code>"], "answer": [2, 3, 4], "explain": "Дія задається методом, а URL описує ресурс іменником. GET не повинен змінювати дані."}, {"q": "Які твердження про альтернативи REST правильні?", "options": ["GraphQL дозволяє клієнту самому обрати потрібні поля", "WebSocket — постійне двостороннє з'єднання", "gRPC використовує HTTP/2 і Protocol Buffers", "SOAP використовує XML-повідомлення", "GraphQL вимагає окремий ендпоінт для кожного поля"], "answer": [0, 1, 2, 3], "explain": "GraphQL зазвичай має один ендпоінт."}, {"q": "Які твердження про версії HTTP правильні?", "options": ["HTTP/3 працює поверх QUIC (UDP)", "HTTP/1.0 обов'язково вимагає заголовок Host", "HTTP/2 передає дані відкритим текстом у форматі HTML", "HTTP/1.1 підтримує постійні з'єднання (keep-alive)", "HTTP/2 мультиплексує багато запитів в одному з'єднанні"], "answer": [0, 3, 4], "explain": "HTTP/2 — бінарний протокол. Обов'язковий Host з'явився в HTTP/1.1."}, {"q": "Які твердження про архітектури N-tier правильні?", "options": ["Балансувальник і кеш — додаткові рівні в N-tier", "Рівні можна масштабувати незалежно", "У 3-tier браузер звертається напряму до БД", "2-tier означає, що БД працює в браузері", "3-tier: клієнт, сервер застосунку з бізнес-логікою, сервер БД"], "answer": [0, 1, 4], "explain": "Клієнт спілкується з сервером застосунку, а той — з БД. У 2-tier клієнт напряму працює з сервером БД."}, {"q": "Які твердження про моноліт і мікросервіси правильні?", "options": ["Мікросервіси можна розгортати і масштабувати незалежно", "Мікросервіси потребують розвиненого моніторингу і трасування", "У моноліті кожен модуль має окрему БД і окремий деплой", "Мікросервіси завжди дешевші і простіші", "Моноліт простіший на старті проєкту"], "answer": [0, 1, 4], "explain": "Мікросервіси додають мережеву складність і операційні витрати."}, {"q": "Які інструменти використовують для асинхронної взаємодії сервісів?", "options": ["gRPC", "Nginx", "AWS SQS", "Apache Kafka", "RabbitMQ"], "answer": [2, 3, 4], "explain": "Це брокери повідомлень. gRPC — синхронні виклики, Nginx — проксі/вебсервер."}, {"q": "Які правила Twelve-Factor App правильні?", "options": ["Логи пишуться в stdout як потік подій", "Конфігурація зберігається у змінних середовища", "Процеси застосунку stateless", "Для кожного середовища — окрема кодова база", "Паролі БД зберігаються в коді"], "answer": [0, 1, 2], "explain": "Одна кодова база — багато розгортань; секрети — поза кодом."}, {"q": "Які твердження про проксі правильні?", "options": ["Reverse proxy стоїть перед серверами і приймає запити від імені сервісу", "Nginx часто використовують як reverse proxy", "Forward proxy виконує TLS-термінацію для вашого сайту", "Forward proxy виходить в інтернет від імені клієнтів", "Reverse proxy встановлюють на кожному ноутбуці користувача"], "answer": [0, 1, 3], "explain": "TLS-термінацію для сайту робить reverse proxy або балансувальник перед бекендами."}, {"q": "Які алгоритми балансування навантаження існують?", "options": ["Least connections — туди, де менше з'єднань", "Largest server first — завжди на найпотужніший", "IP hash — один клієнт завжди на той самий сервер", "Round robin — по черзі", "Random DNS TTL"], "answer": [0, 2, 3], "explain": "Health check додатково прибирає з ротації сервери, що не відповідають."}, {"q": "Чим відрізняються балансувальники L4 і L7?", "options": ["L4 читає кукі й шлях запиту", "L4 розподіляє за IP і портом", "AWS Application Load Balancer — L7", "L7 може маршрутизувати за шляхом URL і заголовками", "L7 не вміє працювати з HTTP"], "answer": [1, 2, 3], "explain": "L4 бачить лише транспортний рівень; HTTP-вміст аналізує L7."}, {"q": "Що відбувається під час TLS-рукостискання?", "options": ["Клієнт перевіряє підпис CA, ім'я домену і строк дії сертифіката", "Сервер надсилає сертифікат", "Клієнт надсилає серверу свій приватний ключ", "Сторони узгоджують сеансовий ключ для симетричного шифрування", "Пароль користувача передається серверу у відкритому вигляді"], "answer": [0, 1, 3], "explain": "Приватні ключі ніколи не передаються; дані після рукостискання шифруються."}, {"q": "Які твердження про кешування правильні?", "options": ["Код 304 означає, що ресурс переїхав на нову адресу", "Redis часто використовують як серверний кеш", "CDN зберігає копії статичних файлів ближче до користувачів", "CDN кешує паролі та сесії користувачів для швидшого входу", "Кеш браузера керується заголовками Cache-Control і ETag", "Код 304 означає, що ресурс не змінився і його можна взяти з кешу"], "answer": [1, 2, 4, 5], "explain": "CDN кешує публічний вміст, а не облікові дані."}]</script>
 <div class="complete-box"><p>Прочитали і пройшли тест? Позначте лекцію — прогрес оновиться на головній і в меню.</p><button type="button" class="btn primary" data-complete="w1l4" aria-pressed="false"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg><span class="lbl">Позначити як опрацьовану</span></button></div>
-<nav class="pager" aria-label="Попередня і наступна лекції"><a class="prev" href="../../lectures/week-1/lecture-3.html"><small>← Попередня · Лекція 3</small><span>Bash: скрипти, змінні, умови, цикли та функції</span></a><a class="next" href="../../lectures/week-1/lecture-5.html"><small>Наступна · Лекція 5 →</small><span>LAMP-стек: Apache, MySQL, PHP і розгортання вебзастосунку</span></a></nav>
-<div class="sources-note"><b>Джерела лекції:</b> презентація «Web Applications Architecture» (46 слайдів); чат лекцій 4–5 (AJAX vs WebSocket, HTTP-методи на практиці); розділ про HTTPS, балансування і кеш доповнено з MDN Web Docs і документації NGINX. <b>Обмеження:</b> MP3-запис лекції не транскрибовано; відео не оброблялося за правилами курсу.</div>
+<nav class="pager" aria-label="Попередня і наступна лекції"><a class="prev" href="../../lectures/week-1/lecture-3.html"><small>← Попередня · Лекція 3</small><span>Bash: скрипти, змінні, умови, цикли та функції</span></a><a class="next" href="../../lectures/week-1/lecture-5.html"><small>Наступна · Лекція 5 →</small><span>LAMP і SQL: Apache, Nginx, MySQL, запити, JOIN і транзакції</span></a></nav>
+<div class="sources-note"><b>Джерела лекції:</b> презентація «Web Applications Architecture» (46 слайдів); чат лекцій 4–5 (AJAX vs WebSocket, HTTP-методи на практиці); розділ про HTTPS, балансування і кеш доповнено з MDN Web Docs і документації NGINX; RFC 9110 (HTTP Semantics), MDN Web Docs, Roy Fielding «Architectural Styles…» (2000), 12factor.net. <b>Обмеження:</b> MP3-запис лекції не транскрибовано; відео не оброблялося за правилами курсу.</div>
 </main>
-<aside class="toc" aria-label="На цій сторінці"><div class="toc-title">На цій сторінці</div><ol><li><a href="#goals">Чого ви навчитесь</a></li><li><a href="#client-server">Клієнт-сервер і веб</a></li><li><a href="#http-flow">Як працює HTTP-запит</a></li><li><a href="#methods">HTTP-методи</a></li><li><a href="#cookies">Cookies: стан поверх stateless-протоколу</a></li><li><a href="#tiers">2-tier, 3-tier, N-tier</a></li><li><a href="#front-back">Frontend, backend і AJAX</a></li><li><a href="#rest">API і REST</a></li><li><a href="#micro">Моноліт vs мікросервіси</a></li><li><a href="#infra">HTTPS, вебсервер і сервер застосунку, балансування, кеш</a></li><li><a href="#mistakes">Типові помилки</a></li><li><a href="#quiz">Перевір себе</a></li></ol></aside>
+<aside class="toc" aria-label="На цій сторінці"><div class="toc-title">На цій сторінці</div><ol><li><a href="#goals">Чого ви навчитесь</a></li><li><a href="#client-server">Клієнт-сервер і веб</a></li><li><a href="#http-flow">Як працює HTTP-запит</a></li><li><a href="#http-deep">HTTP детально: коди статусу, заголовки, версії</a></li><li><a href="#methods">HTTP-методи</a></li><li><a href="#cookies">Cookies: стан поверх stateless-протоколу</a></li><li><a href="#auth">Сесії, автентифікація і CORS</a></li><li><a href="#tiers">2-tier, 3-tier, N-tier</a></li><li><a href="#front-back">Frontend, backend і AJAX</a></li><li><a href="#rest">API і REST</a></li><li><a href="#rest-deep">REST детально: принципи, проєктування API, альтернативи</a></li><li><a href="#micro">Моноліт vs мікросервіси</a></li><li><a href="#micro-deep">Моноліт і мікросервіси детально</a></li><li><a href="#infra">HTTPS, вебсервер і сервер застосунку, балансування, кеш</a></li><li><a href="#proxy-tls">Проксі, балансування L4/L7 і TLS детально</a></li><li><a href="#mistakes">Типові помилки</a></li><li><a href="#quiz">Перевір себе</a></li></ol></aside>
 </div>
 </div>
 <footer class="site-footer">Навчальний конспект для самопідготовки. Прогрес і результати тестів зберігаються лише в цьому браузері на цьому пристрої (localStorage) і не синхронізуються між пристроями.</footer>

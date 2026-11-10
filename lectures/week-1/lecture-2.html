@@ -3,8 +3,8 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Лекція 2. Linux: основи ОС, команди, користувачі та права доступу · Хмарні технології та сервіси</title>
-<meta name="description" content="Структура каталогів, must-know команди, пакети, потоки stdin/stdout/stderr і перенаправлення, ланцюжки ; &amp;&amp; ||, find/grep/tail/tar/kill, користувачі й групи, /etc/passwd і /etc/shadow, chmod/chown, SSH-ключі.">
+<title>Лекція 2. Linux: командний рядок, файлова система, користувачі, права, процеси · Хмарні технології та сервіси</title>
+<meta name="description" content="FHS і шляхи, довідка (man, --help, help), ls і шаблони, створення/копіювання/видалення (усі варіанти rm, rmdir, mkdir -p), cat/less/tail, inode і посилання ln, find/locate/grep, змінні й PATH, потоки та перенаправлення, коди виходу, sort/uniq/cut/awk, користувачі й /etc/shadow, chmod/umask/SUID, процеси і сигнали, free/df, systemd, apt/dnf, tar, SSH, пастки Windows-синтаксису.">
 <meta name="theme-color" content="#0d7a6f">
 <script>try{var t=localStorage.getItem("htc-theme");if(t)document.documentElement.setAttribute("data-theme",t)}catch(e){}</script>
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=Onest:wght@400;500;600;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
@@ -26,13 +26,13 @@
 <div class="side-group"><a class="side-link" href="../../index.html"><span class="side-num">⌂</span><span>Огляд курсу і план</span></a></div>
 <div class="side-group" data-week-progress="w1l1,w1l2,w1l3,w1l4,w1l5"><div class="side-title"><a href="../../weeks/week-1.html">Тиждень 1</a><span class="wk-count wp-text">0 з 5</span></div>
 <a class="side-link" href="../../lectures/week-1/lecture-1.html"><span class="side-num">01</span><span>Вступ до DevOps, SDLC і хмарних моделей</span><span class="side-check" data-check="w1l1" role="img" aria-label="Не опрацьовано"></span></a>
-<a class="side-link" href="../../lectures/week-1/lecture-2.html" aria-current="page"><span class="side-num">02</span><span>Linux: команди, користувачі, права</span><span class="side-check" data-check="w1l2" role="img" aria-label="Не опрацьовано"></span></a>
+<a class="side-link" href="../../lectures/week-1/lecture-2.html" aria-current="page"><span class="side-num">02</span><span>Linux CLI: файли, пошук, права, процеси</span><span class="side-check" data-check="w1l2" role="img" aria-label="Не опрацьовано"></span></a>
 <a class="side-link" href="../../lectures/week-1/lecture-3.html"><span class="side-num">03</span><span>Bash: змінні, умови, цикли, функції</span><span class="side-check" data-check="w1l3" role="img" aria-label="Не опрацьовано"></span></a>
 <a class="side-link" href="../../lectures/week-1/lecture-4.html"><span class="side-num">04</span><span>Веб-архітектура: HTTP, REST, N-tier</span><span class="side-check" data-check="w1l4" role="img" aria-label="Не опрацьовано"></span></a>
-<a class="side-link" href="../../lectures/week-1/lecture-5.html"><span class="side-num">05</span><span>LAMP: Apache, MySQL, PHP</span><span class="side-check" data-check="w1l5" role="img" aria-label="Не опрацьовано"></span></a>
+<a class="side-link" href="../../lectures/week-1/lecture-5.html"><span class="side-num">05</span><span>LAMP, Apache/Nginx і SQL</span><span class="side-check" data-check="w1l5" role="img" aria-label="Не опрацьовано"></span></a>
 </div>
 <div class="side-group" data-week-progress="w2l6,w2l7,w2l8,w2l9,w2l10"><div class="side-title"><a href="../../weeks/week-2.html">Тиждень 2</a><span class="wk-count wp-text">0 з 5</span></div>
-<a class="side-link" href="../../lectures/week-2/lecture-6.html"><span class="side-num">06</span><span>Мережі: OSI, TCP/IP, IP, NAT, VPN</span><span class="side-check" data-check="w2l6" role="img" aria-label="Не опрацьовано"></span></a>
+<a class="side-link" href="../../lectures/week-2/lecture-6.html"><span class="side-num">06</span><span>Мережі: OSI, IPv4/IPv6, DHCP, DNS, NAT</span><span class="side-check" data-check="w2l6" role="img" aria-label="Не опрацьовано"></span></a>
 <a class="side-link" href="../../lectures/week-2/lecture-7.html"><span class="side-num">07</span><span>Хмари: NIST, моделі, AWS/GCP/Azure</span><span class="side-check" data-check="w2l7" role="img" aria-label="Не опрацьовано"></span></a>
 <a class="side-link" href="../../lectures/week-2/lecture-8.html"><span class="side-num">08</span><span>IaC і Terraform</span><span class="side-check" data-check="w2l8" role="img" aria-label="Не опрацьовано"></span></a>
 <a class="side-link" href="../../lectures/week-2/lecture-9.html"><span class="side-num">09</span><span>Віртуалізація і Docker</span><span class="side-check" data-check="w2l9" role="img" aria-label="Не опрацьовано"></span></a>
@@ -48,48 +48,132 @@
 <div class="lecture-hero">
 <div class="crumbs"><a href="../../index.html">Курс</a><span>/</span><a href="../../weeks/week-1.html">Тиждень 1</a><span>/</span><span>Лекція 2</span></div>
 <div class="eyebrow">Тиждень 1 · Лекція 2</div>
-<h1>Linux: основи ОС, команди, користувачі та права доступу</h1>
-<p class="lead">Linux — ОС, на якій працює більшість серверів інтернету. Розбираємо мінімум, без якого DevOps-інженер не відкриє жодного сервера: файлова система, команди, права доступу та вхід по SSH.</p>
+<h1>Linux: командний рядок, файлова система, користувачі, права, процеси</h1>
+<p class="lead">Linux — ОС більшості серверів і контейнерів. Тут зібрано все, що перевіряє тест Linux CLI: кожна команда з опціями, розбором схожих неправильних варіантів і реальними прикладами, які знадобляться на сервері.</p>
 <div class="meta-row">
-<span class="chip"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>≈ 20 хв читання</span>
-<span class="chip"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M9.5 9.5a2.5 2.5 0 114 2c-1 .7-1.5 1.2-1.5 2.5M12 17h.01"/></svg>13 питань самоперевірки</span>
+<span class="chip"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>≈ 107 хв читання</span>
+<span class="chip"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M9.5 9.5a2.5 2.5 0 114 2c-1 .7-1.5 1.2-1.5 2.5M12 17h.01"/></svg>52 питань самоперевірки</span>
 <span class="chip" data-status="w1l2"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg><span class="lbl">Не опрацьовано</span></span>
 </div>
 </div>
 <div class="objectives">
 <h2 id="goals">Чого ви навчитесь<a class="h-anchor" href="#goals" aria-label="Посилання на розділ">#</a></h2>
 <ul>
-<li>Пояснити, чим Linux відрізняється від Windows і де шукати файли в дереві каталогів.</li>
-<li>Впевнено користуватися базовими командами: навігація, файли, процеси, мережа, пакети.</li>
-<li>Комбінувати команди через <b>pipe <code>|</code></b>, перенаправлення <b><code>&gt;</code>, <code>&gt;&gt;</code>, <code>2&gt;</code>, <code>2&gt;&amp;1</code></b> та ланцюжки <code>;</code> <code>&amp;&amp;</code> <code>||</code>.</li>
-<li>Керувати користувачами і групами (<code>useradd</code>, <code>usermod</code>, <code>sudo</code>).</li>
-<li>Читати й змінювати права: <code>rwx</code>, числа <code>755</code>, <code>chmod</code>/<code>chown</code>, SUID/SGID/sticky bit.</li>
-<li>Налаштувати вхід на сервер за SSH-ключем.</li>
+<li>Розуміти, з чого складається Linux (ядро, оболонка, утиліти, дистрибутив) і як читати запрошення командного рядка.</li>
+<li>Знаходити довідку будь-якою з п'яти способів: <code>man</code>, <code>--help</code>, <code>help</code>, <code>info</code>, <code>apropos</code>, і знати, які «способи» лише виглядають правильними.</li>
+<li>Орієнтуватися в дереві каталогів за стандартом FHS: де конфіги, програми, логи, спільні файли, пристрої.</li>
+<li>Вільно працювати зі шляхами (<code>.</code>, <code>..</code>, <code>~</code>, абсолютні й відносні) і шаблонами (<code>*</code>, <code>?</code>, <code>[ ]</code>, <code>{ }</code>).</li>
+<li>Створювати, копіювати, переміщувати, перейменовувати і видаляти файли та каталоги, розрізняючи всі варіанти <code>rm</code>, <code>rmdir</code>, <code>mkdir -p</code>.</li>
+<li>Переглядати і шукати: <code>cat</code>, <code>less</code>, <code>head</code>, <code>tail -f</code>, <code>find</code>, <code>locate</code>, <code>grep</code>.</li>
+<li>Розуміти inode, жорсткі й символічні посилання, змінні середовища і <code>PATH</code>.</li>
+<li>Комбінувати команди через pipe, перенаправлення та ланцюжки.</li>
+<li>Керувати користувачами, групами, правами (<code>chmod</code> числом і символами, <code>umask</code>, SUID/SGID/sticky).</li>
+<li>Стежити за процесами, пам'яттю, диском, службами й логами; встановлювати пакети; працювати з архівами і SSH.</li>
 </ul>
 </div>
 
-<h2 id="why">Чому саме Linux<a class="h-anchor" href="#why" aria-label="Посилання на розділ">#</a></h2>
-<p><b>Операційна система (ОС)</b> керує залізом і дає програмам спільні сервіси: процеси, пам'ять, файли, мережу, користувачів. Linux належить до сімейства <b>Unix-подібних (*nix)</b> систем. Ядро анонсував Лінус Торвальдс у 1991 році; з 1992 воно поширюється за ліцензією <b>GNU GPL</b> — тоді ж з'явилися перші дистрибутиви.</p>
+<h2 id="why">Що таке Linux і чому саме він<a class="h-anchor" href="#why" aria-label="Посилання на розділ">#</a></h2>
+<p><b>Операційна система (ОС)</b> керує залізом і дає програмам спільні сервіси: процеси, пам'ять, файли, мережу, користувачів. Linux належить до сімейства <b>Unix-подібних (*nix)</b> систем. Ядро анонсував Лінус Торвальдс у 1991 році; з 1992 воно поширюється за ліцензією <b>GNU GPL</b>.</p>
+<h3>З чого складається «Linux»</h3>
+<p>Слово «Linux» у побуті означає цілу систему, але технічно це лише ядро. Те, з чим ви працюєте в терміналі, — це кілька шарів:</p>
+<div class="term-grid">
+<div class="term"><span class="en">Kernel</span><b>Ядро</b><p>Керує процесами, пам'яттю, драйверами, файловими системами, мережею. Програми звертаються до нього через системні виклики. Версія: <code>uname -r</code>.</p></div>
+<div class="term"><span class="en">Shell</span><b>Оболонка</b><p>Програма, що читає ваші команди і запускає їх: <code>bash</code>, <code>sh</code>, <code>zsh</code>. Поточна: <code>echo $SHELL</code> (оболонка входу) або <code>echo $0</code>.</p></div>
+<div class="term"><span class="en">GNU utilities</span><b>Утиліти</b><p><code>ls</code>, <code>cp</code>, <code>grep</code>, <code>tar</code>… — окремі програми-файли в <code>/usr/bin</code>. Тому кажуть «GNU/Linux».</p></div>
+<div class="term"><span class="en">Distribution</span><b>Дистрибутив</b><p>Ядро + утиліти + пакетний менеджер + налаштування: Ubuntu, Debian, RHEL, CentOS, Fedora, Alpine.</p></div>
+</div>
 <ul>
 <li><b>Безкоштовна і з відкритим кодом.</b> Немає ліцензій на кожен сервер.</li>
-<li><b>Домінує на серверах</b> — за даними зі слайдів, близько 70% інтернет-серверів працюють на *nix. Android теж побудований на ядрі Linux.</li>
-<li>Можна працювати <b>взагалі без графічного інтерфейсу</b> — тільки термінал, що ідеально для серверів.</li>
+<li><b>Домінує на серверах і в хмарах</b>: більшість вебсерверів, майже всі контейнери Docker і вузли Kubernetes працюють на Linux. Android теж побудований на ядрі Linux.</li>
+<li>Можна працювати <b>без графічного інтерфейсу</b> — тільки термінал. Для сервера це економія ресурсів і менша поверхня атаки.</li>
 </ul>
+
 <h3>Linux vs Windows: ключові відмінності</h3>
 <div class="table-wrap"><table>
 <thead><tr><th>Linux</th><th>Windows</th></tr></thead>
 <tbody>
-<tr><td>Одне дерево від кореня <code>/</code>, немає дисків <code>C:</code>, <code>D:</code></td><td>Окремі диски з літерами</td></tr>
+<tr><td>Одне дерево від кореня <code>/</code>; диски монтуються в каталоги (<code>/mnt/usb</code>)</td><td>Окремі диски з літерами <code>C:</code>, <code>D:</code></td></tr>
 <tr><td>Розділювач шляху <code>/</code></td><td><code>\</code></td></tr>
-<tr><td><b>Регістр має значення</b>: <code>File.txt</code> ≠ <code>file.txt</code></td><td>Регістр не враховується</td></tr>
-<tr><td>Суперкористувач — <code>root</code></td><td>Administrator</td></tr>
-<tr><td>Виконуваність файла визначає атрибут <code>x</code></td><td>Розширення <code>.exe</code>, <code>.bat</code>, <code>.cmd</code></td></tr>
-<tr><td>Десятки графічних оболонок або без GUI взагалі</td><td>Одна вбудована GUI</td></tr>
+<tr><td><b>Регістр має значення</b>: <code>File.txt</code>, <code>file.txt</code> і <code>FILE.TXT</code> — три різні файли</td><td>Регістр не враховується</td></tr>
+<tr><td>Суперкористувач — <code>root</code> (UID 0)</td><td>Administrator</td></tr>
+<tr><td>Виконуваність визначає атрибут <code>x</code>, розширення неважливе</td><td>Розширення <code>.exe</code>, <code>.bat</code>, <code>.cmd</code></td></tr>
+<tr><td>Змінна: <code>$PATH</code>, роздільник <code>:</code></td><td>Змінна: <code>%PATH%</code>, роздільник <code>;</code></td></tr>
+<tr><td>Довідка: <code>man ls</code>, <code>ls --help</code></td><td>Довідка: <code>dir /?</code>, <code>help dir</code></td></tr>
+<tr><td>Приховані файли — ім'я починається з крапки: <code>.bashrc</code></td><td>Атрибут «прихований» у властивостях файла</td></tr>
 </tbody></table></div>
-<p>Дистрибутиви поділяються на сімейства, від яких залежить пакетний менеджер: <b>Debian</b> (Debian, Ubuntu, Mint) — <code>dpkg</code>, <code>apt</code>; <b>Red Hat</b> (RHEL, CentOS, Fedora) — <code>rpm</code>, <code>yum</code>.</p>
+<p>Дистрибутиви поділяються на сімейства, від яких залежить пакетний менеджер: <b>Debian</b> (Debian, Ubuntu, Mint) — пакети <code>.deb</code>, інструменти <code>dpkg</code> і <code>apt</code>; <b>Red Hat</b> (RHEL, CentOS, Rocky, Fedora, Amazon Linux) — пакети <code>.rpm</code>, інструменти <code>rpm</code> і <code>yum</code>/<code>dnf</code>; <b>Alpine</b> (популярний у Docker) — <code>apk</code>.</p>
 
-<h2 id="fs">Структура каталогів<a class="h-anchor" href="#fs" aria-label="Посилання на розділ">#</a></h2>
-<p>У Linux «майже все — файл»: звичайні файли, каталоги, пристрої, навіть більшість команд — це програми-файли в <code>/bin</code>.</p>
+<h2 id="cli">Термінал, оболонка і синтаксис команди<a class="h-anchor" href="#cli" aria-label="Посилання на розділ">#</a></h2>
+<p><b>Термінал</b> (terminal emulator) — вікно, у якому ви набираєте текст. <b>Оболонка</b> (shell) — програма всередині нього, яка розбирає рядок і запускає команди. Найпоширеніша оболонка — <b>bash</b> (Bourne Again SHell). Коли ви підключаєтесь до сервера по SSH, термінал у вас локальний, а оболонка працює на сервері.</p>
+<h3>Як читати запрошення (prompt)</h3>
+<pre data-lang="text"><code>student@web01:~/projects$          <span class="c"># звичайний користувач</span>
+root@web01:/etc#                   <span class="c"># root: символ # замість $</span></code></pre>
+<div class="table-wrap"><table>
+<thead><tr><th>Частина</th><th>Значення</th></tr></thead>
+<tbody>
+<tr><td><code>student</code></td><td>ім'я поточного користувача (те саме, що <code>whoami</code>)</td></tr>
+<tr><td><code>web01</code></td><td>ім'я машини (<code>hostname</code>)</td></tr>
+<tr><td><code>~/projects</code></td><td>поточний каталог; <code>~</code> — скорочення домашнього каталогу <code>/home/student</code></td></tr>
+<tr><td><code>$</code> / <code>#</code></td><td><code>$</code> — звичайний користувач, <code>#</code> — root. Видно одразу, наскільки небезпечна наступна команда</td></tr>
+</tbody></table></div>
+
+<h3>Анатомія команди</h3>
+<pre data-lang="bash"><code>ls  -l -a  --human-readable  /var/log
+<span class="c">#│   └─┬─┘  └──────┬──────┘   └──┬───┘</span>
+<span class="c">#│  короткі   довга опція      аргумент (з чим працювати)</span>
+<span class="c">#└─ ім'я команди (програма /usr/bin/ls або вбудована команда оболонки)</span></code></pre>
+<ul>
+<li><b>Короткі опції</b> починаються з одного дефіса і зазвичай складаються з однієї літери: <code>-l</code>. Їх можна об'єднувати: <code>ls -l -a -h</code> = <code>ls -lah</code>.</li>
+<li><b>Довгі опції</b> починаються з двох дефісів: <code>--all</code>, <code>--human-readable</code>. Об'єднувати їх не можна.</li>
+<li>Опції з <b>значенням</b>: <code>head -n 5 file</code>, <code>head -n5 file</code> або <code>head --lines=5 file</code> — однаково.</li>
+<li><b>Аргументи</b> — файли, каталоги, рядки. Порядок важливий: у <code>cp</code>, <code>mv</code>, <code>ln</code> спочатку <b>джерело</b>, потім <b>призначення</b>.</li>
+<li>Подвійний дефіс <code>--</code> означає «опції скінчились»: <code>rm -- -file.txt</code> видалить файл, ім'я якого починається з дефіса.</li>
+<li>Пробіл — роздільник. Ім'я з пробілом беріть у лапки: <code>cd "My Documents"</code> або екрануйте: <code>cd My\ Documents</code>.</li>
+</ul>
+<h3>Гарячі клавіші, які економлять години</h3>
+<div class="table-wrap"><table>
+<thead><tr><th>Клавіші</th><th>Дія</th></tr></thead>
+<tbody>
+<tr><td><kbd>Tab</kbd> / <kbd>Tab</kbd><kbd>Tab</kbd></td><td>доповнити ім'я команди або файла / показати всі варіанти</td></tr>
+<tr><td><kbd>↑</kbd> <kbd>↓</kbd></td><td>гортати історію команд</td></tr>
+<tr><td><kbd>Ctrl</kbd>+<kbd>R</kbd></td><td>пошук в історії за фрагментом</td></tr>
+<tr><td><kbd>Ctrl</kbd>+<kbd>C</kbd></td><td>перервати поточну команду (надсилає сигнал SIGINT)</td></tr>
+<tr><td><kbd>Ctrl</kbd>+<kbd>Z</kbd></td><td>призупинити команду (SIGTSTP); продовжити — <code>fg</code> або у фоні <code>bg</code></td></tr>
+<tr><td><kbd>Ctrl</kbd>+<kbd>D</kbd></td><td>кінець вводу (EOF); у порожньому рядку — вийти з оболонки</td></tr>
+<tr><td><kbd>Ctrl</kbd>+<kbd>L</kbd> або <code>clear</code></td><td>очистити екран (у Windows — <code>cls</code>)</td></tr>
+<tr><td><kbd>Ctrl</kbd>+<kbd>A</kbd> / <kbd>Ctrl</kbd>+<kbd>E</kbd></td><td>курсор на початок / кінець рядка</td></tr>
+<tr><td><code>!!</code>, <code>sudo !!</code></td><td>повторити попередню команду (наприклад, з <code>sudo</code>, якщо забули)</td></tr>
+</tbody></table></div>
+
+<h2 id="help">Як отримати довідку про команду<a class="h-anchor" href="#help" aria-label="Посилання на розділ">#</a></h2>
+<p>Це окреме питання тесту, і в ньому кілька правильних відповідей. Linux має кілька незалежних систем довідки:</p>
+<div class="table-wrap"><table>
+<thead><tr><th>Спосіб</th><th>Що показує</th><th>Коли працює</th></tr></thead>
+<tbody>
+<tr><td><code>man ls</code></td><td>Повну сторінку посібника (manual page)</td><td>Для майже всіх програм. Основний спосіб</td></tr>
+<tr><td><code>ls --help</code></td><td>Короткий перелік опцій, який друкує сама програма</td><td>Для більшості GNU-утиліт</td></tr>
+<tr><td><code>help cd</code></td><td>Довідку про <b>вбудовану команду bash</b></td><td>Лише для вбудованих: <code>cd</code>, <code>echo</code>, <code>export</code>, <code>alias</code>, <code>history</code>, <code>read</code>, <code>type</code>…</td></tr>
+<tr><td><code>info ls</code></td><td>Документацію GNU у форматі info (з розділами і посиланнями)</td><td>Для GNU-програм</td></tr>
+<tr><td><code>whatis ls</code></td><td>Однорядковий опис</td><td>Якщо база man-сторінок проіндексована</td></tr>
+<tr><td><code>apropos copy</code> = <code>man -k copy</code></td><td>Пошук команд за ключовим словом в описах</td><td>Коли не знаєте назви команди</td></tr>
+<tr><td><code>type cd</code></td><td>Чим є ім'я: вбудована команда, alias, функція чи файл</td><td>Щоб зрозуміти, де шукати довідку</td></tr>
+</tbody></table></div>
+<pre data-lang="bash"><code>$ type cd
+cd is a shell builtin               <span class="c"># вбудована → довідка через help cd</span>
+$ type ls
+ls is aliased to `ls --color=auto'  <span class="c"># alias</span>
+$ type cp
+cp is /usr/bin/cp                   <span class="c"># окрема програма → man cp</span></code></pre>
+<h3>Як читати man-сторінку</h3>
+<ul>
+<li>Розділи сторінки: <b>NAME</b> (назва і опис), <b>SYNOPSIS</b> (синтаксис: <code>[ ]</code> — необов'язкове, <code>...</code> — можна повторювати), <b>DESCRIPTION</b> (опції), <b>EXAMPLES</b>, <b>SEE ALSO</b>.</li>
+<li>Навігація така сама, як у <code>less</code>: пробіл — сторінка вниз, <kbd>b</kbd> — вгору, <code>/слово</code> — пошук, <kbd>n</kbd> — наступний збіг, <kbd>q</kbd> — вихід.</li>
+<li>Посібник поділено на <b>секції</b>: 1 — команди користувача, 5 — формати файлів, 8 — команди адміністратора. <code>man passwd</code> покаже команду, а <code>man 5 passwd</code> — формат файла <code>/etc/passwd</code>.</li>
+</ul>
+<div class="callout exam"><div class="callout-title">Пастки тесту</div><p><code>&lt;command&gt; /?</code> — це довідка у Windows (cmd), у Linux <code>/?</code> сприйметься як аргумент-шлях. <code>&lt;command&gt; ?</code> — у bash <code>?</code> є шаблоном «один будь-який символ», а не запитом довідки. Команд <code>guide</code> і <code>manual</code> у Linux немає. Правильні способи: <code>man</code>, <code>--help</code>, <code>help</code> (для вбудованих), <code>info</code>, <code>whatis</code>, <code>apropos</code>.</p></div>
+
+<h2 id="fs">Структура каталогів (FHS)<a class="h-anchor" href="#fs" aria-label="Посилання на розділ">#</a></h2>
+<p>У Linux «майже все — файл»: звичайні файли, каталоги, пристрої (<code>/dev/sda</code>), інформація про процеси (<code>/proc</code>), навіть більшість команд — програми-файли. Розташування каталогів описує стандарт <b>FHS (Filesystem Hierarchy Standard)</b>, тому на будь-якому дистрибутиві конфіги шукають в одному місці.</p>
 <figure><div class="figure wide">
 <svg class="dg" viewBox="0 0 720 200" role="img" aria-label="Дерево каталогів Linux: корінь та підкаталоги bin, etc, home, lib, media, var">
 <rect x="315" y="14" width="90" height="36" rx="8" class="acc"/><text x="360" y="37" text-anchor="middle" class="t-mono t-bold">/</text>
@@ -108,38 +192,425 @@
 </g>
 </svg></div>
 <figcaption><b>Одне дерево від кореня.</b> Конфіги шукайте в <code>/etc</code>, логи — у <code>/var/log</code>, сайти Apache — у <code>/var/www/html</code>.</figcaption></figure>
-
-<h2 id="commands">Команди, які треба знати<a class="h-anchor" href="#commands" aria-label="Посилання на розділ">#</a></h2>
-<p>Більшість команд мають ключі (опції), що змінюють поведінку. Довідка: <code>man &lt;команда&gt;</code>.</p>
 <div class="table-wrap"><table>
-<thead><tr><th>Задача</th><th>Команда</th></tr></thead>
+<thead><tr><th>Каталог</th><th>Що там лежить</th><th>Приклади</th></tr></thead>
 <tbody>
-<tr><td>Перейти в каталог / на рівень вгору / в корінь / додому</td><td><code>cd dir</code>, <code>cd ..</code>, <code>cd /</code>, <code>cd ~</code></td></tr>
-<tr><td>Список файлів (з прихованими і деталями)</td><td><code>ls -al</code></td></tr>
-<tr><td>Створити порожній файл / каталог</td><td><code>touch f</code>, <code>mkdir d</code></td></tr>
-<tr><td>Копіювати (рекурсивно — каталог)</td><td><code>cp src dst</code>, <code>cp -r dir newdir</code></td></tr>
-<tr><td>Перемістити / перейменувати</td><td><code>mv old new</code>, <code>mv *.c newproj</code></td></tr>
-<tr><td>Видалити файл (з підтвердженням) / порожній каталог</td><td><code>rm f</code>, <code>rm -i f</code>, <code>rmdir d</code></td></tr>
-<tr><td>Переглянути вміст</td><td><code>cat f</code>, <code>more f</code></td></tr>
-<tr><td>Символічне / жорстке посилання</td><td><code>ln -s orig link</code>, <code>ln orig link</code></td></tr>
-<tr><td>Виконати від root / змінити користувача</td><td><code>sudo cmd</code>, <code>su user</code></td></tr>
-<tr><td>Вимкнути / перезавантажити (root)</td><td><code>shutdown -h now</code>, <code>shutdown -r now</code></td></tr>
-<tr><td>Ядро і архітектура / CPU</td><td><code>uname -a</code>, <code>lscpu</code></td></tr>
-<tr><td>Процеси (знімок / у реальному часі)</td><td><code>ps aux</code>, <code>top</code></td></tr>
-<tr><td>Мережеві інтерфейси / поточний користувач</td><td><code>ip addr show</code>, <code>id</code></td></tr>
+<tr><td><code>/</code></td><td>Корінь (root directory) — початок усього дерева. Не плутати з <code>/root</code></td><td>—</td></tr>
+<tr><td><code>/bin</code></td><td><b>Основні виконувані файли</b> (binaries) для всіх користувачів</td><td><code>ls</code>, <code>cp</code>, <code>cat</code>, <code>bash</code></td></tr>
+<tr><td><code>/sbin</code></td><td>Системні програми для адміністрування (system binaries), зазвичай потрібен root</td><td><code>fdisk</code>, <code>reboot</code>, <code>ip</code>, <code>mkfs</code></td></tr>
+<tr><td><code>/usr/bin</code>, <code>/usr/sbin</code></td><td>Більшість звичайних програм користувача і адміністратора</td><td><code>python3</code>, <code>git</code>, <code>vim</code>, <code>sshd</code></td></tr>
+<tr><td><code>/usr/local/bin</code></td><td>Програми, встановлені вручну адміністратором (не пакетним менеджером)</td><td>самостійно зібрані утиліти</td></tr>
+<tr><td><code>/usr/share</code></td><td><b>Спільні (shared) файли, незалежні від архітектури</b>: документація, man-сторінки, іконки, локалізації</td><td><code>/usr/share/man</code>, <code>/usr/share/doc</code></td></tr>
+<tr><td><code>/lib</code>, <code>/usr/lib</code>, <code>/lib64</code></td><td><b>Спільні бібліотеки</b> (shared libraries <code>.so</code>) і модулі ядра</td><td><code>libc.so.6</code>, <code>/lib/modules</code></td></tr>
+<tr><td><code>/etc</code></td><td><b>Системні конфігураційні файли</b> (текстові)</td><td><code>/etc/passwd</code>, <code>/etc/hosts</code>, <code>/etc/ssh/sshd_config</code>, <code>/etc/nginx/</code></td></tr>
+<tr><td><code>/home</code></td><td>Домашні каталоги звичайних користувачів</td><td><code>/home/student</code></td></tr>
+<tr><td><code>/root</code></td><td>Домашній каталог користувача root</td><td><code>/root/.bashrc</code></td></tr>
+<tr><td><code>/var</code></td><td>Змінні (variable) дані, що ростуть під час роботи</td><td><code>/var/log</code> — логи, <code>/var/www</code> — сайти, <code>/var/lib/mysql</code> — дані БД, <code>/var/cache</code>, <code>/var/spool</code></td></tr>
+<tr><td><code>/tmp</code></td><td>Тимчасові файли, часто очищаються при перезавантаженні; на каталозі стоїть sticky bit</td><td>—</td></tr>
+<tr><td><code>/dev</code></td><td>Файли пристроїв (devices)</td><td><code>/dev/sda</code> — диск, <code>/dev/null</code> — «чорна діра», <code>/dev/zero</code>, <code>/dev/random</code></td></tr>
+<tr><td><code>/proc</code></td><td>Віртуальна ФС: інформація про процеси і ядро «на льоту», на диску не займає місця</td><td><code>/proc/cpuinfo</code>, <code>/proc/meminfo</code>, <code>/proc/1234/</code></td></tr>
+<tr><td><code>/sys</code></td><td>Віртуальна ФС з інформацією про пристрої і драйвери</td><td><code>/sys/class/net</code></td></tr>
+<tr><td><code>/boot</code></td><td>Файли завантаження: ядро, initramfs, завантажувач GRUB</td><td><code>vmlinuz-6.8.0</code></td></tr>
+<tr><td><code>/opt</code></td><td>Додаткове (optional) стороннє ПЗ, що ставиться цілим пакетом</td><td><code>/opt/google/chrome</code></td></tr>
+<tr><td><code>/mnt</code>, <code>/media</code></td><td>Точки монтування: тимчасово вручну / знімні носії</td><td><code>/media/usb</code></td></tr>
+<tr><td><code>/srv</code></td><td>Дані служб, які віддає сервер</td><td><code>/srv/ftp</code></td></tr>
+<tr><td><code>/run</code></td><td>Дані часу виконання: PID-файли, сокети (очищається при старті)</td><td><code>/run/sshd.pid</code></td></tr>
 </tbody></table></div>
-<p><b>Символічне посилання</b> — «ярлик», що вказує на ім'я файла (зламається, якщо оригінал видалити). <b>Жорстке</b> — ще одне ім'я для тих самих даних на диску (дані живуть, поки є хоч одне ім'я).</p>
+<p>У сучасних дистрибутивах (Ubuntu 20.04+, RHEL 8+) <code>/bin</code>, <code>/sbin</code> і <code>/lib</code> — це символічні посилання на <code>/usr/bin</code>, <code>/usr/sbin</code>, <code>/usr/lib</code> (так звана «злита /usr»). Тому <code>ls</code> можна знайти і як <code>/bin/ls</code>, і як <code>/usr/bin/ls</code>.</p>
+<div class="callout exam"><div class="callout-title">Як відповідати на питання «який каталог містить…»</div><p>Системні конфігурації → <code>/etc</code>. Виконувані файли → <code>/bin</code>, <code>/usr/bin</code> (адміністративні → <code>/sbin</code>). Спільні (shared) файли → <code>/usr/share</code>; спільні бібліотеки → <code>/lib</code>, <code>/usr/lib</code>. Логи → <code>/var/log</code>. Тимчасові → <code>/tmp</code>. Пристрої → <code>/dev</code>. Інформація про процеси і ядро → <code>/proc</code>. Домашній каталог root → <code>/root</code>, інших → <code>/home</code>. Завантаження → <code>/boot</code>.</p></div>
 
-<h3>Встановлення і запуск програм</h3>
+<h3>Типи файлів</h3>
+<p>Перший символ у виводі <code>ls -l</code> показує тип файла:</p>
+<div class="table-wrap"><table>
+<thead><tr><th>Символ</th><th>Тип</th><th>Приклад</th></tr></thead>
+<tbody>
+<tr><td><code>-</code></td><td>звичайний файл (regular file)</td><td><code>-rw-r--r-- notes.txt</code></td></tr>
+<tr><td><code>d</code></td><td>каталог (directory)</td><td><code>drwxr-xr-x projects</code></td></tr>
+<tr><td><code>l</code></td><td>символічне посилання (link)</td><td><code>lrwxrwxrwx python3 -&gt; python3.12</code></td></tr>
+<tr><td><code>c</code></td><td>символьний пристрій (character device)</td><td><code>/dev/null</code>, <code>/dev/tty</code></td></tr>
+<tr><td><code>b</code></td><td>блоковий пристрій (block device)</td><td><code>/dev/sda</code></td></tr>
+<tr><td><code>s</code></td><td>сокет</td><td><code>/run/docker.sock</code></td></tr>
+<tr><td><code>p</code></td><td>іменований канал (FIFO, named pipe)</td><td>створюється <code>mkfifo</code></td></tr>
+</tbody></table></div>
+<p>Команда <code>file name</code> визначає тип за вмістом: <code>file /bin/ls</code> → <i>ELF 64-bit executable</i>, <code>file notes.txt</code> → <i>ASCII text</i>. Розширення в Linux лише частина імені, система на нього не зважає.</p>
+
+<h2 id="paths">Шляхи: абсолютні, відносні, <code>.</code>, <code>..</code>, <code>~</code><a class="h-anchor" href="#paths" aria-label="Посилання на розділ">#</a></h2>
+<p><b>Абсолютний шлях</b> починається з <code>/</code> і описує розташування від кореня — він однаковий, хоч би де ви були: <code>/home/user1/docs/cv.txt</code>. <b>Відносний шлях</b> не починається з <code>/</code> і рахується від <b>поточного каталогу</b>: якщо ви в <code>/home/user1</code>, то <code>docs/cv.txt</code> — той самий файл.</p>
+<div class="table-wrap"><table>
+<thead><tr><th>Позначення</th><th>Значення</th><th>Приклад (поточний каталог <code>/home/user1/docs</code>)</th></tr></thead>
+<tbody>
+<tr><td><code>.</code></td><td>поточний каталог</td><td><code>./script.sh</code> = <code>/home/user1/docs/script.sh</code></td></tr>
+<tr><td><code>..</code></td><td>батьківський каталог (на рівень вище)</td><td><code>..</code> = <code>/home/user1</code>, <code>../..</code> = <code>/home</code></td></tr>
+<tr><td><code>~</code></td><td>домашній каталог поточного користувача (значення <code>$HOME</code>)</td><td><code>~/data</code> = <code>/home/user1/data</code></td></tr>
+<tr><td><code>~user2</code></td><td>домашній каталог іншого користувача</td><td><code>~user2</code> = <code>/home/user2</code></td></tr>
+<tr><td><code>-</code> (лише в <code>cd</code>)</td><td>попередній каталог, де ви були</td><td><code>cd -</code> — повернутися назад</td></tr>
+<tr><td><code>/</code></td><td>корінь</td><td><code>cd /</code></td></tr>
+</tbody></table></div>
+<p>Кожен каталог фізично містить записи <code>.</code> і <code>..</code> — їх видно в <code>ls -a</code>. Тому <code>cd .</code> нічого не змінює (переходить у той самий каталог), а <code>cd ..</code> піднімається на рівень вище. Скісна риска в кінці (<code>./</code>, <code>../</code>) лише підкреслює, що це каталог: <code>cd ./</code> = <code>cd .</code>, <code>cd ../</code> = <code>cd ..</code>.</p>
+
+<h3>Навігація: <code>pwd</code> і <code>cd</code></h3>
+<div class="table-wrap"><table>
+<thead><tr><th>Команда</th><th>Результат</th></tr></thead>
+<tbody>
+<tr><td><code>pwd</code></td><td>надрукувати поточний каталог (print working directory)</td></tr>
+<tr><td><code>cd</code> (без аргументів), <code>cd ~</code>, <code>cd $HOME</code></td><td>перейти в домашній каталог</td></tr>
+<tr><td><code>cd /etc</code></td><td>за абсолютним шляхом</td></tr>
+<tr><td><code>cd docs</code> = <code>cd ./docs</code></td><td>у підкаталог поточного</td></tr>
+<tr><td><code>cd ..</code> / <code>cd ../..</code></td><td>на один / два рівні вгору</td></tr>
+<tr><td><code>cd ../user2</code></td><td>у сусідній каталог (з <code>/home/user1</code> в <code>/home/user2</code>)</td></tr>
+<tr><td><code>cd -</code></td><td>повернутися в попередній каталог</td></tr>
+</tbody></table></div>
+<h3>Розбір питання: «перейти в каталог user2 з домашнього каталогу user1»</h3>
+<p>Ви в <code>/home/user1</code>, доступ до <code>/home/user2</code> є. Спрацюють <b>усі</b> ці варіанти, бо вони ведуть в одне місце різними шляхами:</p>
+<pre data-lang="bash"><code>cd /home/user2      <span class="c"># абсолютний шлях</span>
+cd ../user2         <span class="c"># відносний: вгору до /home, потім у user2</span>
+cd ~user2           <span class="c"># домашній каталог користувача user2</span>
+cd ~/../user2       <span class="c"># ~ = /home/user1, далі вгору і в user2</span></code></pre>
+<p>Не спрацюють: <code>cd user2</code> (шукає <code>/home/user1/user2</code>), <code>cd /user2</code> (шукає в корені), <code>cd ..\user2</code> (зворотна риска — синтаксис Windows; bash прибере <code>\</code> як екранування і шукатиме <code>..user2</code>), <code>cd../user2</code> без пробілу (bash шукатиме команду з назвою <code>cd../user2</code> і видасть <i>command not found</i>).</p>
+
+<h2 id="ls">Перегляд вмісту каталогу: <code>ls</code> у деталях<a class="h-anchor" href="#ls" aria-label="Посилання на розділ">#</a></h2>
+<pre data-lang="bash"><code>$ ls -l
+drwxr-xr-x 2 student devs 4096 Mar  3 10:15 docs
+-rw-r--r-- 1 student devs  220 Mar  3 10:02 notes.txt
+lrwxrwxrwx 1 student devs    9 Mar  3 10:20 last -&gt; notes.txt
+<span class="c">#│└───┬───┘ │ └──┬──┘ └┬─┘ └┬─┘ └────┬────┘ └──┬──┘</span>
+<span class="c">#│  права   │ власник група розмір  дата зміни    ім'я</span>
+<span class="c">#тип     кількість жорстких посилань</span></code></pre>
+<div class="table-wrap"><table>
+<thead><tr><th>Опція</th><th>Що робить</th></tr></thead>
+<tbody>
+<tr><td><code>-l</code></td><td>довгий формат: тип, права, посилання, власник, група, розмір, дата, ім'я</td></tr>
+<tr><td><code>-a</code></td><td>показати <b>всі</b> файли, включно з прихованими (на <code>.</code>) і записами <code>.</code> та <code>..</code></td></tr>
+<tr><td><code>-A</code></td><td>приховані теж, але без <code>.</code> і <code>..</code></td></tr>
+<tr><td><code>-h</code></td><td>розміри у зручному вигляді (K, M, G) — разом з <code>-l</code>: <code>ls -lh</code></td></tr>
+<tr><td><code>-R</code></td><td>рекурсивно: вміст усіх підкаталогів</td></tr>
+<tr><td><code>-d</code></td><td>показати сам каталог, а не його вміст: <code>ls -ld /etc</code></td></tr>
+<tr><td><code>-t</code> / <code>-S</code></td><td>сортувати за часом зміни / за розміром (найновіші/найбільші першими)</td></tr>
+<tr><td><code>-r</code></td><td>зворотний порядок сортування: <code>ls -ltr</code> — найновіші внизу</td></tr>
+<tr><td><code>-i</code></td><td>показати номер inode</td></tr>
+<tr><td><code>-1</code></td><td>по одному імені в рядку</td></tr>
+<tr><td><code>-F</code></td><td>додати позначку типу: <code>/</code> каталог, <code>*</code> виконуваний, <code>@</code> посилання</td></tr>
+<tr><td><code>-p</code></td><td>додати <code>/</code> лише до каталогів</td></tr>
+<tr><td><code>-n</code></td><td>як <code>-l</code>, але UID/GID числами</td></tr>
+<tr><td><code>-s</code></td><td>розмір у блоках</td></tr>
+<tr><td><code>-X</code></td><td>сортувати за розширенням</td></tr>
+<tr><td><code>--color=auto</code></td><td>кольори за типами (часто вже в alias)</td></tr>
+</tbody></table></div>
+<h3>Типові задачі з <code>ls</code></h3>
+<pre data-lang="bash"><code>ls                    <span class="c"># файли й каталоги поточного каталогу (без прихованих)</span>
+ls -la ~              <span class="c"># усе в домашньому, з прихованими і деталями</span>
+ls /etc               <span class="c"># вміст іншого каталогу</span>
+ls F*                 <span class="c"># імена, що починаються з великої F</span>
+ls [Ff]*              <span class="c"># з F або f</span>
+ls *.log              <span class="c"># закінчуються на .log</span>
+ls -d */              <span class="c"># лише каталоги</span>
+ls -l | grep '^d'     <span class="c"># лише каталоги (рядки, що починаються з d)</span>
+ls -l | grep '^-'     <span class="c"># лише звичайні файли</span>
+ls -p | grep -v /     <span class="c"># лише файли (прибрати рядки з / у кінці)</span>
+ls -lhS               <span class="c"># за розміром, у зручних одиницях</span>
+ls -ltr /var/log      <span class="c"># найсвіжіші логи внизу</span></code></pre>
+<div class="callout exam"><div class="callout-title">Пастки тесту з <code>ls</code></div><p>«Показати лише файли і каталоги» — звичайний <code>ls</code> (без <code>-a</code>, щоб не було прихованих і службових <code>.</code>/<code>..</code>). Якщо треба розрізнити тип — <code>ls -F</code> або <code>ls -l</code>. «Файли на літеру F» — <code>ls F*</code>, але <b>не</b> <code>ls *F</code> (це «закінчуються на F»), не <code>ls F?</code> (рівно два символи) і не <code>ls -F</code> (це опція позначення типів). У Windows аналог — <code>dir</code>; у Linux такої команди за замовчуванням або немає, або вона не є стандартною відповіддю.</p></div>
+
+<h2 id="globs">Шаблони імен (globbing) і розкриття фігурних дужок<a class="h-anchor" href="#globs" aria-label="Посилання на розділ">#</a></h2>
+<p>Шаблони розкриває <b>оболонка</b> ще до запуску команди: <code>ls *.txt</code> перетворюється на <code>ls a.txt b.txt c.txt</code>. Тому шаблони працюють з будь-якою командою: <code>cp</code>, <code>rm</code>, <code>mv</code>, <code>cat</code>.</p>
+<div class="table-wrap"><table>
+<thead><tr><th>Шаблон</th><th>Відповідає</th><th>Приклад</th><th>Збігається / ні</th></tr></thead>
+<tbody>
+<tr><td><code>*</code></td><td>будь-яка кількість будь-яких символів (і нуль)</td><td><code>F*</code></td><td><code>F</code>, <code>File</code>, <code>F1.txt</code> / <code>file</code></td></tr>
+<tr><td><code>?</code></td><td>рівно один будь-який символ</td><td><code>file?.txt</code></td><td><code>file1.txt</code> / <code>file10.txt</code></td></tr>
+<tr><td><code>[abc]</code></td><td>один символ з переліку</td><td><code>[Ff]*</code></td><td><code>File</code>, <code>file</code></td></tr>
+<tr><td><code>[a-z]</code>, <code>[0-9]</code></td><td>один символ з діапазону</td><td><code>log[0-9].txt</code></td><td><code>log7.txt</code> / <code>logA.txt</code></td></tr>
+<tr><td><code>[!a]</code> або <code>[^a]</code></td><td>один символ, крім указаних</td><td><code>[!.]*</code></td><td>імена, що не починаються з крапки</td></tr>
+<tr><td><code>{a,b,c}</code></td><td><b>не шаблон, а розкриття</b>: генерує всі варіанти, навіть якщо файлів немає</td><td><code>mkdir {src,docs}</code></td><td>створить обидва каталоги</td></tr>
+<tr><td><code>{1..5}</code></td><td>послідовність</td><td><code>touch f{1..3}.txt</code></td><td><code>f1.txt f2.txt f3.txt</code></td></tr>
+</tbody></table></div>
 <ul>
-<li>Програми встановлюються з <b>репозиторіїв</b> (аналог Google Play): офіційних для дистрибутиву або сторонніх. Встановлювати може <b>лише root</b> (або через <code>sudo</code>).</li>
-<li>Файл запускається, якщо має атрибут <b>x</b> — розширення не важливе. Скрипт у поточному каталозі запускають так: <code>./program.sh</code>.</li>
+<li><code>*</code> <b>не</b> збігається з прихованими файлами (на крапку). <code>rm *</code> не видалить <code>.env</code>.</li>
+<li>Якщо жоден файл не збігся, bash передає шаблон як є: <code>ls *.xyz</code> → <i>No such file or directory</i>.</li>
+<li>У лапках шаблони не розкриваються: <code>ls "*.txt"</code> шукає файл, ім'я якого буквально <code>*.txt</code>. Тому <code>find -name "*.txt"</code> пишуть у лапках — щоб шаблон отримав <code>find</code>, а не оболонка.</li>
 </ul>
-<pre data-lang="bash"><code>sudo apt install git        <span class="c"># Debian/Ubuntu</span>
-sudo yum install git        <span class="c"># RHEL/CentOS</span>
-chmod +x program.sh &amp;&amp; ./program.sh</code></pre>
 
-<h2 id="pipes">Pipes і перенаправлення вводу-виводу<a class="h-anchor" href="#pipes" aria-label="Посилання на розділ">#</a></h2>
+<h2 id="create">Створення файлів і каталогів<a class="h-anchor" href="#create" aria-label="Посилання на розділ">#</a></h2>
+<h3>Порожній файл: шість способів</h3>
+<div class="table-wrap"><table>
+<thead><tr><th>Команда</th><th>Що відбувається</th><th>Якщо файл уже існує</th></tr></thead>
+<tbody>
+<tr><td><code>touch text.t</code></td><td>створює порожній файл</td><td>вміст не чіпає, лише оновлює час доступу і зміни</td></tr>
+<tr><td><code>&gt; text.t</code></td><td>перенаправлення «нічого» у файл</td><td><b>обнуляє</b> вміст</td></tr>
+<tr><td><code>: &gt; text.t</code></td><td>вбудована команда <code>:</code> нічого не друкує → порожній файл</td><td>обнуляє</td></tr>
+<tr><td><code>cat /dev/null &gt; text.t</code></td><td>копіює вміст «порожнього пристрою»</td><td>обнуляє</td></tr>
+<tr><td><code>cp /dev/null text.t</code></td><td>копіює порожній пристрій як файл</td><td>обнуляє</td></tr>
+<tr><td><code>echo -n &gt; text.t</code></td><td><code>-n</code> — без символу нового рядка</td><td>обнуляє. Без <code>-n</code> файл матиме 1 байт (<code>\n</code>)</td></tr>
+</tbody></table></div>
+<p>Не створюють файл: <code>cat text.t</code> (лише читає існуючий), <code>new text.t</code>, <code>create text.t</code> (таких команд немає), <code>mkdir text.t</code> (створить <b>каталог</b> з такою назвою), <code>echo text.t</code> (надрукує рядок на екран).</p>
+
+<h3><code>mkdir</code>: каталоги</h3>
+<div class="table-wrap"><table>
+<thead><tr><th>Команда</th><th>Результат</th></tr></thead>
+<tbody>
+<tr><td><code>mkdir data</code> = <code>mkdir ./data</code></td><td>каталог <code>data</code> у поточному каталозі</td></tr>
+<tr><td><code>mkdir ~/data</code>, <code>mkdir $HOME/data</code></td><td>у домашньому каталозі, хоч би де ви були</td></tr>
+<tr><td><code>mkdir -p ~/data/info</code></td><td><b>-p (parents)</b>: створити весь ланцюжок; якщо <code>data</code> ще немає — створить і його. Без помилки, якщо каталог уже є</td></tr>
+<tr><td><code>mkdir data/info</code> (без <code>-p</code>)</td><td>помилка <i>No such file or directory</i>, якщо <code>data</code> не існує</td></tr>
+<tr><td><code>mkdir -m 700 secret</code></td><td><b>-m (mode)</b>: одразу задати права (тут <code>rwx------</code>), не чекаючи <code>chmod</code></td></tr>
+<tr><td><code>mkdir -v a b c</code></td><td><b>-v (verbose)</b>: повідомляти про кожен створений каталог; кілька аргументів — кілька каталогів</td></tr>
+<tr><td><code>mkdir -p project/{src,tests,docs}</code></td><td>три підкаталоги одним рухом (розкриття фігурних дужок)</td></tr>
+</tbody></table></div>
+<div class="callout exam"><div class="callout-title">Розбір двох питань тесту</div><p><b>«Створити каталог data з поточного каталогу»</b>: правильні <code>mkdir data</code> і <code>mkdir ./data</code>. <code>mkdir /data</code> створить його в корені (і без прав root не вийде), <code>md data</code> — команда Windows, <code>mkdir -data</code> сприйметься як набір опцій.</p><p><b>«Створити підкаталоги data/info з домашнього каталогу»</b>: <code>mkdir -p data/info</code> (якщо ви вже вдома) або <code>mkdir -p ~/data/info</code> (звідки завгодно). Варіант без <code>-p</code> спрацює лише тоді, коли <code>data</code> вже існує; <code>mkdir data info</code> створить <b>два окремі</b> каталоги поруч, а не вкладені.</p></div>
+
+<h2 id="copy">Копіювання, переміщення, перейменування<a class="h-anchor" href="#copy" aria-label="Посилання на розділ">#</a></h2>
+<h3><code>cp</code> — копіювати</h3>
+<pre data-lang="bash"><code>cp text.t info.t              <span class="c"># копія файла під новим іменем; text.t лишається</span>
+cp text.t ~/backup/           <span class="c"># копія в інший каталог з тим самим іменем</span>
+cp a.txt b.txt docs/          <span class="c"># кілька файлів у каталог (останній аргумент — каталог)</span>
+cp -r project project_bak     <span class="c"># каталог з усім вмістом (-r або -R, recursive)</span>
+cp -i text.t info.t           <span class="c"># -i: спитати перед перезаписом існуючого info.t</span>
+cp -n text.t info.t           <span class="c"># -n: ніколи не перезаписувати</span>
+cp -u src/* dst/              <span class="c"># -u: копіювати, лише якщо джерело новіше</span>
+cp -p config.ini /tmp/        <span class="c"># -p: зберегти права, власника, час</span>
+cp -a /var/www /backup/www    <span class="c"># -a (archive) = -r + -p + посилання як посилання: для бекапів</span>
+cp -v *.conf /etc/app/        <span class="c"># -v: друкувати, що скопійовано</span></code></pre>
+<p>Без <code>-r</code> каталог не копіюється: <i>cp: -r not specified; omitting directory</i>. Існуючий файл призначення <code>cp</code> перезаписує <b>мовчки</b>.</p>
+<p>Інші способи отримати копію вмісту: <code>cat text.t &gt; info.t</code> (вміст переходить, але права і час — ні; новий файл отримає типові права), <code>dd if=text.t of=info.t</code>, <code>rsync text.t info.t</code>. А от <code>copy</code> — команда Windows; <code>mv</code> перемістить, а не скопіює; <code>ln</code> створить посилання, а не незалежну копію.</p>
+
+<h3><code>mv</code> — перемістити або перейменувати</h3>
+<p>У Linux немає окремої команди «перейменувати»: перейменування — це переміщення в той самий каталог під новим іменем.</p>
+<pre data-lang="bash"><code>mv text.t info.t              <span class="c"># перейменувати: text.t зникає, з'являється info.t</span>
+mv text.t ~/                  <span class="c"># перенести в домашній каталог (ім'я лишається)</span>
+mv text.t $HOME/              <span class="c"># те саме через змінну</span>
+mv text.t /home/user/         <span class="c"># те саме абсолютним шляхом (якщо ваш логін user)</span>
+mv text.t ~/notes.txt         <span class="c"># перенести і одразу перейменувати</span>
+mv *.jpg photos/              <span class="c"># кілька файлів у каталог</span>
+mv old_dir new_dir            <span class="c"># каталоги переміщуються без -r</span>
+mv -i a b                     <span class="c"># спитати перед перезаписом</span>
+mv -n a b                     <span class="c"># не перезаписувати</span></code></pre>
+<ul>
+<li>Якщо призначення — <b>існуючий каталог</b>, файл переїде всередину. Якщо такого каталогу немає — файл буде перейменовано. Тому <code>mv text.t backup</code> дає різний результат залежно від того, чи є каталог <code>backup</code>. Скісна риска в кінці (<code>backup/</code>) захищає: якщо каталогу немає, буде помилка, а не перейменування.</li>
+<li>У межах однієї файлової системи <code>mv</code> не копіює дані, а лише змінює запис у каталозі, тому навіть гігабайтний файл переміщується миттєво.</li>
+<li><code>rename</code> існує як окрема утиліта для масового перейменування за шаблоном (<code>rename 's/\.txt$/.md/' *.txt</code>), але синтаксис відрізняється в різних дистрибутивах. Базова відповідь на «як перейменувати» — <code>mv</code>.</li>
+</ul>
+<div class="callout exam"><div class="callout-title">Пастка: <code>$USER</code> vs <code>$HOME</code></div><p><code>mv text.t $HOME/</code> → у домашній каталог (наприклад, <code>/home/anna</code>). <code>mv text.t $USER/</code> → <code>$USER</code> містить лише ім'я <code>anna</code>, тож це відносний шлях <code>anna/</code> у поточному каталозі. Майже завжди такого каталогу немає, і команда видасть помилку.</p></div>
+
+<h2 id="delete">Видалення: <code>rm</code>, <code>rmdir</code> і всі сценарії з тесту<a class="h-anchor" href="#delete" aria-label="Посилання на розділ">#</a></h2>
+<p>У терміналі немає кошика. Видалений файл зникає одразу, тому опції <code>rm</code> треба знати точно.</p>
+<div class="table-wrap"><table>
+<thead><tr><th>Опція</th><th>Значення</th></tr></thead>
+<tbody>
+<tr><td><code>-r</code>, <code>-R</code></td><td><b>recursive</b>: видаляти каталоги разом із вмістом</td></tr>
+<tr><td><code>-f</code></td><td><b>force</b>: не питати підтверджень, мовчати про неіснуючі файли, видаляти захищені від запису (якщо є право на каталог)</td></tr>
+<tr><td><code>-i</code></td><td><b>interactive</b>: питати про кожен файл</td></tr>
+<tr><td><code>-I</code></td><td>спитати один раз, якщо файлів більше трьох або є <code>-r</code></td></tr>
+<tr><td><code>-d</code></td><td>видаляти порожні каталоги (як <code>rmdir</code>)</td></tr>
+<tr><td><code>-v</code></td><td>друкувати кожен видалений файл</td></tr>
+</tbody></table></div>
+<p><code>rmdir</code> видаляє <b>лише порожній</b> каталог; якщо в ньому щось є — <i>Directory not empty</i>. <code>rmdir -p a/b/c</code> видалить <code>c</code>, потім <code>b</code>, потім <code>a</code>, якщо всі вони стануть порожніми.</p>
+<div class="table-wrap"><table>
+<thead><tr><th>Задача</th><th>Правильно</th><th>Чому схожі варіанти не підходять</th></tr></thead>
+<tbody>
+<tr><td>Видалити <b>всі файли</b> з каталогу <code>data</code></td><td><code>rm data/*</code>, <code>rm -f data/*</code></td><td><code>rm data</code> — помилка (це каталог). Підкаталоги без <code>-r</code> не видаляться, з'явиться повідомлення про них. Приховані файли <code>*</code> не зачепить</td></tr>
+<tr><td>Видалити <b>весь вміст</b> <code>data</code> (з підкаталогами), сам каталог залишити</td><td><code>rm -r data/*</code>, <code>rm -rf data/*</code>; разом із прихованими — <code>find data -mindepth 1 -delete</code></td><td><code>rm -r data</code> видалить і сам каталог. <code>rm data/*</code> без <code>-r</code> не видалить підкаталоги</td></tr>
+<tr><td>Видалити <b>порожній</b> каталог <code>data</code> з домашнього</td><td><code>rmdir ~/data</code>, <code>rm -d ~/data</code>, <code>rm -r ~/data</code></td><td><code>rm ~/data</code> без опцій — <i>Is a directory</i>. <code>rmdir</code> для непорожнього — помилка</td></tr>
+<tr><td>Видалити <b>непорожній</b> каталог <code>data</code> з домашнього</td><td><code>rm -r ~/data</code>, <code>rm -rf ~/data</code>, <code>rm -R ~/data</code></td><td><code>rmdir ~/data</code> не спрацює. <code>rm -r ~/data/*</code> очистить вміст, але <b>залишить</b> каталог. <code>rm -i ~/data</code> без <code>-r</code> — <i>Is a directory</i></td></tr>
+<tr><td>Видалити всі файли в <b>поточному</b> каталозі</td><td><code>rm *</code>, <code>rm ./*</code>, <code>rm -f *</code></td><td><code>rm .</code> — помилка (не можна видалити <code>.</code>). <code>rm -r *</code> зачепить і підкаталоги — це вже «все», а не «файли»</td></tr>
+</tbody></table></div>
+<div class="callout warn"><div class="callout-title">Обережно</div><p><code>rm -rf</code> з помилкою в шляху — класична катастрофа. Пробіл у <code>rm -rf / tmp/x</code> видаляє корінь. Звичка: спочатку <code>ls</code> з тим самим шаблоном, потім <code>rm</code>. У скриптах — <code>rm -rf "${DIR:?}/"*</code>: якщо змінна порожня, bash зупиниться замість <code>rm -rf /*</code>.</p></div>
+
+<h2 id="view">Перегляд вмісту файлів<a class="h-anchor" href="#view" aria-label="Посилання на розділ">#</a></h2>
+<div class="table-wrap"><table>
+<thead><tr><th>Команда</th><th>Що робить</th><th>Корисні опції</th></tr></thead>
+<tbody>
+<tr><td><code>cat file</code></td><td>виводить <b>весь</b> файл на екран (concatenate — також склеює кілька файлів: <code>cat a b &gt; ab</code>)</td><td><code>-n</code> номери рядків, <code>-A</code> показати невидимі символи</td></tr>
+<tr><td><code>tac file</code></td><td>те саме, але рядки у зворотному порядку</td><td>—</td></tr>
+<tr><td><code>less file</code></td><td>посторінковий перегляд з прокруткою вгору-вниз і пошуком; не читає весь файл одразу, тому підходить для гігабайтних логів</td><td>пробіл / <kbd>b</kbd>, <code>/текст</code>, <kbd>n</kbd>, <kbd>G</kbd> у кінець, <kbd>g</kbd> на початок, <kbd>q</kbd> вихід; <code>less +F</code> — як <code>tail -f</code></td></tr>
+<tr><td><code>more file</code></td><td>старший посторінковий переглядач: в основному вниз</td><td>пробіл — сторінка, <kbd>q</kbd> — вихід</td></tr>
+<tr><td><code>head file</code></td><td>перші 10 рядків</td><td><code>-n 20</code>, <code>-c 100</code> (байти)</td></tr>
+<tr><td><code>tail file</code></td><td>останні 10 рядків</td><td><code>-n 50</code>; <b><code>-f</code></b> стежити за файлом наживо; <code>-F</code> — те саме, але переживе ротацію логу</td></tr>
+<tr><td><code>nl file</code></td><td>виводить з номерами рядків</td><td>—</td></tr>
+<tr><td><code>wc file</code></td><td>рахує рядки, слова, байти</td><td><code>-l</code> рядки, <code>-w</code> слова, <code>-c</code> байти</td></tr>
+<tr><td><code>file name</code></td><td>визначає тип вмісту</td><td>—</td></tr>
+</tbody></table></div>
+<pre data-lang="bash"><code>cat text.t                      <span class="c"># показати вміст</span>
+less /var/log/syslog            <span class="c"># гортати великий лог</span>
+head -n 5 /etc/passwd           <span class="c"># перші 5 рядків</span>
+tail -n 100 -f /var/log/nginx/access.log   <span class="c"># останні 100 і далі наживо; вихід Ctrl+C</span>
+sed -n '10,20p' file            <span class="c"># рядки з 10 по 20</span>
+head -n 20 file | tail -n 11    <span class="c"># те саме без sed</span>
+wc -l /etc/passwd               <span class="c"># скільки облікових записів</span></code></pre>
+<div class="callout exam"><div class="callout-title">Пастка: <code>echo</code> не читає файли</div><p><code>echo text.t</code> друкує <b>рядок</b> «text.t», а не вміст файла. Вміст покажуть <code>cat</code>, <code>less</code>, <code>more</code> (а також <code>head</code>/<code>tail</code> частково). <code>type text.t</code> у Windows показує вміст, а в bash повідомить, що такої команди немає.</p></div>
+
+<h3>Текстові редактори в терміналі</h3>
+<p>На сервері графічного редактора немає, тож треба вміти хоча б відкрити, змінити і зберегти файл.</p>
+<div class="compare">
+<div><h4>nano — простий</h4><ul><li><code>nano file</code> — відкрити</li><li>редагуєте одразу</li><li><kbd>Ctrl</kbd>+<kbd>O</kbd>, Enter — зберегти</li><li><kbd>Ctrl</kbd>+<kbd>X</kbd> — вийти</li><li>підказки внизу екрана (<code>^</code> = Ctrl)</li></ul></div>
+<div><h4>vi / vim — є всюди</h4><ul><li><code>vi file</code> — відкрити в <b>командному режимі</b></li><li><kbd>i</kbd> — режим вставки, редагуєте</li><li><kbd>Esc</kbd> — назад у командний</li><li><code>:w</code> зберегти, <code>:q</code> вийти, <code>:wq</code> або <code>:x</code> — обидва, <code>:q!</code> — вийти без збереження</li><li><code>dd</code> — видалити рядок, <code>/текст</code> — пошук, <code>u</code> — скасувати</li></ul></div>
+</div>
+
+<h2 id="links">Inode, жорсткі й символічні посилання<a class="h-anchor" href="#links" aria-label="Посилання на розділ">#</a></h2>
+<p>Щоб зрозуміти посилання, треба знати, як файл зберігається на диску. Файл складається з трьох частин:</p>
+<ul>
+<li><b>Блоки даних</b> — сам вміст.</li>
+<li><b>Inode</b> (index node) — службовий запис із номером: розмір, власник, права, час, адреси блоків даних і <b>лічильник посилань</b>. Імені файла в inode <b>немає</b>.</li>
+<li><b>Запис у каталозі</b> — пара «ім'я → номер inode». Каталог — це просто таблиця таких пар.</li>
+</ul>
+<figure><div class="figure wide">
+<svg class="dg" viewBox="0 0 720 230" role="img" aria-label="Жорстке посилання: два імена text.t і text.lnk вказують на той самий inode 1234, який вказує на дані. Символічне посилання link.sym має власний inode 5678, у даних якого записано шлях text.t">
+<defs><marker id="l2l" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0L10 5L0 10z" class="arrow-acc"/></marker><marker id="l2w" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0L10 5L0 10z" class="arrow-warm"/></marker></defs>
+<text x="80" y="22" text-anchor="middle" class="t-bold">Імена в каталозі</text><text x="330" y="22" text-anchor="middle" class="t-bold">Inode</text><text x="590" y="22" text-anchor="middle" class="t-bold">Дані на диску</text>
+<rect x="20" y="40" width="120" height="34" rx="7" class="acc"/><text x="80" y="62" text-anchor="middle" class="t-mono">text.t</text>
+<rect x="20" y="88" width="120" height="34" rx="7" class="acc"/><text x="80" y="110" text-anchor="middle" class="t-mono">text.lnk</text>
+<rect x="20" y="160" width="120" height="34" rx="7" class="warm"/><text x="80" y="182" text-anchor="middle" class="t-mono">link.sym</text>
+<rect x="250" y="52" width="160" height="58" rx="8" class="box"/><text x="330" y="76" text-anchor="middle" class="t-bold">inode 1234</text><text x="330" y="96" text-anchor="middle" class="t-small t-muted">links: 2, права, розмір</text>
+<rect x="250" y="148" width="160" height="58" rx="8" class="box"/><text x="330" y="172" text-anchor="middle" class="t-bold">inode 5678</text><text x="330" y="192" text-anchor="middle" class="t-small t-muted">тип: symlink</text>
+<rect x="510" y="52" width="160" height="58" rx="8" class="vio"/><text x="590" y="86" text-anchor="middle" class="t-small">«Hello, world…»</text>
+<rect x="510" y="148" width="160" height="58" rx="8" class="vio"/><text x="590" y="182" text-anchor="middle" class="t-mono t-small">шлях: "text.t"</text>
+<path d="M140 57 L248 72" class="ln-acc" marker-end="url(#l2l)"/><path d="M140 105 L248 92" class="ln-acc" marker-end="url(#l2l)"/>
+<path d="M410 81 L508 81" class="ln-acc" marker-end="url(#l2l)"/>
+<path d="M140 177 L248 177" class="ln-warm" marker-end="url(#l2w)"/><path d="M410 177 L508 177" class="ln-warm" marker-end="url(#l2w)"/>
+<path d="M590 146 C 540 134, 40 140, 10 112 C 2 98, 4 66, 18 58" class="ln-warm dash" marker-end="url(#l2w)"/>
+</svg></div>
+<figcaption><b>Жорстке посилання</b> — друге ім'я того самого inode. <b>Символічне</b> — окремий маленький файл, у якому записано шлях до іншого імені.</figcaption></figure>
+<h3>Синтаксис: спочатку оригінал, потім посилання</h3>
+<pre data-lang="bash"><code>ln text.t text.lnk          <span class="c"># ЖОРСТКЕ посилання text.lnk на text.t</span>
+ln -s text.t text.lnk       <span class="c"># СИМВОЛІЧНЕ (soft) посилання text.lnk → text.t</span>
+ln -s /opt/app/v2 current   <span class="c"># типовий прийом: current вказує на активну версію</span>
+ln -sf /opt/app/v3 current  <span class="c"># -f: перезаписати існуюче посилання</span>
+ls -li                      <span class="c"># -i покаже номери inode: у жорстких посилань вони однакові</span>
+readlink -f current         <span class="c"># куди насправді вказує символічне посилання</span>
+unlink text.lnk             <span class="c"># видалити посилання (або просто rm text.lnk)</span></code></pre>
+<p>Запам'ятати порядок допомагає <code>cp</code>: «що» → «куди». <code>ln text.lnk text.t</code> з переставленими аргументами спробує створити <code>text.t</code> як посилання на неіснуючий <code>text.lnk</code> і видасть помилку (бо <code>text.t</code> вже існує або <code>text.lnk</code> немає).</p>
+<div class="table-wrap"><table>
+<thead><tr><th>Властивість</th><th>Жорстке (<code>ln</code>)</th><th>Символічне (<code>ln -s</code>)</th></tr></thead>
+<tbody>
+<tr><td>Що це</td><td>ще одне ім'я того самого inode</td><td>окремий файл-«ярлик» зі шляхом</td></tr>
+<tr><td>Номер inode</td><td>той самий, що в оригіналу</td><td>власний</td></tr>
+<tr><td>Видалили оригінал</td><td>дані живі, поки є хоч одне ім'я (лічильник посилань &gt; 0)</td><td>посилання «зламане» (dangling), вказує в нікуди</td></tr>
+<tr><td>Між файловими системами / розділами</td><td>ні</td><td>так</td></tr>
+<tr><td>На каталог</td><td>ні (заборонено)</td><td>так</td></tr>
+<tr><td>Вигляд у <code>ls -l</code></td><td>звичайний файл, лічильник посилань 2+</td><td><code>l</code> на початку і <code>name -&gt; target</code></td></tr>
+<tr><td>Права</td><td>спільні з оригіналом (це той самий inode)</td><td>завжди <code>rwxrwxrwx</code>, реально діють права цілі</td></tr>
+</tbody></table></div>
+<p>Тепер зрозуміло, чому в <code>ls -l</code> є колонка «кількість посилань»: для каталогу вона дорівнює 2 + кількість підкаталогів (сам запис, запис <code>.</code> всередині, і <code>..</code> у кожному підкаталозі).</p>
+
+<h2 id="find">Пошук файлів: <code>find</code>, <code>locate</code>, <code>which</code>, <code>whereis</code><a class="h-anchor" href="#find" aria-label="Посилання на розділ">#</a></h2>
+<h3><code>find</code> — пошук обходом дерева</h3>
+<p>Синтаксис: <code>find [де шукати] [умови] [дія]</code>. <code>find</code> реально обходить каталоги, тому знаходить усе актуальне, але на всьому диску працює повільно.</p>
+<div class="table-wrap"><table>
+<thead><tr><th>Умова / дія</th><th>Значення</th><th>Приклад</th></tr></thead>
+<tbody>
+<tr><td><code>-name</code></td><td>ім'я за шаблоном, з урахуванням регістру</td><td><code>find / -name text.t</code>, <code>find . -name "*.log"</code></td></tr>
+<tr><td><code>-iname</code></td><td>те саме без урахування регістру</td><td><code>find . -iname "readme*"</code></td></tr>
+<tr><td><code>-type f</code> / <code>d</code> / <code>l</code></td><td>лише файли / каталоги / посилання</td><td><code>find /etc -type d -name "ssh*"</code></td></tr>
+<tr><td><code>-size</code></td><td>розмір: <code>+100M</code> більше, <code>-1k</code> менше</td><td><code>find /var -size +500M</code></td></tr>
+<tr><td><code>-mtime</code>, <code>-mmin</code></td><td>змінено <code>N</code> днів / хвилин тому (<code>-7</code> — за останні 7)</td><td><code>find /var/log -mtime +30</code></td></tr>
+<tr><td><code>-user</code>, <code>-group</code></td><td>за власником / групою</td><td><code>find /home -user anna</code></td></tr>
+<tr><td><code>-perm</code></td><td>за правами</td><td><code>find / -perm -4000</code> — файли з SUID</td></tr>
+<tr><td><code>-empty</code></td><td>порожні файли й каталоги</td><td><code>find . -empty -delete</code></td></tr>
+<tr><td><code>-maxdepth N</code></td><td>не глибше N рівнів</td><td><code>find . -maxdepth 1 -type f</code> — лише файли поточного каталогу</td></tr>
+<tr><td><code>-path</code></td><td>шаблон для <b>усього шляху</b>, а не імені</td><td><code>find / -path "*/conf/*.xml"</code></td></tr>
+<tr><td><code>-exec cmd {} \;</code></td><td>виконати команду для кожного знайденого (<code>{}</code> — ім'я)</td><td><code>find . -name "*.tmp" -exec rm {} \;</code></td></tr>
+<tr><td><code>-delete</code></td><td>видалити знайдене</td><td><code>find /tmp -mtime +7 -delete</code></td></tr>
+</tbody></table></div>
+<pre data-lang="bash"><code>find / -name text.t 2&gt;/dev/null      <span class="c"># по всій ФС, без засмічення «Permission denied»</span>
+find . -name text.t                  <span class="c"># у поточному каталозі та всіх підкаталогах</span>
+find ~ -type f -name "*.pdf" -size +10M
+find /var/log -name "*.gz" -mtime +30 -delete
+find . -type f -name "*.sh" -exec chmod +x {} \;</code></pre>
+<div class="callout exam"><div class="callout-title">Чому <code>find / -path text.t</code> нічого не знайде</div><p><code>-path</code> порівнює шаблон з <b>повним</b> шляхом, наприклад <code>/home/anna/text.t</code>. Рядок <code>text.t</code> без зірочки ніколи не дорівнює шляху, що починається з <code>/</code>. Працювало б <code>find / -path "*/text.t"</code>. Для пошуку за іменем потрібен <code>-name</code>.</p></div>
+
+<h3><code>locate</code> — пошук у базі</h3>
+<p><code>locate text.t</code> шукає не на диску, а в заздалегідь створеній базі імен (оновлюється щодня через cron або вручну <code>sudo updatedb</code>). Тому працює миттєво, але може не знайти файл, створений після останнього оновлення бази, і показати вже видалений. <code>locate</code> шукає підрядок у повному шляху: <code>locate "text.t"</code> знайде і <code>/home/a/text.t</code>, і <code>/tmp/mytext.txt</code>. На мінімальних системах пакет (<code>mlocate</code>/<code>plocate</code>) треба встановити окремо.</p>
+
+<h3>Де лежить програма: <code>which</code>, <code>whereis</code>, <code>type</code></h3>
+<div class="table-wrap"><table>
+<thead><tr><th>Команда</th><th>Що шукає</th><th>Приклад виводу</th></tr></thead>
+<tbody>
+<tr><td><code>which python3</code></td><td>який виконуваний файл запуститься — шукає <b>лише в каталогах <code>$PATH</code></b></td><td><code>/usr/bin/python3</code></td></tr>
+<tr><td><code>whereis ls</code></td><td>бінарний файл, man-сторінку і вихідні коди у стандартних каталогах</td><td><code>ls: /usr/bin/ls /usr/share/man/man1/ls.1.gz</code></td></tr>
+<tr><td><code>type ls</code></td><td>чим є ім'я для bash: alias, вбудована команда, функція, файл</td><td><code>ls is aliased to `ls --color=auto'</code></td></tr>
+<tr><td><code>command -v git</code></td><td>шлях до команди (зручно в скриптах для перевірки, чи встановлено)</td><td><code>/usr/bin/git</code></td></tr>
+</tbody></table></div>
+<p><code>which text.t</code> для звичайного текстового файла нічого не знайде: це не програма в <code>PATH</code>.</p>
+
+<h2 id="grep">Пошук тексту у файлах: <code>grep</code><a class="h-anchor" href="#grep" aria-label="Посилання на розділ">#</a></h2>
+<p><code>grep шаблон файли</code> друкує рядки, де є збіг. Шаблон — регулярний вираз.</p>
+<div class="table-wrap"><table>
+<thead><tr><th>Опція</th><th>Значення</th></tr></thead>
+<tbody>
+<tr><td><code>-i</code></td><td>без урахування регістру</td></tr>
+<tr><td><code>-r</code> / <code>-R</code></td><td>рекурсивно по каталогах</td></tr>
+<tr><td><code>-n</code></td><td>номери рядків</td></tr>
+<tr><td><code>-v</code></td><td>інвертувати: рядки <b>без</b> збігу</td></tr>
+<tr><td><code>-c</code></td><td>лише кількість рядків зі збігом</td></tr>
+<tr><td><code>-l</code></td><td>лише імена файлів, де є збіг</td></tr>
+<tr><td><code>-w</code></td><td>лише ціле слово (<code>-w cat</code> не знайде <code>category</code>)</td></tr>
+<tr><td><code>-E</code></td><td>розширені регулярні вирази (<code>|</code>, <code>+</code>, <code>?</code>, <code>()</code>), колишній <code>egrep</code></td></tr>
+<tr><td><code>-o</code></td><td>друкувати лише збіг, а не весь рядок</td></tr>
+<tr><td><code>-A 3</code> / <code>-B 3</code> / <code>-C 3</code></td><td>3 рядки після / до / навколо збігу</td></tr>
+</tbody></table></div>
+<div class="table-wrap"><table>
+<thead><tr><th>Регулярний вираз</th><th>Значення</th><th>Приклад</th></tr></thead>
+<tbody>
+<tr><td><code>^</code> / <code>$</code></td><td>початок / кінець рядка</td><td><code>grep '^root' /etc/passwd</code>; <code>grep -v '^#'</code> — прибрати коментарі</td></tr>
+<tr><td><code>.</code></td><td>будь-який один символ</td><td><code>h.t</code> → hat, hot</td></tr>
+<tr><td><code>*</code></td><td>попередній символ 0 або більше разів (не те саме, що <code>*</code> у шаблонах імен!)</td><td><code>ab*c</code> → ac, abc, abbbc</td></tr>
+<tr><td><code>[abc]</code>, <code>[0-9]</code></td><td>один символ з набору</td><td><code>[0-9][0-9]*</code> — число</td></tr>
+<tr><td><code>a|b</code> (з <code>-E</code>)</td><td>або</td><td><code>grep -E 'error|fail'</code></td></tr>
+</tbody></table></div>
+<pre data-lang="bash"><code>grep -rin "error" /var/log            <span class="c"># усі помилки в логах, з файлом і номером рядка</span>
+grep -c "Failed password" /var/log/auth.log   <span class="c"># скільки невдалих входів</span>
+grep -v '^#' /etc/ssh/sshd_config | grep -v '^$'   <span class="c"># конфіг без коментарів і порожніх рядків</span>
+ps aux | grep nginx                   <span class="c"># фільтр виводу іншої команди</span>
+grep -l "DB_PASSWORD" -r /var/www     <span class="c"># у яких файлах є пароль БД</span></code></pre>
+
+<h2 id="env">Змінні середовища і <code>PATH</code><a class="h-anchor" href="#env" aria-label="Посилання на розділ">#</a></h2>
+<p><b>Змінна середовища</b> — пара «ім'я = значення», яку оболонка передає кожній запущеній програмі. Ім'я пишуть без <code>$</code>, а значення отримують з <code>$</code>.</p>
+<div class="table-wrap"><table>
+<thead><tr><th>Змінна</th><th>Значення</th><th>Приклад</th></tr></thead>
+<tbody>
+<tr><td><code>PATH</code></td><td>список каталогів через <code>:</code>, де оболонка шукає команди</td><td><code>/usr/local/bin:/usr/bin:/bin</code></td></tr>
+<tr><td><code>HOME</code></td><td>домашній каталог</td><td><code>/home/anna</code></td></tr>
+<tr><td><code>USER</code></td><td>ім'я користувача</td><td><code>anna</code></td></tr>
+<tr><td><code>SHELL</code></td><td>оболонка входу</td><td><code>/bin/bash</code></td></tr>
+<tr><td><code>PWD</code> / <code>OLDPWD</code></td><td>поточний / попередній каталог</td><td><code>/etc</code></td></tr>
+<tr><td><code>LANG</code></td><td>мова і кодування</td><td><code>en_US.UTF-8</code></td></tr>
+<tr><td><code>PS1</code></td><td>формат запрошення</td><td><code>\u@\h:\w\$ </code></td></tr>
+</tbody></table></div>
+<pre data-lang="bash"><code>echo $PATH                  <span class="c"># показати значення PATH</span>
+echo "$HOME"                <span class="c"># у подвійних лапках змінна підставляється</span>
+echo '$HOME'                <span class="c"># в одинарних — ні, надрукує $HOME буквально</span>
+printenv PATH               <span class="c"># те саме, без $</span>
+env                         <span class="c"># усі змінні середовища</span>
+set                         <span class="c"># усі змінні оболонки і функції</span>
+MYVAR=hello                 <span class="c"># змінна оболонки (без пробілів навколо =)</span>
+export MYVAR                <span class="c"># зробити її змінною середовища для дочірніх програм</span>
+export PATH="$PATH:$HOME/bin"   <span class="c"># додати каталог у кінець PATH</span>
+unset MYVAR                 <span class="c"># видалити змінну</span></code></pre>
+<h3>Як працює пошук команди через PATH</h3>
+<ol class="steps">
+<li>Ви вводите <code>python3</code>. Bash перевіряє, чи це alias, функція або вбудована команда.</li>
+<li>Якщо ні — проходить каталогами з <code>PATH</code> зліва направо: <code>/usr/local/bin/python3</code>? <code>/usr/bin/python3</code>? Запускає <b>перший знайдений</b>.</li>
+<li>Не знайшов — <i>command not found</i>.</li>
+</ol>
+<p>Поточний каталог <code>.</code> у <code>PATH</code> навмисно не входить (інакше зловмисник міг би підкласти у ваш каталог файл <code>ls</code>). Тому свій скрипт запускають з явним шляхом: <code>./script.sh</code>, <code>/home/anna/script.sh</code> або <code>bash script.sh</code>.</p>
+<h3>Де зберігати налаштування назавжди</h3>
+<p><code>export</code> діє лише до закриття терміналу. Щоб зберегти, додайте рядок у <code>~/.bashrc</code> (для інтерактивних оболонок) або <code>~/.profile</code> / <code>~/.bash_profile</code> (для оболонки входу) і перечитайте файл: <code>source ~/.bashrc</code> (або <code>. ~/.bashrc</code>). Для всіх користувачів — <code>/etc/environment</code> і <code>/etc/profile.d/*.sh</code>.</p>
+<div class="callout exam"><div class="callout-title">Пастка: синтаксис змінних у різних ОС</div><p>Linux/bash: <code>echo $PATH</code> або <code>echo ${PATH}</code>. Windows cmd: <code>echo %PATH%</code>. PowerShell: <code>$env:PATH</code>. Варіанти <code>echo %PATH</code>, <code>echo #PATH</code> (після <code>#</code> — коментар, буде порожній рядок), <code>echo /PATH/</code> (просто текст) у bash надрукують не значення змінної.</p></div>
+<h3>Псевдоніми та історія</h3>
+<pre data-lang="bash"><code>alias ll='ls -alF'          <span class="c"># створити alias (до кінця сесії; назавжди — у ~/.bashrc)</span>
+alias                       <span class="c"># показати всі</span>
+unalias ll                  <span class="c"># прибрати</span>
+history                     <span class="c"># пронумерований список команд</span>
+!42                         <span class="c"># повторити команду №42</span>
+!!                          <span class="c"># повторити останню</span>
+!ssh                        <span class="c"># повторити останню команду, що починалась з ssh</span></code></pre>
+
+<h2 id="pipes">Потоки, pipes і перенаправлення<a class="h-anchor" href="#pipes" aria-label="Посилання на розділ">#</a></h2>
+<p>Кожна програма в Linux при запуску отримує три відкриті потоки з номерами (файлові дескриптори):</p>
+<div class="term-grid">
+<div class="term"><span class="en">0 · stdin</span><b>Стандартний вхід</b><p>Звідки програма читає дані. За замовчуванням — клавіатура.</p></div>
+<div class="term"><span class="en">1 · stdout</span><b>Стандартний вивід</b><p>Куди пише звичайний результат. За замовчуванням — екран.</p></div>
+<div class="term"><span class="en">2 · stderr</span><b>Потік помилок</b><p>Куди пише повідомлення про помилки. Теж екран, але це <b>окремий</b> потік, тому його можна перенаправити окремо.</p></div>
+</div>
 <figure><div class="figure wide">
 <svg class="dg" viewBox="0 0 720 170" role="img" aria-label="Pipe передає вивід ps aux на вхід grep apache; перенаправлення записує вивід uname у файл">
 <defs><marker id="l2a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0L10 5L0 10z" class="arrow-acc"/></marker></defs>
@@ -155,83 +626,153 @@ chmod +x program.sh &amp;&amp; ./program.sh</code></pre>
 <rect x="252" y="124" width="170" height="40" rx="8" class="warm"/><text x="337" y="149" text-anchor="middle" class="t-mono">mysystem.info</text>
 <text x="440" y="142" class="t-muted"><tspan class="t-mono">&gt;</tspan> перезаписує файл,</text><text x="440" y="160" class="t-muted"><tspan class="t-mono">&gt;&gt;</tspan> дописує в кінець</text>
 </svg></div>
-<figcaption><b>Два механізми.</b> Pipe з'єднує програми, перенаправлення змінює куди йде результат.</figcaption></figure>
-<pre data-lang="bash"><code>ps aux | grep apache          <span class="c"># усі процеси apache</span>
-ls -a | grep myfile           <span class="c"># файли, в імені яких є myfile</span>
-uname -a &gt; mysystem.info      <span class="c"># зберегти інфо про систему у файл</span>
-date &gt;&gt; log.txt               <span class="c"># дописати рядок у кінець log.txt</span></code></pre>
-<h3>Три стандартні потоки і всі види перенаправлення</h3>
-<p>Кожна програма має три потоки з номерами (дескрипторами): <b>0 — stdin</b> (вхід, клавіатура), <b>1 — stdout</b> (звичайний вивід), <b>2 — stderr</b> (повідомлення про помилки). Обидва виводи за замовчуванням ідуть на екран, але перенаправляються окремо.</p>
+<figcaption><b>Два механізми.</b> Pipe з'єднує програми, перенаправлення змінює, куди йде результат.</figcaption></figure>
 <div class="table-wrap"><table>
 <thead><tr><th>Запис</th><th>Що робить</th></tr></thead>
 <tbody>
-<tr><td><code>cmd1 | cmd2</code></td><td>stdout <code>cmd1</code> → stdin <code>cmd2</code> (pipe)</td></tr>
-<tr><td><code>cmd &gt; f</code> = <code>cmd 1&gt; f</code></td><td>stdout у файл, файл перезаписується</td></tr>
-<tr><td><code>cmd &gt;&gt; f</code></td><td>stdout дописується в кінець файла</td></tr>
-<tr><td><code>cmd &lt; f</code></td><td>stdin береться з файла (напр. <code>mysql db &lt; dump.sql</code>)</td></tr>
-<tr><td><code>cmd 2&gt; f</code></td><td><b>лише помилки (stderr)</b> у файл <code>f</code>; звичайний вивід лишається на екрані</td></tr>
-<tr><td><code>cmd &gt; f 2&gt;&amp;1</code> або <code>cmd &amp;&gt; f</code></td><td>і stdout, і stderr в один файл</td></tr>
+<tr><td><code>cmd1 | cmd2</code></td><td><b>pipe</b>: stdout <code>cmd1</code> → stdin <code>cmd2</code>. Обидві програми працюють одночасно</td></tr>
+<tr><td><code>cmd &gt; f</code> = <code>cmd 1&gt; f</code></td><td>stdout у файл; файл створюється або <b>перезаписується</b></td></tr>
+<tr><td><code>cmd &gt;&gt; f</code></td><td>stdout <b>дописується</b> в кінець файла</td></tr>
+<tr><td><code>cmd &lt; f</code></td><td>stdin береться з файла: <code>mysql shop &lt; dump.sql</code>, <code>wc -l &lt; file</code></td></tr>
+<tr><td><code>cmd 2&gt; f</code></td><td><b>лише помилки (stderr)</b> у файл; звичайний вивід лишається на екрані</td></tr>
+<tr><td><code>cmd 2&gt;&gt; f</code></td><td>помилки дописуються у файл</td></tr>
+<tr><td><code>cmd &gt; f 2&gt;&amp;1</code></td><td>stdout у файл, а stderr — туди ж, куди зараз іде stdout. Порядок важливий</td></tr>
+<tr><td><code>cmd &amp;&gt; f</code></td><td>скорочення bash для «обидва потоки у файл»</td></tr>
 <tr><td><code>cmd 2&gt; /dev/null</code></td><td>викинути помилки («чорна діра»)</td></tr>
-<tr><td><code>cmd | tee f</code></td><td>показати на екрані <b>і</b> записати у файл</td></tr>
+<tr><td><code>cmd &gt; /dev/null 2&gt;&amp;1</code></td><td>повністю беззвучний запуск (типово в cron)</td></tr>
+<tr><td><code>cmd | tee f</code> / <code>tee -a f</code></td><td>показати на екрані <b>і</b> записати (дописати) у файл</td></tr>
+<tr><td><code>cmd 2&gt;&amp;1 | grep err</code></td><td>пропустити через pipe і помилки теж (pipe за замовчуванням бере лише stdout)</td></tr>
 </tbody></table></div>
-<pre data-lang="bash"><code>find / -name "*.conf" 2&gt; /dev/null     <span class="c"># шукати, не засмічуючи екран «Permission denied»</span>
-./deploy.sh &gt; deploy.log 2&gt;&amp;1          <span class="c"># повний лог: вивід + помилки</span></code></pre>
+<h3>Чому порядок у <code>&gt; f 2&gt;&amp;1</code> важливий</h3>
+<p><code>2&gt;&amp;1</code> означає «направ потік 2 туди, куди <b>зараз</b> указує потік 1». Bash читає перенаправлення зліва направо:</p>
+<pre data-lang="bash"><code>ls /etc /nope &gt; out.txt 2&gt;&amp;1    <span class="c"># 1 → файл; потім 2 → туди ж (файл). Обидва у файлі ✔</span>
+ls /etc /nope 2&gt;&amp;1 &gt; out.txt    <span class="c"># 2 → куди зараз 1 (екран); потім 1 → файл. Помилка на екрані ✘</span></code></pre>
+<div class="callout exam"><div class="callout-title">Що означає «Redirect 2&gt;abc»</div><p>Потік помилок (stderr, дескриптор 2) записується у файл з назвою <code>abc</code>, файл перезаписується. Звичайний вивід (stdout) не змінюється і йде на екран. Це <b>не</b> «записати у файл 2», не «дописати» (для дописування — <code>2&gt;&gt;</code>) і не «вивід на вхід команди abc» (це був би pipe).</p></div>
+<h3>Here-document і here-string</h3>
+<pre data-lang="bash"><code>cat &gt; /etc/motd &lt;&lt;EOF          <span class="c"># here-doc: кілька рядків на stdin до слова EOF</span>
+Welcome to $HOSTNAME
+Maintenance: Sunday 02:00
+EOF
+grep -c a &lt;&lt;&lt; "banana"          <span class="c"># here-string: рядок на stdin → 1</span></code></pre>
 
-<h3>Ланцюжки команд: ; &amp; &amp;&amp; ||</h3>
+<h2 id="chains">Ланцюжки команд і коди завершення<a class="h-anchor" href="#chains" aria-label="Посилання на розділ">#</a></h2>
+<p>Кожна команда, завершуючись, повертає <b>код виходу</b> (exit status): <code>0</code> — успіх, будь-яке інше число (1–255) — помилка. Останній код зберігається в <code>$?</code>.</p>
+<pre data-lang="bash"><code>ls /etc &gt; /dev/null; echo $?     <span class="c"># 0</span>
+ls /nope 2&gt; /dev/null; echo $?   <span class="c"># 2</span>
+grep -q root /etc/passwd; echo $?   <span class="c"># 0 — знайдено (-q: нічого не друкувати)</span></code></pre>
 <div class="table-wrap"><table>
-<thead><tr><th>Запис</th><th>Коли виконується <code>cmd2</code></th></tr></thead>
+<thead><tr><th>Запис</th><th>Коли виконується <code>cmd2</code></th><th>Дані передаються?</th></tr></thead>
 <tbody>
-<tr><td><code>cmd1 ; cmd2</code></td><td>завжди, після <code>cmd1</code> (дані не передаються)</td></tr>
-<tr><td><code>cmd1 &amp;&amp; cmd2</code></td><td>лише якщо <code>cmd1</code> <b>успішна</b> (код 0)</td></tr>
-<tr><td><code>cmd1 || cmd2</code></td><td>лише якщо <code>cmd1</code> <b>завершилась помилкою</b></td></tr>
-<tr><td><code>cmd1 &amp; cmd2</code></td><td>одразу: <code>cmd1</code> іде у фон (background)</td></tr>
+<tr><td><code>cmd1 ; cmd2</code></td><td>завжди, після завершення <code>cmd1</code></td><td>ні</td></tr>
+<tr><td><code>cmd1 &amp;&amp; cmd2</code></td><td>лише якщо <code>cmd1</code> <b>успішна</b> (код 0) — логічне «І»</td><td>ні</td></tr>
+<tr><td><code>cmd1 || cmd2</code></td><td>лише якщо <code>cmd1</code> <b>завершилась помилкою</b> — логічне «АБО»</td><td>ні</td></tr>
+<tr><td><code>cmd1 &amp; cmd2</code></td><td>одразу: <code>cmd1</code> запускається у фоні, <code>cmd2</code> — паралельно</td><td>ні</td></tr>
+<tr><td><code>cmd1 | cmd2</code></td><td>одночасно</td><td><b>так</b>: stdout → stdin</td></tr>
 </tbody></table></div>
-<pre data-lang="bash"><code>mkdir -p /opt/app &amp;&amp; cd /opt/app          <span class="c"># перейти, тільки якщо каталог створено</span>
-ping -c1 db.local || echo "БД недоступна"   <span class="c"># повідомлення лише при помилці</span></code></pre>
-<p>Не плутайте: тільки <code>|</code> передає <b>дані</b> між командами; <code>;</code>, <code>&amp;&amp;</code>, <code>||</code> керують лише <b>порядком</b> запуску.</p>
+<pre data-lang="bash"><code>mkdir -p /opt/app &amp;&amp; cd /opt/app                 <span class="c"># перейти, тільки якщо каталог створено</span>
+ping -c1 db.local &gt;/dev/null || echo "БД недоступна"
+apt update &amp;&amp; apt upgrade -y                      <span class="c"># оновити, тільки якщо список пакетів отримано</span>
+make build &amp;&amp; echo OK || echo FAIL                <span class="c"># типова конструкція «успіх / провал»</span>
+(cd /tmp &amp;&amp; tar czf backup.tgz data)             <span class="c"># дужки: підоболонка, ваш поточний каталог не зміниться</span></code></pre>
+<h3>Фонові задачі</h3>
+<pre data-lang="bash"><code>./long_job.sh &amp;        <span class="c"># запустити у фоні; bash надрукує [1] 12345 (номер задачі і PID)</span>
+jobs                   <span class="c"># список фонових задач поточної оболонки</span>
+fg %1                  <span class="c"># повернути задачу 1 на передній план</span>
+bg %1                  <span class="c"># продовжити призупинену (Ctrl+Z) задачу у фоні</span>
+nohup ./job.sh &gt; job.log 2&gt;&amp;1 &amp;   <span class="c"># не завершуватись при закритті терміналу</span></code></pre>
 
-<h2 id="more">Ще команди, про які часто питають<a class="h-anchor" href="#more" aria-label="Посилання на розділ">#</a></h2>
+<h2 id="text">Обробка тексту в конвеєрах<a class="h-anchor" href="#text" aria-label="Посилання на розділ">#</a></h2>
+<p>Сила командного рядка — у поєднанні маленьких програм. Кожна робить одну річ і читає stdin, тому їх можна ланцюжити.</p>
 <div class="table-wrap"><table>
-<thead><tr><th>Задача</th><th>Команда</th></tr></thead>
+<thead><tr><th>Команда</th><th>Що робить</th><th>Приклад</th></tr></thead>
 <tbody>
-<tr><td>Де я / хто я</td><td><code>pwd</code>, <code>whoami</code></td></tr>
-<tr><td>Створити вкладені каталоги</td><td><code>mkdir -p a/b/c</code></td></tr>
-<tr><td>Видалити <b>порожній</b> каталог / каталог з вмістом</td><td><code>rmdir d</code> (або <code>rm -d d</code>) / <code>rm -r d</code>, без підтверджень <code>rm -rf d</code></td></tr>
-<tr><td>Знайти файли за іменем</td><td><code>find /var -name "*.log"</code></td></tr>
-<tr><td>Знайти текст у файлах (рекурсивно, без регістру, з номерами рядків)</td><td><code>grep -rin "error" /var/log</code>; <code>grep -v</code> — рядки <b>без</b> збігу</td></tr>
-<tr><td>Початок / кінець файла; стежити за логом наживо</td><td><code>head -n 20 f</code>, <code>tail -n 20 f</code>, <code>tail -f app.log</code></td></tr>
-<tr><td>Порахувати рядки / слова</td><td><code>wc -l f</code>, <code>wc -w f</code></td></tr>
-<tr><td>Відсортувати / прибрати повтори / вирізати колонку</td><td><code>sort</code>, <code>uniq</code>, <code>cut -d: -f1 /etc/passwd</code></td></tr>
-<tr><td>Гортати великий файл</td><td><code>less f</code> (вихід — <code>q</code>)</td></tr>
-<tr><td>Вільне місце на дисках / розмір каталогу / пам'ять</td><td><code>df -h</code>, <code>du -sh dir</code>, <code>free -h</code></td></tr>
-<tr><td>Завершити процес</td><td><code>kill PID</code> (м'яко, SIGTERM), <code>kill -9 PID</code> (примусово), <code>killall nginx</code></td></tr>
-<tr><td>Архів: створити / розпакувати</td><td><code>tar -czvf a.tar.gz dir</code>, <code>tar -xzvf a.tar.gz</code></td></tr>
-<tr><td>Служби (systemd)</td><td><code>systemctl status|start|stop|restart|enable nginx</code></td></tr>
-<tr><td>Завантажити файл / зробити HTTP-запит</td><td><code>wget URL</code>, <code>curl -I URL</code></td></tr>
-<tr><td>Де лежить програма / історія команд</td><td><code>which python3</code>, <code>history</code></td></tr>
+<tr><td><code>sort</code></td><td>сортує рядки; <code>-n</code> числово, <code>-r</code> зворотно, <code>-k2</code> за 2-ю колонкою, <code>-t:</code> роздільник, <code>-u</code> унікальні</td><td><code>sort -t: -k3 -n /etc/passwd</code></td></tr>
+<tr><td><code>uniq</code></td><td>прибирає <b>сусідні</b> повтори (тому спочатку <code>sort</code>); <code>-c</code> рахує</td><td><code>sort | uniq -c</code></td></tr>
+<tr><td><code>cut</code></td><td>вирізає колонки: <code>-d</code> роздільник, <code>-f</code> номери полів, <code>-c</code> символи</td><td><code>cut -d: -f1,7 /etc/passwd</code></td></tr>
+<tr><td><code>tr</code></td><td>замінює або видаляє символи</td><td><code>tr 'a-z' 'A-Z'</code>, <code>tr -d '\r'</code></td></tr>
+<tr><td><code>sed</code></td><td>потоковий редактор: заміна, видалення рядків</td><td><code>sed 's/http:/https:/g' file</code>; <code>sed -i</code> змінює файл на місці</td></tr>
+<tr><td><code>awk</code></td><td>обробка колонок, умови, підрахунки</td><td><code>awk '{print $1}' access.log</code></td></tr>
+<tr><td><code>xargs</code></td><td>перетворює рядки зі stdin на <b>аргументи</b> команди</td><td><code>find . -name "*.tmp" | xargs rm</code></td></tr>
+<tr><td><code>diff</code></td><td>різниця між файлами</td><td><code>diff -u old.conf new.conf</code></td></tr>
 </tbody></table></div>
+<h3>Розібраний приклад: 5 IP-адрес з найбільшою кількістю запитів</h3>
+<pre data-lang="bash"><code>awk '{print $1}' /var/log/nginx/access.log | sort | uniq -c | sort -rn | head -5
+<span class="c">#   │ перша колонка = IP  │ групуємо     │ рахуємо  │ за спаданням │ топ-5</span>
+<span class="c"># Вивід:</span>
+<span class="c">#   1532 203.0.113.7</span>
+<span class="c">#    877 198.51.100.23</span>
+<span class="c">#    ...</span></code></pre>
+<h3>Ще кілька реальних конвеєрів</h3>
+<pre data-lang="bash"><code>cut -d: -f1 /etc/passwd | sort                    <span class="c"># усі користувачі за абеткою</span>
+grep -v nologin /etc/passwd | cut -d: -f1         <span class="c"># користувачі, які можуть входити</span>
+du -sh /var/* 2&gt;/dev/null | sort -rh | head       <span class="c"># найбільші каталоги у /var</span>
+ps aux --sort=-%mem | head -6                     <span class="c"># 5 процесів, що найбільше їдять пам'ять</span>
+history | awk '{print $2}' | sort | uniq -c | sort -rn | head   <span class="c"># ваші улюблені команди</span></code></pre>
 
 <h2 id="users">Користувачі та групи<a class="h-anchor" href="#users" aria-label="Посилання на розділ">#</a></h2>
-<p>Linux — повністю <b>багатокористувацька</b> ОС. Кожен користувач і група мають ім'я та числовий ідентифікатор (UID/GID). Користувач має одну <b>основну (primary)</b> групу і може мати кілька <b>додаткових (secondary)</b>.</p>
-<ul>
-<li><code>/etc/passwd</code> — облікові записи; <code>/etc/shadow</code> — хеші паролів (читає лише root); <code>/etc/group</code> — групи.</li>
-</ul>
-<p>Рядок <code>/etc/passwd</code> має 7 полів через двокрапку: <code>tony:x:1001:1001:Tony:/home/tony:/bin/bash</code> — ім'я, <code>x</code> (пароль винесено в <code>/etc/shadow</code>), UID, GID, коментар, домашній каталог, оболонка. Колись хеш пароля зберігався прямо тут, але <code>/etc/passwd</code> читають усі, тому хеші перенесли в <b><code>/etc/shadow</code></b> (права лише для root).</p>
-<pre data-lang="bash"><code>groupadd developers                 <span class="c"># створити групу</span>
-grep developers /etc/group          <span class="c"># перевірити, що група існує</span>
-useradd -G developers vivek         <span class="c"># користувач з додатковою групою</span>
-passwd vivek                        <span class="c"># задати пароль</span>
-id vivek                            <span class="c"># UID, GID і всі групи</span>
-useradd -g developers tony          <span class="c"># -g = основна група</span>
-usermod -a -G ftp tony              <span class="c"># -a -G = ДОДАТИ ще одну групу</span>
-usermod -g www tony                 <span class="c"># змінити основну групу</span>
-chage -d 0 tony                     <span class="c"># змусити змінити пароль при вході</span>
-usermod -L tony                     <span class="c"># заблокувати пароль</span>
-usermod -aG wheel tony              <span class="c"># CentOS: група wheel = права sudo</span></code></pre>
-<div class="callout warn"><div class="callout-title">Пастка</div><p><code>usermod -G ftp tony</code> <b>без</b> <code>-a</code> замінить усі додаткові групи користувача однією <code>ftp</code>. Для додавання завжди пишіть <code>-aG</code>.</p></div>
+<p>Linux — <b>багатокористувацька</b> ОС: на одному сервері працюють люди і служби, і кожен процес виконується від імені певного користувача. Кожен користувач і група мають ім'я та числовий ідентифікатор (<b>UID</b>/<b>GID</b>). Ядро бачить лише числа, імена — для людей.</p>
+<div class="table-wrap"><table>
+<thead><tr><th>Тип</th><th>UID</th><th>Призначення</th></tr></thead>
+<tbody>
+<tr><td><b>root</b></td><td>0</td><td>суперкористувач: обходить перевірки прав</td></tr>
+<tr><td><b>системні</b></td><td>1–999 (у RHEL 1–999, у Debian 100–999)</td><td>облікові записи служб: <code>www-data</code>, <code>nginx</code>, <code>mysql</code>, <code>sshd</code>. Зазвичай без пароля і з оболонкою <code>/usr/sbin/nologin</code></td></tr>
+<tr><td><b>звичайні</b></td><td>1000+</td><td>люди</td></tr>
+</tbody></table></div>
+<p>Користувач має одну <b>основну (primary)</b> групу — її отримують нові файли — і може мати кілька <b>додаткових (secondary)</b>.</p>
+<h3>Три файли облікових записів</h3>
+<div class="table-wrap"><table>
+<thead><tr><th>Файл</th><th>Вміст</th><th>Хто читає</th></tr></thead>
+<tbody>
+<tr><td><code>/etc/passwd</code></td><td>облікові записи (без паролів)</td><td>усі (права <code>644</code>) — програмам треба перетворювати UID на імена</td></tr>
+<tr><td><code>/etc/shadow</code></td><td><b>хеші паролів</b> і правила їх зміни</td><td>лише root (права <code>640</code> або <code>000</code>)</td></tr>
+<tr><td><code>/etc/group</code></td><td>групи і їхні учасники</td><td>усі</td></tr>
+</tbody></table></div>
+<p>Рядок <code>/etc/passwd</code> — 7 полів через двокрапку:</p>
+<pre data-lang="text"><code>anna:x:1001:1001:Anna Koval,,,:/home/anna:/bin/bash
+<span class="c">│    │ │    │    │             │          └ 7. оболонка входу</span>
+<span class="c">│    │ │    │    │             └ 6. домашній каталог</span>
+<span class="c">│    │ │    │    └ 5. коментар (GECOS): повне ім'я тощо</span>
+<span class="c">│    │ │    └ 4. GID основної групи</span>
+<span class="c">│    │ └ 3. UID</span>
+<span class="c">│    └ 2. x = пароль винесено в /etc/shadow</span>
+<span class="c">└ 1. ім'я користувача</span></code></pre>
+<p>Рядок <code>/etc/shadow</code>: <code>anna:$6$Qx9...$kP2...:19850:0:99999:7:::</code> — ім'я, <b>хеш пароля</b> (префікс показує алгоритм: <code>$6$</code> — SHA-512, <code>$y$</code> — yescrypt, <code>$5$</code> — SHA-256, <code>$1$</code> — застарілий MD5; між <code>$</code> — сіль), день останньої зміни (у днях від 1.01.1970), мін./макс. термін дії, попередження. <code>!</code> або <code>*</code> на місці хеша — вхід паролем заблоковано.</p>
+<div class="callout exam"><div class="callout-title">«Пароль у Linux шифрується і зберігається в…»</div><p>Правильно: <code>/etc/shadow</code>. Точніше, там зберігається не зашифрований пароль, а його <b>хеш</b> із сіллю: розшифрувати назад неможливо, система порівнює хеш введеного пароля. <code>/etc/passwd</code> у сучасних системах містить лише <code>x</code>. <code>/etc/password</code>, <code>/etc/users</code>, <code>/etc/secret</code> — таких стандартних файлів немає; <code>/etc/group</code> — групи.</p></div>
+<h3>Команди керування</h3>
+<pre data-lang="bash"><code>whoami                              <span class="c"># хто я</span>
+id                                  <span class="c"># uid=1001(anna) gid=1001(anna) groups=1001(anna),27(sudo)</span>
+id vivek                            <span class="c"># UID, GID і всі групи іншого користувача</span>
+groups anna                         <span class="c"># лише групи</span>
+who / w                             <span class="c"># хто зараз у системі / і що робить</span>
+last                                <span class="c"># історія входів</span>
+
+sudo groupadd developers            <span class="c"># створити групу</span>
+sudo useradd -m -s /bin/bash -G developers vivek   <span class="c"># -m створити домашній каталог, -s оболонка, -G дод. групи</span>
+sudo adduser vivek                  <span class="c"># Debian/Ubuntu: інтерактивна обгортка над useradd</span>
+sudo passwd vivek                   <span class="c"># задати пароль (passwd без імені — змінити свій)</span>
+sudo useradd -g developers tony     <span class="c"># -g = ОСНОВНА група</span>
+sudo usermod -aG docker tony        <span class="c"># -a -G = ДОДАТИ додаткову групу</span>
+sudo usermod -g www tony            <span class="c"># змінити основну групу</span>
+sudo usermod -s /usr/sbin/nologin svc   <span class="c"># заборонити інтерактивний вхід</span>
+sudo usermod -L tony / -U tony      <span class="c"># заблокувати / розблокувати пароль</span>
+sudo chage -d 0 tony                <span class="c"># змусити змінити пароль при наступному вході</span>
+sudo userdel -r tony                <span class="c"># видалити користувача разом з домашнім каталогом</span>
+sudo gpasswd -d tony docker         <span class="c"># прибрати користувача з групи</span></code></pre>
+<div class="callout warn"><div class="callout-title">Пастка</div><p><code>usermod -G ftp tony</code> <b>без</b> <code>-a</code> замінить усі додаткові групи користувача однією <code>ftp</code>. Для додавання завжди пишіть <code>-aG</code>. Нові групи діють після повторного входу (або <code>newgrp docker</code>).</p></div>
+<h3><code>su</code> і <code>sudo</code></h3>
+<div class="table-wrap"><table>
+<thead><tr><th>Команда</th><th>Що робить</th><th>Чий пароль</th></tr></thead>
+<tbody>
+<tr><td><code>sudo cmd</code></td><td>виконати одну команду від root (або <code>sudo -u user cmd</code> — від іншого)</td><td><b>свій</b>; дозволи — у <code>/etc/sudoers</code></td></tr>
+<tr><td><code>sudo -i</code> / <code>sudo su -</code></td><td>відкрити оболонку root</td><td>свій</td></tr>
+<tr><td><code>su user</code></td><td>перейти в іншого користувача, лишаючи поточне середовище</td><td><b>того користувача</b></td></tr>
+<tr><td><code>su - user</code> (<code>su -l</code>)</td><td>те саме, але як «повноцінний вхід»: його <code>HOME</code>, <code>PATH</code>, перехід у домашній каталог</td><td>того користувача</td></tr>
+<tr><td><code>su</code> без імені</td><td>стати root</td><td>пароль root</td></tr>
+</tbody></table></div>
+<p>Хто може користуватися <code>sudo</code>, визначає <code>/etc/sudoers</code> і файли в <code>/etc/sudoers.d/</code>. Редагують їх лише через <code>sudo visudo</code> — він перевіряє синтаксис, і помилка не заблокує вам доступ. Зазвичай досить додати користувача в групу <code>sudo</code> (Debian/Ubuntu) або <code>wheel</code> (RHEL/CentOS). Усі дії через <code>sudo</code> журналюються (<code>/var/log/auth.log</code> або <code>/var/log/secure</code>), тому на серверах працюють від звичайного користувача і підвищують права точково.</p>
 
 <h2 id="perms">Права доступу до файлів<a class="h-anchor" href="#perms" aria-label="Посилання на розділ">#</a></h2>
-<p>Кожен файл має <b>власника (u — user)</b>, <b>групу (g)</b> і всіх <b>інших (o — others)</b>. Для кожної категорії — три права: <b>r</b> (read, 4), <b>w</b> (write, 2), <b>x</b> (execute, 1). Число для категорії — сума прав.</p>
+<p>Кожен файл має <b>власника (u — user)</b>, <b>групу (g — group)</b> і права для <b>інших (o — others)</b>. Для кожної категорії — три права: <b>r</b> (read, 4), <b>w</b> (write, 2), <b>x</b> (execute, 1). Число для категорії — сума прав.</p>
 <figure><div class="figure wide">
 <svg class="dg" viewBox="0 0 720 210" role="img" aria-label="Розбір рядка -rwxr-xr--: тип файла, права власника rwx=7, групи r-x=5, інших r--=4, разом 754">
 <g text-anchor="middle" class="t-mono">
@@ -257,38 +798,235 @@ usermod -aG wheel tony              <span class="c"># CentOS: група wheel =
 <text x="40" y="184" class="t-muted">Перший символ у ls -l: - файл, d каталог, l симлінк, p named pipe, c символьний пристрій, b блочний пристрій</text>
 </svg></div>
 <figcaption><b>Як читати права.</b> Три трійки rwx → три цифри. <code>-rwxr-xr--</code> = <code>754</code>.</figcaption></figure>
+<h3>Усі вісім комбінацій</h3>
+<div class="table-wrap"><table>
+<thead><tr><th>Цифра</th><th>Двійково</th><th>Права</th><th>Значення</th></tr></thead>
+<tbody>
+<tr><td>0</td><td>000</td><td><code>---</code></td><td>нічого</td></tr>
+<tr><td>1</td><td>001</td><td><code>--x</code></td><td>лише виконання</td></tr>
+<tr><td>2</td><td>010</td><td><code>-w-</code></td><td>лише запис</td></tr>
+<tr><td>3</td><td>011</td><td><code>-wx</code></td><td>запис + виконання</td></tr>
+<tr><td>4</td><td>100</td><td><code>r--</code></td><td>лише читання</td></tr>
+<tr><td>5</td><td>101</td><td><code>r-x</code></td><td>читання + виконання</td></tr>
+<tr><td>6</td><td>110</td><td><code>rw-</code></td><td>читання + запис</td></tr>
+<tr><td>7</td><td>111</td><td><code>rwx</code></td><td>усе</td></tr>
+</tbody></table></div>
+<h3>Що означають права для файла і для каталогу</h3>
+<div class="table-wrap"><table>
+<thead><tr><th>Право</th><th>Для файла</th><th>Для каталогу</th></tr></thead>
+<tbody>
+<tr><td><b>r</b></td><td>читати вміст (<code>cat</code>, <code>cp</code>)</td><td>бачити <b>список</b> імен (<code>ls</code>)</td></tr>
+<tr><td><b>w</b></td><td>змінювати вміст</td><td>створювати, видаляти, перейменовувати файли <b>в каталозі</b> (навіть чужі, якщо немає sticky bit)</td></tr>
+<tr><td><b>x</b></td><td>запускати як програму</td><td><b>входити</b> (<code>cd</code>) і звертатися до файлів за іменем</td></tr>
+</tbody></table></div>
+<p>Наслідки, про які часто питають: видалити файл можна без права <code>w</code> на сам файл, якщо є <code>w</code> і <code>x</code> на каталог (<code>rm</code> лише спитає підтвердження). «Темний каталог» <code>chmod a-r+x darkcat</code>: <code>ls darkcat</code> → <i>Permission denied</i>, але <code>cat darkcat/known.txt</code> працює, якщо знаєте ім'я. Для запуску <b>скрипта</b> потрібні і <code>x</code>, і <code>r</code>: інтерпретатор bash мусить прочитати текст. Бінарній програмі вистачає <code>x</code>.</p>
+<h3>Розібрані приклади</h3>
+<div class="table-wrap"><table>
+<thead><tr><th>Число</th><th>Рядок</th><th>Типове використання</th></tr></thead>
+<tbody>
+<tr><td><code>755</code></td><td><code>rwxr-xr-x</code></td><td>каталоги, скрипти і програми: усі запускають, змінює лише власник</td></tr>
+<tr><td><code>744</code></td><td><code>rwxr--r--</code></td><td>скрипт, який <b>запускає лише власник</b>, інші можуть читати</td></tr>
+<tr><td><code>700</code></td><td><code>rwx------</code></td><td>приватний скрипт або каталог (<code>~/.ssh</code>)</td></tr>
+<tr><td><code>644</code></td><td><code>rw-r--r--</code></td><td>звичайні файли, вебсторінки</td></tr>
+<tr><td><code>640</code></td><td><code>rw-r-----</code></td><td>конфіг із паролем, який читає група служби</td></tr>
+<tr><td><code>600</code></td><td><code>rw-------</code></td><td>приватний SSH-ключ, файли з секретами</td></tr>
+<tr><td><code>775</code></td><td><code>rwxrwxr-x</code></td><td>спільний каталог команди</td></tr>
+<tr><td><code>777</code></td><td><code>rwxrwxrwx</code></td><td>усім усе — майже завжди помилка безпеки</td></tr>
+</tbody></table></div>
+<div class="callout exam"><div class="callout-title">«Зробити script.sh виконуваним лише для власника»</div><p>Аналізуйте кожну цифру окремо. <code>744</code> — власник <code>rwx</code>, решта лише <code>r</code> → ✔. <code>700</code> і <code>chmod u+x</code> (якщо в інших x не було) — теж ✔. <code>755</code> — x отримують група й інші → ✘. <code>777</code> → ✘. <code>144</code> — власник має лише <code>x</code> без <code>r</code>; bash не зможе прочитати текст скрипта → ✘. <code>155</code> — у групи й інших є x → ✘.</p></div>
 
-<h3>chmod: абсолютна і відносна форма</h3>
-<pre data-lang="bash"><code>chmod 755 deploy.sh        <span class="c"># абсолютно: rwxr-xr-x (попередні права не враховуються)</span>
-chmod 644 index.html       <span class="c"># rw-r--r-- — типово для вебфайлів</span>
-chmod u+x script.sh        <span class="c"># відносно: додати власнику виконання</span>
+<h3><code>chmod</code>: числова і символьна форма</h3>
+<p>Символьна форма: <b>хто</b> (<code>u</code>, <code>g</code>, <code>o</code>, <code>a</code> = усі) + <b>дія</b> (<code>+</code> додати, <code>-</code> забрати, <code>=</code> встановити точно) + <b>права</b> (<code>r</code>, <code>w</code>, <code>x</code>).</p>
+<pre data-lang="bash"><code>chmod 755 deploy.sh        <span class="c"># числова: rwxr-xr-x, попередні права не враховуються</span>
+chmod 644 index.html       <span class="c"># rw-r--r--</span>
+chmod u+x script.sh        <span class="c"># символьна: додати власнику виконання, решту не чіпати</span>
+chmod +x script.sh         <span class="c"># додати x усім (з урахуванням umask)</span>
+chmod a+x script.sh        <span class="c"># додати x усім явно</span>
 chmod go-w file            <span class="c"># забрати запис у групи та інших</span>
-chmod a+r file             <span class="c"># a = all (усім) — додати читання</span>
-chmod -R 775 opencart      <span class="c"># рекурсивно для каталогу</span></code></pre>
-<h3>chown / chgrp: власник і група</h3>
-<pre data-lang="bash"><code>chown tony file1 file2           <span class="c"># змінити власника</span>
-chgrp sales /home/sales/*        <span class="c"># змінити групу</span>
-chown -R tony:www site/          <span class="c"># власник і група рекурсивно</span>
-chown -R apache:apache opencart  <span class="c"># типово: віддати сайт вебсерверу</span></code></pre>
+chmod u=rwx,go=r file      <span class="c"># встановити точно: = 744</span>
+chmod o= file              <span class="c"># забрати в інших усе</span>
+chmod -R 775 shared/       <span class="c"># рекурсивно для каталогу</span>
+chmod --reference=a.txt b.txt   <span class="c"># скопіювати права з іншого файла</span>
+stat -c '%a %A %n' file    <span class="c"># подивитися права числом і рядком</span></code></pre>
+<h3><code>umask</code>: звідки беруться права нових файлів</h3>
+<p>Нові файли створюються з базовими правами <code>666</code> (без x — з міркувань безпеки), каталоги — <code>777</code>. З них <b>вилучаються</b> біти маски <code>umask</code>. Типова маска <code>022</code> забирає <code>w</code> у групи та інших:</p>
+<pre data-lang="text"><code>файл:     666 − 022 = 644  (rw-r--r--)
+каталог:  777 − 022 = 755  (rwxr-xr-x)
+umask 077 → файли 600, каталоги 700 (приватно)
+umask 002 → файли 664, каталоги 775 (спільна робота в групі)</code></pre>
+<p>(«Віднімання» тут — це вимикання бітів, а не арифметика: при <code>umask 033</code> файл отримає <code>644</code>, а не <code>633</code>.) Поточна маска: <code>umask</code>, змінити — <code>umask 027</code>.</p>
 
-<h3>Спеціальні біти</h3>
-<div class="term-grid">
-<div class="term"><span class="en">SUID — chmod u+s</span><b>Запуск від імені власника</b><p>Напр. <code>/usr/bin/passwd</code> має <code>s</code>: звичайний користувач змінює пароль, а програма пише в <code>/etc/shadow</code> з правами root.</p></div>
-<div class="term"><span class="en">SGID на каталозі — chmod g+s</span><b>Спільна група</b><p>Нові файли в каталозі успадковують групу каталогу — зручно для спільної папки команди.</p></div>
-<div class="term"><span class="en">Sticky bit — chmod +t</span><b>Видаляє лише власник</b><p>У каталог можуть писати всі, але видалити файл може тільки його власник (як <code>/tmp</code>).</p></div>
-</div>
-<p><b>«Темний каталог»</b>: <code>chmod a-r+x darkcat</code> — у каталог можна зайти (<code>cd</code>) і прочитати файл, якщо знаєш його ім'я, але <code>ls</code> видасть <i>Permission denied</i>. Це показує, що <code>r</code> для каталогу — це право <b>бачити список</b>, а <code>x</code> — право <b>входити</b>.</p>
+<h3><code>chown</code> і <code>chgrp</code>: власник і група</h3>
+<pre data-lang="bash"><code>sudo chown tony file1 file2          <span class="c"># змінити власника (може лише root)</span>
+sudo chown tony:www site/            <span class="c"># власник і група</span>
+sudo chown :www site/                <span class="c"># лише група (те саме, що chgrp www site/)</span>
+sudo chown -R www-data:www-data /var/www/html   <span class="c"># віддати сайт вебсерверу рекурсивно</span>
+chgrp developers report.txt          <span class="c"># змінити групу (власник може, якщо сам у цій групі)</span></code></pre>
 
+<h3>Спеціальні біти: SUID, SGID, sticky</h3>
+<p>Четверта (найстарша) цифра в записі прав: <code>chmod 4755</code> — SUID + <code>755</code>.</p>
+<div class="table-wrap"><table>
+<thead><tr><th>Біт</th><th>Число</th><th>Символьно</th><th>Видно в <code>ls -l</code></th><th>Дія</th></tr></thead>
+<tbody>
+<tr><td><b>SUID</b></td><td>4</td><td><code>u+s</code></td><td><code>-rwsr-xr-x</code></td><td>файл виконується з правами <b>власника</b>, а не того, хто запустив. Приклад: <code>/usr/bin/passwd</code> (власник root) пише в <code>/etc/shadow</code></td></tr>
+<tr><td><b>SGID</b></td><td>2</td><td><code>g+s</code></td><td><code>drwxrwsr-x</code></td><td>на каталозі: нові файли успадковують <b>групу каталогу</b>. На файлі — виконання з правами групи</td></tr>
+<tr><td><b>Sticky</b></td><td>1</td><td><code>+t</code> (<code>o+t</code>)</td><td><code>drwxrwxrwt</code></td><td>у каталозі видаляти й перейменовувати файл може лише його власник (як у <code>/tmp</code>, права <code>1777</code>)</td></tr>
+</tbody></table></div>
+<p>Велика літера (<code>S</code>, <code>T</code>) у <code>ls -l</code> означає, що спецбіт встановлено, а відповідного <code>x</code> немає — зазвичай це помилка налаштування.</p>
 <h3>Приклад: спільна папка для команди</h3>
 <ol class="steps">
-<li>Група і користувачі: <code>groupadd developers</code>, <code>useradd -G developers dev</code>, <code>useradd -G developers test</code>.</li>
+<li>Група і користувачі: <code>groupadd developers</code>, <code>usermod -aG developers dev</code>, <code>usermod -aG developers test</code>.</li>
 <li>Каталог: <code>mkdir /home/shared &amp;&amp; chgrp developers /home/shared</code>.</li>
-<li>Права групі на запис + SGID: <code>chmod 2775 /home/shared</code> (2 = SGID, далі <code>rwxrwxr-x</code>).</li>
-<li>За потреби sticky bit, щоб не видаляли чужі файли: <code>chmod +t /home/shared</code>.</li>
+<li>Права групі на запис + SGID: <code>chmod 2775 /home/shared</code> (2 = SGID, далі <code>rwxrwxr-x</code>) — усі нові файли належатимуть групі <code>developers</code>.</li>
+<li>За потреби sticky bit, щоб не видаляли чужі файли: <code>chmod +t /home/shared</code> (разом — <code>3775</code>).</li>
+<li>Перевірка: <code>ls -ld /home/shared</code> → <code>drwxrwsr-t … developers … /home/shared</code>.</li>
 </ol>
 
+<h2 id="proc">Процеси: перегляд і керування<a class="h-anchor" href="#proc" aria-label="Посилання на розділ">#</a></h2>
+<p><b>Процес</b> — запущена програма. Кожен має <b>PID</b> (ідентифікатор), <b>PPID</b> (PID батька), власника, стан і пріоритет. Перший процес системи — <code>systemd</code> (або <code>init</code>) з PID 1; решта — його нащадки (<code>pstree</code> покаже дерево).</p>
+<pre data-lang="bash"><code>$ ps aux | head -3
+USER   PID %CPU %MEM    VSZ   RSS TTY  STAT START  TIME COMMAND
+root     1  0.0  0.3 167744 12800 ?    Ss   09:12  0:02 /sbin/init
+www-data 812 0.3 1.2 220104 49152 ?    S    09:13  0:10 nginx: worker process</code></pre>
+<div class="table-wrap"><table>
+<thead><tr><th>Команда</th><th>Призначення</th></tr></thead>
+<tbody>
+<tr><td><code>ps aux</code> (BSD-стиль) / <code>ps -ef</code> (System V)</td><td>знімок усіх процесів. <code>a</code> — усіх користувачів, <code>u</code> — з власником і %CPU/%MEM, <code>x</code> — і без терміналу</td></tr>
+<tr><td><code>ps -u anna</code>, <code>ps -p 812</code></td><td>процеси користувача / конкретний PID</td></tr>
+<tr><td><code>top</code>, <code>htop</code></td><td>інтерактивно в реальному часі. У <code>top</code>: <kbd>P</kbd> сорт. за CPU, <kbd>M</kbd> за пам'яттю, <kbd>k</kbd> вбити, <kbd>q</kbd> вихід</td></tr>
+<tr><td><code>pgrep nginx</code>, <code>pidof nginx</code></td><td>знайти PID за іменем</td></tr>
+<tr><td><code>kill PID</code></td><td>надіслати сигнал (за замовчуванням <b>15 SIGTERM</b> — «завершись коректно»)</td></tr>
+<tr><td><code>kill -9 PID</code></td><td><b>SIGKILL</b> — примусово, процес не може перехопити; файли можуть лишитися незбереженими</td></tr>
+<tr><td><code>killall nginx</code>, <code>pkill -f "python app.py"</code></td><td>сигнал усім процесам за іменем / за командним рядком</td></tr>
+<tr><td><code>nice -n 10 cmd</code>, <code>renice 5 -p PID</code></td><td>пріоритет від −20 (найвищий) до 19 (найнижчий)</td></tr>
+<tr><td><code>uptime</code></td><td>час роботи і <b>load average</b> за 1, 5, 15 хв (середня кількість процесів, що чекають CPU; порівнюйте з кількістю ядер)</td></tr>
+</tbody></table></div>
+<div class="table-wrap"><table>
+<thead><tr><th>Сигнал</th><th>Номер</th><th>Звідки</th><th>Значення</th></tr></thead>
+<tbody>
+<tr><td>SIGHUP</td><td>1</td><td><code>kill -HUP</code></td><td>«термінал закрито»; багато демонів (nginx) по ньому перечитують конфіг</td></tr>
+<tr><td>SIGINT</td><td>2</td><td><kbd>Ctrl</kbd>+<kbd>C</kbd></td><td>переривання</td></tr>
+<tr><td>SIGKILL</td><td>9</td><td><code>kill -9</code></td><td>негайне знищення, не перехоплюється</td></tr>
+<tr><td>SIGTERM</td><td>15</td><td><code>kill</code> без опцій</td><td>ввічливе прохання завершитись</td></tr>
+<tr><td>SIGSTOP / SIGTSTP</td><td>19 / 20</td><td><kbd>Ctrl</kbd>+<kbd>Z</kbd> (20)</td><td>призупинити; продовжити — SIGCONT (18)</td></tr>
+</tbody></table></div>
+<p>Стани процесу в колонці <code>STAT</code>: <code>R</code> — виконується, <code>S</code> — спить (чекає події), <code>D</code> — непереривне очікування (зазвичай диск), <code>T</code> — зупинений, <code>Z</code> — зомбі (завершився, але батько не забрав код виходу).</p>
+
+<h2 id="mem">Пам'ять, диск і відомості про систему<a class="h-anchor" href="#mem" aria-label="Посилання на розділ">#</a></h2>
+<h3>Оперативна пам'ять</h3>
+<pre data-lang="bash"><code>$ free -h
+               total        used        free      shared  buff/cache   available
+Mem:           7.7Gi       2.1Gi       1.2Gi       150Mi       4.4Gi       5.3Gi
+Swap:          2.0Gi          0B       2.0Gi</code></pre>
+<ul>
+<li><b>free</b> — зовсім не використана пам'ять. Вона мала, і це нормально: Linux використовує вільну пам'ять під <b>кеш диска</b> (<b>buff/cache</b>) і віддає її програмам за потреби.</li>
+<li><b>available</b> — скільки реально можна віддати новим програмам. Саме на цю колонку дивіться, оцінюючи нестачу пам'яті.</li>
+<li><b>Swap</b> — область підкачки на диску; активне використання swap означає, що RAM не вистачає.</li>
+</ul>
+<div class="table-wrap"><table>
+<thead><tr><th>Команда</th><th>Що показує про RAM</th></tr></thead>
+<tbody>
+<tr><td><code>free -h</code> (<code>-m</code> у МБ)</td><td>підсумок: total / used / free / cache / available</td></tr>
+<tr><td><code>cat /proc/meminfo</code></td><td>детальні лічильники ядра (MemTotal, MemAvailable, Cached…)</td></tr>
+<tr><td><code>top</code>, <code>htop</code></td><td>рядки <i>MiB Mem</i> і <i>MiB Swap</i> у шапці + споживання кожним процесом</td></tr>
+<tr><td><code>vmstat 1</code></td><td>пам'ять, swap, CPU кожну секунду</td></tr>
+</tbody></table></div>
+<div class="callout exam"><div class="callout-title">«Як переглянути стан RAM»</div><p>Відповідь тесту — <code>free</code>. Також правильні за змістом <code>top</code>, <code>vmstat</code>, <code>cat /proc/meminfo</code>. Не підходять: <code>mem</code> (такої стандартної команди немає), <code>ps</code> (процеси, а не загальний стан пам'яті), <code>more</code> (переглядач тексту), <code>man</code> (довідка), <code>df</code> (диск, а не RAM).</p></div>
+<h3>Диск</h3>
+<div class="table-wrap"><table>
+<thead><tr><th>Команда</th><th>Що показує</th></tr></thead>
+<tbody>
+<tr><td><code>df -h</code></td><td>місце на <b>файлових системах</b> (розділах): розмір, зайнято, вільно, точка монтування. <code>df -i</code> — вільні inode</td></tr>
+<tr><td><code>du -sh dir</code></td><td>скільки займає <b>каталог</b>; <code>du -sh *</code> — кожен елемент поточного каталогу</td></tr>
+<tr><td><code>lsblk</code></td><td>дерево дисків і розділів</td></tr>
+<tr><td><code>mount</code>, <code>findmnt</code></td><td>що куди змонтовано; постійні монтування — у <code>/etc/fstab</code></td></tr>
+</tbody></table></div>
+<h3>Відомості про систему</h3>
+<div class="table-wrap"><table>
+<thead><tr><th>Команда</th><th>Що показує</th></tr></thead>
+<tbody>
+<tr><td><code>uname -a</code> / <code>uname -r</code></td><td>ядро, архітектура, ім'я хоста / лише версія ядра</td></tr>
+<tr><td><code>cat /etc/os-release</code></td><td>назва і версія дистрибутиву</td></tr>
+<tr><td><code>hostname</code>, <code>hostnamectl</code></td><td>ім'я машини</td></tr>
+<tr><td><code>lscpu</code>, <code>cat /proc/cpuinfo</code>, <code>nproc</code></td><td>процесор, кількість ядер</td></tr>
+<tr><td><code>date</code>, <code>timedatectl</code></td><td>дата, час, часовий пояс</td></tr>
+</tbody></table></div>
+
+<h2 id="services">Служби і логи (systemd)<a class="h-anchor" href="#services" aria-label="Посилання на розділ">#</a></h2>
+<p>Демони (служби, що працюють у фоні: nginx, sshd, mysqld) у сучасних дистрибутивах запускає і контролює <b>systemd</b>. Опис служби — «юніт» (<code>/lib/systemd/system/nginx.service</code>).</p>
+<pre data-lang="bash"><code>systemctl status nginx          <span class="c"># стан, PID, останні рядки логу</span>
+sudo systemctl start nginx      <span class="c"># запустити зараз</span>
+sudo systemctl stop nginx       <span class="c"># зупинити</span>
+sudo systemctl restart nginx    <span class="c"># перезапустити (з розривом з'єднань)</span>
+sudo systemctl reload nginx     <span class="c"># перечитати конфіг без зупинки (якщо служба підтримує)</span>
+sudo systemctl enable nginx     <span class="c"># автозапуск при старті системи (enable --now — і запустити)</span>
+sudo systemctl disable nginx    <span class="c"># прибрати з автозапуску</span>
+systemctl list-units --type=service --state=running
+journalctl -u nginx -f          <span class="c"># лог служби наживо</span>
+journalctl -p err -b            <span class="c"># помилки з моменту завантаження</span>
+dmesg | tail                    <span class="c"># повідомлення ядра (диски, драйвери, OOM killer)</span></code></pre>
+<p>Не плутайте: <code>start</code> — запустити <b>зараз</b>, <code>enable</code> — запускати <b>при завантаженні</b>. На старих системах — <code>service nginx start</code> і <code>chkconfig</code>.</p>
+<div class="table-wrap"><table>
+<thead><tr><th>Лог</th><th>Що в ньому</th></tr></thead>
+<tbody>
+<tr><td><code>/var/log/syslog</code> (Debian) / <code>/var/log/messages</code> (RHEL)</td><td>загальні системні повідомлення</td></tr>
+<tr><td><code>/var/log/auth.log</code> / <code>/var/log/secure</code></td><td>входи, <code>sudo</code>, SSH</td></tr>
+<tr><td><code>/var/log/nginx/</code>, <code>/var/log/apache2/</code>, <code>/var/log/httpd/</code></td><td>журнали вебсерверів (<code>access.log</code>, <code>error.log</code>)</td></tr>
+<tr><td><code>/var/log/dmesg</code>, <code>/var/log/kern.log</code></td><td>ядро</td></tr>
+</tbody></table></div>
+<p>Щоб логи не заповнили диск, <code>logrotate</code> щодня перейменовує їх (<code>syslog.1</code>, <code>syslog.2.gz</code>…) і стискає старі.</p>
+
+<h2 id="packages">Встановлення програм: пакетні менеджери<a class="h-anchor" href="#packages" aria-label="Посилання на розділ">#</a></h2>
+<p>Програми встановлюють з <b>репозиторіїв</b> — серверів дистрибутиву з перевіреними пакетами. Пакетний менеджер сам завантажує <b>залежності</b>. Встановлювати може лише root (через <code>sudo</code>).</p>
+<div class="table-wrap"><table>
+<thead><tr><th>Дія</th><th>Debian / Ubuntu (<code>apt</code>)</th><th>RHEL / CentOS / Fedora (<code>dnf</code>, раніше <code>yum</code>)</th></tr></thead>
+<tbody>
+<tr><td>Оновити <b>список</b> пакетів</td><td><code>apt update</code></td><td><code>dnf makecache</code> (робиться автоматично)</td></tr>
+<tr><td>Оновити встановлені пакети</td><td><code>apt upgrade</code></td><td><code>dnf upgrade</code> / <code>yum update</code></td></tr>
+<tr><td>Встановити</td><td><code>apt install nginx</code></td><td><code>dnf install nginx</code></td></tr>
+<tr><td>Видалити / з конфігами</td><td><code>apt remove nginx</code> / <code>apt purge nginx</code></td><td><code>dnf remove nginx</code></td></tr>
+<tr><td>Пошук / інформація</td><td><code>apt search</code>, <code>apt show</code></td><td><code>dnf search</code>, <code>dnf info</code></td></tr>
+<tr><td>Встановлені</td><td><code>apt list --installed</code>, <code>dpkg -l</code></td><td><code>dnf list installed</code>, <code>rpm -qa</code></td></tr>
+<tr><td>Встановити локальний файл</td><td><code>dpkg -i app.deb</code></td><td><code>rpm -ivh app.rpm</code></td></tr>
+<tr><td>Конфіг репозиторіїв</td><td><code>/etc/apt/sources.list</code>, <code>/etc/apt/sources.list.d/</code></td><td><code>/etc/yum.repos.d/</code></td></tr>
+</tbody></table></div>
+<p>Пастка: <code>apt update</code> <b>не</b> оновлює програми, лише список доступних версій. Тому в скриптах пишуть <code>apt update &amp;&amp; apt install -y pkg</code>. Нижчий рівень — <code>dpkg</code>/<code>rpm</code> — не розв'язує залежності сам.</p>
+
+<h2 id="archives">Архіви і стиснення<a class="h-anchor" href="#archives" aria-label="Посилання на розділ">#</a></h2>
+<p><code>tar</code> склеює багато файлів в один архів (tape archive), а стиснення додається опцією.</p>
+<div class="table-wrap"><table>
+<thead><tr><th>Опція <code>tar</code></th><th>Значення</th></tr></thead>
+<tbody>
+<tr><td><code>c</code> / <code>x</code> / <code>t</code></td><td>create — створити / extract — розпакувати / list — переглянути вміст</td></tr>
+<tr><td><code>f</code></td><td>file — далі ім'я архіву (ставлять останньою перед іменем)</td></tr>
+<tr><td><code>v</code></td><td>verbose — друкувати файли</td></tr>
+<tr><td><code>z</code> / <code>j</code> / <code>J</code></td><td>стиснення gzip (<code>.tar.gz</code>, <code>.tgz</code>) / bzip2 (<code>.tar.bz2</code>) / xz (<code>.tar.xz</code>)</td></tr>
+<tr><td><code>-C dir</code></td><td>розпакувати в указаний каталог</td></tr>
+</tbody></table></div>
+<pre data-lang="bash"><code>tar -czvf site-backup.tar.gz /var/www/html     <span class="c"># створити стиснений архів</span>
+tar -tzvf site-backup.tar.gz                   <span class="c"># подивитися вміст, не розпаковуючи</span>
+tar -xzvf site-backup.tar.gz -C /tmp/restore   <span class="c"># розпакувати в /tmp/restore</span>
+gzip big.log          <span class="c"># стиснути файл → big.log.gz (оригінал зникає)</span>
+gunzip big.log.gz     <span class="c"># розпакувати (= gzip -d)</span>
+zcat big.log.gz | grep ERROR    <span class="c"># читати стиснений лог без розпакування</span>
+zip -r site.zip site/ ; unzip site.zip</code></pre>
+
+<h2 id="netcmd">Мережеві команди (детально — у лекції 6)<a class="h-anchor" href="#netcmd" aria-label="Посилання на розділ">#</a></h2>
+<div class="table-wrap"><table>
+<thead><tr><th>Команда</th><th>Призначення</th></tr></thead>
+<tbody>
+<tr><td><code>ip a</code> (<code>ip addr show</code>)</td><td>інтерфейси та IP-адреси (застаріле: <code>ifconfig</code>)</td></tr>
+<tr><td><code>ip r</code></td><td>таблиця маршрутизації, шлюз за замовчуванням</td></tr>
+<tr><td><code>ss -tulpn</code></td><td>які порти слухаються і якими процесами (застаріле: <code>netstat -tulpn</code>)</td></tr>
+<tr><td><code>ping -c 4 host</code></td><td>перевірити досяжність (ICMP)</td></tr>
+<tr><td><code>curl -I https://site</code>, <code>wget URL</code></td><td>HTTP-запит (лише заголовки) / завантажити файл</td></tr>
+<tr><td><code>dig site</code>, <code>nslookup site</code></td><td>DNS-запит</td></tr>
+<tr><td><code>scp file user@host:/path</code>, <code>rsync -avz src/ host:dst/</code></td><td>копіювання по SSH; <code>rsync</code> передає лише зміни</td></tr>
+<tr><td><code>/etc/hosts</code>, <code>/etc/resolv.conf</code></td><td>локальні імена / адреси DNS-серверів</td></tr>
+</tbody></table></div>
+
 <h2 id="ssh">Вхід по SSH-ключах<a class="h-anchor" href="#ssh" aria-label="Посилання на розділ">#</a></h2>
-<p><b>SSH (Secure Shell)</b> — протокол захищеного віддаленого доступу, типово <b>TCP-порт 22</b>. Використовує <b>асиметричне шифрування</b>: <b>приватний ключ</b> лишається у вас, <b>публічний</b> кладемо на сервер у <code>~/.ssh/authorized_keys</code>.</p>
+<p><b>SSH (Secure Shell)</b> — протокол захищеного віддаленого доступу, типово <b>TCP-порт 22</b>. Замінив незахищений Telnet (порт 23), який передавав паролі відкритим текстом. Використовує <b>асиметричне шифрування</b>: <b>приватний ключ</b> лишається у вас, <b>публічний</b> кладемо на сервер у <code>~/.ssh/authorized_keys</code>.</p>
 <figure><div class="figure wide">
 <svg class="dg" viewBox="0 0 720 150" role="img" aria-label="SSH: ssh-keygen створює пару ключів, публічний копіюється в authorized_keys на сервері, далі вхід без пароля">
 <defs><marker id="l2b" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0L10 5L0 10z" class="arrow-head"/></marker></defs>
@@ -301,30 +1039,73 @@ chown -R apache:apache opencart  <span class="c"># типово: віддати 
 <path d="M252 50H466" class="ln dash" marker-end="url(#l2b)"/><text x="360" y="42" text-anchor="middle" class="t-mono t-muted">ssh user@host</text>
 </svg></div>
 <figcaption><b>Пара ключів.</b> Приватний ключ нікому не передаємо; на сервер потрапляє лише публічний.</figcaption></figure>
-<pre data-lang="bash"><code>ssh-keygen -t rsa -b 4096                     <span class="c"># створити пару ключів</span>
+<pre data-lang="bash"><code>ssh-keygen -t ed25519 -C "anna@laptop"        <span class="c"># сучасний тип ключа (або -t rsa -b 4096)</span>
 ssh-copy-id user@192.168.0.10                 <span class="c"># додати публічний ключ на сервер</span>
 <span class="c"># те саме вручну:</span>
-cat ~/.ssh/id_rsa.pub | ssh user@192.168.0.10 "cat &gt;&gt; ~/.ssh/authorized_keys"
-ssh -i ~/.ssh/id_rsa user@192.168.0.10        <span class="c"># вхід з указаним ключем</span></code></pre>
-<p>На сервері шлях до ключів задає <code>AuthorizedKeysFile .ssh/authorized_keys</code> у <code>/etc/ssh/sshd_config</code>.</p>
-<div class="callout"><div class="callout-title">Віртуалізація</div><p>Для практики Linux зазвичай ставлять у віртуальну машину (наприклад, VirtualBox): гіпервізор відокремлює залізо від гостьових ОС і дозволяє запускати кілька систем одночасно. Детально — у лекції 9.</p></div>
+cat ~/.ssh/id_ed25519.pub | ssh user@192.168.0.10 "mkdir -p ~/.ssh &amp;&amp; cat &gt;&gt; ~/.ssh/authorized_keys"
+ssh user@192.168.0.10                         <span class="c"># вхід</span>
+ssh -i ~/.ssh/deploy_key -p 2222 user@host    <span class="c"># з указаним ключем і нестандартним портом</span>
+ssh user@host 'df -h'                         <span class="c"># виконати одну команду віддалено</span></code></pre>
+<h3>Як це працює</h3>
+<ol class="steps">
+<li>Клієнт підключається; сервер показує свій <b>ключ хоста</b>. При першому підключенні ви підтверджуєте його відбиток, і він записується в <code>~/.ssh/known_hosts</code>. Якщо згодом ключ зміниться — SSH попередить про можливу атаку «людина посередині».</li>
+<li>Встановлюється зашифрований канал.</li>
+<li>Сервер перевіряє, чи є ваш публічний ключ в <code>authorized_keys</code>, і просить довести володіння приватним: клієнт підписує випадкові дані приватним ключем, сервер перевіряє підпис публічним. Сам приватний ключ мережею не передається.</li>
+</ol>
+<ul>
+<li>Права обов'язкові: <code>chmod 700 ~/.ssh</code>, <code>chmod 600 ~/.ssh/id_ed25519 ~/.ssh/authorized_keys</code>. Із ширшими правами SSH відмовиться використовувати ключ.</li>
+<li>Посилення сервера в <code>/etc/ssh/sshd_config</code>: <code>PasswordAuthentication no</code>, <code>PermitRootLogin no</code>, після змін — <code>sudo systemctl reload sshd</code> (не закриваючи поточну сесію, поки не перевірите вхід у новій).</li>
+<li>Щоб не вводити хост і ключ щоразу — <code>~/.ssh/config</code>:</li>
+</ul>
+<pre data-lang="text"><code>Host web
+    HostName 203.0.113.10
+    User deploy
+    Port 2222
+    IdentityFile ~/.ssh/deploy_key
+<span class="c"># тепер просто: ssh web</span></code></pre>
+
+<h2 id="traps">Шпаргалка пасток: Windows-синтаксис у тестах про Linux<a class="h-anchor" href="#traps" aria-label="Посилання на розділ">#</a></h2>
+<p>Багато неправильних варіантів у тестах — це справжні команди Windows. Вони виглядають знайомо, але в bash не працюють або роблять інше.</p>
+<div class="table-wrap"><table>
+<thead><tr><th>Задача</th><th>Linux (правильно)</th><th>Windows cmd (пастка)</th></tr></thead>
+<tbody>
+<tr><td>список файлів</td><td><code>ls</code></td><td><code>dir</code></td></tr>
+<tr><td>копіювати</td><td><code>cp</code></td><td><code>copy</code>, <code>xcopy</code></td></tr>
+<tr><td>перемістити / перейменувати</td><td><code>mv</code></td><td><code>move</code>, <code>ren</code></td></tr>
+<tr><td>видалити файл / каталог</td><td><code>rm</code> / <code>rmdir</code>, <code>rm -r</code></td><td><code>del</code>, <code>erase</code> / <code>rd /s</code></td></tr>
+<tr><td>створити каталог</td><td><code>mkdir</code></td><td><code>md</code></td></tr>
+<tr><td>вміст файла</td><td><code>cat</code>, <code>less</code>, <code>more</code></td><td><code>type</code></td></tr>
+<tr><td>очистити екран</td><td><code>clear</code></td><td><code>cls</code></td></tr>
+<tr><td>довідка</td><td><code>man cmd</code>, <code>cmd --help</code>, <code>help</code></td><td><code>cmd /?</code></td></tr>
+<tr><td>змінна</td><td><code>$PATH</code></td><td><code>%PATH%</code></td></tr>
+<tr><td>роздільник шляху</td><td><code>/</code></td><td><code>\</code></td></tr>
+<tr><td>процеси / завершити</td><td><code>ps</code>, <code>top</code> / <code>kill</code></td><td><code>tasklist</code> / <code>taskkill</code></td></tr>
+<tr><td>мережеві налаштування</td><td><code>ip a</code> (<code>ifconfig</code>)</td><td><code>ipconfig</code></td></tr>
+<tr><td>маршрут пакетів</td><td><code>traceroute</code></td><td><code>tracert</code></td></tr>
+</tbody></table></div>
+<p>Інші типові пастки: переставлені аргументи (<code>ln link target</code>), пропущений ключ (<code>mkdir</code> без <code>-p</code>, <code>rm</code> без <code>-r</code>), неіснуючі команди з «логічними» назвами (<code>mem</code>, <code>guide</code>, <code>create</code>, <code>rename</code> як «стандартна» відповідь), шаблон у неправильному місці (<code>*F</code> замість <code>F*</code>) і плутанина <code>$USER</code>/<code>$HOME</code>.</p>
 
 <h2 id="mistakes">Типові помилки<a class="h-anchor" href="#mistakes" aria-label="Посилання на розділ">#</a></h2>
 <div class="mistakes">
-<div class="mistake"><div class="wrong"><code>chmod 777</code> «щоб точно запрацювало».</div><div class="right">Це дає запис усім користувачам — діра в безпеці. Видавайте мінімум: файли 644, каталоги і скрипти 755, а власника задавайте через <code>chown</code>.</div></div>
-<div class="mistake"><div class="wrong">У відносній формі <code>a</code> означає «інші».</div><div class="right"><code>u</code> — власник, <code>g</code> — група, <code>o</code> — інші, <code>a</code> — усі (all) одразу.</div></div>
+<div class="mistake"><div class="wrong"><code>chmod 777</code> «щоб точно запрацювало».</div><div class="right">Це дає запис усім користувачам — діра в безпеці. Видавайте мінімум: файли 644, каталоги і скрипти 755, секрети 600, а власника задавайте через <code>chown</code>.</div></div>
+<div class="mistake"><div class="wrong">У символьній формі <code>a</code> означає «інші».</div><div class="right"><code>u</code> — власник, <code>g</code> — група, <code>o</code> — інші, <code>a</code> — усі (all) одразу.</div></div>
 <div class="mistake"><div class="wrong"><code>usermod -G group user</code> додає групу.</div><div class="right">Без <code>-a</code> він замінює список груп. Правильно: <code>usermod -aG group user</code>.</div></div>
 <div class="mistake"><div class="wrong">Скрипт <code>script.sh</code> не запускається «бо нема .exe».</div><div class="right">Потрібен атрибут <code>x</code> (<code>chmod +x</code>) і шлях: <code>./script.sh</code> — поточний каталог не входить у <code>PATH</code>.</div></div>
 <div class="mistake"><div class="wrong"><code>cmd1 &amp;&amp; cmd2</code> або <code>cmd1 ; cmd2</code> передає вивід першої команди другій.</div><div class="right">Дані передає лише <code>|</code>. Інші оператори тільки визначають, чи і коли запуститься друга команда.</div></div>
 <div class="mistake"><div class="wrong"><code>2&gt; file</code> — «записати у файл 2».</div><div class="right">Цифра — номер потоку: <code>2&gt;</code> перенаправляє <b>stderr</b> (помилки). Усе разом — <code>&gt; file 2&gt;&amp;1</code> або <code>&amp;&gt; file</code>.</div></div>
-<div class="mistake"><div class="wrong">Sticky bit ставиться як <code>chmod g+t</code>.</div><div class="right">Sticky bit — це біт для «інших»: <code>chmod +t dir</code> (або <code>o+t</code>, числом — <code>1777</code>). У <code>ls -l</code> видно <code>t</code> в останній позиції.</div></div>
+<div class="mistake"><div class="wrong"><code>rm -i data</code> видалить каталог з підтвердженням.</div><div class="right"><code>-i</code> лише вмикає запитання. Для каталогу все одно потрібен <code>-r</code> (з вмістом) або <code>-d</code>/<code>rmdir</code> (порожній).</div></div>
+<div class="mistake"><div class="wrong"><code>rm -r data/*</code> видаляє каталог <code>data</code>.</div><div class="right">Він видаляє <b>вміст</b>, а сам <code>data</code> лишається (і приховані файли теж). Каталог разом із вмістом — <code>rm -r data</code>.</div></div>
+<div class="mistake"><div class="wrong"><code>apt update</code> оновлює програми.</div><div class="right">Він оновлює лише список пакетів. Програми оновлює <code>apt upgrade</code>.</div></div>
+<div class="mistake"><div class="wrong">Мало «free» у <code>free -h</code> — сервер задихається.</div><div class="right">Linux тримає вільну пам'ять у кеші диска. Дивіться на <b>available</b> і на використання swap.</div></div>
+<div class="mistake"><div class="wrong"><code>kill -9</code> — звичайний спосіб зупинити процес.</div><div class="right">Спочатку <code>kill PID</code> (SIGTERM): процес закриє файли і з'єднання. <code>-9</code> — останній засіб.</div></div>
+<div class="mistake"><div class="wrong">Sticky bit ставиться як <code>chmod g+t</code>.</div><div class="right">Sticky bit — біт для «інших»: <code>chmod +t dir</code> (або <code>o+t</code>, числом — <code>1777</code>). У <code>ls -l</code> видно <code>t</code> в останній позиції.</div></div>
 </div>
-<h2 id="quiz">Перевір себе<a class="h-anchor" href="#quiz" aria-label="Посилання на розділ">#</a></h2><p>13 питань на розуміння. В одиночних питаннях натисніть варіант — одразу побачите правильну відповідь і пояснення. Питання з позначкою <b>«кілька відповідей»</b> влаштовані як у тесті курсу (<i>Select one or more</i>): позначте всі правильні варіанти й натисніть «Перевірити».</p><div class="quiz" data-quiz="w1l2"></div><script type="application/json" id="quiz-data">[{"q": "Які права дає <code>chmod 750 file<\/code>?", "options": ["rw-r-----", "rwxr-x---", "rwxr-xr-x", "rwxrwx---"], "answer": 1, "explain": "7 = 4+2+1 = rwx для власника, 5 = 4+1 = r-x для групи, 0 = --- для інших."}, {"q": "Що виконає <code>ps aux | grep nginx<\/code>?", "options": ["Видалить процеси nginx", "Передасть вивід ps на вхід grep і покаже лише рядки з nginx", "Запустить nginx у фоні", "Запише список процесів у файл grep"], "answer": 1, "explain": "Символ | — це pipe: стандартний вивід першої команди стає вхідними даними другої."}, {"q": "Чим відрізняється <code>&gt;<\/code> від <code>&gt;&gt;<\/code>?", "options": ["Нічим", "&gt; перезаписує файл, &gt;&gt; дописує в кінець", "&gt;&gt; працює тільки під root", "&gt; дописує, &gt;&gt; перезаписує"], "answer": 1, "explain": "Одинарний знак створює файл заново, подвійний додає вивід у кінець наявного файла."}, {"q": "Як додати користувачу tony додаткову групу docker, не втративши інші групи?", "options": ["chgrp docker tony", "usermod -G docker tony", "usermod -aG docker tony", "useradd -g docker tony"], "answer": 2, "explain": "Ключ -a (append) разом з -G додає групу до списку. Без -a список буде замінено."}, {"q": "Яка команда передасть вивід <code>cmd1<\/code> на вхід <code>cmd2<\/code>?", "options": ["<code>cmd1 ; cmd2<\/code>", "<code>cmd1 | cmd2<\/code>", "<code>cmd1 &amp;&amp; cmd2<\/code>", "<code>cmd1 &amp; cmd2<\/code>", "<code>cmd1 || cmd2<\/code>"], "answer": 1, "explain": "Лише pipe | передає дані. ; — послідовно, &amp; — перша у фоні, &amp;&amp; — друга лише при успіху, || — лише при помилці."}, {"q": "Що означає перенаправлення <code>2&gt;abc<\/code>?", "options": ["Записати стандартний потік помилок (stderr) у файл abc", "Записати файл 2 у файл abc", "Записати стандартний вивід (stdout) у abc", "Записати всі дані у файл abc"], "answer": 0, "explain": "2 — дескриптор stderr. Звичайний вивід (1) лишається на екрані. Усе разом: &gt; abc 2&gt;&amp;1 або &amp;&gt; abc."}, {"q": "Якими командами можна видалити <b>порожній<\/b> каталог <code>old<\/code>?", "options": ["<code>rm old<\/code>", "<code>del old<\/code>", "<code>rmdir old<\/code>", "<code>rm -d old<\/code>"], "answer": [2, 3], "explain": "rmdir і rm -d видаляють порожній каталог. Звичайний rm без -r/-d каталоги не видаляє, а del — команда Windows."}, {"q": "Коли виконається <code>cmd2<\/code> у записі <code>cmd1 || cmd2<\/code>?", "options": ["Лише якщо cmd1 успішна", "Лише якщо cmd1 завершилась з помилкою", "Завжди", "Одночасно з cmd1"], "answer": 1, "explain": "|| — логічне «або»: друга команда потрібна, лише коли перша не вдалася (код ≠ 0)."}, {"q": "Як стежити за новими рядками лог-файла в реальному часі?", "options": ["<code>cat -f app.log<\/code>", "<code>wc -l app.log<\/code>", "<code>head app.log<\/code>", "<code>tail -f app.log<\/code>"], "answer": 3, "explain": "tail -f (follow) не завершується і виводить рядки в міру їх появи. head показує початок, wc -l рахує рядки."}, {"q": "Які записи збережуть у <code>out.log<\/code> <b>і<\/b> звичайний вивід, <b>і<\/b> помилки?", "options": ["<code>cmd &gt; out.log 2&gt;&amp;1<\/code>", "<code>cmd &amp;&gt; out.log<\/code>", "<code>cmd &gt; out.log<\/code>", "<code>cmd 2&gt; out.log<\/code>"], "answer": [0, 1], "explain": "2&gt;&amp;1 спрямовує stderr туди ж, куди вже йде stdout; &amp;&gt; — скорочення bash для того самого. Варіанти 3 і 4 зберігають лише один потік."}, {"q": "Де зберігаються хеші паролів користувачів?", "options": ["/etc/passwd", "/etc/group", "/home/user/.password", "/etc/shadow"], "answer": 3, "explain": "/etc/passwd містить облікові записи і доступний на читання всім, а хеші паролів винесено в /etc/shadow, який читає лише root."}, {"q": "Навіщо <code>/usr/bin/passwd<\/code> має біт SUID (s)?", "options": ["Щоб програма виконувалась із правами власника (root) і могла оновити /etc/shadow", "Щоб його не можна було видалити", "Щоб його бачили тільки адміністратори", "Щоб файли в каталозі успадковували групу"], "answer": 0, "explain": "SUID запускає програму з правами власника файла. Так звичайний користувач змінює свій пароль, не маючи прямого доступу до /etc/shadow."}, {"q": "Який файл потрібно доповнити на сервері, щоб увійти по SSH-ключу?", "options": ["~/.ssh/id_rsa", "~/.bashrc", "~/.ssh/authorized_keys", "/etc/hosts"], "answer": 2, "explain": "Публічний ключ клієнта додають у ~/.ssh/authorized_keys користувача на сервері (це й робить ssh-copy-id). Приватний ключ id_rsa лишається у клієнта."}]</script>
+<h2 id="quiz">Перевір себе<a class="h-anchor" href="#quiz" aria-label="Посилання на розділ">#</a></h2><p>52 питань на розуміння. В одиночних питаннях натисніть варіант — одразу побачите правильну відповідь і пояснення. Питання з позначкою <b>«кілька відповідей»</b> влаштовані як у тесті курсу (<i>Select one or more</i>): позначте всі правильні варіанти й натисніть «Перевірити».</p><div class="quiz" data-quiz="w1l2"></div><script type="application/json" id="quiz-data">[{"q": "Як отримати довідку про команду в Linux?", "options": ["<code>&lt;command&gt; --help<\/code>", "<code>guide &lt;command&gt;<\/code>", "<code>help &lt;command&gt;<\/code> (для вбудованих команд bash)", "<code>man &lt;command&gt;<\/code>", "<code>info &lt;command&gt;<\/code>", "<code>&lt;command&gt; /?<\/code>"], "answer": [0, 2, 3, 4], "explain": "<code>man<\/code> — повна сторінка посібника, <code>--help<\/code> — короткий перелік опцій від самої програми, <code>help<\/code> — довідка для вбудованих команд bash (<code>help cd<\/code>), <code>info<\/code> — документація GNU. <code>/?<\/code> — синтаксис Windows; команди <code>guide<\/code> не існує."}, {"q": "Які команди виведуть вміст змінної PATH у bash?", "options": ["<code>printenv PATH<\/code>", "<code>echo ${PATH}<\/code>", "<code>echo #PATH<\/code>", "<code>echo PATH<\/code>", "<code>echo %PATH%<\/code>", "<code>echo $PATH<\/code>"], "answer": [0, 1, 5], "explain": "Значення змінної дає <code>$PATH<\/code> або <code>${PATH}<\/code>; <code>printenv PATH<\/code> друкує значення за іменем без <code>$<\/code>. <code>%PATH%<\/code> — синтаксис Windows (bash надрукує текст як є), <code>echo PATH<\/code> надрукує слово PATH, після <code>#<\/code> починається коментар — вийде порожній рядок."}, {"q": "Який каталог містить системні конфігураційні файли?", "options": ["<code>/etc<\/code>", "<code>/root<\/code>", "<code>/sys<\/code>", "<code>/var<\/code>", "<code>/conf<\/code>", "<code>/usr/share<\/code>"], "answer": [0], "explain": "Конфіги — у <code>/etc<\/code> (<code>/etc/passwd<\/code>, <code>/etc/ssh/sshd_config<\/code>). <code>/usr/share<\/code> — спільні незалежні від архітектури дані, <code>/var<\/code> — змінні дані (логи, БД), <code>/root<\/code> — домашній каталог root, <code>/sys<\/code> — віртуальна ФС пристроїв. Каталогу <code>/conf<\/code> у FHS немає."}, {"q": "У яких каталогах зберігаються основні виконувані файли (програми) для всіх користувачів?", "options": ["<code>/bin<\/code>", "<code>/lib<\/code>", "<code>/var/log<\/code>", "<code>/usr/bin<\/code>", "<code>/dev<\/code>", "<code>/usr/share<\/code>"], "answer": [0, 3], "explain": "Програми користувачів — <code>/bin<\/code> і <code>/usr/bin<\/code> (у сучасних системах <code>/bin<\/code> — посилання на <code>/usr/bin<\/code>). <code>/lib<\/code> містить бібліотеки, а не програми; <code>/usr/share<\/code> — документацію та інші спільні дані; <code>/dev<\/code> — файли пристроїв."}, {"q": "Де зберігаються спільні (shared) файли, які не залежать від архітектури процесора: документація, man-сторінки, іконки?", "options": ["<code>/usr/lib<\/code>", "<code>/usr/share<\/code>", "<code>/srv<\/code>", "<code>/etc/share<\/code>", "<code>/var/share<\/code>", "<code>/opt<\/code>"], "answer": [1], "explain": "<code>/usr/share<\/code> — architecture-independent shared data (<code>/usr/share/man<\/code>, <code>/usr/share/doc<\/code>). <code>/usr/lib<\/code> — спільні <b>бібліотеки<\/b>, які якраз залежать від архітектури. <code>/srv<\/code> — дані служб, <code>/opt<\/code> — додаткові пакети ПЗ. <code>/etc/share<\/code> і <code>/var/share<\/code> не є стандартними."}, {"q": "Як знайти файл text.t у файловій системі?", "options": ["<code>find / -name text.t<\/code>", "<code>find . -name text.t<\/code>", "<code>which text.t<\/code>", "<code>grep -r text.t /<\/code>", "<code>locate text.t<\/code>", "<code>find / -path text.t<\/code>"], "answer": [0, 1, 4], "explain": "<code>find / -name<\/code> шукає по всій ФС, <code>find . -name<\/code> — у поточному дереві, <code>locate<\/code> — у базі імен. <code>which<\/code> шукає лише виконувані файли в <code>$PATH<\/code>. <code>-path<\/code> порівнює з повним шляхом, тож <code>text.t<\/code> без <code>*/<\/code> ніколи не збігається. <code>grep -r<\/code> шукає рядок «text.t» <b>усередині<\/b> файлів, а не файл з таким іменем."}, {"q": "Як показати на екрані вміст текстового файла text.t?", "options": ["<code>echo text.t<\/code>", "<code>open text.t<\/code>", "<code>type text.t<\/code>", "<code>more text.t<\/code>", "<code>cat text.t<\/code>", "<code>less text.t<\/code>"], "answer": [3, 4, 5], "explain": "<code>cat<\/code> виводить увесь файл, <code>less<\/code> і <code>more<\/code> — посторінково. <code>echo<\/code> друкує рядок «text.t», а не вміст. <code>type<\/code> показує вміст у Windows, а в bash повідомляє, чим є ім'я команди. <code>open<\/code> не є стандартною командою перегляду в Linux."}, {"q": "Як скопіювати вміст файла text.t у новий файл info.t, щоб text.t залишився?", "options": ["<code>cp info.t text.t<\/code>", "<code>mv text.t info.t<\/code>", "<code>cp text.t info.t<\/code>", "<code>cat text.t &gt; info.t<\/code>", "<code>copy text.t info.t<\/code>", "<code>ln text.t info.t<\/code>"], "answer": [2, 3], "explain": "<code>cp<\/code> копіює файл; <code>cat … &gt;<\/code> переносить вміст у новий файл (без прав і часу оригіналу). <code>mv<\/code> перейменує, і text.t зникне. <code>copy<\/code> — команда Windows. <code>cp info.t text.t<\/code> — аргументи переставлено. <code>ln<\/code> створить жорстке посилання: друге ім'я тих самих даних, а не незалежну копію — зміна одного «файла» змінить і другий."}, {"q": "Як перейменувати text.t на info.t?", "options": ["<code>cp text.t info.t<\/code>", "<code>cat text.t &gt; info.t<\/code>", "<code>cd text.t info.t<\/code>", "<code>mv -n text.t info.t<\/code>", "<code>ren text.t info.t<\/code>", "<code>mv text.t info.t<\/code>"], "answer": [3, 5], "explain": "Перейменування в Linux — це <code>mv<\/code> у той самий каталог. <code>-n<\/code> лише забороняє перезапис, якщо <code>info.t<\/code> уже є, тож теж перейменує. <code>cp<\/code> і <code>cat &gt;<\/code> створюють копію, а text.t лишається. <code>ren<\/code> — команда Windows, <code>cd<\/code> змінює каталог."}, {"q": "Ви в каталозі <code>/var/tmp<\/code>. Як перемістити text.t звідси в домашній каталог поточного користувача?", "options": ["<code>mv text.t $HOME/<\/code>", "<code>mv text.t ~/<\/code>", "<code>mv text.t $USER/<\/code>", "<code>mv text.t /home/<\/code>", "<code>mv text.t ../<\/code>", "<code>mv text.t ~<\/code>"], "answer": [0, 1, 5], "explain": "<code>~<\/code>, <code>~/<\/code> і <code>$HOME<\/code> — домашній каталог. <code>$USER<\/code> — лише ім'я (напр. <code>anna<\/code>), тож це відносний шлях <code>/var/tmp/anna/<\/code>. <code>/home/<\/code> — каталог, що містить домашні каталоги всіх, а не ваш. <code>../<\/code> — це <code>/var<\/code>."}, {"q": "Як створити каталог data у поточному каталозі?", "options": ["<code>mkdir ./data<\/code>", "<code>md data<\/code>", "<code>mkdir data<\/code>", "<code>mkdir -data<\/code>", "<code>mkdir /data<\/code>", "<code>touch data<\/code>"], "answer": [0, 2], "explain": "<code>data<\/code> і <code>./data<\/code> — той самий відносний шлях. <code>/data<\/code> — у корені ФС. <code>md<\/code> — команда Windows. <code>-data<\/code> сприйметься як набір опцій. <code>touch data<\/code> створить порожній <b>файл<\/b>."}, {"q": "Ви в домашньому каталозі, каталогу data ще немає. Як одним рухом створити вкладені каталоги data/info?", "options": ["<code>mkdir -p ~/data/info<\/code>", "<code>mkdir -r data/info<\/code>", "<code>mkdir data info<\/code>", "<code>mkdir -p data/info<\/code>", "<code>mkdir -m data/info<\/code>", "<code>mkdir data/info<\/code>"], "answer": [0, 3], "explain": "<code>-p<\/code> (parents) створює весь ланцюжок; з домашнього каталогу шляхи <code>data/info<\/code> і <code>~/data/info<\/code> однакові. Без <code>-p<\/code> — помилка, бо <code>data<\/code> ще немає. <code>mkdir data info<\/code> створить два окремі каталоги поруч. <code>-m<\/code> задає права (чекає число, напр. <code>-m 755<\/code>), опції <code>-r<\/code> у mkdir немає."}, {"q": "У каталозі data лише файли (без підкаталогів). Як видалити всі ці файли, залишивши сам каталог?", "options": ["<code>rm data/*<\/code>", "<code>rm -d data<\/code>", "<code>rm -f data/*<\/code>", "<code>rmdir data/*<\/code>", "<code>rm data<\/code>", "<code>del data/*<\/code>"], "answer": [0, 2], "explain": "Шаблон <code>data/*<\/code> розкривається в усі файли каталогу; <code>-f<\/code> лише прибирає запитання. <code>rm data<\/code> — помилка «Is a directory». <code>rmdir<\/code> видаляє лише порожні <b>каталоги<\/b>, не файли. <code>del<\/code> — Windows. <code>rm -d data<\/code> спробує видалити сам каталог, а він не порожній."}, {"q": "Як видалити весь вміст каталогу data разом із підкаталогами, але залишити сам каталог data?", "options": ["<code>rm -i data/*<\/code>", "<code>rmdir data/*<\/code>", "<code>rm -r data<\/code>", "<code>rm -r data/*<\/code>", "<code>rm -rf data/*<\/code>", "<code>rm data/*<\/code>"], "answer": [3, 4], "explain": "<code>-r<\/code> потрібен для підкаталогів, шаблон <code>/*<\/code> залишає сам <code>data<\/code>. <code>rm -r data<\/code> видалить і каталог. <code>rm data/*<\/code> та <code>rm -i data/*<\/code> без <code>-r<\/code> пропустять підкаталоги. <code>rmdir<\/code> не видалить файли й непорожні підкаталоги. Нюанс: <code>*<\/code> не зачіпає приховані файли (на крапку)."}, {"q": "Як видалити порожній каталог data з домашнього каталогу (ви зараз в іншому місці)?", "options": ["<code>rmdir data<\/code>", "<code>rm -d ~/data<\/code>", "<code>rm ~/data<\/code>", "<code>rm -r ~/data<\/code>", "<code>rm -i ~/data<\/code>", "<code>rmdir ~/data<\/code>"], "answer": [1, 3, 5], "explain": "Порожній каталог видаляють <code>rmdir<\/code>, <code>rm -d<\/code>, а також <code>rm -r<\/code> (для нього порожній каталог не проблема). <code>rm<\/code> і <code>rm -i<\/code> без <code>-r<\/code>/<code>-d<\/code> — «Is a directory». <code>rmdir data<\/code> шукає <code>data<\/code> у поточному каталозі, а ви не вдома."}, {"q": "Як видалити непорожній каталог data з домашнього каталогу?", "options": ["<code>rm -r ~/data<\/code>", "<code>rm -i ~/data<\/code>", "<code>rmdir -p ~/data<\/code>", "<code>rm -r ~/data/*<\/code>", "<code>rm -rf ~/data<\/code>", "<code>rmdir ~/data<\/code>"], "answer": [0, 4], "explain": "Непорожній каталог видаляє лише рекурсивний <code>rm -r<\/code> (з <code>-f<\/code> — без запитань). <code>rmdir<\/code> і <code>rmdir -p<\/code> відмовлять: «Directory not empty». <code>rm -r ~/data/*<\/code> очистить вміст, але каталог залишиться. <code>rm -i<\/code> без <code>-r<\/code> не працює з каталогами."}, {"q": "Як видалити всі файли в поточному каталозі?", "options": ["<code>rm -f *<\/code>", "<code>rm .<\/code>", "<code>rm *<\/code>", "<code>rm ./*<\/code>", "<code>rm -d .<\/code>", "<code>rmdir *<\/code>"], "answer": [0, 2, 3], "explain": "<code>*<\/code> і <code>./*<\/code> — усі (неприховані) імена поточного каталогу; підкаталоги без <code>-r<\/code> пропускаються з повідомленням. Видалити <code>.<\/code> не можна в принципі. <code>rmdir *<\/code> працює лише з порожніми каталогами, файли не зачепить."}, {"q": "Якими командами можна створити порожній файл text.t?", "options": ["<code>cat text.t<\/code>", "<code>cp /dev/null text.t<\/code>", "<code>cat /dev/null &gt; text.t<\/code>", "<code>mkdir text.t<\/code>", "<code>&gt; text.t<\/code>", "<code>echo text.t<\/code>", "<code>touch text.t<\/code>"], "answer": [1, 2, 4, 6], "explain": "<code>touch<\/code> створює файл (а існуючому лише оновлює час). Перенаправлення «нічого» (<code>&gt;<\/code>, <code>cat /dev/null &gt;<\/code>) і копія <code>/dev/null<\/code> дають порожній файл. <code>echo text.t<\/code> друкує рядок на екран, <code>mkdir<\/code> створить каталог, <code>cat text.t<\/code> лише читає існуючий файл."}, {"q": "Які твердження про <code>cd<\/code> правильні?", "options": ["<code>cd../<\/code> (без пробілу) працює як <code>cd ../<\/code>", "<code>cd ../<\/code> піднімає на два рівні вгору", "<code>cd ..<\/code> переходить у домашній каталог", "<code>cd ./<\/code> працює так само, як <code>cd .<\/code>", "<code>cd ..<\/code> переходить у батьківський каталог", "<code>cd .<\/code> залишає вас у поточному каталозі"], "answer": [3, 4, 5], "explain": "<code>.<\/code> — поточний каталог, <code>..<\/code> — батьківський, скісна риска в кінці нічого не змінює. Додому веде <code>cd<\/code> без аргументів або <code>cd ~<\/code>. Два рівні вгору — <code>cd ../..<\/code>. Без пробілу bash шукатиме команду <code>cd../<\/code> і видасть «command not found»."}, {"q": "Ви в домашньому каталозі user1 (<code>/home/user1<\/code>). Як перейти в домашній каталог user2 (доступ є)?", "options": ["<code>cd /user2<\/code>", "<code>cd ..\\user2<\/code>", "<code>cd user2<\/code>", "<code>cd /home/user2<\/code>", "<code>cd ../user2<\/code>", "<code>cd ~user2<\/code>"], "answer": [3, 4, 5], "explain": "Відносний <code>../user2<\/code>, абсолютний <code>/home/user2<\/code> і <code>~user2<\/code> (домашній каталог за іменем користувача) ведуть в одне місце. <code>cd user2<\/code> шукає <code>/home/user1/user2<\/code>, <code>/user2<\/code> — у корені. Зворотна риска — Windows-синтаксис; bash сприйме <code>\\u<\/code> як екранування і шукатиме <code>..user2<\/code>."}, {"q": "Як запустити виконуваний файл script.sh з поточного каталогу?", "options": ["<code>$PWD/script.sh<\/code>", "<code>./script.sh<\/code>", "<code>script.sh<\/code>", "<code>.\\script.sh<\/code>", "<code>run script.sh<\/code>", "<code>bash script.sh<\/code>"], "answer": [0, 1, 5], "explain": "Потрібен явний шлях (<code>./<\/code> або абсолютний <code>$PWD/…<\/code>), бо поточний каталог не входить у <code>PATH<\/code>. <code>bash script.sh<\/code> запускає інтерпретатор і передає йому файл (навіть без <code>x<\/code>). Просто <code>script.sh<\/code> — «command not found». <code>.\\<\/code> — Windows. Команди <code>run<\/code> немає."}, {"q": "Як отримати список файлів, імена яких починаються з великої літери F?", "options": ["<code>ls F*<\/code>", "<code>ls F?<\/code>", "<code>ls -d F*<\/code>", "<code>ls -F<\/code>", "<code>ls *F<\/code>", "<code>ls [F]*<\/code>"], "answer": [0, 2, 5], "explain": "<code>F*<\/code> і <code>[F]*<\/code> — «F, далі що завгодно»; <code>-d<\/code> не заходить усередину знайдених каталогів, лише показує їхні імена. <code>*F<\/code> — закінчуються на F, <code>F?<\/code> — рівно два символи. <code>ls -F<\/code> — опція, яка додає позначки типу до <b>всіх<\/b> імен."}, {"q": "Які команди покажуть лише підкаталоги поточного каталогу (без файлів)?", "options": ["<code>ls -l | grep '^d'<\/code>", "<code>find . -maxdepth 1 -type d<\/code>", "<code>ls -D<\/code>", "<code>dir /ad<\/code>", "<code>ls -l | grep '^-'<\/code>", "<code>ls -d */<\/code>"], "answer": [0, 1, 5], "explain": "<code>*/<\/code> збігається лише з каталогами; у <code>ls -l<\/code> рядки каталогів починаються з <code>d<\/code>; <code>find -type d<\/code> фільтрує за типом (покаже ще й <code>.<\/code>). <code>grep '^-'<\/code> залишить звичайні <b>файли<\/b>. Опції <code>-D<\/code> для цього в ls немає, <code>dir /ad<\/code> — Windows."}, {"q": "Як створити в поточному каталозі <b>жорстке<\/b> посилання text.lnk на файл text.t?", "options": ["<code>cp -l text.t text.lnk<\/code>", "<code>ln -s text.t text.lnk<\/code>", "<code>ln -s text.lnk text.t<\/code>", "<code>ln text.lnk text.t<\/code>", "<code>ln text.t text.lnk<\/code>", "<code>link text.t text.lnk<\/code>"], "answer": [0, 4, 5], "explain": "Синтаксис — оригінал, потім посилання. <code>ln<\/code> без <code>-s<\/code>, утиліта <code>link<\/code> і <code>cp -l<\/code> створюють жорстке посилання (той самий inode). <code>-s<\/code> робить символічне. У двох останніх варіантах аргументи переставлено: команда шукатиме неіснуючий text.lnk."}, {"q": "Які твердження про символічне (soft) посилання правильні?", "options": ["Після видалення оригіналу дані доступні через посилання", "Може вказувати на каталог", "Може вказувати на файл на іншому розділі диска", "Створюється командою <code>ln<\/code> без опцій", "У <code>ls -l<\/code> рядок починається з <code>l<\/code> і містить <code>-&gt;<\/code>", "Має той самий номер inode, що й оригінал"], "answer": [1, 2, 4], "explain": "Symlink — окремий файл зі шляхом, тому працює для каталогів і між ФС, а в <code>ls -l<\/code> видно <code>l<\/code> і <code>name -&gt; target<\/code>. Після видалення оригіналу він стає «зламаним». Однаковий inode і виживання даних — властивості <b>жорсткого<\/b> посилання, яке і створює <code>ln<\/code> без опцій."}, {"q": "Файл script.sh зараз має права <code>644<\/code>. Які команди зроблять його виконуваним <b>лише для власника<\/b>?", "options": ["<code>chmod 700 script.sh<\/code>", "<code>chmod 755 script.sh<\/code>", "<code>chmod u+x script.sh<\/code>", "<code>chmod +x script.sh<\/code>", "<code>chmod 744 script.sh<\/code>", "<code>chmod 144 script.sh<\/code>"], "answer": [0, 2, 4], "explain": "744 = rwxr--r--, 700 = rwx------, <code>u+x<\/code> з 644 дає 744. У 755 і <code>+x<\/code> виконання отримують усі. 144: власник має лише <code>x<\/code> без <code>r<\/code>, тож bash не прочитає текст скрипта, і запуск не вдасться."}, {"q": "Якими командами можна переглянути стан оперативної пам'яті (RAM)?", "options": ["<code>mem<\/code>", "<code>vmstat<\/code>", "<code>df -h<\/code>", "<code>cat /proc/meminfo<\/code>", "<code>top<\/code>", "<code>free -h<\/code>", "<code>ps<\/code>"], "answer": [1, 3, 4, 5], "explain": "<code>free<\/code> — підсумок RAM і swap, <code>top<\/code> — у шапці, <code>/proc/meminfo<\/code> — детальні лічильники ядра, <code>vmstat<\/code> — статистика пам'яті та CPU. Стандартної команди <code>mem<\/code> немає, <code>df<\/code> показує <b>диск<\/b>, <code>ps<\/code> — список процесів, а не загальний стан пам'яті."}, {"q": "Де в сучасному Linux зберігаються хеші паролів користувачів?", "options": ["<code>/etc/group<\/code>", "<code>/etc/passwd<\/code>", "<code>/etc/sudoers<\/code>", "<code>/etc/shadow<\/code>", "<code>/etc/password<\/code>", "<code>/var/lib/passwd<\/code>"], "answer": [3], "explain": "Хеші із сіллю — у <code>/etc/shadow<\/code>, який читає лише root. У <code>/etc/passwd<\/code> на місці пароля стоїть <code>x<\/code> (файл читають усі, тому хеші винесли). <code>/etc/group<\/code> — групи, <code>/etc/sudoers<\/code> — правила sudo. <code>/etc/password<\/code> і <code>/var/lib/passwd<\/code> не існують."}, {"q": "Що означає перенаправлення <code>cmd 2&gt;abc<\/code>?", "options": ["Потік помилок (stderr) дописується в кінець файла abc", "Потік помилок (stderr) записується у файл abc, файл перезаписується", "І stdout, і stderr записуються у файл abc", "Потік помилок передається на вхід команди abc", "Звичайний вивід (stdout) записується у файл abc, файл перезаписується", "Звичайний вивід записується у файл з назвою 2"], "answer": [1], "explain": "<code>2<\/code> — номер дескриптора stderr, <code>&gt;<\/code> — запис з перезаписом. Дописування — <code>2&gt;&gt;<\/code>, обидва потоки — <code>&gt; abc 2&gt;&amp;1<\/code> або <code>&amp;&gt; abc<\/code>, передача на вхід команди — pipe <code>|<\/code>."}, {"q": "Які записи передають вивід cmd1 на вхід cmd2?", "options": ["<code>cmd1 &amp;&amp; cmd2<\/code>", "<code>cmd1 || cmd2<\/code>", "<code>cmd1 | cmd2<\/code>", "<code>cmd1 &gt; cmd2<\/code>", "<code>cmd1 | tee log.txt | cmd2<\/code>", "<code>cmd1 ; cmd2<\/code>"], "answer": [2, 4], "explain": "Дані передає лише pipe <code>|<\/code>; <code>tee<\/code> посередині пише копію у файл і передає потік далі. <code>&gt; cmd2<\/code> створить <b>файл<\/b> з назвою cmd2. <code>&amp;&amp;<\/code>, <code>;<\/code>, <code>||<\/code> керують лише тим, чи запуститься cmd2, без передачі даних."}, {"q": "Які записи збережуть у файл out.log і звичайний вивід, і помилки?", "options": ["<code>cmd | out.log<\/code>", "<code>cmd 2&gt;&amp;1 &gt; out.log<\/code>", "<code>cmd &amp;&gt; out.log<\/code>", "<code>cmd 2&gt; out.log<\/code>", "<code>cmd &gt; out.log<\/code>", "<code>cmd &gt; out.log 2&gt;&amp;1<\/code>"], "answer": [2, 5], "explain": "Перенаправлення читаються зліва направо: спочатку stdout у файл, потім stderr туди ж — правильно; <code>&amp;&gt;<\/code> — скорочення bash. У варіанті <code>2&gt;&amp;1 &gt; out.log<\/code> stderr прив'язується до екрана <b>до<\/b> того, як stdout пішов у файл. <code>2&gt;<\/code> — лише помилки, <code>&gt;<\/code> — лише вивід, а <code>| out.log<\/code> спробує запустити команду out.log."}, {"q": "Які конструкції виконають cmd2 <b>лише якщо cmd1 завершилась помилкою<\/b>?", "options": ["<code>if ! cmd1; then cmd2; fi<\/code>", "<code>cmd1 | cmd2<\/code>", "<code>cmd1 || cmd2<\/code>", "<code>cmd1 &amp; cmd2<\/code>", "<code>cmd1 ; cmd2<\/code>", "<code>cmd1 &amp;&amp; cmd2<\/code>"], "answer": [0, 2], "explain": "<code>||<\/code> — логічне «АБО»: друга частина виконується при ненульовому коді виходу; <code>if !<\/code> робить те саме явно. <code>&amp;&amp;<\/code> — лише при успіху, <code>;<\/code> — завжди, <code>&amp;<\/code> — паралельно у фоні, <code>|<\/code> — одночасно з передачею даних."}, {"q": "Яке значення має <code>$?<\/code> одразу після успішно виконаної команди?", "options": ["<code>0<\/code>", "порожній рядок", "<code>true<\/code>", "<code>1<\/code>", "<code>255<\/code>", "<code>-1<\/code>"], "answer": [0], "explain": "Код виходу 0 означає успіх, будь-яке значення 1–255 — помилку (відсутній файл у <code>ls<\/code> дає 2, «команду не знайдено» — 127). Від'ємних кодів і слова <code>true<\/code> у <code>$?<\/code> не буває."}, {"q": "Якими командами можна видалити <b>порожній<\/b> каталог dir?", "options": ["<code>rm -d dir<\/code>", "<code>rm -i dir<\/code>", "<code>rd dir<\/code>", "<code>rmdir dir<\/code>", "<code>del dir<\/code>", "<code>rm dir<\/code>"], "answer": [0, 3], "explain": "Для порожнього каталогу — <code>rmdir<\/code> або <code>rm -d<\/code> (підійшов би й <code>rm -r<\/code>). <code>rm<\/code> і <code>rm -i<\/code> без <code>-d<\/code>/<code>-r<\/code> відповідять «Is a directory». <code>del<\/code> і <code>rd<\/code> — команди Windows."}, {"q": "Як знайти рядки зі словом error у будь-якому регістрі в усіх файлах каталогу /var/log і його підкаталогів?", "options": ["<code>locate error<\/code>", "<code>grep -v error /var/log<\/code>", "<code>grep -ir error /var/log<\/code>", "<code>grep -R -i \"error\" /var/log<\/code>", "<code>grep -ri error /var/log<\/code>", "<code>find /var/log -name error<\/code>"], "answer": [2, 3, 4], "explain": "Потрібні <code>-r<\/code>/<code>-R<\/code> (рекурсивно) та <code>-i<\/code> (без регістру); порядок опцій і лапки не важливі. <code>find -name<\/code> шукає файли з <b>іменем<\/b> error, <code>-v<\/code> інвертує збіг (і без <code>-r<\/code> не зайде в каталог), <code>locate<\/code> шукає імена файлів у базі."}, {"q": "Якими командами можна порахувати кількість рядків у файлі f?", "options": ["<code>wc -l f<\/code>", "<code>head -n f<\/code>", "<code>cat f | wc -l<\/code>", "<code>nl -c f<\/code>", "<code>wc -w f<\/code>", "<code>grep -c '' f<\/code>"], "answer": [0, 2, 5], "explain": "<code>wc -l<\/code> рахує рядки — з файла чи зі stdin. <code>grep -c ''<\/code> рахує рядки, де є збіг з порожнім шаблоном, тобто всі. <code>wc -w<\/code> рахує <b>слова<\/b>. <code>head -n<\/code> чекає число, а не рахує. <code>nl<\/code> нумерує рядки, опції <code>-c<\/code> для підрахунку в нього немає."}, {"q": "Як стежити за журналом app.log у реальному часі, бачачи нові рядки одразу після запису?", "options": ["<code>cat -f app.log<\/code>", "<code>tail -F app.log<\/code>", "<code>tail -f app.log<\/code>", "<code>more -f app.log<\/code>", "<code>less +F app.log<\/code>", "<code>head -f app.log<\/code>"], "answer": [1, 2, 4], "explain": "<code>tail -f<\/code> (follow) показує дописані рядки; <code>-F<\/code> додатково переживе ротацію файла; <code>less +F<\/code> — режим стеження в less (вихід з нього Ctrl+C, потім q). У <code>head<\/code> і <code>cat<\/code> опції <code>-f<\/code> немає; у <code>more<\/code> <code>-f<\/code> означає зовсім інше."}, {"q": "Як додати користувача anna в групу docker, <b>зберігши<\/b> її інші групи?", "options": ["<code>usermod -aG docker anna<\/code>", "<code>groupadd docker anna<\/code>", "<code>usermod -a -G docker anna<\/code>", "<code>gpasswd -a anna docker<\/code>", "<code>usermod -g docker anna<\/code>", "<code>usermod -G docker anna<\/code>"], "answer": [0, 2, 3], "explain": "<code>-a<\/code> (append) разом з <code>-G<\/code> додає групу; <code>gpasswd -a<\/code> — інший спосіб додати учасника. <code>-G<\/code> без <code>-a<\/code> <b>замінить<\/b> усі додаткові групи; <code>-g<\/code> змінює основну групу; <code>groupadd<\/code> створює нову групу."}, {"q": "Які твердження про <code>su<\/code> і <code>sudo<\/code> правильні?", "options": ["<code>su<\/code> і <code>su -<\/code> працюють однаково", "<code>su<\/code> без імені переключає на root", "<code>su - bob<\/code> запитує пароль користувача bob", "<code>sudo -i<\/code> відкриває оболонку root", "<code>sudo<\/code> завжди запитує пароль root", "<code>sudo<\/code> запитує пароль поточного користувача"], "answer": [1, 2, 3, 5], "explain": "<code>sudo<\/code> перевіряє ваш власний пароль і права в <code>/etc/sudoers<\/code>; <code>su<\/code> — пароль цільового користувача (без імені — root). <code>su -<\/code> завантажує середовище цільового користувача (HOME, PATH, домашній каталог), а <code>su<\/code> без дефіса лишає поточне."}, {"q": "Поточна маска <code>umask 022<\/code>. Які твердження правильні?", "options": ["Новий файл отримає права 644", "umask додає права до базових", "Новий файл отримає права 666", "Новий каталог отримає права 644", "Новий файл отримає права 755", "Новий каталог отримає права 755"], "answer": [0, 5], "explain": "Базові права: файл 666, каталог 777; umask <b>вимикає<\/b> біти: 666→644, 777→755. Файли без явного <code>chmod<\/code> не отримують <code>x<\/code>, тому 755 для файла неможливе. 666 було б при umask 000."}, {"q": "Які твердження про спеціальні біти правильні?", "options": ["<code>chmod 4755 file<\/code> встановлює sticky bit", "<code>chmod 2775 dir<\/code> встановлює SGID на каталог", "<code>chmod 1777 /tmp<\/code> встановлює sticky bit", "Sticky bit дозволяє будь-кому видаляти будь-які файли каталогу", "SGID на каталозі змушує нові файли успадковувати власника каталогу", "<code>/usr/bin/passwd<\/code> має біт SUID"], "answer": [1, 2, 5], "explain": "Старша цифра: 4 — SUID, 2 — SGID, 1 — sticky. passwd з SUID працює з правами root. Sticky bit навпаки <b>обмежує<\/b> видалення: лише власник файла. SGID на каталозі передає новим файлам <b>групу<\/b>, а не власника."}, {"q": "Які твердження про завершення процесу з PID 1234 правильні?", "options": ["<code>kill 1234<\/code> надсилає SIGTERM — прохання завершитись коректно", "<kbd>Ctrl<\/kbd>+<kbd>Z<\/kbd> завершує процес так само, як <kbd>Ctrl<\/kbd>+<kbd>C<\/kbd>", "<code>kill -9 1234<\/code> надсилає SIGKILL, який процес не може перехопити", "<code>killall 1234<\/code> завершує процес з цим PID", "<code>kill -15 1234<\/code> рівнозначна <code>kill 1234<\/code>", "SIGKILL процес може перехопити і проігнорувати, як SIGTERM"], "answer": [0, 2, 4], "explain": "За замовчуванням kill шле 15 (SIGTERM). SIGKILL (9) не перехоплюється. Ctrl+Z лише <b>призупиняє<\/b> (SIGTSTP), Ctrl+C перериває (SIGINT). <code>killall<\/code> працює з <b>іменами<\/b> процесів."}, {"q": "Які команди покажуть вільне місце на файлових системах (розділах диска)?", "options": ["<code>free -h<\/code>", "<code>df<\/code>", "<code>df -h<\/code>", "<code>du -sh *<\/code>", "<code>lsblk<\/code>", "<code>ls -lh<\/code>"], "answer": [1, 2], "explain": "<code>df<\/code> (disk free) показує розмір, зайняте і вільне місце кожної ФС; <code>-h<\/code> — у зручних одиницях. <code>du<\/code> рахує, скільки займають <b>каталоги<\/b>, <code>free<\/code> — оперативна пам'ять, <code>ls -lh<\/code> — розміри файлів, <code>lsblk<\/code> — розміри дисків і розділів без вільного місця."}, {"q": "Які команди розпакують архів site.tar.gz у поточний каталог?", "options": ["<code>tar -xzvf site.tar.gz<\/code>", "<code>tar -czvf site.tar.gz<\/code>", "<code>tar -xf site.tar.gz<\/code>", "<code>tar -tzvf site.tar.gz<\/code>", "<code>gunzip site.tar.gz<\/code>", "<code>tar xzf site.tar.gz<\/code>"], "answer": [0, 2, 5], "explain": "<code>x<\/code> — extract; дефіс перед опціями tar необов'язковий; сучасний GNU tar сам розпізнає gzip, тому <code>-xf<\/code> теж спрацює. <code>c<\/code> створює архів, <code>t<\/code> лише показує вміст. <code>gunzip<\/code> зніме стиснення і залишить <code>site.tar<\/code>, але файли з нього не дістане."}, {"q": "Як встановити nginx в Ubuntu?", "options": ["<code>sudo apt install nginx<\/code>", "<code>sudo apt update<\/code>", "<code>sudo yum install nginx<\/code>", "<code>sudo apt-get install nginx<\/code>", "<code>sudo dpkg -i nginx<\/code>", "<code>sudo apt upgrade<\/code>"], "answer": [0, 3], "explain": "У Debian/Ubuntu пакети ставлять <code>apt<\/code> або старіший <code>apt-get<\/code>. <code>apt update<\/code> лише оновлює <b>список<\/b> пакетів, <code>apt upgrade<\/code> оновлює вже встановлені. <code>yum<\/code> — для RHEL/CentOS. <code>dpkg -i<\/code> чекає шлях до локального файла <code>.deb<\/code>."}, {"q": "Як зробити, щоб служба nginx запускалася автоматично при завантаженні системи?", "options": ["<code>sudo systemctl start nginx<\/code>", "<code>sudo service nginx start<\/code>", "<code>sudo systemctl reload nginx<\/code>", "<code>systemctl status nginx<\/code>", "<code>sudo systemctl enable --now nginx<\/code>", "<code>sudo systemctl enable nginx<\/code>"], "answer": [4, 5], "explain": "<code>enable<\/code> додає службу в автозапуск; <code>--now<\/code> додатково запускає її зараз. <code>start<\/code> і <code>service … start<\/code> запускають лише в поточній сесії до перезавантаження. <code>reload<\/code> перечитує конфіг, <code>status<\/code> показує стан."}, {"q": "Де шукати записи про входи по SSH і використання sudo?", "options": ["<code>/etc/auth.log<\/code> (Debian/Ubuntu)", "<code>/var/log/nginx/access.log<\/code> (будь-який дистрибутив)", "<code>/var/log/secure<\/code> (RHEL/CentOS)", "<code>journalctl -u ssh<\/code> або <code>-u sshd<\/code> (systemd)", "<code>/var/log/auth.log<\/code> (Debian/Ubuntu)", "<code>/proc/auth<\/code> (RHEL/CentOS)"], "answer": [2, 3, 4], "explain": "Журнали автентифікації: <code>auth.log<\/code> у Debian-сімействі, <code>secure<\/code> у Red Hat-сімействі; systemd-журнал служби SSH доступний через journalctl. У <code>/etc<\/code> логів немає, <code>access.log<\/code> nginx — HTTP-запити, <code>/proc/auth<\/code> не існує."}, {"q": "Які шаблони збігаються з іменем <code>file1.txt<\/code>, але <b>не<\/b> з <code>file10.txt<\/code>?", "options": ["<code>f*.txt<\/code>", "<code>file1*<\/code>", "<code>file*.txt<\/code>", "<code>file[1].txt<\/code>", "<code>file[0-9].txt<\/code>", "<code>file?.txt<\/code>"], "answer": [3, 4, 5], "explain": "<code>?<\/code> і <code>[…]<\/code> відповідають рівно <b>одному<\/b> символу, тому <code>10<\/code> не підходить. <code>*<\/code> — будь-яка кількість символів, тож <code>file*.txt<\/code>, <code>file1*<\/code> і <code>f*.txt<\/code> збігаються з обома іменами."}, {"q": "Які твердження про вхід по SSH-ключах правильні?", "options": ["Під час входу приватний ключ передається серверу для перевірки", "Публічний ключ додається на сервер у <code>~/.ssh/authorized_keys<\/code>", "Приватний ключ залишається лише на клієнті", "Каталог <code>~/.ssh<\/code> має мати права 777, щоб SSH міг його прочитати", "За замовчуванням SSH використовує TCP-порт 22", "<code>ssh-copy-id<\/code> копіює на сервер приватний ключ"], "answer": [1, 2, 4], "explain": "Сервер зберігає лише публічні ключі; клієнт доводить володіння приватним, підписуючи дані, але сам ключ мережею не йде. <code>ssh-copy-id<\/code> копіює <b>публічний<\/b>. Права мають бути суворими: <code>700<\/code> на <code>~/.ssh<\/code>, <code>600<\/code> на ключі, інакше SSH відмовить."}, {"q": "Які команди покажуть приховані файли (ім'я починається з крапки)?", "options": ["<code>ls -A<\/code>", "<code>ls -la<\/code>", "<code>ls -H<\/code>", "<code>ls -l<\/code>", "<code>ls -h<\/code>", "<code>ls -a<\/code>"], "answer": [0, 1, 5], "explain": "<code>-a<\/code> показує все, включно з <code>.<\/code> і <code>..<\/code>; <code>-A<\/code> — приховані без цих двох; <code>-la<\/code> — <code>-a<\/code> у довгому форматі. <code>-h<\/code> — зручні розміри, <code>-l<\/code> — довгий формат без прихованих, <code>-H<\/code> стосується символічних посилань у аргументах."}, {"q": "Які твердження про пошук файлів правильні?", "options": ["<code>find / -path text.t<\/code> знаходить файл за іменем", "<code>find /etc -type d<\/code> знаходить лише каталоги", "<code>-iname<\/code> шукає за іменем без урахування регістру", "<code>locate<\/code> завжди знаходить файл, створений хвилину тому", "<code>which<\/code> знаходить будь-який файл у системі", "<code>find . -name \"*.log\" -mtime +30 -delete<\/code> видаляє логи, змінені понад 30 днів тому"], "answer": [1, 2, 5], "explain": "<code>-mtime +30<\/code> — понад 30 днів, <code>-iname<\/code> ігнорує регістр, <code>-type d<\/code> — каталоги. <code>locate<\/code> шукає в базі, яку оновлює <code>updatedb<\/code> (зазвичай раз на добу). <code>which<\/code> шукає лише програми в <code>PATH<\/code>. <code>-path<\/code> порівнює з повним шляхом."}, {"q": "Де ядро Linux «на льоту» показує інформацію про процеси, пам'ять і процесор у вигляді файлів?", "options": ["<code>/dev<\/code>", "<code>/boot<\/code>", "<code>/usr/lib<\/code>", "<code>/etc<\/code>", "<code>/proc<\/code>", "<code>/var/run<\/code>"], "answer": [4], "explain": "<code>/proc<\/code> — віртуальна ФС: <code>/proc/meminfo<\/code>, <code>/proc/cpuinfo<\/code>, <code>/proc/&lt;PID&gt;/<\/code>. <code>/dev<\/code> — файли пристроїв, <code>/boot<\/code> — ядро і завантажувач на диску, <code>/var/run<\/code> (<code>/run<\/code>) — PID-файли і сокети, <code>/etc<\/code> — конфіги."}]</script>
 <div class="complete-box"><p>Прочитали і пройшли тест? Позначте лекцію — прогрес оновиться на головній і в меню.</p><button type="button" class="btn primary" data-complete="w1l2" aria-pressed="false"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg><span class="lbl">Позначити як опрацьовану</span></button></div>
 <nav class="pager" aria-label="Попередня і наступна лекції"><a class="prev" href="../../lectures/week-1/lecture-1.html"><small>← Попередня · Лекція 1</small><span>Вступ до DevOps: терміни, SDLC і моделі хмарних сервісів</span></a><a class="next" href="../../lectures/week-1/lecture-3.html"><small>Наступна · Лекція 3 →</small><span>Bash: скрипти, змінні, умови, цикли та функції</span></a></nav>
-<div class="sources-note"><b>Джерела лекції:</b> презентація «Linux Introduction» (39 слайдів); доповнено з довідки GNU Bash і man-сторінок coreutils (потоки, перенаправлення, ланцюжки, додаткові команди) під питання тесту курсу. <b>Обмеження:</b> MP3-запис лекції не транскрибовано; відео не оброблялося за правилами курсу.</div>
+<div class="sources-note"><b>Джерела лекції:</b> презентація «Linux Introduction» (39 слайдів); GNU Coreutils manual і man-сторінки (ls, cp, mv, rm, ln, find, grep, tar, chmod); GNU Bash Reference Manual (перенаправлення, змінні, коди виходу); Filesystem Hierarchy Standard 3.0; розбір питань тесту Linux CLI курсу. <b>Обмеження:</b> MP3-запис лекції не транскрибовано; відео не оброблялося за правилами курсу.</div>
 </main>
-<aside class="toc" aria-label="На цій сторінці"><div class="toc-title">На цій сторінці</div><ol><li><a href="#goals">Чого ви навчитесь</a></li><li><a href="#why">Чому саме Linux</a></li><li><a href="#fs">Структура каталогів</a></li><li><a href="#commands">Команди, які треба знати</a></li><li><a href="#pipes">Pipes і перенаправлення вводу-виводу</a></li><li><a href="#more">Ще команди, про які часто питають</a></li><li><a href="#users">Користувачі та групи</a></li><li><a href="#perms">Права доступу до файлів</a></li><li><a href="#ssh">Вхід по SSH-ключах</a></li><li><a href="#mistakes">Типові помилки</a></li><li><a href="#quiz">Перевір себе</a></li></ol></aside>
+<aside class="toc" aria-label="На цій сторінці"><div class="toc-title">На цій сторінці</div><ol><li><a href="#goals">Чого ви навчитесь</a></li><li><a href="#why">Що таке Linux і чому саме він</a></li><li><a href="#cli">Термінал, оболонка і синтаксис команди</a></li><li><a href="#help">Як отримати довідку про команду</a></li><li><a href="#fs">Структура каталогів (FHS)</a></li><li><a href="#paths">Шляхи: абсолютні, відносні, . , .. , ~</a></li><li><a href="#ls">Перегляд вмісту каталогу: ls у деталях</a></li><li><a href="#globs">Шаблони імен (globbing) і розкриття фігурних дужок</a></li><li><a href="#create">Створення файлів і каталогів</a></li><li><a href="#copy">Копіювання, переміщення, перейменування</a></li><li><a href="#delete">Видалення: rm , rmdir і всі сценарії з тесту</a></li><li><a href="#view">Перегляд вмісту файлів</a></li><li><a href="#links">Inode, жорсткі й символічні посилання</a></li><li><a href="#find">Пошук файлів: find , locate , which , whereis</a></li><li><a href="#grep">Пошук тексту у файлах: grep</a></li><li><a href="#env">Змінні середовища і PATH</a></li><li><a href="#pipes">Потоки, pipes і перенаправлення</a></li><li><a href="#chains">Ланцюжки команд і коди завершення</a></li><li><a href="#text">Обробка тексту в конвеєрах</a></li><li><a href="#users">Користувачі та групи</a></li><li><a href="#perms">Права доступу до файлів</a></li><li><a href="#proc">Процеси: перегляд і керування</a></li><li><a href="#mem">Пам&#x27;ять, диск і відомості про систему</a></li><li><a href="#services">Служби і логи (systemd)</a></li><li><a href="#packages">Встановлення програм: пакетні менеджери</a></li><li><a href="#archives">Архіви і стиснення</a></li><li><a href="#netcmd">Мережеві команди (детально — у лекції 6)</a></li><li><a href="#ssh">Вхід по SSH-ключах</a></li><li><a href="#traps">Шпаргалка пасток: Windows-синтаксис у тестах про Linux</a></li><li><a href="#mistakes">Типові помилки</a></li><li><a href="#quiz">Перевір себе</a></li></ol></aside>
 </div>
 </div>
 <footer class="site-footer">Навчальний конспект для самопідготовки. Прогрес і результати тестів зберігаються лише в цьому браузері на цьому пристрої (localStorage) і не синхронізуються між пристроями.</footer>

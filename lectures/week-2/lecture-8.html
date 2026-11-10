@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Лекція 8. Infrastructure as Code і Terraform: HCL, state, init → plan → apply · Хмарні технології та сервіси</title>
-<meta name="description" content="Що таке IaC, три типи інструментів (configuration management, server templating, provisioning), Terraform: провайдери, ресурси, змінні, state, HCL і життєвий цикл; імперативний vs декларативний, Ansible (agentless, push, playbook), модулі і remote state Terraform.">
+<meta name="description" content="Що таке IaC, три типи інструментів (configuration management, server templating, provisioning), Terraform: провайдери, ресурси, змінні, state, HCL і життєвий цикл; імперативний vs декларативний, Ansible (agentless, push, playbook), модулі і remote state Terraform; структура проєкту і lock-файл, повний приклад для AWS, посилання і залежності, count/for_each, data sources, функції, модулі, lifecycle, читання плану, remote state з блокуванням, import, Terraform у CI, Ansible inventory, playbook з шаблоном і handler, roles, Vault.">
 <meta name="theme-color" content="#0d7a6f">
 <script>try{var t=localStorage.getItem("htc-theme");if(t)document.documentElement.setAttribute("data-theme",t)}catch(e){}</script>
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=Onest:wght@400;500;600;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
@@ -26,13 +26,13 @@
 <div class="side-group"><a class="side-link" href="../../index.html"><span class="side-num">⌂</span><span>Огляд курсу і план</span></a></div>
 <div class="side-group" data-week-progress="w1l1,w1l2,w1l3,w1l4,w1l5"><div class="side-title"><a href="../../weeks/week-1.html">Тиждень 1</a><span class="wk-count wp-text">0 з 5</span></div>
 <a class="side-link" href="../../lectures/week-1/lecture-1.html"><span class="side-num">01</span><span>Вступ до DevOps, SDLC і хмарних моделей</span><span class="side-check" data-check="w1l1" role="img" aria-label="Не опрацьовано"></span></a>
-<a class="side-link" href="../../lectures/week-1/lecture-2.html"><span class="side-num">02</span><span>Linux: команди, користувачі, права</span><span class="side-check" data-check="w1l2" role="img" aria-label="Не опрацьовано"></span></a>
+<a class="side-link" href="../../lectures/week-1/lecture-2.html"><span class="side-num">02</span><span>Linux CLI: файли, пошук, права, процеси</span><span class="side-check" data-check="w1l2" role="img" aria-label="Не опрацьовано"></span></a>
 <a class="side-link" href="../../lectures/week-1/lecture-3.html"><span class="side-num">03</span><span>Bash: змінні, умови, цикли, функції</span><span class="side-check" data-check="w1l3" role="img" aria-label="Не опрацьовано"></span></a>
 <a class="side-link" href="../../lectures/week-1/lecture-4.html"><span class="side-num">04</span><span>Веб-архітектура: HTTP, REST, N-tier</span><span class="side-check" data-check="w1l4" role="img" aria-label="Не опрацьовано"></span></a>
-<a class="side-link" href="../../lectures/week-1/lecture-5.html"><span class="side-num">05</span><span>LAMP: Apache, MySQL, PHP</span><span class="side-check" data-check="w1l5" role="img" aria-label="Не опрацьовано"></span></a>
+<a class="side-link" href="../../lectures/week-1/lecture-5.html"><span class="side-num">05</span><span>LAMP, Apache/Nginx і SQL</span><span class="side-check" data-check="w1l5" role="img" aria-label="Не опрацьовано"></span></a>
 </div>
 <div class="side-group" data-week-progress="w2l6,w2l7,w2l8,w2l9,w2l10"><div class="side-title"><a href="../../weeks/week-2.html">Тиждень 2</a><span class="wk-count wp-text">0 з 5</span></div>
-<a class="side-link" href="../../lectures/week-2/lecture-6.html"><span class="side-num">06</span><span>Мережі: OSI, TCP/IP, IP, NAT, VPN</span><span class="side-check" data-check="w2l6" role="img" aria-label="Не опрацьовано"></span></a>
+<a class="side-link" href="../../lectures/week-2/lecture-6.html"><span class="side-num">06</span><span>Мережі: OSI, IPv4/IPv6, DHCP, DNS, NAT</span><span class="side-check" data-check="w2l6" role="img" aria-label="Не опрацьовано"></span></a>
 <a class="side-link" href="../../lectures/week-2/lecture-7.html"><span class="side-num">07</span><span>Хмари: NIST, моделі, AWS/GCP/Azure</span><span class="side-check" data-check="w2l7" role="img" aria-label="Не опрацьовано"></span></a>
 <a class="side-link" href="../../lectures/week-2/lecture-8.html" aria-current="page"><span class="side-num">08</span><span>IaC і Terraform</span><span class="side-check" data-check="w2l8" role="img" aria-label="Не опрацьовано"></span></a>
 <a class="side-link" href="../../lectures/week-2/lecture-9.html"><span class="side-num">09</span><span>Віртуалізація і Docker</span><span class="side-check" data-check="w2l9" role="img" aria-label="Не опрацьовано"></span></a>
@@ -51,8 +51,8 @@
 <h1>Infrastructure as Code і Terraform: HCL, state, init → plan → apply</h1>
 <p class="lead">Інфраструктура як код — це коли сервери, мережі й бази описуються текстовими файлами в Git, а не створюються кліками в консолі. Так інфраструктура стає відтворюваною, перевірюваною і версіонованою.</p>
 <div class="meta-row">
-<span class="chip"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>≈ 16 хв читання</span>
-<span class="chip"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M9.5 9.5a2.5 2.5 0 114 2c-1 .7-1.5 1.2-1.5 2.5M12 17h.01"/></svg>11 питань самоперевірки</span>
+<span class="chip"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>≈ 45 хв читання</span>
+<span class="chip"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M9.5 9.5a2.5 2.5 0 114 2c-1 .7-1.5 1.2-1.5 2.5M12 17h.01"/></svg>24 питань самоперевірки</span>
 <span class="chip" data-status="w2l8"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg><span class="lbl">Не опрацьовано</span></span>
 </div>
 </div>
@@ -65,6 +65,10 @@
 <li>Прочитати і написати простий HCL-блок.</li>
 <li>Знати, що робить кожна команда циклу <code>init → plan → apply → destroy</code>.</li>
 <li>Порівняти Ansible (agentless, push) з Puppet/Chef (агенти, pull) і пояснити remote state та модулі Terraform.</li>
+<li>Організувати проєкт Terraform (versions, providers, main, variables, outputs, lock-файл) і розгорнути вебсервер в AWS.</li>
+<li>Використовувати посилання, неявні та явні залежності, <code>count</code> і <code>for_each</code>, data sources, функції, модулі і <code>lifecycle</code>.</li>
+<li>Читати план (<code>+</code>, <code>~</code>, <code>-/+</code>, <code>-</code>), налаштувати remote state з блокуванням, імпортувати ресурси, вбудувати Terraform у CI.</li>
+<li>Писати Ansible inventory і playbook з шаблоном і handler, пояснити ідемпотентність, ролі, Vault.</li>
 </ul>
 </div>
 
@@ -107,6 +111,102 @@
 <li><b>Мультиплатформний:</b> сотні провайдерів — AWS, GCP, Azure, VirtualBox, Docker, Kubernetes… «Керуй будь-чим, що має API».</li>
 <li>Цілі: <b>уніфікований погляд</b> на ресурси, підтримка IaaS/PaaS/SaaS, <b>безпечні й передбачувані</b> зміни, робочий процес, що не залежить від технології.</li>
 </ul>
+
+<h2 id="project">Структура проєкту і повний приклад для AWS<a class="h-anchor" href="#project" aria-label="Посилання на розділ">#</a></h2>
+<h3>Файли типового проєкту</h3>
+<pre data-lang="text"><code>infra/
+├── versions.tf          <span class="c"># блок terraform: версія Terraform, required_providers, backend</span>
+├── providers.tf         <span class="c"># налаштування провайдерів (регіон, профіль)</span>
+├── main.tf              <span class="c"># ресурси</span>
+├── variables.tf         <span class="c"># оголошення вхідних змінних</span>
+├── outputs.tf           <span class="c"># вихідні значення</span>
+├── terraform.tfvars     <span class="c"># значення змінних (не комітити, якщо є секрети)</span>
+├── .terraform.lock.hcl  <span class="c"># зафіксовані версії провайдерів — КОМІТИТИ</span>
+├── .terraform/          <span class="c"># завантажені провайдери і модулі — НЕ комітити</span>
+└── terraform.tfstate    <span class="c"># локальний state — НЕ комітити (краще remote backend)</span></code></pre>
+<p>Terraform читає <b>усі</b> файли <code>*.tf</code> у каталозі як одну конфігурацію; поділ на файли — лише для зручності. <code>.gitignore</code> для проєкту: <code>.terraform/</code>, <code>*.tfstate</code>, <code>*.tfstate.*</code>, <code>*.tfvars</code> з секретами.</p>
+<h3>Обмеження версій</h3>
+<pre data-lang="hcl"><code>terraform {
+  required_version = ">= 1.6"
+  required_providers {
+    aws = {
+      source  = "hashicorp/aws"
+      version = "~> 5.0"      <span class="c"># будь-яка 5.x, але не 6.0 (оператор «песимістичного» обмеження)</span>
+    }
+  }
+}</code></pre>
+<h3>Повний приклад: вебсервер в AWS</h3>
+<pre data-lang="hcl"><code><span class="c"># variables.tf</span>
+variable "region" {
+  type    = string
+  default = "eu-central-1"
+}
+variable "instance_type" {
+  type    = string
+  default = "t3.micro"
+}
+variable "my_ip" {
+  type        = string
+  description = "Ваша IP для SSH, напр. 203.0.113.7/32"
+}
+
+<span class="c"># providers.tf</span>
+provider "aws" { region = var.region }
+
+<span class="c"># main.tf</span>
+data "aws_ami" "ubuntu" {                         <span class="c"># data source: ЗНАЙТИ існуючий об'єкт, а не створити</span>
+  most_recent = true
+  owners      = ["099720109477"]                  <span class="c"># Canonical</span>
+  filter {
+    name   = "name"
+    values = ["ubuntu/images/hvm-ssd-gp3/ubuntu-noble-24.04-amd64-server-*"]
+  }
+}
+
+resource "aws_security_group" "web" {
+  name = "web-sg"
+  ingress {
+    from_port   = 80
+    to_port     = 80
+    protocol    = "tcp"
+    cidr_blocks = ["0.0.0.0/0"]          <span class="c"># HTTP для всіх</span>
+  }
+  ingress {
+    from_port   = 22
+    to_port     = 22
+    protocol    = "tcp"
+    cidr_blocks = [var.my_ip]            <span class="c"># SSH лише з вашої адреси</span>
+  }
+  egress {
+    from_port   = 0
+    to_port     = 0
+    protocol    = "-1"                   <span class="c"># будь-який протокол назовні</span>
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+}
+
+resource "aws_instance" "web" {
+  ami                    = data.aws_ami.ubuntu.id               <span class="c"># посилання на data source</span>
+  instance_type          = var.instance_type
+  vpc_security_group_ids = [aws_security_group.web.id]          <span class="c"># неявна залежність від SG</span>
+  user_data              = &lt;&lt;-EOF
+    #!/bin/bash
+    apt-get update &amp;&amp; apt-get install -y nginx
+    echo "Hello from Terraform" &gt; /var/www/html/index.html
+  EOF
+  tags = { Name = "web-01", Project = "study" }
+}
+
+<span class="c"># outputs.tf</span>
+output "public_ip" { value = aws_instance.web.public_ip }
+output "url"       { value = "http://${aws_instance.web.public_ip}" }</code></pre>
+<p>Увага: в одному рядку можна записати блок лише з <b>одним</b> аргументом (<code>provider "aws" { region = var.region }</code>). Кілька аргументів через кому в блоці — синтаксична помилка; кома допустима лише всередині значень-об'єктів, як у <code>tags = { Name = "web-01", Project = "study" }</code>.</p>
+<pre data-lang="bash"><code>terraform init                                   <span class="c"># завантажити провайдер aws</span>
+terraform plan -var="my_ip=203.0.113.7/32"       <span class="c"># показати, що буде створено: 2 ресурси</span>
+terraform apply -var="my_ip=203.0.113.7/32"      <span class="c"># створити (підтвердити yes)</span>
+terraform output url                             <span class="c"># http://3.121.x.x</span>
+terraform destroy -var="my_ip=203.0.113.7/32"    <span class="c"># прибрати все після навчання</span></code></pre>
+<p>Terraform сам визначив порядок: спочатку security group, потім ВМ, бо ВМ посилається на <code>aws_security_group.web.id</code>. Таку залежність називають <b>неявною</b> (implicit).</p>
 
 <h2 id="concepts">Ключові поняття Terraform<a class="h-anchor" href="#concepts" aria-label="Посилання на розділ">#</a></h2>
 <div class="term-grid">
@@ -186,6 +286,67 @@
 }</code></pre>
 <p>На лекції провайдер <code>terra-farm/virtualbox</code> (alpha-версія) збирали з вихідного коду (<code>go build</code>) і запускали <code>terraform apply -parallelism=1</code>, щоб ВМ створювались по черзі. Це дозволяє вчитися IaC локально, без хмарних рахунків.</p>
 
+<h2 id="expressions">Посилання, залежності, count і for_each, data sources, функції, lifecycle<a class="h-anchor" href="#expressions" aria-label="Посилання на розділ">#</a></h2>
+<h3>Як посилатися на значення</h3>
+<div class="table-wrap"><table>
+<thead><tr><th>Вираз</th><th>Що означає</th></tr></thead>
+<tbody>
+<tr><td><code>var.region</code></td><td>вхідна змінна</td></tr>
+<tr><td><code>local.common_tags</code></td><td>локальне значення з блоку <code>locals</code></td></tr>
+<tr><td><code>aws_instance.web.public_ip</code></td><td>атрибут ресурсу: <code>&lt;тип&gt;.&lt;ім'я&gt;.&lt;атрибут&gt;</code></td></tr>
+<tr><td><code>data.aws_ami.ubuntu.id</code></td><td>атрибут data source</td></tr>
+<tr><td><code>module.network.vpc_id</code></td><td>вихідне значення модуля</td></tr>
+<tr><td><code>"web-${var.env}"</code></td><td>інтерполяція в рядку</td></tr>
+<tr><td><code>var.env == "prod" ? 3 : 1</code></td><td>умовний вираз</td></tr>
+</tbody></table></div>
+<h3>Залежності</h3>
+<p>Terraform будує <b>граф залежностей</b> і створює незалежні ресурси паралельно (за замовчуванням до 10 одночасно, <code>-parallelism=N</code>). Залежність буває <b>неявною</b> — один ресурс посилається на атрибут іншого — і <b>явною</b> через <code>depends_on</code>, коли зв'язок не видно з коду (наприклад, застосунок має стартувати лише після створення політики IAM). Граф можна побачити: <code>terraform graph | dot -Tpng &gt; graph.png</code>.</p>
+<h3>count і for_each: кілька однакових ресурсів</h3>
+<pre data-lang="hcl"><code>resource "aws_instance" "web" {
+  count         = 3                                   <span class="c"># web[0], web[1], web[2]</span>
+  ami           = data.aws_ami.ubuntu.id
+  instance_type = "t3.micro"
+  tags          = { Name = "web-${count.index + 1}" }
+}
+output "ips" { value = aws_instance.web[*].public_ip }  <span class="c"># splat: список усіх IP</span>
+
+resource "aws_s3_bucket" "env" {
+  for_each = toset(["dev", "staging", "prod"])        <span class="c"># env["dev"], env["staging"], env["prod"]</span>
+  bucket   = "myapp-${each.key}-artifacts"
+}</code></pre>
+<p>Різниця важлива: з <code>count</code> ресурси адресуються за <b>індексом</b>, тож видалення елемента з середини списку зсуває індекси, і Terraform захоче перестворити «зсунуті» ресурси. <code>for_each</code> адресує за <b>ключем</b>, і видалення одного елемента зачіпає лише його.</p>
+<h3>Data sources</h3>
+<p>Блок <code>data</code> <b>читає</b> інформацію про об'єкти, якими Terraform не керує або які створено деінде: найновіший образ AMI, існуючу VPC, зони доступності регіону, поточний акаунт. Ресурс (<code>resource</code>) — створює і керує; data source — лише читає.</p>
+<h3>Корисні функції</h3>
+<pre data-lang="hcl"><code>file("${path.module}/scripts/init.sh")                 <span class="c"># вміст файла</span>
+templatefile("nginx.conf.tftpl", { port = 8080 })     <span class="c"># шаблон з підстановкою</span>
+cidrsubnet("10.0.0.0/16", 8, 1)                       <span class="c"># "10.0.1.0/24" — нарізати підмережі</span>
+lookup(var.sizes, var.env, "t3.micro")                <span class="c"># значення з map за ключем або default</span>
+length(var.zones)                                     <span class="c"># кількість елементів</span>
+join(",", ["a", "b"])                                 <span class="c"># "a,b"</span>
+merge(local.tags, { Name = "web" })                   <span class="c"># об'єднати map-и</span></code></pre>
+<p>Перевірити вираз без застосування можна в інтерактивній консолі: <code>terraform console</code> → <code>cidrsubnet("10.0.0.0/16", 8, 1)</code>.</p>
+<h3>Модулі</h3>
+<pre data-lang="hcl"><code>module "network" {
+  source   = "terraform-aws-modules/vpc/aws"     <span class="c"># модуль з Terraform Registry (або локальний шлях ./modules/vpc)</span>
+  version  = "~> 5.0"
+  name     = "study-vpc"
+  cidr     = "10.0.0.0/16"
+  azs      = ["eu-central-1a", "eu-central-1b"]
+  public_subnets  = ["10.0.1.0/24", "10.0.2.0/24"]
+  private_subnets = ["10.0.11.0/24", "10.0.12.0/24"]
+}
+<span class="c"># далі: module.network.vpc_id, module.network.public_subnets</span></code></pre>
+<h3>lifecycle</h3>
+<pre data-lang="hcl"><code>resource "aws_db_instance" "main" {
+  # ...
+  lifecycle {
+    prevent_destroy       = true          <span class="c"># plan із знищенням цього ресурсу завершиться помилкою</span>
+    create_before_destroy = true          <span class="c"># при заміні спершу створити новий, потім видалити старий</span>
+    ignore_changes        = [tags]        <span class="c"># не «виправляти» теги, змінені поза Terraform</span>
+  }
+}</code></pre>
+
 <h2 id="lifecycle">Життєвий цикл: init → plan → apply → destroy<a class="h-anchor" href="#lifecycle" aria-label="Посилання на розділ">#</a></h2>
 <figure><div class="figure wide">
 <svg class="dg" viewBox="0 0 720 220" role="img" aria-label="terraform init завантажує провайдерів, plan порівнює код зі state і реальністю, apply застосовує зміни і оновлює state, destroy видаляє ресурси">
@@ -215,6 +376,68 @@
 <h3>State</h3>
 <p>Terraform зберігає стан, щоб <b>зіставляти ресурси з коду з реальними об'єктами</b>, відстежувати метадані і пришвидшувати роботу з великою інфраструктурою. За замовчуванням — локальний файл <code>terraform.tfstate</code>; у команді його зберігають <b>віддалено</b> (наприклад, у S3 чи GCS), щоб усі працювали з одним станом.</p>
 <div class="callout warn"><div class="callout-title">Безпека</div><p>State і файли облікових даних (як <code>my_gcp.json</code>) можуть містити секрети. Додавайте їх у <code>.gitignore</code>; паролі передавайте через <code>TF_VAR_…</code> або менеджер секретів.</p></div>
+
+<h2 id="state-deep">State, план і робота в команді<a class="h-anchor" href="#state-deep" aria-label="Посилання на розділ">#</a></h2>
+<h3>Як читати <code>terraform plan</code></h3>
+<pre data-lang="text"><code>Terraform will perform the following actions:
+
+  # aws_security_group.web will be created
+  + resource "aws_security_group" "web" { ... }        <span class="c"># + створити</span>
+
+  # aws_instance.web will be updated in-place
+  ~ resource "aws_instance" "web" {
+      ~ instance_type = "t3.micro" -&gt; "t3.small"        <span class="c"># ~ змінити на місці</span>
+    }
+
+  # aws_instance.old must be replaced
+-/+ resource "aws_instance" "old" {                     <span class="c"># -/+ знищити і створити заново</span>
+      ~ ami = "ami-0aaa" -&gt; "ami-0bbb" # forces replacement
+    }
+
+  # aws_s3_bucket.tmp will be destroyed
+  - resource "aws_s3_bucket" "tmp" { ... }              <span class="c"># - знищити</span>
+
+Plan: 2 to add, 1 to change, 2 to destroy.</code></pre>
+<p>Рядки <code>-/+</code> і <code>must be replaced</code> читайте особливо уважно: деякі атрибути (образ ВМ, ім'я БД) не можна змінити на льоту, і ресурс буде <b>видалено</b> разом з даними. Для CI план зберігають у файл і застосовують саме його: <code>terraform plan -out=tfplan</code> → <code>terraform apply tfplan</code>.</p>
+<h3>Що таке state і навіщо він</h3>
+<ul>
+<li>Файл <code>terraform.tfstate</code> (JSON) зв'язує ресурси з коду з реальними об'єктами (<code>aws_instance.web</code> ↔ <code>i-0abc123</code>) і зберігає їхні атрибути.</li>
+<li>Без state Terraform не знає, що вже створено, і спробує створити все заново.</li>
+<li><b>Дрейф</b> (drift) — розбіжність між state/кодом і реальністю, коли хтось змінив ресурс вручну в консолі. <code>terraform plan</code> його покаже, <code>terraform apply</code> поверне ресурс до опису в коді.</li>
+<li>State містить усі атрибути у відкритому вигляді, зокрема паролі БД. Тому — шифроване віддалене сховище з обмеженим доступом, а не Git.</li>
+</ul>
+<h3>Remote backend з блокуванням</h3>
+<pre data-lang="hcl"><code>terraform {
+  backend "s3" {
+    bucket         = "mycompany-tfstate"
+    key            = "study/web/terraform.tfstate"
+    region         = "eu-central-1"
+    encrypt        = true
+    dynamodb_table = "terraform-locks"   <span class="c"># блокування: другий apply чекатиме, поки перший завершиться</span>
+  }
+}</code></pre>
+<p>Після зміни backend — <code>terraform init -migrate-state</code>. У нових версіях Terraform блокування можна робити і самим S3 (<code>use_lockfile = true</code>).</p>
+<h3>Команди для роботи зі state</h3>
+<div class="table-wrap"><table>
+<thead><tr><th>Команда</th><th>Призначення</th></tr></thead>
+<tbody>
+<tr><td><code>terraform state list</code></td><td>які ресурси відстежуються</td></tr>
+<tr><td><code>terraform state show aws_instance.web</code></td><td>атрибути ресурсу зі state</td></tr>
+<tr><td><code>terraform import aws_instance.web i-0abc123</code> (або блок <code>import</code>)</td><td>взяти під керування об'єкт, створений вручну</td></tr>
+<tr><td><code>terraform apply -replace=aws_instance.web</code></td><td>примусово перестворити ресурс (раніше — <code>taint</code>)</td></tr>
+<tr><td><code>terraform state mv</code> / <code>rm</code></td><td>перейменувати адресу в state / перестати відстежувати (об'єкт не видаляється)</td></tr>
+<tr><td><code>terraform plan -refresh-only</code></td><td>лише оновити state з реальності, нічого не змінюючи</td></tr>
+<tr><td><code>terraform workspace new staging</code></td><td>окремий state для іншого середовища з тим самим кодом</td></tr>
+<tr><td><code>terraform output -json</code></td><td>вихідні значення у JSON (для скриптів)</td></tr>
+</tbody></table></div>
+<h3>Terraform у CI/CD</h3>
+<ol class="steps">
+<li>Pull request зі зміною інфраструктури → CI запускає <code>terraform fmt -check</code>, <code>validate</code>, <code>plan</code> і публікує план у коментарі.</li>
+<li>Команда переглядає план, як код-рев'ю.</li>
+<li>Після злиття в головну гілку CI виконує <code>apply</code> того самого збереженого плану.</li>
+<li>Додатково: сканери безпеки (tfsec, Checkov), «policy as code» (OPA, Sentinel) — заборонити, наприклад, публічні S3-бакети.</li>
+</ol>
+<p><b>Альтернативи Terraform</b>: <b>OpenTofu</b> (відкритий форк Terraform після зміни ліцензії у 2023), <b>AWS CloudFormation</b> (YAML/JSON, лише AWS), <b>Azure Bicep</b>, <b>Pulumi</b> (інфраструктура звичайними мовами: Python, TypeScript, Go).</p>
 
 <h2 id="ansible">Імперативний vs декларативний, Ansible і ще трохи Terraform<a class="h-anchor" href="#ansible" aria-label="Посилання на розділ">#</a></h2>
 <div class="compare">
@@ -246,19 +469,84 @@
 <li><code>terraform fmt</code> — форматує код, <code>terraform validate</code> — перевіряє синтаксис і логіку конфігурації без звернення до хмари.</li>
 </ul>
 
+<h2 id="ansible-deep">Ansible детально<a class="h-anchor" href="#ansible-deep" aria-label="Посилання на розділ">#</a></h2>
+<h3>Inventory і ad-hoc команди</h3>
+<pre data-lang="ini"><code># inventory.ini
+[web]
+web1 ansible_host=10.0.1.10
+web2 ansible_host=10.0.1.11
+
+[db]
+db1 ansible_host=10.0.2.20
+
+[all:vars]
+ansible_user=ubuntu
+ansible_ssh_private_key_file=~/.ssh/study.pem</code></pre>
+<pre data-lang="bash"><code>ansible all -i inventory.ini -m ping                  <span class="c"># перевірити зв'язок (це не ICMP ping, а SSH + Python)</span>
+ansible web -i inventory.ini -a "uptime"               <span class="c"># виконати команду на групі web</span>
+ansible web -i inventory.ini -b -m apt -a "name=htop state=present"   <span class="c"># -b = become (sudo)</span>
+ansible-playbook -i inventory.ini site.yml --check --diff   <span class="c"># «сухий» прогін: що змінилося б</span>
+ansible-playbook -i inventory.ini site.yml --limit web1     <span class="c"># лише на одному хості</span></code></pre>
+<h3>Playbook зі змінними, шаблоном і handler</h3>
+<pre data-lang="yaml"><code>- name: Configure web servers
+  hosts: web
+  become: true
+  vars:
+    app_port: 8080
+  tasks:
+    - name: Install nginx
+      ansible.builtin.apt:
+        name: nginx
+        state: present
+        update_cache: true
+
+    - name: Deploy nginx config from template
+      ansible.builtin.template:
+        src: templates/site.conf.j2        <span class="c"># Jinja2: усередині {{ app_port }}</span>
+        dest: /etc/nginx/sites-available/default
+      notify: Reload nginx                 <span class="c"># викликати handler, ЛИШЕ якщо файл змінився</span>
+
+    - name: Ensure nginx is running and enabled
+      ansible.builtin.service:
+        name: nginx
+        state: started
+        enabled: true
+
+  handlers:
+    - name: Reload nginx
+      ansible.builtin.service:
+        name: nginx
+        state: reloaded</code></pre>
+<h3>Як працює ідемпотентність</h3>
+<p>Перший запуск: <code>changed=3</code> — пакет встановлено, файл записано, nginx перечитав конфіг. Другий запуск без змін у коді: <code>changed=0</code>, усі задачі <code>ok</code>, handler не викликається. Модулі <code>apt</code>, <code>template</code>, <code>service</code> спершу перевіряють поточний стан. А от модулі <code>shell</code> і <code>command</code> ідемпотентності не мають — їм додають умови <code>creates:</code>/<code>when:</code>.</p>
+<h3>Організація коду</h3>
+<ul>
+<li><b>Roles</b> — повторно використовувані набори задач, шаблонів, змінних і handler-ів у стандартній структурі (<code>roles/nginx/tasks/main.yml</code>, <code>templates/</code>, <code>handlers/</code>, <code>defaults/</code>). Готові ролі — в Ansible Galaxy.</li>
+<li><b>Змінні</b> можна задавати в inventory, у <code>group_vars/web.yml</code>, <code>host_vars/web1.yml</code>, у playbook, з командного рядка (<code>-e</code>). <b>Facts</b> — змінні, які Ansible сам збирає про хост (ОС, IP, пам'ять): <code>{{ ansible_facts['distribution'] }}</code>.</li>
+<li><b>Ansible Vault</b> шифрує файли з секретами: <code>ansible-vault create secrets.yml</code>, запуск з <code>--ask-vault-pass</code>.</li>
+</ul>
+<h3>Terraform + Ansible разом</h3>
+<p>Типовий розподіл: <b>Terraform</b> створює інфраструктуру (мережу, ВМ, балансувальник, БД) і виводить IP-адреси; <b>Ansible</b> налаштовує ОС і застосунок на цих ВМ. Ще поширеніший сучасний варіант — образ із застосунком (Docker або AMI, зібраний Packer) і Terraform без окремого кроку конфігурації («незмінна інфраструктура», immutable infrastructure): замість оновлення сервера створюють новий з нового образу.</p>
+
 <h2 id="mistakes">Типові помилки<a class="h-anchor" href="#mistakes" aria-label="Посилання на розділ">#</a></h2>
 <div class="mistakes">
+<div class="mistake"><div class="wrong">Кілька аргументів блоку можна записати в один рядок через кому.</div><div class="right">В один рядок пишеться блок лише з одним аргументом; кома допустима всередині значень-об'єктів (<code>tags = { a = 1, b = 2 }</code>).</div></div>
+<div class="mistake"><div class="wrong"><code>.terraform.lock.hcl</code> треба додати в .gitignore разом з <code>.terraform/</code>.</div><div class="right">Lock-файл фіксує версії провайдерів — його комітять. Ігнорують каталог <code>.terraform/</code> і state-файли.</div></div>
+<div class="mistake"><div class="wrong"><code>count</code> і <code>for_each</code> взаємозамінні.</div><div class="right">count адресує за індексом: видалення елемента з середини зсуває решту і викликає перестворення. for_each адресує за ключем.</div></div>
+<div class="mistake"><div class="wrong">Рядок <code>-/+</code> у плані — безпечне оновлення.</div><div class="right">Це знищення і повторне створення ресурсу. Для БД це означає втрату даних, якщо немає бекапу чи <code>prevent_destroy</code>.</div></div>
+<div class="mistake"><div class="wrong">Модуль <code>shell</code> в Ansible ідемпотентний, як і <code>apt</code>.</div><div class="right">shell і command виконуються щоразу. Для ідемпотентності — спеціалізовані модулі або умови <code>creates</code>/<code>when</code>.</div></div>
+
 <div class="mistake"><div class="wrong">Одразу <code>terraform apply</code> без <code>plan</code>.</div><div class="right">Plan показує, що буде створено (+), змінено (~) і <b>знищено (−)</b>. Читайте його завжди — деякі зміни перестворюють ресурс.</div></div>
 <div class="mistake"><div class="wrong">Змінити ВМ вручну в консолі, «бо швидше».</div><div class="right">З'являється дрейф: код і реальність розходяться, наступний <code>apply</code> поверне або зламає зміни. Усі зміни — через код.</div></div>
 <div class="mistake"><div class="wrong">Видалити <code>terraform.tfstate</code>, «бо заважає».</div><div class="right">Без state Terraform «забуде» створені ресурси і спробує створити їх заново. State бережуть і зберігають віддалено.</div></div>
 <div class="mistake"><div class="wrong">Terraform і Ansible — взаємозамінні.</div><div class="right">Terraform — provisioning (створити інфраструктуру), Ansible — configuration management (налаштувати ПЗ на ній). Їх часто використовують разом.</div></div>
 </div>
-<h2 id="quiz">Перевір себе<a class="h-anchor" href="#quiz" aria-label="Посилання на розділ">#</a></h2><p>11 питань на розуміння. В одиночних питаннях натисніть варіант — одразу побачите правильну відповідь і пояснення. Питання з позначкою <b>«кілька відповідей»</b> влаштовані як у тесті курсу (<i>Select one or more</i>): позначте всі правильні варіанти й натисніть «Перевірити».</p><div class="quiz" data-quiz="w2l8"></div><script type="application/json" id="quiz-data">[{"q": "Яка команда Terraform виконується першою після клонування конфігурації з Git?", "options": ["terraform apply", "terraform destroy", "terraform init", "terraform plan"], "answer": 2, "explain": "init ініціалізує робочий каталог і завантажує провайдерів. Без нього plan і apply не спрацюють."}, {"q": "До якого типу IaC-інструментів належить Ansible?", "options": ["Configuration management", "Server templating", "Provisioning", "Container orchestration"], "answer": 0, "explain": "Ansible, Puppet, Chef встановлюють і налаштовують ПЗ на вже існуючих серверах. Terraform — provisioning, Packer/Docker — server templating."}, {"q": "Навіщо Terraform потрібен state?", "options": ["Щоб шифрувати трафік", "Щоб зіставляти ресурси з конфігурації з реальними об'єктами та відстежувати метадані", "Щоб запускати ВМ швидше", "Щоб зберігати вихідний код провайдерів"], "answer": 1, "explain": "State зберігає зв'язки між ресурсами в коді і реальними об'єктами; plan порівнює з ним бажаний стан."}, {"q": "У блоці <code>resource \"local_file\" \"first\" { … }<\/code> що таке local_file?", "options": ["Змінна", "Тип ресурсу: провайдер local + ресурс file", "Тип блоку", "Ім'я ресурсу"], "answer": 1, "explain": "resource — тип блоку, local_file — тип ресурсу (провайдер local, ресурс file), first — ім'я в межах конфігурації."}, {"q": "Як передати значення змінної db_password через змінну оточення?", "options": ["export TF_VAR_db_password=...", "set TF_db_password=...", "export db_password=...", "terraform env db_password"], "answer": 0, "explain": "Terraform читає змінні оточення з префіксом TF_VAR_ і підставляє їх у відповідні input-змінні."}, {"q": "Що означає ідемпотентність IaC-інструменту?", "options": ["Він працює без мережі", "Повторний запуск з тією ж конфігурацією не змінює вже приведену у відповідність систему", "Він не потребує state", "Він працює тільки один раз"], "answer": 1, "explain": "Інструмент приводить систему до описаного стану; якщо стан уже досягнуто, повторний запуск нічого не змінює."}, {"q": "Які твердження про Ansible правильні?", "options": ["Сценарії пишуть у YAML-playbooks", "Працює лише за pull-моделлю", "На кожному сервері потрібно встановити агент", "Він agentless: підключається до серверів по SSH"], "answer": [0, 3], "explain": "Ansible працює за push-моделлю без агентів. Агенти і pull — це Puppet і Chef."}, {"q": "Чим декларативний підхід відрізняється від імперативного?", "options": ["Описуєте бажаний стан, а інструмент сам визначає кроки", "Не підтримує контроль версій", "Описуєте послідовність команд", "Працює лише з Windows"], "answer": 0, "explain": "Terraform декларативний: ви кажете «що має бути», а plan показує, як до цього дійти."}, {"q": "Навіщо в команді зберігати Terraform state у віддаленому бекенді з блокуванням?", "options": ["Щоб не потрібен був провайдер", "Щоб сховати код від Git", "Щоб пришвидшити terraform init", "Щоб усі працювали з одним станом і не застосовували зміни одночасно"], "answer": 3, "explain": "Remote state (напр. S3 + lock) — єдине джерело правди і захист від одночасних apply."}, {"q": "Яка команда перевіряє конфігурацію Terraform без створення ресурсів?", "options": ["<code>terraform import<\/code>", "<code>terraform destroy<\/code>", "<code>terraform apply<\/code>", "<code>terraform validate<\/code>"], "answer": 3, "explain": "validate перевіряє синтаксис і узгодженість. plan теж нічого не створює, але вже звертається до провайдера."}, {"q": "Що робить <code>terraform plan<\/code>?", "options": ["Показує, які дії потрібні, щоб реальна інфраструктура відповідала конфігурації", "Створює ресурси", "Видаляє ресурси", "Завантажує провайдерів"], "answer": 0, "explain": "plan читає поточний стан, порівнює з конфігурацією і пропонує набір змін, нічого не змінюючи."}]</script>
+<h2 id="quiz">Перевір себе<a class="h-anchor" href="#quiz" aria-label="Посилання на розділ">#</a></h2><p>24 питань на розуміння. В одиночних питаннях натисніть варіант — одразу побачите правильну відповідь і пояснення. Питання з позначкою <b>«кілька відповідей»</b> влаштовані як у тесті курсу (<i>Select one or more</i>): позначте всі правильні варіанти й натисніть «Перевірити».</p><div class="quiz" data-quiz="w2l8"></div><script type="application/json" id="quiz-data">[{"q": "Що таке Infrastructure as Code (IaC)?", "options": ["Опис інфраструктури у файлах, які зберігаються в системі контролю версій", "Ручне налаштування серверів через вебконсолю провайдера", "Можливість відтворити середовище однаково багато разів", "Автоматичне створення і зміна інфраструктури за цими файлами", "Мова програмування для написання вебзастосунків"], "answer": [0, 2, 3], "explain": "IaC — інфраструктура як версійований код, що застосовується автоматично і повторювано. Ручне клікання в консолі — протилежність IaC."}, {"q": "Які відповідності «інструмент — тип IaC» правильні?", "options": ["Packer — server templating (збирання образів)", "Ansible — configuration management", "Terraform — provisioning (створення інфраструктури)", "Docker — server templating (образи контейнерів)", "Terraform — лише керування пакетами на ВМ"], "answer": [0, 1, 2, 3], "explain": "Terraform створює ресурси через API провайдерів; налаштуванням ОС займаються Ansible, Puppet, Chef."}, {"q": "Які твердження про декларативний і імперативний підхід правильні?", "options": ["Terraform виконує ресурси строго в порядку їх запису у файлах", "Bash-скрипт розгортання — імперативний", "Terraform — декларативний", "Імперативний описує послідовність кроків", "Декларативний описує бажаний кінцевий стан"], "answer": [1, 2, 3, 4], "explain": "Порядок Terraform визначає за графом залежностей, а не за порядком у файлах."}, {"q": "Яка послідовність команд описує стандартний цикл Terraform?", "options": ["plan → init → apply → destroy", "init → apply → validate → plan", "build → run → push", "apply → plan → init", "init → plan → apply → destroy"], "answer": [4], "explain": "init завантажує провайдерів і налаштовує backend, plan показує зміни, apply застосовує, destroy прибирає."}, {"q": "Що робить <code>terraform init<\/code>?", "options": ["Видаляє попередній state-файл і починає з чистого стану", "Завантажує провайдерів і модулі", "Форматує код за стандартним стилем HCL", "Ініціалізує backend для state", "Створює ресурси в хмарі за описом у файлах .tf"], "answer": [1, 3], "explain": "Ресурси створює apply, форматування — terraform fmt."}, {"q": "Які твердження про terraform plan правильні?", "options": ["Позначка <code>~<\/code> означає знищення і створення ресурсу заново", "Показує, що буде створено, змінено, знищено", "Позначка <code>-/+<\/code> означає знищення і створення заново", "Plan застосовує зміни, якщо в них немає знищень ресурсів", "Порівнює код зі state і реальною інфраструктурою"], "answer": [1, 2, 4], "explain": "<code>~<\/code> — зміна на місці, <code>-<\/code> — знищення, <code>+<\/code> — створення. Застосовує apply."}, {"q": "Які твердження про state у Terraform правильні?", "options": ["State може містити секрети у відкритому вигляді", "State-файл обов'язково комітять у Git", "Без state Terraform завжди точно знає, що вже створено", "У команді state зберігають у віддаленому backend з блокуванням", "State зв'язує ресурси в коді з реальними об'єктами"], "answer": [0, 3, 4], "explain": "State не комітять у Git: секрети і конфлікти. Без state Terraform спробує створити все заново."}, {"q": "Які файли Terraform-проєкту треба комітити в Git?", "options": ["<code>*.tf<\/code> з конфігурацією", "Каталог <code>.terraform/<\/code>", "<code>.terraform.lock.hcl<\/code>", "<code>terraform.tfstate<\/code>", "<code>terraform.tfvars<\/code> з паролями"], "answer": [0, 2], "explain": "Lock-файл фіксує версії провайдерів. State, кеш провайдерів і файли із секретами в Git не потрапляють."}, {"q": "Які блоки HCL синтаксично правильні?", "options": ["<code>variable \"region\" { type = string, default = \"eu-central-1\" }<\/code>", "<code>tags = { Name = \"web\", Env = \"dev\" }<\/code>", "<code>resource aws_instance web = { ami = \"x\" }<\/code>", "<code>variable \"region\" {<\/code><br><code>  type    = string<\/code><br><code>  default = \"eu-central-1\"<\/code><br><code>}<\/code>", "<code>provider \"aws\" { region = \"eu-central-1\" }<\/code>"], "answer": [1, 3, 4], "explain": "Блок в один рядок може мати лише один аргумент; кома допустима всередині значення-об'єкта. Ресурс оголошується блоком з двома мітками, а не присвоєнням."}, {"q": "Як посилатися на значення в Terraform?", "options": ["<code>module.network.vpc_id<\/code> — вихід модуля", "<code>data.aws_ami.ubuntu.id<\/code> — атрибут data source", "<code>aws_instance.web.public_ip<\/code> — атрибут ресурсу", "<code>var.region<\/code> — вхідна змінна", "<code>$region<\/code> — вхідна змінна", "<code>resource.web.ip<\/code> — атрибут ресурсу"], "answer": [0, 1, 2, 3], "explain": "Синтаксис <code>$var<\/code> — з Bash; ресурс адресується як <code>&lt;тип&gt;.&lt;ім'я&gt;<\/code>."}, {"q": "Які способи передати значення вхідної змінної Terraform існують?", "options": ["Файл <code>terraform.tfvars<\/code> або <code>*.auto.tfvars<\/code>", "Змінна оточення <code>TERRAFORM_name<\/code>", "<code>-var=\"name=value\"<\/code> у командному рядку", "Змінна оточення <code>TF_VAR_name<\/code>", "Значення default у блоці variable"], "answer": [0, 2, 3, 4], "explain": "Префікс змінних оточення — саме TF_VAR_."}, {"q": "Чим відрізняються count і for_each?", "options": ["count адресує ресурси за ключем map, а for_each — за індексом", "for_each не можна використовувати з множиною рядків, лише з числом", "count створює ресурси з адресами за індексом (web[0], web[1])", "for_each адресує ресурси за ключем", "Видалення елемента з середини списку при count може викликати перестворення інших ресурсів"], "answer": [2, 3, 4], "explain": "for_each приймає map або set (наприклад, <code>toset([...])<\/code>)."}, {"q": "Що таке data source у Terraform?", "options": ["Файл зі state, з якого Terraform читає поточну інфраструктуру", "Блок, що створює новий ресурс і зберігає його в state", "Модуль з Terraform Registry, що описує типову мережу", "Спосіб знайти, наприклад, найновіший AMI або існуючу VPC", "Блок, що читає дані про об'єкти, якими Terraform не керує або які створено деінде"], "answer": [3, 4], "explain": "Ресурс створює і керує, data source лише читає."}, {"q": "Як Terraform визначає порядок створення ресурсів?", "options": ["Незалежні ресурси створюються паралельно", "Лише в порядку запису у файлі main.tf", "За графом залежностей: ресурс, що посилається на інший, створюється після нього", "Строго в алфавітному порядку імен ресурсів", "Явну залежність можна задати через <code>depends_on<\/code>"], "answer": [0, 2, 4], "explain": "Неявні залежності виникають через посилання на атрибути."}, {"q": "Що робить <code>prevent_destroy = true<\/code> у блоці lifecycle?", "options": ["Прибирає ресурс зі state, не видаляючи його в хмарі", "Автоматично робить бекап ресурсу перед його знищенням", "Змушує plan завершитися помилкою, якщо ресурс має бути знищено", "Забороняє будь-які зміни атрибутів ресурсу, навіть на місці", "Захищає критичні ресурси (БД) від випадкового видалення через Terraform"], "answer": [2, 4], "explain": "Зміни на місці дозволені; бекап prevent_destroy не робить."}, {"q": "Навіщо remote backend з блокуванням (S3 + DynamoDB або use_lockfile)?", "options": ["Шифрування state у сховищі", "Прискорити створення ВМ у два рази", "Заборонити двом людям одночасно виконувати apply", "Зберігати код Terraform замість Git", "Спільний state для всієї команди"], "answer": [0, 2, 4], "explain": "Код зберігається в Git, а backend — лише state."}, {"q": "Як взяти під керування Terraform ресурс, створений вручну в консолі?", "options": ["<code>terraform init -import<\/code>", "Просто виконати apply — Terraform сам знайде ресурс за іменем", "<code>terraform import<\/code> або блок <code>import<\/code>", "Описати ресурс у коді й виконати import, щоб зв'язати його зі state", "Видалити ресурс і створити заново вручну"], "answer": [2, 3], "explain": "Без import apply спробує створити ще один такий самий ресурс."}, {"q": "Які твердження про Terraform у CI/CD правильні?", "options": ["State зберігають у артефактах збірки", "У CI apply запускають без рев'ю плану на кожен коміт у будь-яку гілку", "План зберігають у файл і застосовують саме його", "Сканери tfsec/Checkov шукають небезпечні налаштування", "На pull request запускають fmt -check, validate і plan"], "answer": [2, 3, 4], "explain": "Зміни інфраструктури проходять рев'ю, а state живе в remote backend."}, {"q": "Які твердження про Ansible правильні?", "options": ["Playbooks пишуться в YAML", "Не потребує агента на керованих вузлах", "Працює лише за pull-моделлю з агентом", "Підключається по SSH (push-модель)", "Інвентар описує хости і групи"], "answer": [0, 1, 3, 4], "explain": "Pull з агентами — Puppet і Chef."}, {"q": "Що виведе другий запуск того самого playbook на вже налаштований сервер, якщо використовуються модулі apt, template і service?", "options": ["Помилку через вже встановлений пакет", "Усі задачі ok, changed=0", "Усі задачі змінять стан знову (changed=3)", "Playbook видалить nginx", "Handler не викличеться"], "answer": [1, 4], "explain": "Модулі ідемпотентні: спершу перевіряють стан і нічого не роблять, якщо він уже потрібний. Handler запускається лише при зміні."}, {"q": "Що таке handler в Ansible?", "options": ["Зазвичай використовується для reload/restart служби після зміни конфігу", "Задача, яка виконується лише після notify від задачі, що щось змінила", "Модуль для копіювання файлів з керуючого вузла на сервери", "Задача, яка виконується першою в кожному play перед іншими задачами", "Файл зі списком хостів і груп, з якими працює Ansible"], "answer": [0, 1], "explain": "Handler запускається один раз наприкінці play, навіть якщо його повідомили кілька задач."}, {"q": "Які відповідності «поняття Ansible — призначення» правильні?", "options": ["Vault — шифрування файлів із секретами", "Role — повторно використовуваний набір задач, шаблонів і змінних", "Inventory — журнал виконаних задач", "Template — файл Jinja2 зі змінними", "Facts — автоматично зібрані дані про хост"], "answer": [0, 1, 3, 4], "explain": "Inventory — список хостів і груп."}, {"q": "Як Terraform і Ansible часто поєднують?", "options": ["Terraform створює ВМ і мережу, Ansible налаштовує ОС і застосунок", "Terraform у кожному проєкті повністю замінює Ansible в налаштуванні пакетів у ВМ", "Альтернатива — запікати застосунок в образ (Docker, AMI) і перестворювати сервери (immutable infrastructure)", "Ansible зберігає state Terraform і блокує паралельні запуски"], "answer": [0, 2], "explain": "Кожен інструмент робить свою частину; state Terraform зберігається в його backend."}, {"q": "Які інструменти є альтернативами Terraform для IaC?", "options": ["Jenkins", "Pulumi", "Grafana", "OpenTofu", "AWS CloudFormation", "Azure Bicep"], "answer": [1, 3, 4, 5], "explain": "Jenkins — CI/CD, Grafana — візуалізація метрик."}]</script>
 <div class="complete-box"><p>Прочитали і пройшли тест? Позначте лекцію — прогрес оновиться на головній і в меню.</p><button type="button" class="btn primary" data-complete="w2l8" aria-pressed="false"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg><span class="lbl">Позначити як опрацьовану</span></button></div>
 <nav class="pager" aria-label="Попередня і наступна лекції"><a class="prev" href="../../lectures/week-2/lecture-7.html"><small>← Попередня · Лекція 7</small><span>Хмарні обчислення: модель NIST, IaaS/PaaS/SaaS і провайдери AWS, GCP, Azure</span></a><a class="next" href="../../lectures/week-2/lecture-9.html"><small>Наступна · Лекція 9 →</small><span>Віртуалізація і контейнери: гіпервізор, namespaces, Docker і Dockerfile</span></a></nav>
-<div class="sources-note"><b>Джерела лекції:</b> презентація «IaC. Terraform Intro» (40 слайдів, частина нотаток українською); PDF-версія тієї ж презентації; чат лекції 8; розділ про Ansible, Puppet/Chef і remote state доповнено з документації Ansible і HashiCorp Terraform. <b>Обмеження:</b> MP3-запис лекції не транскрибовано; відео не оброблялося за правилами курсу.</div>
+<div class="sources-note"><b>Джерела лекції:</b> презентація «IaC. Terraform Intro» (40 слайдів, частина нотаток українською); PDF-версія тієї ж презентації; чат лекції 8; розділ про Ansible, Puppet/Chef і remote state доповнено з документації Ansible і HashiCorp Terraform; Terraform documentation (developer.hashicorp.com), Ansible documentation. <b>Обмеження:</b> MP3-запис лекції не транскрибовано; відео не оброблялося за правилами курсу.</div>
 </main>
-<aside class="toc" aria-label="На цій сторінці"><div class="toc-title">На цій сторінці</div><ol><li><a href="#goals">Чого ви навчитесь</a></li><li><a href="#iac">Що таке Infrastructure as Code</a></li><li><a href="#types">Три типи IaC-інструментів</a></li><li><a href="#terraform">Чому Terraform</a></li><li><a href="#concepts">Ключові поняття Terraform</a></li><li><a href="#hcl">HCL: мова конфігурації</a></li><li><a href="#lifecycle">Життєвий цикл: init → plan → apply → destroy</a></li><li><a href="#ansible">Імперативний vs декларативний, Ansible і ще трохи Terraform</a></li><li><a href="#mistakes">Типові помилки</a></li><li><a href="#quiz">Перевір себе</a></li></ol></aside>
+<aside class="toc" aria-label="На цій сторінці"><div class="toc-title">На цій сторінці</div><ol><li><a href="#goals">Чого ви навчитесь</a></li><li><a href="#iac">Що таке Infrastructure as Code</a></li><li><a href="#types">Три типи IaC-інструментів</a></li><li><a href="#terraform">Чому Terraform</a></li><li><a href="#project">Структура проєкту і повний приклад для AWS</a></li><li><a href="#concepts">Ключові поняття Terraform</a></li><li><a href="#hcl">HCL: мова конфігурації</a></li><li><a href="#expressions">Посилання, залежності, count і for_each, data sources, функції, lifecycle</a></li><li><a href="#lifecycle">Життєвий цикл: init → plan → apply → destroy</a></li><li><a href="#state-deep">State, план і робота в команді</a></li><li><a href="#ansible">Імперативний vs декларативний, Ansible і ще трохи Terraform</a></li><li><a href="#ansible-deep">Ansible детально</a></li><li><a href="#mistakes">Типові помилки</a></li><li><a href="#quiz">Перевір себе</a></li></ol></aside>
 </div>
 </div>
 <footer class="site-footer">Навчальний конспект для самопідготовки. Прогрес і результати тестів зберігаються лише в цьому браузері на цьому пристрої (localStorage) і не синхронізуються між пристроями.</footer>

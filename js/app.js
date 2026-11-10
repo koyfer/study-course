@@ -85,53 +85,35 @@
   }
 
   /* ---------------- Quiz ---------------- */
-  function initQuiz() {
-    var host = document.querySelector(".quiz[data-quiz]");
-    var dataEl = document.getElementById("quiz-data");
-    if (!host || !dataEl) return;
-    var lectureId = host.getAttribute("data-quiz");
-    var qs;
-    try { qs = JSON.parse(dataEl.textContent); } catch (e) { return; }
+  // Every question is "Select one or more": the number of correct options is not shown in advance.
+  function shuffled(q) {
+    var idx = q.options.map(function (_, i) { return i; });
+    for (var i = idx.length - 1; i > 0; i--) { var j = Math.floor(Math.random() * (i + 1)); var t = idx[i]; idx[i] = idx[j]; idx[j] = t; }
+    var ans = Array.isArray(q.answer) ? q.answer : [q.answer];
+    return { q: q.q, explain: q.explain, src: q.src, options: idx.map(function (i) { return q.options[i]; }),
+             answer: ans.map(function (a) { return idx.indexOf(a); }).sort(function (a, b) { return a - b; }) };
+  }
+
+  function renderQuiz(host, list, opts) {
+    opts = opts || {};
+    var qs = list.map(shuffled);
     var answered = 0, correct = 0;
+    host.innerHTML = "";
     var scoreBox = document.createElement("div");
     scoreBox.className = "quiz-score";
     scoreBox.setAttribute("aria-live", "polite");
 
     qs.forEach(function (q, qi) {
       var box = document.createElement("div");
-      var multi = Array.isArray(q.answer);
-      box.className = multi ? "q multi" : "q";
-      var head = '<div class="q-head"><span class="q-n">' + (qi + 1) + '.</span><span>' + q.q + (multi ? ' <span class="q-tag">кілька відповідей</span>' : "") + "</span></div>";
-      box.innerHTML = head + '<div class="q-opts" role="group" aria-label="Варіанти відповіді"></div><div class="q-explain" aria-live="polite"></div>';
-      var opts = box.querySelector(".q-opts");
-      if (multi) { buildMulti(q, box, opts); host.appendChild(box); return; }
-      q.options.forEach(function (o, oi) {
-        var b = document.createElement("button");
-        b.type = "button"; b.className = "q-opt"; b.innerHTML = o;
-        b.addEventListener("click", function () {
-          if (box.classList.contains("answered")) return;
-          box.classList.add("answered");
-          var good = oi === q.answer;
-          answered++; if (good) correct++;
-          opts.querySelectorAll("button").forEach(function (x, xi) {
-            x.disabled = true;
-            if (xi === q.answer) x.classList.add("correct");
-            else if (xi === oi) x.classList.add("wrong");
-          });
-          box.querySelector(".q-explain").innerHTML = (good ? '<b class="ok">Правильно.</b> ' : '<b class="bad">Не зовсім.</b> ') + q.explain;
-          updateScore();
-        });
-        opts.appendChild(b);
-      });
-      host.appendChild(box);
-    });
-    host.appendChild(scoreBox);
-
-    function buildMulti(q, box, opts) {
+      box.className = "q multi";
+      var src = q.src ? '<a class="q-src" href="' + ROOT + q.src.url + '">' + esc(q.src.label) + "</a>" : "";
+      box.innerHTML = '<div class="q-head"><span class="q-n">' + (qi + 1) + '.</span><span>' + q.q + ' <span class="q-tag">Select one or more</span>' + src + "</span></div>" +
+        '<div class="q-opts" role="group" aria-label="Варіанти відповіді"></div><div class="q-explain" aria-live="polite"></div>';
+      var optsEl = box.querySelector(".q-opts");
       var picked = {};
       var buttons = q.options.map(function (o, oi) {
         var b = document.createElement("button");
-        b.type = "button"; b.className = "q-opt"; b.innerHTML = o;
+        b.type = "button"; b.className = "q-opt"; b.innerHTML = '<span class="q-letter">' + String.fromCharCode(97 + oi) + '.</span> ' + o;
         b.setAttribute("aria-pressed", "false");
         b.addEventListener("click", function () {
           if (box.classList.contains("answered")) return;
@@ -140,7 +122,7 @@
           b.setAttribute("aria-pressed", picked[oi] ? "true" : "false");
           check.disabled = !Object.keys(picked).some(function (k) { return picked[k]; });
         });
-        opts.appendChild(b);
+        optsEl.appendChild(b);
         return b;
       });
       var check = document.createElement("button");
@@ -158,24 +140,82 @@
         });
         check.remove();
         answered++; if (good) correct++;
-        box.querySelector(".q-explain").innerHTML = (good ? '<b class="ok">Правильно.</b> ' : '<b class="bad">Не зовсім.</b> Правильних варіантів: ' + q.answer.length + ' (пунктиром — ті, що ви пропустили). ') + q.explain;
+        var letters = q.answer.map(function (a) { return String.fromCharCode(97 + a); }).join(", ");
+        box.querySelector(".q-explain").innerHTML = (good ? '<b class="ok">Правильно.</b> ' : '<b class="bad">Не зовсім.</b> Правильні варіанти: <b>' + letters + '</b> (пунктиром — ті, що ви пропустили). ') + q.explain;
         updateScore();
       });
-      opts.after(check);
-    }
+      optsEl.after(check);
+      host.appendChild(box);
+    });
+    host.appendChild(scoreBox);
 
     function updateScore() {
       if (answered < qs.length) {
         scoreBox.innerHTML = "<span>Відповіли: " + answered + " з " + qs.length + "</span><span>Правильно: " + correct + "</span>";
       } else {
-        if (window.CourseProgress) CourseProgress.saveQuiz(lectureId, correct, qs.length);
-        var msg = correct === qs.length ? "Чудово — усе правильно!" : (correct >= Math.ceil(qs.length * 0.7) ? "Добрий результат. Перечитайте розділи з помилками." : "Варто повторити лекцію і пройти ще раз.");
-        scoreBox.innerHTML = "<span>Результат: " + correct + " з " + qs.length + ". " + msg + '</span><button type="button" class="btn">Пройти ще раз</button>';
-        scoreBox.querySelector("button").addEventListener("click", function () { host.innerHTML = ""; initQuiz(); });
+        if (opts.onFinish) opts.onFinish(correct, qs.length);
+        var pct = Math.round(correct / qs.length * 100);
+        var msg = correct === qs.length ? "Чудово — усе правильно!" : (pct >= 70 ? "Добрий результат. Перечитайте розділи з помилками." : "Варто повторити матеріал і пройти ще раз.");
+        scoreBox.innerHTML = "<span>Результат: " + correct + " з " + qs.length + " (" + pct + "%). " + msg + '</span><button type="button" class="btn">Пройти ще раз</button>';
+        scoreBox.querySelector("button").addEventListener("click", function () { (opts.again || function () { renderQuiz(host, list, opts); })(); });
       }
     }
+    scoreBox.innerHTML = opts.intro || ("<span>Позначте всі правильні варіанти і натисніть «Перевірити»</span><span>" + qs.length + " питань</span>");
+  }
+
+  function initQuiz() {
+    var host = document.querySelector(".quiz[data-quiz]");
+    var dataEl = document.getElementById("quiz-data");
+    if (!host || !dataEl) return;
+    var lectureId = host.getAttribute("data-quiz");
+    var qs;
+    try { qs = JSON.parse(dataEl.textContent); } catch (e) { return; }
     var prev = window.CourseProgress && CourseProgress.getQuiz(lectureId);
-    scoreBox.innerHTML = prev ? "<span>Минулий результат: " + prev.correct + " з " + prev.total + "</span><span>Оберіть відповіді, щоб пройти знову</span>" : "<span>Оберіть відповідь у кожному питанні</span><span>" + qs.length + " питань</span>";
+    renderQuiz(host, qs, {
+      onFinish: function (c, t) { if (window.CourseProgress) CourseProgress.saveQuiz(lectureId, c, t); },
+      intro: prev ? "<span>Минулий результат: " + prev.correct + " з " + prev.total + "</span><span>Порядок варіантів змінюється з кожною спробою</span>" : null
+    });
+  }
+
+  /* ---------------- Practice exam ---------------- */
+  function initPractice() {
+    var root = document.querySelector(".practice");
+    if (!root || !window.QUIZ_BANK) return;
+    var form = root.querySelector(".practice-form");
+    var host = root.querySelector(".quiz");
+    var bank = window.QUIZ_BANK;
+    var boxes = form.querySelector(".practice-lectures");
+    bank.forEach(function (l) {
+      var lab = document.createElement("label");
+      lab.className = "pr-item";
+      lab.innerHTML = '<input type="checkbox" value="' + l.id + '" checked> <span><b>' + l.num + '.</b> ' + esc(l.short) + ' <small>(' + l.questions.length + ')</small></span>';
+      boxes.appendChild(lab);
+    });
+    form.querySelector("[data-all]").addEventListener("click", function () { boxes.querySelectorAll("input").forEach(function (i) { i.checked = true; }); });
+    form.querySelector("[data-none]").addEventListener("click", function () { boxes.querySelectorAll("input").forEach(function (i) { i.checked = false; }); });
+    function start() {
+      var ids = [].slice.call(boxes.querySelectorAll("input:checked")).map(function (i) { return i.value; });
+      var pool = [];
+      bank.forEach(function (l) {
+        if (ids.indexOf(l.id) === -1) return;
+        l.questions.forEach(function (q, qi) { pool.push(Object.assign({}, q, { src: { url: l.url + "#quiz", label: "Лекція " + l.num } })); });
+      });
+      if (!pool.length) { host.innerHTML = '<p class="note-small">Оберіть хоча б одну лекцію.</p>'; return; }
+      for (var i = pool.length - 1; i > 0; i--) { var j = Math.floor(Math.random() * (i + 1)); var t = pool[i]; pool[i] = pool[j]; pool[j] = t; }
+      var n = form.querySelector("select").value;
+      if (n !== "all") pool = pool.slice(0, +n);
+      renderQuiz(host, pool, {
+        again: start,
+        intro: "<span>Випадкові питання з обраних лекцій</span><span>" + pool.length + " питань</span>",
+        onFinish: function (c, t) { try { localStorage.setItem("htc-practice-last", JSON.stringify({ c: c, t: t, at: Date.now() })); } catch (e) {} }
+      });
+      host.scrollIntoView({ behavior: "smooth", block: "start" });
+    }
+    form.addEventListener("submit", function (e) { e.preventDefault(); start(); });
+    try {
+      var last = JSON.parse(localStorage.getItem("htc-practice-last") || "null");
+      if (last) root.querySelector(".practice-last").textContent = "Останній тренувальний тест: " + last.c + " з " + last.t + " (" + Math.round(last.c / last.t * 100) + "%).";
+    } catch (e) {}
   }
 
   /* ---------------- Mark as completed ---------------- */
@@ -202,5 +242,5 @@
     paint();
   }
 
-  document.addEventListener("DOMContentLoaded", function () { initSearch(); initQuiz(); initComplete(); });
+  document.addEventListener("DOMContentLoaded", function () { initSearch(); initQuiz(); initPractice(); initComplete(); });
 })();

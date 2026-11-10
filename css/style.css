@@ -416,3 +416,6 @@ svg.dg .fill-muted { fill: var(--faint); }
 /* long tokens (IPv6, paths) must wrap on phones */
 .q-head > span:last-child { min-width: 0; overflow-wrap: anywhere; }
 .q-opt, .q-explain, .callout, .objectives li { overflow-wrap: anywhere; }
+
+/* keyboard keys in lecture text */
+.content kbd { font-family: var(--mono); font-size: .82em; border: 1px solid var(--border-strong); border-bottom-width: 2px; border-radius: 5px; padding: 0 5px; background: var(--surface-2); color: var(--text); white-space: nowrap; }

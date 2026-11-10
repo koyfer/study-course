@@ -3,8 +3,8 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Лекція 5. LAMP-стек: Apache, MySQL, PHP і розгортання вебзастосунку · Хмарні технології та сервіси</title>
-<meta name="description" content="Що таке LAMP/LEMP, конфігурація Apache (директиви, модулі, mod_rewrite, .htaccess, логи), встановлення MySQL і Apache на CentOS, розгортання OpenCart, резервні копії mysqldump; SQL-мінімум: DDL/DML/DCL, SELECT, WHERE (BETWEEN, IN, LIKE, IS NULL), GROUP BY, JOIN.">
+<title>Лекція 5. LAMP і SQL: Apache, Nginx, MySQL, запити, JOIN і транзакції · Хмарні технології та сервіси</title>
+<meta name="description" content="LAMP і LEMP, конфігурація Apache, модулі, .htaccess, логи, розгортання OpenCart, configtest/reload, Nginx і PHP-FPM, HTTPS, діагностика 403/404/500/502, бекапи; SQL: групи команд, типи і обмеження, SELECT/WHERE (BETWEEN, IN, LIKE, NULL), агрегати, GROUP BY/HAVING, JOIN, підзапити, UNION, DELETE/TRUNCATE/DROP, транзакції ACID, GRANT, індекси, SQL-ін&#x27;єкції.">
 <meta name="theme-color" content="#0d7a6f">
 <script>try{var t=localStorage.getItem("htc-theme");if(t)document.documentElement.setAttribute("data-theme",t)}catch(e){}</script>
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=Onest:wght@400;500;600;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
@@ -26,13 +26,13 @@
 <div class="side-group"><a class="side-link" href="../../index.html"><span class="side-num">⌂</span><span>Огляд курсу і план</span></a></div>
 <div class="side-group" data-week-progress="w1l1,w1l2,w1l3,w1l4,w1l5"><div class="side-title"><a href="../../weeks/week-1.html">Тиждень 1</a><span class="wk-count wp-text">0 з 5</span></div>
 <a class="side-link" href="../../lectures/week-1/lecture-1.html"><span class="side-num">01</span><span>Вступ до DevOps, SDLC і хмарних моделей</span><span class="side-check" data-check="w1l1" role="img" aria-label="Не опрацьовано"></span></a>
-<a class="side-link" href="../../lectures/week-1/lecture-2.html"><span class="side-num">02</span><span>Linux: команди, користувачі, права</span><span class="side-check" data-check="w1l2" role="img" aria-label="Не опрацьовано"></span></a>
+<a class="side-link" href="../../lectures/week-1/lecture-2.html"><span class="side-num">02</span><span>Linux CLI: файли, пошук, права, процеси</span><span class="side-check" data-check="w1l2" role="img" aria-label="Не опрацьовано"></span></a>
 <a class="side-link" href="../../lectures/week-1/lecture-3.html"><span class="side-num">03</span><span>Bash: змінні, умови, цикли, функції</span><span class="side-check" data-check="w1l3" role="img" aria-label="Не опрацьовано"></span></a>
 <a class="side-link" href="../../lectures/week-1/lecture-4.html"><span class="side-num">04</span><span>Веб-архітектура: HTTP, REST, N-tier</span><span class="side-check" data-check="w1l4" role="img" aria-label="Не опрацьовано"></span></a>
-<a class="side-link" href="../../lectures/week-1/lecture-5.html" aria-current="page"><span class="side-num">05</span><span>LAMP: Apache, MySQL, PHP</span><span class="side-check" data-check="w1l5" role="img" aria-label="Не опрацьовано"></span></a>
+<a class="side-link" href="../../lectures/week-1/lecture-5.html" aria-current="page"><span class="side-num">05</span><span>LAMP, Apache/Nginx і SQL</span><span class="side-check" data-check="w1l5" role="img" aria-label="Не опрацьовано"></span></a>
 </div>
 <div class="side-group" data-week-progress="w2l6,w2l7,w2l8,w2l9,w2l10"><div class="side-title"><a href="../../weeks/week-2.html">Тиждень 2</a><span class="wk-count wp-text">0 з 5</span></div>
-<a class="side-link" href="../../lectures/week-2/lecture-6.html"><span class="side-num">06</span><span>Мережі: OSI, TCP/IP, IP, NAT, VPN</span><span class="side-check" data-check="w2l6" role="img" aria-label="Не опрацьовано"></span></a>
+<a class="side-link" href="../../lectures/week-2/lecture-6.html"><span class="side-num">06</span><span>Мережі: OSI, IPv4/IPv6, DHCP, DNS, NAT</span><span class="side-check" data-check="w2l6" role="img" aria-label="Не опрацьовано"></span></a>
 <a class="side-link" href="../../lectures/week-2/lecture-7.html"><span class="side-num">07</span><span>Хмари: NIST, моделі, AWS/GCP/Azure</span><span class="side-check" data-check="w2l7" role="img" aria-label="Не опрацьовано"></span></a>
 <a class="side-link" href="../../lectures/week-2/lecture-8.html"><span class="side-num">08</span><span>IaC і Terraform</span><span class="side-check" data-check="w2l8" role="img" aria-label="Не опрацьовано"></span></a>
 <a class="side-link" href="../../lectures/week-2/lecture-9.html"><span class="side-num">09</span><span>Віртуалізація і Docker</span><span class="side-check" data-check="w2l9" role="img" aria-label="Не опрацьовано"></span></a>
@@ -48,11 +48,11 @@
 <div class="lecture-hero">
 <div class="crumbs"><a href="../../index.html">Курс</a><span>/</span><a href="../../weeks/week-1.html">Тиждень 1</a><span>/</span><span>Лекція 5</span></div>
 <div class="eyebrow">Тиждень 1 · Лекція 5</div>
-<h1>LAMP-стек: Apache, MySQL, PHP і розгортання вебзастосунку</h1>
-<p class="lead">LAMP — класичний стек для 3-рівневого вебзастосунку: Linux як ОС, Apache як вебсервер, MySQL для даних і PHP для логіки. На ньому досі працюють WordPress, Moodle і Вікіпедія.</p>
+<h1>LAMP і SQL: Apache, Nginx, MySQL, запити, JOIN і транзакції</h1>
+<p class="lead">Класичний стек вебзастосунку і мова, якою з ним розмовляє база даних. Усі SQL-приклади виконуються на одній навчальній схемі, тож можна передбачити й перевірити результат кожного запиту.</p>
 <div class="meta-row">
-<span class="chip"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>≈ 18 хв читання</span>
-<span class="chip"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M9.5 9.5a2.5 2.5 0 114 2c-1 .7-1.5 1.2-1.5 2.5M12 17h.01"/></svg>12 питань самоперевірки</span>
+<span class="chip"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>≈ 52 хв читання</span>
+<span class="chip"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M9.5 9.5a2.5 2.5 0 114 2c-1 .7-1.5 1.2-1.5 2.5M12 17h.01"/></svg>30 питань самоперевірки</span>
 <span class="chip" data-status="w1l5"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg><span class="lbl">Не опрацьовано</span></span>
 </div>
 </div>
@@ -65,6 +65,11 @@
 <li>Знайти й прочитати логи Apache (<code>ErrorLog</code>, <code>CustomLog</code>).</li>
 <li>Відтворити послідовність розгортання PHP-застосунку на CentOS і зробити бекап БД.</li>
 <li>Розрізняти групи SQL-команд (<b>DDL, DML, DCL</b>) і писати базові запити: <code>SELECT … WHERE</code> з <code>BETWEEN</code>, <code>IN</code>, <code>LIKE</code>, <code>IS NULL</code>, а також <code>GROUP BY</code> і <code>JOIN</code>.</li>
+<li>Безпечно змінювати конфіг (<code>configtest</code> → <code>reload</code>), порівняти Apache і Nginx, PHP-FPM, налаштувати HTTPS і діагностувати 403/404/500/502.</li>
+<li>Знати групи SQL (DDL, DML, DQL, DCL, TCL), типи даних і обмеження, створювати таблиці з ключами.</li>
+<li>Писати SELECT з WHERE (<code>BETWEEN</code>, <code>IN</code>, <code>LIKE</code>, <code>IS NULL</code>), ORDER BY, LIMIT, агрегатами, GROUP BY і HAVING; передбачати результат на прикладі.</li>
+<li>Розрізняти INNER, LEFT, RIGHT, FULL і CROSS JOIN; писати підзапити, UNION.</li>
+<li>Розуміти DELETE vs TRUNCATE vs DROP, транзакції й ACID, GRANT/REVOKE, індекси і захист від SQL-ін'єкцій.</li>
 </ul>
 </div>
 
@@ -177,63 +182,389 @@ SHOW DATABASES;</code></pre>
 <p><code>'user'@'localhost'</code> і <code>'user'@'%'</code> — <b>різні</b> облікові записи MySQL: перший підключається лише з цього ж сервера, другий — з будь-якої адреси. На слайдах права видаються як <code>GRANT ALL ON *.*</code> (на всі БД) — для стенда ок, для production давайте права лише на потрібну БД.</p>
 <div class="callout warn"><div class="callout-title">Нюанси зі слайдів</div><p>Старий OpenCart 2.x не працював з новим механізмом автентифікації MySQL 8 і з режимом <code>sql_mode = 'MYSQL40'</code>, тому на лекції користувача переводили на <code>mysql_native_password</code> і правили інсталятор. Це приклад реальної DevOps-роботи: сумісність версій. Також нагадування з чату: репозиторії CentOS 7 закриті, частину пакетів доводиться брати з дзеркал — для нових серверів інструктор радить Ubuntu Server.</p></div>
 
+<h2 id="ops">Експлуатація вебсервера: перевірка конфігу, Nginx, PHP-FPM, HTTPS, діагностика<a class="h-anchor" href="#ops" aria-label="Посилання на розділ">#</a></h2>
+<h3>Безпечна зміна конфігурації</h3>
+<pre data-lang="bash"><code>sudo apachectl configtest          <span class="c"># або httpd -t / apache2ctl -t: перевірити синтаксис → "Syntax OK"</span>
+sudo systemctl reload httpd        <span class="c"># перечитати конфіг без розриву поточних з'єднань</span>
+sudo systemctl restart httpd       <span class="c"># повний перезапуск (з розривом)</span>
+apachectl -S                       <span class="c"># які віртуальні хости завантажено і з яких файлів</span>
+apachectl -M                       <span class="c"># список модулів</span>
+<span class="c"># Debian/Ubuntu: a2ensite shop.conf, a2enmod rewrite, a2dismod …, потім reload apache2</span></code></pre>
+<p>Правило: <b>спочатку configtest, потім reload</b>. Помилка в конфігу при restart зупинить сервер і всі сайти на ньому, а reload з помилкою залишить працювати стару конфігурацію.</p>
+<h3>Apache vs Nginx</h3>
+<div class="table-wrap"><table>
+<thead><tr><th></th><th>Apache httpd</th><th>Nginx</th></tr></thead>
+<tbody>
+<tr><td>Модель обробки</td><td>MPM на вибір: <b>prefork</b> (процес на з'єднання, потрібен для старого mod_php), <b>worker</b> (потоки), <b>event</b> (сучасний за замовчуванням)</td><td>асинхронна подієва: кілька worker-процесів обслуговують тисячі з'єднань</td></tr>
+<tr><td>PHP</td><td>вбудований модуль <code>mod_php</code> або PHP-FPM</td><td>лише через <b>PHP-FPM</b> (FastCGI)</td></tr>
+<tr><td>Децентралізований конфіг</td><td><code>.htaccess</code> у каталогах</td><td>немає, лише центральні файли (швидше)</td></tr>
+<tr><td>Типова роль</td><td>сервер застосунку, хостинг з .htaccess</td><td>статика, <b>reverse proxy</b>, балансувальник, TLS-термінація</td></tr>
+</tbody></table></div>
+<p><b>LEMP</b> = Linux + Nginx («engine-x») + MySQL + PHP. Популярна схема: Nginx на портах 80/443 віддає статику і проксіює запити на Apache або PHP-FPM на локальному порту.</p>
+<pre data-lang="nginx"><code>server {
+    listen 80;
+    server_name shop.example.com;
+    root /var/www/shop;
+    location / { try_files $uri $uri/ /index.php?$args; }
+    location ~ \.php$ {
+        include fastcgi_params;
+        fastcgi_pass unix:/run/php/php8.3-fpm.sock;     <span class="c"># PHP виконує окремий сервіс php-fpm</span>
+        fastcgi_param SCRIPT_FILENAME $document_root$fastcgi_script_name;
+    }
+}</code></pre>
+<h3>HTTPS за хвилину</h3>
+<pre data-lang="bash"><code>sudo apt install certbot python3-certbot-apache    <span class="c"># або python3-certbot-nginx</span>
+sudo certbot --apache -d shop.example.com          <span class="c"># безкоштовний сертифікат Let's Encrypt + налаштування VirtualHost :443</span>
+sudo certbot renew --dry-run                       <span class="c"># перевірити автопродовження (сертифікат діє 90 днів)</span></code></pre>
+<h3>Діагностика типових помилок</h3>
+<div class="table-wrap"><table>
+<thead><tr><th>Симптом</th><th>Найчастіша причина</th><th>Де дивитися</th></tr></thead>
+<tbody>
+<tr><td>Сайт не відкривається взагалі</td><td>служба не запущена, порт закритий фаєрволом / Security Group</td><td><code>systemctl status httpd</code>, <code>ss -tlnp | grep :80</code>, <code>firewall-cmd --list-all</code></td></tr>
+<tr><td><b>403 Forbidden</b></td><td>немає прав читання для користувача вебсервера, немає index-файла, <code>Require all denied</code>, контекст SELinux</td><td>error log; <code>ls -l</code>, <code>namei -l /var/www/html/index.php</code>, <code>ls -Z</code></td></tr>
+<tr><td><b>404 Not Found</b></td><td>неправильний <code>DocumentRoot</code> або шлях, не працює rewrite (<code>AllowOverride None</code>)</td><td>access log, конфіг VirtualHost</td></tr>
+<tr><td><b>500 Internal Server Error</b></td><td>помилка в PHP-коді або <code>.htaccess</code></td><td>error log Apache, лог PHP</td></tr>
+<tr><td><b>502 Bad Gateway</b> / <b>504</b></td><td>проксі (Nginx) не достукався до бекенду (PHP-FPM, застосунок) або той не відповів вчасно</td><td>error log Nginx, <code>systemctl status php-fpm</code></td></tr>
+<tr><td>«Error establishing a database connection»</td><td>MySQL не запущена, неправильний пароль/хост у конфігу застосунку</td><td><code>systemctl status mysqld</code>, <code>mysql -u user -p -h host</code></td></tr>
+</tbody></table></div>
+<p>У CentOS/RHEL окремо пам'ятайте про <b>SELinux</b>: файли сайту мають мати тип <code>httpd_sys_content_t</code> (<code>restorecon -Rv /var/www</code>), а щоб Apache міг підключатися до БД по мережі — <code>setsebool -P httpd_can_network_connect_db 1</code>. На навчальному стенді SELinux вимикали, але на production так не роблять.</p>
+
 <h2 id="backup">Резервні копії БД<a class="h-anchor" href="#backup" aria-label="Посилання на розділ">#</a></h2>
 <pre data-lang="bash"><code>mysqldump --all-databases &gt; dump.sql                 <span class="c"># усі БД</span>
 mysqldump -u root -p opencart &gt; opencart.sql         <span class="c"># одна БД</span>
 mysql -u root -p opencart &lt; opencart.sql             <span class="c"># відновлення</span></code></pre>
 <p>Зверніть увагу на напрямок перенаправлення з лекції 2: <code>&gt;</code> — вивантажити дамп у файл, <code>&lt;</code> — подати файл на вхід клієнту <code>mysql</code>.</p>
 
-<h2 id="sql">SQL: мінімум, який перевіряють у тестах<a class="h-anchor" href="#sql" aria-label="Посилання на розділ">#</a></h2>
-<p><b>SQL</b> (Structured Query Language) — мова роботи з реляційними БД: MySQL, PostgreSQL, MS SQL, Oracle. Команди SQL поділяють на групи:</p>
+<h3>Як робити бекапи правильно</h3>
+<pre data-lang="bash"><code>mysqldump --single-transaction --routines --triggers shop | gzip &gt; shop_$(date +%F).sql.gz
+<span class="c"># --single-transaction: узгоджений знімок InnoDB без блокування таблиць на час дампу</span>
+gunzip &lt; shop_2026-11-07.sql.gz | mysql -u root -p shop    <span class="c"># відновлення зі стисненого дампу</span>
+mysqldump -u root -p shop product category &gt; two_tables.sql <span class="c"># лише окремі таблиці</span>
+mysqldump --no-data shop &gt; schema.sql                       <span class="c"># лише структура (DDL)</span></code></pre>
+<ul>
+<li><b>Правило 3-2-1</b>: три копії даних, на двох різних носіях, одна — поза основним майданчиком (інший регіон хмари, об'єктне сховище S3).</li>
+<li><b>Автоматизуйте</b>: cron або systemd timer + ротація старих копій (скрипт у лекції 3).</li>
+<li><b>Перевіряйте відновлення</b>: бекап, з якого жодного разу не відновлювались, — лише надія. Регулярно розгортайте дамп у тестову БД.</li>
+<li>Не зберігайте пароль у командному рядку (його видно в <code>ps</code> та історії): використовуйте <code>~/.my.cnf</code> з правами <code>600</code>.</li>
+<li>У хмарі для керованих БД (AWS RDS, Cloud SQL) бекапи і point-in-time recovery вмикаються налаштуванням.</li>
+</ul>
+
+<h2 id="sql">SQL: реляційна модель і групи команд<a class="h-anchor" href="#sql" aria-label="Посилання на розділ">#</a></h2>
+<p><b>SQL</b> (Structured Query Language) — декларативна мова роботи з реляційними БД: MySQL/MariaDB, PostgreSQL, MS SQL Server, Oracle, SQLite. «Декларативна» означає, що ви описуєте <b>що</b> отримати, а як саме шукати, вирішує СКБД.</p>
+<h3>Реляційна модель</h3>
+<div class="term-grid">
+<div class="term"><span class="en">Table / relation</span><b>Таблиця</b><p>Набір однотипних записів, напр. <code>product</code>.</p></div>
+<div class="term"><span class="en">Row / record / tuple</span><b>Рядок</b><p>Один запис: один товар.</p></div>
+<div class="term"><span class="en">Column / field / attribute</span><b>Стовпець</b><p>Властивість із типом даних: <code>price DECIMAL(10,2)</code>.</p></div>
+<div class="term"><span class="en">Primary key</span><b>Первинний ключ</b><p>Унікально ідентифікує рядок, не може бути <code>NULL</code>. Часто <code>id INT AUTO_INCREMENT</code>.</p></div>
+<div class="term"><span class="en">Foreign key</span><b>Зовнішній ключ</b><p>Стовпець, що посилається на первинний ключ іншої таблиці; СКБД не дасть послатися на неіснуючий рядок.</p></div>
+<div class="term"><span class="en">NULL</span><b>Відсутнє значення</b><p>«Невідомо / немає». Це не 0 і не порожній рядок.</p></div>
+</div>
+<h3>Групи команд SQL</h3>
 <div class="table-wrap"><table>
 <thead><tr><th>Група</th><th>Для чого</th><th>Команди</th></tr></thead>
 <tbody>
-<tr><td><b>DDL</b> — Data Definition Language</td><td>структура: БД, таблиці, індекси</td><td><code>CREATE</code>, <code>ALTER</code>, <code>DROP</code>, <code>TRUNCATE</code></td></tr>
-<tr><td><b>DML</b> — Data Manipulation Language</td><td>дані в таблицях</td><td><code>SELECT</code>, <code>INSERT</code>, <code>UPDATE</code>, <code>DELETE</code></td></tr>
+<tr><td><b>DDL</b> — Data Definition Language</td><td>структура: БД, таблиці, індекси, представлення</td><td><code>CREATE</code>, <code>ALTER</code>, <code>DROP</code>, <code>TRUNCATE</code>, <code>RENAME</code></td></tr>
+<tr><td><b>DML</b> — Data Manipulation Language</td><td>дані в таблицях</td><td><code>INSERT</code>, <code>UPDATE</code>, <code>DELETE</code> (і <code>SELECT</code> у класифікації, де немає окремої DQL)</td></tr>
+<tr><td><b>DQL</b> — Data Query Language</td><td>вибірка даних</td><td><code>SELECT</code></td></tr>
 <tr><td><b>DCL</b> — Data Control Language</td><td>права доступу</td><td><code>GRANT</code>, <code>REVOKE</code></td></tr>
-<tr><td><b>TCL</b> — Transaction Control Language</td><td>транзакції</td><td><code>COMMIT</code>, <code>ROLLBACK</code></td></tr>
+<tr><td><b>TCL</b> — Transaction Control Language</td><td>транзакції</td><td><code>BEGIN</code>/<code>START TRANSACTION</code>, <code>COMMIT</code>, <code>ROLLBACK</code>, <code>SAVEPOINT</code></td></tr>
 </tbody></table></div>
-<p>Деякі джерела виносять <code>SELECT</code> в окрему групу <b>DQL</b> (Data Query Language). <code>GRANT</code> з цієї лекції — це DCL, а дамп <code>mysqldump</code> складається з DDL (<code>CREATE TABLE</code>) і DML (<code>INSERT</code>).</p>
-<h3>Анатомія запиту SELECT</h3>
-<pre data-lang="sql"><code>SELECT name, price                 <span class="c">-- які стовпці (* — усі)</span>
-FROM product                       <span class="c">-- з якої таблиці</span>
-WHERE price &gt; 100                  <span class="c">-- фільтр рядків</span>
-ORDER BY price DESC                <span class="c">-- сортування (ASC — за замовчуванням)</span>
-LIMIT 10;                          <span class="c">-- перші 10 рядків (MySQL, PostgreSQL)</span></code></pre>
-<h3>Оператори в WHERE</h3>
+<p>Підручники розходяться, куди віднести <code>SELECT</code>: до DML (класичний поділ на чотири групи) або в окрему DQL. Якщо в тесті є варіант DQL — <code>SELECT</code> відносять туди; якщо ні — до DML. <code>TRUNCATE</code> змінює дані, але належить до <b>DDL</b>: він перестворює таблицю, а не видаляє рядки по одному.</p>
+
+<h3>Типи даних (MySQL)</h3>
 <div class="table-wrap"><table>
-<thead><tr><th>Оператор</th><th>Приклад</th><th>Важливо</th></tr></thead>
+<thead><tr><th>Тип</th><th>Для чого</th><th>Приклад</th></tr></thead>
 <tbody>
-<tr><td><code>= &lt;&gt; != &lt; &gt; &lt;= &gt;=</code></td><td><code>Id &lt;&gt; 5</code></td><td><code>&lt;&gt;</code> — стандартне «не дорівнює»</td></tr>
-<tr><td><code>BETWEEN a AND b</code></td><td><code>Id BETWEEN 2 AND 4</code></td><td><b>включає обидві межі</b>; спочатку менша: <code>BETWEEN 4 AND 2</code> поверне 0 рядків</td></tr>
-<tr><td><code>IN (…)</code></td><td><code>Id IN (2, 3, 4)</code></td><td>перелік через кому; запису <code>IN (2..4)</code> у SQL немає — помилка синтаксису</td></tr>
-<tr><td><code>LIKE</code></td><td><code>name LIKE 'Lap%'</code></td><td>шаблон рядка: <code>%</code> — будь-яка кількість символів, <code>_</code> — рівно один</td></tr>
-<tr><td><code>IS NULL</code> / <code>IS NOT NULL</code></td><td><code>email IS NULL</code></td><td><code>= NULL</code> не працює — завжди «невідомо»</td></tr>
-<tr><td><code>AND OR NOT</code></td><td><code>a &gt;= 2 AND a &lt;= 4</code></td><td>кожна умова повна: <code>Id &gt;= 2 AND &lt;= 4</code> — помилка</td></tr>
+<tr><td><code>INT</code>, <code>BIGINT</code>, <code>TINYINT</code></td><td>цілі числа різного розміру</td><td><code>stock INT</code></td></tr>
+<tr><td><code>DECIMAL(p,s)</code></td><td>точні дробові (гроші): p цифр, з них s після коми</td><td><code>price DECIMAL(10,2)</code></td></tr>
+<tr><td><code>FLOAT</code>, <code>DOUBLE</code></td><td>наближені дробові (не для грошей)</td><td>координати, вимірювання</td></tr>
+<tr><td><code>VARCHAR(n)</code> / <code>CHAR(n)</code></td><td>рядок змінної / фіксованої довжини</td><td><code>name VARCHAR(100)</code></td></tr>
+<tr><td><code>TEXT</code></td><td>довгий текст</td><td>опис товару</td></tr>
+<tr><td><code>DATE</code>, <code>DATETIME</code>, <code>TIMESTAMP</code></td><td>дата / дата й час</td><td><code>created_at DATETIME</code></td></tr>
+<tr><td><code>BOOLEAN</code></td><td>у MySQL — синонім <code>TINYINT(1)</code>: 0 або 1</td><td><code>is_active BOOLEAN</code></td></tr>
 </tbody></table></div>
-<div class="callout"><div class="callout-title">Типова задача з тесту</div><p>Для цілого <code>Id</code> запит <code>WHERE Id BETWEEN 2 AND 4</code> еквівалентний <code>WHERE Id &gt;= 2 AND Id &lt;= 4</code> і <code>WHERE Id IN (2, 3, 4)</code>. <b>Не</b> еквівалентні: <code>Id &gt; 2 AND Id &lt; 4</code> (лише 3), <code>BETWEEN 4 AND 2</code> (порожньо), <code>IN (2..4)</code> і <code>LIKE 2..4</code> (некоректні).</p></div>
-<h3>Зміна даних, агрегати, групування, JOIN</h3>
-<pre data-lang="sql"><code>INSERT INTO category (Id, name) VALUES (5, 'Laptops');
-UPDATE category SET name = 'Notebooks' WHERE Id = 5;   <span class="c">-- без WHERE зміниться ВСЯ таблиця</span>
-DELETE FROM category WHERE Id = 5;                     <span class="c">-- без WHERE видалить усі рядки</span>
 
-SELECT category_id, COUNT(*) AS cnt, AVG(price)        <span class="c">-- COUNT SUM AVG MIN MAX</span>
-FROM product
-GROUP BY category_id                                    <span class="c">-- групи рядків</span>
-HAVING COUNT(*) &gt; 10;                                  <span class="c">-- фільтр уже по групах</span>
+<h3>Навчальна схема: магазин</h3>
+<p>Усі приклади нижче виконуються на цих двох таблицях. Зверніть увагу на «незручні» дані: товар без категорії і категорія без товарів — саме на них видно різницю між JOIN-ами і роботу з <code>NULL</code>.</p>
+<pre data-lang="sql"><code>CREATE DATABASE shop CHARACTER SET utf8mb4;
+USE shop;
 
-SELECT p.name, c.name
-FROM product p
-INNER JOIN category c ON p.category_id = c.Id;          <span class="c">-- лише рядки з парою в обох таблицях</span></code></pre>
+CREATE TABLE category (
+    id   INT PRIMARY KEY,
+    name VARCHAR(50) NOT NULL UNIQUE
+);
+
+CREATE TABLE product (
+    id          INT AUTO_INCREMENT PRIMARY KEY,
+    name        VARCHAR(100) NOT NULL,
+    price       DECIMAL(10,2) NOT NULL CHECK (price &gt;= 0),
+    category_id INT NULL,
+    stock       INT NOT NULL DEFAULT 0,
+    FOREIGN KEY (category_id) REFERENCES category(id)
+);
+
+INSERT INTO category (id, name) VALUES
+ (1,'Laptops'), (2,'Phones'), (3,'Tablets'), (4,'Accessories'), (5,'Monitors');
+
+INSERT INTO product (name, price, category_id, stock) VALUES
+ ('ThinkPad X1', 1800, 1,  5), ('MacBook Air', 1200, 1,  0),
+ ('Galaxy S24',   900, 2, 12), ('iPhone 15',   1000, 2,  7),
+ ('iPad 10',      450, 3,  3), ('USB-C Hub',     40, 4, 50),
+ ('Laptop Stand',  35, NULL, 20);</code></pre>
+<div class="table-wrap"><table>
+<thead><tr><th colspan="5">product</th></tr><tr><th>id</th><th>name</th><th>price</th><th>category_id</th><th>stock</th></tr></thead>
+<tbody>
+<tr><td>1</td><td>ThinkPad X1</td><td>1800</td><td>1</td><td>5</td></tr>
+<tr><td>2</td><td>MacBook Air</td><td>1200</td><td>1</td><td>0</td></tr>
+<tr><td>3</td><td>Galaxy S24</td><td>900</td><td>2</td><td>12</td></tr>
+<tr><td>4</td><td>iPhone 15</td><td>1000</td><td>2</td><td>7</td></tr>
+<tr><td>5</td><td>iPad 10</td><td>450</td><td>3</td><td>3</td></tr>
+<tr><td>6</td><td>USB-C Hub</td><td>40</td><td>4</td><td>50</td></tr>
+<tr><td>7</td><td>Laptop Stand</td><td>35</td><td><i>NULL</i></td><td>20</td></tr>
+</tbody></table></div>
+<p>Обмеження (constraints): <code>PRIMARY KEY</code>, <code>FOREIGN KEY</code>, <code>UNIQUE</code> (без повторів), <code>NOT NULL</code>, <code>DEFAULT</code> (значення за замовчуванням), <code>CHECK</code> (умова), <code>AUTO_INCREMENT</code> (лічильник). Спроба вставити товар з <code>category_id = 99</code> завершиться помилкою зовнішнього ключа.</p>
+<h3>Корисні команди клієнта mysql</h3>
+<pre data-lang="sql"><code>SHOW DATABASES;          <span class="c">-- список БД</span>
+USE shop;                <span class="c">-- обрати БД</span>
+SHOW TABLES;             <span class="c">-- таблиці поточної БД</span>
+DESCRIBE product;        <span class="c">-- структура таблиці (= SHOW COLUMNS FROM product)</span>
+SHOW CREATE TABLE product\G   <span class="c">-- повний DDL таблиці</span></code></pre>
+
+<h2 id="select">SELECT і фільтрація WHERE<a class="h-anchor" href="#select" aria-label="Посилання на розділ">#</a></h2>
+<h3>Повна структура запиту і порядок виконання</h3>
+<pre data-lang="sql"><code>SELECT   [DISTINCT] стовпці, вирази AS псевдонім   <span class="c">-- 5. що показати</span>
+FROM     таблиця [JOIN інша ON умова]             <span class="c">-- 1. звідки</span>
+WHERE    умова на рядки                           <span class="c">-- 2. фільтр рядків</span>
+GROUP BY стовпці                                  <span class="c">-- 3. групування</span>
+HAVING   умова на групи                           <span class="c">-- 4. фільтр груп</span>
+ORDER BY стовпці [ASC|DESC]                       <span class="c">-- 6. сортування</span>
+LIMIT    n [OFFSET m];                            <span class="c">-- 7. обмеження кількості</span></code></pre>
+<p>Записують у такому порядку, а <b>виконується</b> запит у порядку номерів у коментарях. Звідси правило: у <code>WHERE</code> не можна використати псевдонім з <code>SELECT</code> чи агрегатну функцію (вони ще не обчислені), а в <code>ORDER BY</code> — можна.</p>
+<h3>Базові вибірки</h3>
+<pre data-lang="sql"><code>SELECT * FROM product;                                  <span class="c">-- усі стовпці й рядки</span>
+SELECT name, price * 0.9 AS sale_price FROM product;    <span class="c">-- вираз з псевдонімом</span>
+SELECT DISTINCT category_id FROM product;               <span class="c">-- унікальні значення: 1, 2, 3, 4, NULL</span>
+SELECT name, price FROM product ORDER BY price DESC LIMIT 3;</code></pre>
+<div class="table-wrap"><table>
+<thead><tr><th colspan="2"><code>ORDER BY price DESC LIMIT 3</code></th></tr><tr><th>name</th><th>price</th></tr></thead>
+<tbody><tr><td>ThinkPad X1</td><td>1800</td></tr><tr><td>MacBook Air</td><td>1200</td></tr><tr><td>iPhone 15</td><td>1000</td></tr></tbody></table></div>
+<p><code>ORDER BY</code> без вказівки напрямку сортує за зростанням (<code>ASC</code>). Без <code>ORDER BY</code> порядок рядків <b>не гарантовано</b>. Кілька ключів: <code>ORDER BY category_id, price DESC</code>. Пагінація: <code>LIMIT 10 OFFSET 20</code> — рядки 21–30.</p>
+
+<h3>Оператори в WHERE з результатами</h3>
+<div class="table-wrap"><table>
+<thead><tr><th>Умова</th><th>Результат на нашій таблиці</th><th>Важливо</th></tr></thead>
+<tbody>
+<tr><td><code>price &gt; 1000</code></td><td>ThinkPad X1, MacBook Air</td><td>операції: <code>= &lt;&gt; != &lt; &gt; &lt;= &gt;=</code>; <code>&lt;&gt;</code> — стандартне «не дорівнює»</td></tr>
+<tr><td><code>price BETWEEN 900 AND 1200</code></td><td>MacBook Air, Galaxy S24, iPhone 15</td><td><b>обидві межі включно</b>: те саме, що <code>price &gt;= 900 AND price &lt;= 1200</code></td></tr>
+<tr><td><code>price BETWEEN 1200 AND 900</code></td><td>жодного рядка</td><td>спочатку має йти менша межа</td></tr>
+<tr><td><code>price NOT BETWEEN 100 AND 1000</code></td><td>ThinkPad, MacBook, USB-C Hub, Laptop Stand</td><td>поза діапазоном</td></tr>
+<tr><td><code>category_id IN (1, 3)</code></td><td>ThinkPad, MacBook, iPad 10</td><td>перелік через кому; те саме, що <code>category_id = 1 OR category_id = 3</code></td></tr>
+<tr><td><code>name LIKE 'i%'</code></td><td>iPhone 15, iPad 10</td><td><code>%</code> — будь-яка кількість будь-яких символів (і нуль)</td></tr>
+<tr><td><code>name LIKE '%Hub'</code></td><td>USB-C Hub</td><td>закінчується на Hub</td></tr>
+<tr><td><code>name LIKE '%Book%'</code></td><td>MacBook Air</td><td>містить Book (у MySQL за замовчуванням без урахування регістру)</td></tr>
+<tr><td><code>name LIKE 'iPa_ 10'</code></td><td>iPad 10</td><td><code>_</code> — рівно один символ</td></tr>
+<tr><td><code>category_id IS NULL</code></td><td>Laptop Stand</td><td><code>category_id = NULL</code> поверне 0 рядків</td></tr>
+<tr><td><code>stock = 0 OR price &lt; 50</code></td><td>MacBook Air, USB-C Hub, Laptop Stand</td><td><code>AND</code> виконується раніше за <code>OR</code>: ставте дужки</td></tr>
+</tbody></table></div>
+<div class="callout exam"><div class="callout-title">Задача з тесту: що еквівалентне <code>WHERE Id BETWEEN 2 AND 4</code></div><p>Для цілого <code>Id</code> такі самі рядки дадуть: <code>Id &gt;= 2 AND Id &lt;= 4</code>, <code>Id IN (2, 3, 4)</code>, <code>Id &gt; 1 AND Id &lt; 5</code>, <code>NOT (Id &lt; 2 OR Id &gt; 4)</code>. <b>Не</b> еквівалентні: <code>Id &gt; 2 AND Id &lt; 4</code> (лише 3), <code>BETWEEN 4 AND 2</code> (порожньо), <code>Id &gt;= 2 OR Id &lt;= 4</code> (усі рядки), <code>Id &gt;= 2 AND &lt;= 4</code> (синтаксична помилка — у другій умові немає стовпця). Записів <code>IN (2..4)</code>, <code>IN (2-4)</code> і <code>LIKE 2..4</code> SQL не знає: <code>2..4</code> — синтаксична помилка, а <code>IN (2-4)</code> обчислить вираз 2−4 = −2 і шукатиме <code>Id = -2</code>.</p></div>
+<h3>Підступність NULL</h3>
+<p>Будь-яке порівняння з <code>NULL</code> дає не TRUE і не FALSE, а UNKNOWN, і рядок у результат не потрапляє. Тому:</p>
 <ul>
-<li><b>WHERE</b> фільтрує рядки <i>до</i> групування, <b>HAVING</b> — групи <i>після</i> <code>GROUP BY</code>.</li>
-<li><b>INNER JOIN</b> — лише збіги; <b>LEFT JOIN</b> — усі рядки лівої таблиці (+ <code>NULL</code>, якщо пари немає); <b>RIGHT JOIN</b> — навпаки.</li>
-<li><b>PRIMARY KEY</b> — унікальний ідентифікатор рядка; <b>FOREIGN KEY</b> — посилання на ключ іншої таблиці.</li>
-<li><code>DELETE</code> (DML) видаляє рядки, можна з <code>WHERE</code>; <code>TRUNCATE</code> (DDL) швидко очищає всю таблицю; <code>DROP</code> (DDL) видаляє саму таблицю разом зі структурою.</li>
+<li><code>WHERE category_id &lt;&gt; 1</code> не поверне Laptop Stand — його <code>NULL</code> «не відомо, чи не дорівнює 1». Щоб врахувати: <code>WHERE category_id &lt;&gt; 1 OR category_id IS NULL</code>.</li>
+<li><code>NOT IN (1, NULL)</code> не поверне взагалі нічого — класична пастка з підзапитами, що повертають NULL.</li>
+<li><code>COALESCE(category_id, 0)</code> підставляє значення замість NULL; у MySQL — також <code>IFNULL()</code>.</li>
 </ul>
+<h3>CASE: умовний вираз</h3>
+<pre data-lang="sql"><code>SELECT name,
+       CASE WHEN stock = 0   THEN 'немає'
+            WHEN stock &lt; 5   THEN 'закінчується'
+            ELSE 'є в наявності' END AS availability
+FROM product;</code></pre>
+
+<h2 id="group">Агрегатні функції, GROUP BY і HAVING<a class="h-anchor" href="#group" aria-label="Посилання на розділ">#</a></h2>
+<div class="table-wrap"><table>
+<thead><tr><th>Функція</th><th>Що рахує</th><th>На нашій таблиці</th></tr></thead>
+<tbody>
+<tr><td><code>COUNT(*)</code></td><td>кількість рядків</td><td>7</td></tr>
+<tr><td><code>COUNT(category_id)</code></td><td>кількість <b>не-NULL</b> значень стовпця</td><td>6</td></tr>
+<tr><td><code>COUNT(DISTINCT category_id)</code></td><td>кількість різних не-NULL значень</td><td>4</td></tr>
+<tr><td><code>SUM(stock)</code></td><td>сума</td><td>97</td></tr>
+<tr><td><code>AVG(price)</code></td><td>середнє (NULL ігноруються)</td><td>775</td></tr>
+<tr><td><code>MIN(price)</code> / <code>MAX(price)</code></td><td>мінімум / максимум</td><td>35 / 1800</td></tr>
+</tbody></table></div>
+<h3>Групування</h3>
+<pre data-lang="sql"><code>SELECT category_id,
+       COUNT(*)   AS cnt,
+       AVG(price) AS avg_price,
+       SUM(stock) AS total_stock
+FROM product
+GROUP BY category_id;</code></pre>
+<div class="table-wrap"><table>
+<thead><tr><th>category_id</th><th>cnt</th><th>avg_price</th><th>total_stock</th></tr></thead>
+<tbody>
+<tr><td><i>NULL</i></td><td>1</td><td>35</td><td>20</td></tr>
+<tr><td>1</td><td>2</td><td>1500</td><td>5</td></tr>
+<tr><td>2</td><td>2</td><td>950</td><td>19</td></tr>
+<tr><td>3</td><td>1</td><td>450</td><td>3</td></tr>
+<tr><td>4</td><td>1</td><td>40</td><td>50</td></tr>
+</tbody></table></div>
+<p><code>GROUP BY</code> збирає рядки з однаковим значенням у групу, і агрегатні функції рахуються <b>для кожної групи окремо</b>. Усі рядки з <code>NULL</code> потрапляють в одну групу. Правило: у <code>SELECT</code> разом з агрегатами можна писати лише стовпці з <code>GROUP BY</code> (MySQL у старих режимах це дозволяв, але повертав випадкове значення).</p>
+<h3>WHERE vs HAVING</h3>
+<pre data-lang="sql"><code>SELECT category_id, COUNT(*) AS cnt
+FROM product
+WHERE price &gt; 100              <span class="c">-- 1) спершу відкидаємо дешеві товари (рядки)</span>
+GROUP BY category_id
+HAVING COUNT(*) &gt;= 2;          <span class="c">-- 2) потім залишаємо лише групи з 2+ товарами</span>
+<span class="c">-- результат: (1, 2), (2, 2)</span></code></pre>
+<div class="compare">
+<div><h4>WHERE</h4><ul><li>фільтрує <b>рядки</b></li><li>виконується <b>до</b> групування</li><li>агрегатні функції в ньому заборонені: <code>WHERE COUNT(*) &gt; 1</code> — помилка</li></ul></div>
+<div><h4>HAVING</h4><ul><li>фільтрує <b>групи</b></li><li>виконується <b>після</b> <code>GROUP BY</code></li><li>умови з агрегатами: <code>HAVING AVG(price) &gt; 500</code></li></ul></div>
+</div>
+
+<h2 id="join">JOIN, підзапити, UNION<a class="h-anchor" href="#join" aria-label="Посилання на розділ">#</a></h2>
+<p><b>JOIN</b> з'єднує рядки двох таблиць за умовою, зазвичай «зовнішній ключ = первинний ключ».</p>
+<figure><div class="figure wide">
+<svg class="dg" viewBox="0 0 720 170" role="img" aria-label="Діаграми JOIN: INNER — лише перетин двох множин; LEFT — уся ліва множина; RIGHT — уся права; FULL — обидві множини повністю">
+<g text-anchor="middle">
+<circle cx="70" cy="80" r="42" class="box"/><circle cx="120" cy="80" r="42" class="box"/>
+<path d="M95 46 A42 42 0 0 1 95 114 A42 42 0 0 1 95 46z" class="acc"/>
+<text x="95" y="150" class="t-bold">INNER JOIN</text>
+<circle cx="250" cy="80" r="42" class="acc"/><circle cx="300" cy="80" r="42" class="box" fill-opacity="0.6"/>
+<path d="M275 46 A42 42 0 0 1 275 114 A42 42 0 0 1 275 46z" class="acc"/>
+<text x="275" y="150" class="t-bold">LEFT JOIN</text>
+<circle cx="430" cy="80" r="42" class="box"/><circle cx="480" cy="80" r="42" class="acc"/>
+<path d="M455 46 A42 42 0 0 0 455 114 A42 42 0 0 0 455 46z" class="acc"/>
+<text x="455" y="150" class="t-bold">RIGHT JOIN</text>
+<circle cx="610" cy="80" r="42" class="acc"/><circle cx="660" cy="80" r="42" class="acc"/>
+<text x="635" y="150" class="t-bold">FULL OUTER JOIN</text>
+<text x="70" y="84" class="t-small">A</text><text x="122" y="84" class="t-small">B</text>
+<text x="250" y="84" class="t-small">A</text><text x="302" y="84" class="t-small">B</text>
+<text x="430" y="84" class="t-small">A</text><text x="482" y="84" class="t-small">B</text>
+<text x="610" y="84" class="t-small">A</text><text x="662" y="84" class="t-small">B</text>
+</g></svg></div>
+<figcaption><b>Види JOIN.</b> Зафарбовано рядки, що потраплять у результат. «Ліва» таблиця (A) — та, що стоїть у FROM.</figcaption></figure>
+<h3>INNER JOIN — лише пари, що знайшлися в обох таблицях</h3>
+<pre data-lang="sql"><code>SELECT p.name AS product, c.name AS category
+FROM product p
+INNER JOIN category c ON p.category_id = c.id;    <span class="c">-- слово INNER можна не писати: JOIN = INNER JOIN</span></code></pre>
+<p>6 рядків: Laptop Stand (без категорії) і Monitors (без товарів) відсутні.</p>
+<h3>LEFT JOIN — усі рядки лівої таблиці</h3>
+<pre data-lang="sql"><code>SELECT c.name AS category, p.name AS product
+FROM category c
+LEFT JOIN product p ON p.category_id = c.id;</code></pre>
+<div class="table-wrap"><table>
+<thead><tr><th>category</th><th>product</th></tr></thead>
+<tbody>
+<tr><td>Laptops</td><td>ThinkPad X1</td></tr><tr><td>Laptops</td><td>MacBook Air</td></tr>
+<tr><td>Phones</td><td>Galaxy S24</td></tr><tr><td>Phones</td><td>iPhone 15</td></tr>
+<tr><td>Tablets</td><td>iPad 10</td></tr><tr><td>Accessories</td><td>USB-C Hub</td></tr>
+<tr><td>Monitors</td><td><i>NULL</i></td></tr>
+</tbody></table></div>
+<p>Так знаходять «сирітські» записи: категорії без товарів — <code>… LEFT JOIN … WHERE p.id IS NULL</code>.</p>
+<h3>Інші види</h3>
+<ul>
+<li><b>RIGHT JOIN</b> — дзеркально: усі рядки правої таблиці. <code>product p RIGHT JOIN category c</code> = <code>category c LEFT JOIN product p</code>.</li>
+<li><b>FULL OUTER JOIN</b> — усі рядки обох таблиць (у MySQL немає, емулюють <code>LEFT JOIN … UNION … RIGHT JOIN</code>; у PostgreSQL є).</li>
+<li><b>CROSS JOIN</b> — декартів добуток: кожен рядок з кожним (7 × 5 = 35 рядків). Виходить і тоді, коли забули умову <code>ON</code>.</li>
+<li><b>Self join</b> — таблиця з'єднується сама з собою (співробітник і його керівник у тій самій таблиці).</li>
+</ul>
+<h3>Підзапити</h3>
+<pre data-lang="sql"><code><span class="c">-- товари, дорожчі за середню ціну (775): ThinkPad, MacBook, Galaxy, iPhone</span>
+SELECT name, price FROM product
+WHERE price &gt; (SELECT AVG(price) FROM product);
+
+<span class="c">-- категорії, в яких є хоч один товар на складі</span>
+SELECT name FROM category c
+WHERE EXISTS (SELECT 1 FROM product p WHERE p.category_id = c.id AND p.stock &gt; 0);
+
+<span class="c">-- товари з категорій, назва яких починається на P або T</span>
+SELECT name FROM product
+WHERE category_id IN (SELECT id FROM category WHERE name LIKE 'P%' OR name LIKE 'T%');</code></pre>
+<h3>UNION</h3>
+<p><code>UNION</code> об'єднує результати двох запитів з однаковою кількістю й типами стовпців і <b>прибирає дублікати</b>; <code>UNION ALL</code> залишає дублікати (і працює швидше).</p>
+<pre data-lang="sql"><code>SELECT name FROM category
+UNION
+SELECT name FROM product;      <span class="c">-- спільний список назв</span></code></pre>
+
+<h2 id="modify">Зміна даних і структури, транзакції, права, індекси<a class="h-anchor" href="#modify" aria-label="Посилання на розділ">#</a></h2>
+<h3>INSERT, UPDATE, DELETE</h3>
+<pre data-lang="sql"><code>INSERT INTO category (id, name) VALUES (6, 'Cameras');
+INSERT INTO product (name, price, category_id) VALUES ('Sony A7', 2100, 6), ('GoPro 12', 400, 6);
+
+UPDATE product SET price = price * 0.9 WHERE category_id = 1;   <span class="c">-- знижка 10% на ноутбуки</span>
+UPDATE product SET stock = 0;                                    <span class="c">-- УВАГА: без WHERE — уся таблиця</span>
+
+DELETE FROM product WHERE stock = 0 AND price &lt; 100;
+DELETE FROM product;                                             <span class="c">-- без WHERE — усі рядки</span></code></pre>
+<p>Звичка, що рятує дані: перед <code>UPDATE</code>/<code>DELETE</code> запустіть <code>SELECT</code> з тією самою умовою <code>WHERE</code> і перевірте, які рядки зачепить. Клієнт <code>mysql --safe-updates</code> відмовляється виконувати їх без <code>WHERE</code> по ключу.</p>
+<h3>DELETE vs TRUNCATE vs DROP</h3>
+<div class="table-wrap"><table>
+<thead><tr><th></th><th><code>DELETE FROM t</code></th><th><code>TRUNCATE TABLE t</code></th><th><code>DROP TABLE t</code></th></tr></thead>
+<tbody>
+<tr><td>Група</td><td>DML</td><td>DDL</td><td>DDL</td></tr>
+<tr><td>Що видаляє</td><td>рядки (усі або за <code>WHERE</code>)</td><td>усі рядки</td><td>таблицю повністю: дані + структуру</td></tr>
+<tr><td><code>WHERE</code></td><td>можна</td><td>не можна</td><td>—</td></tr>
+<tr><td>Швидкість</td><td>повільно (по рядку, з журналом)</td><td>дуже швидко</td><td>швидко</td></tr>
+<tr><td>Лічильник AUTO_INCREMENT</td><td>не скидається</td><td>скидається</td><td>—</td></tr>
+<tr><td>Відкат у транзакції (InnoDB)</td><td>так</td><td>ні (неявний COMMIT)</td><td>ні</td></tr>
+</tbody></table></div>
+<h3>ALTER TABLE</h3>
+<pre data-lang="sql"><code>ALTER TABLE product ADD COLUMN created_at DATETIME DEFAULT CURRENT_TIMESTAMP;
+ALTER TABLE product MODIFY name VARCHAR(150) NOT NULL;
+ALTER TABLE product RENAME COLUMN stock TO quantity;     <span class="c">-- MySQL 8+</span>
+ALTER TABLE product DROP COLUMN created_at;
+ALTER TABLE product ADD INDEX idx_price (price);</code></pre>
+<h3>Транзакції і ACID</h3>
+<p><b>Транзакція</b> — група операцій, що виконується як одне ціле: або всі, або жодна. Класичний приклад — переказ грошей: списати з одного рахунку й зарахувати на інший.</p>
+<pre data-lang="sql"><code>START TRANSACTION;
+UPDATE account SET balance = balance - 100 WHERE id = 1;
+UPDATE account SET balance = balance + 100 WHERE id = 2;
+COMMIT;            <span class="c">-- зафіксувати; при помилці замість COMMIT — ROLLBACK (скасувати все)</span></code></pre>
+<div class="table-wrap"><table>
+<thead><tr><th>Властивість</th><th>Значення</th></tr></thead>
+<tbody>
+<tr><td><b>A</b>tomicity — атомарність</td><td>усе або нічого</td></tr>
+<tr><td><b>C</b>onsistency — узгодженість</td><td>після транзакції дані відповідають усім правилам (ключі, обмеження)</td></tr>
+<tr><td><b>I</b>solation — ізоляція</td><td>паралельні транзакції не бачать проміжних станів одна одної</td></tr>
+<tr><td><b>D</b>urability — довговічність</td><td>після COMMIT дані збережено навіть при збої живлення</td></tr>
+</tbody></table></div>
+<p>У MySQL транзакції підтримує рушій <b>InnoDB</b> (за замовчуванням з версії 5.5); старий MyISAM — ні. За замовчуванням увімкнено <b>autocommit</b>: кожна окрема команда — своя транзакція.</p>
+<h3>Користувачі та права (DCL)</h3>
+<pre data-lang="sql"><code>CREATE USER 'shop_app'@'10.0.1.%' IDENTIFIED BY 'S3cure!pass';   <span class="c">-- вхід лише з підмережі застосунку</span>
+GRANT SELECT, INSERT, UPDATE, DELETE ON shop.* TO 'shop_app'@'10.0.1.%';
+GRANT ALL PRIVILEGES ON shop.* TO 'admin'@'localhost';
+SHOW GRANTS FOR 'shop_app'@'10.0.1.%';
+REVOKE DELETE ON shop.* FROM 'shop_app'@'10.0.1.%';
+DROP USER 'old_user'@'%';</code></pre>
+<p>Принцип <b>найменших привілеїв</b>: застосунку — лише DML на свою БД, без <code>DROP</code> і <code>GRANT</code>; адміністрування — окремим користувачем лише з <code>localhost</code>. Користувач у MySQL — це пара <b>ім'я + хост</b>: <code>'app'@'localhost'</code> і <code>'app'@'%'</code> — різні облікові записи.</p>
+<h3>Індекси</h3>
+<p><b>Індекс</b> — додаткова структура (B-дерево), що дозволяє знаходити рядки без перегляду всієї таблиці, як предметний покажчик у книзі. Первинний ключ і <code>UNIQUE</code> індексуються автоматично. Індекси прискорюють <code>WHERE</code>, <code>JOIN</code>, <code>ORDER BY</code>, але сповільнюють запис і займають місце. Чи використовується індекс, показує <code>EXPLAIN SELECT …</code>.</p>
+<h3>Нормалізація коротко</h3>
+<ul>
+<li><b>1NF</b>: у клітинці одне значення (не «Laptops, Phones» в одному полі), рядки унікальні.</li>
+<li><b>2NF</b>: кожен неключовий стовпець залежить від усього первинного ключа.</li>
+<li><b>3NF</b>: неключові стовпці не залежать один від одного (назву категорії зберігаємо в <code>category</code>, а не повторюємо в кожному товарі).</li>
+</ul>
+<h3>SQL-ін'єкції</h3>
+<p>Якщо застосунок склеює запит з даних користувача, зловмисник може дописати свій SQL:</p>
+<pre data-lang="php"><code>// ВРАЗЛИВО: $id = "1 OR 1=1" поверне всі рядки, "1; DROP TABLE product" — гірше
+$sql = "SELECT * FROM product WHERE id = " . $_GET['id'];
+
+// ПРАВИЛЬНО: параметризований запит (prepared statement)
+$stmt = $pdo-&gt;prepare("SELECT * FROM product WHERE id = ?");
+$stmt-&gt;execute([$_GET['id']]);</code></pre>
+<p>Захист: параметризовані запити, мінімальні права користувача БД, WAF. Для DevOps-інженера це ще й аргумент, чому застосунок не повинен підключатися до БД як root.</p>
 
 <h2 id="mistakes">Типові помилки<a class="h-anchor" href="#mistakes" aria-label="Посилання на розділ">#</a></h2>
 <div class="mistakes">
+<div class="mistake"><div class="wrong"><code>WHERE email = NULL</code> знайде рядки без email.</div><div class="right">Порівняння з NULL дає UNKNOWN, тож 0 рядків. Правильно: <code>IS NULL</code> / <code>IS NOT NULL</code>.</div></div>
+<div class="mistake"><div class="wrong"><code>BETWEEN 2 AND 4</code> не включає межі.</div><div class="right">Включає обидві: це <code>&gt;= 2 AND &lt;= 4</code>. І менша межа має йти першою.</div></div>
+<div class="mistake"><div class="wrong"><code>WHERE COUNT(*) &gt; 1</code> відфільтрує групи.</div><div class="right">Агрегати в WHERE заборонені — фільтр груп пишуть у <code>HAVING</code> після <code>GROUP BY</code>.</div></div>
+<div class="mistake"><div class="wrong"><code>TRUNCATE</code> — це DML, як DELETE.</div><div class="right">TRUNCATE належить до DDL: швидко перестворює таблицю, без WHERE, скидає AUTO_INCREMENT і не відкочується.</div></div>
+<div class="mistake"><div class="wrong"><code>COUNT(column)</code> завжди дорівнює кількості рядків.</div><div class="right">COUNT(column) не рахує NULL; кількість рядків — <code>COUNT(*)</code>.</div></div>
+<div class="mistake"><div class="wrong">Після зміни конфігу Apache — одразу <code>restart</code>.</div><div class="right">Спочатку <code>apachectl configtest</code>, потім <code>reload</code>: помилка в конфігу при restart зупинить усі сайти.</div></div>
+
 <div class="mistake"><div class="wrong"><code>WHERE email = NULL</code> знайде записи без email.</div><div class="right">З <code>NULL</code> порівнюють лише через <code>IS NULL</code> / <code>IS NOT NULL</code>.</div></div>
 <div class="mistake"><div class="wrong"><code>BETWEEN</code> не включає межі, або порядок меж не важливий.</div><div class="right"><code>BETWEEN 2 AND 4</code> включає 2 і 4; нижня межа має бути першою.</div></div>
 <div class="mistake"><div class="wrong">Правила <code>.htaccess</code> «не працюють», хоча файл на місці.</div><div class="right">Перевірте <code>AllowOverride</code> для каталогу (при <code>None</code> файл ігнорується) і чи завантажено <code>mod_rewrite</code>. Після змін у конфігу — <code>systemctl restart httpd</code>.</div></div>
@@ -241,12 +572,12 @@ INNER JOIN category c ON p.category_id = c.Id;          <span class="c">-- ли�
 <div class="mistake"><div class="wrong">Вимкнути firewall і SELinux на production, як на лабі.</div><div class="right">На production відкривають лише потрібні порти (80/443) і налаштовують SELinux-контексти, а не вимикають захист.</div></div>
 <div class="mistake"><div class="wrong">Забути видалити <code>install/</code> після встановлення CMS.</div><div class="right">Каталог інсталятора дозволяє перевстановити сайт і перезаписати БД — його видаляють одразу.</div></div>
 </div>
-<h2 id="quiz">Перевір себе<a class="h-anchor" href="#quiz" aria-label="Посилання на розділ">#</a></h2><p>12 питань на розуміння. В одиночних питаннях натисніть варіант — одразу побачите правильну відповідь і пояснення. Питання з позначкою <b>«кілька відповідей»</b> влаштовані як у тесті курсу (<i>Select one or more</i>): позначте всі правильні варіанти й натисніть «Перевірити».</p><div class="quiz" data-quiz="w1l5"></div><script type="application/json" id="quiz-data">[{"q": "Що означає абревіатура LAMP?", "options": ["Linux, Ansible, MongoDB, Python", "Linux, AWS, Mesos, Puppet", "Load balancer, Apache, MySQL, Proxy", "Linux, Apache, MySQL, PHP"], "answer": 3, "explain": "Linux — ОС, Apache — вебсервер, MySQL — СКБД, PHP (історично також Perl/Python) — мова логіки. LEMP — те саме з NGINX."}, {"q": "Яка директива Apache задає каталог, з якого віддаються файли сайту?", "options": ["ServerRoot", "Directory", "AccessFileName", "DocumentRoot"], "answer": 3, "explain": "DocumentRoot — корінь сайту; шлях із URL додається до нього, щоб отримати шлях до файла."}, {"q": "Директиви в .htaccess ігноруються. Найімовірніша причина?", "options": ["Apache не підтримує .htaccess", "Для каталогу встановлено AllowOverride None", "MySQL не запущено", "Файл має розширення .txt"], "answer": 1, "explain": "При AllowOverride None сервер навіть не читає .htaccess. Для правил mod_rewrite зазвичай ставлять AllowOverride All."}, {"q": "Який журнал Apache переглядати першим, коли сайт повертає помилку 500?", "options": ["error log", "mime.types", "/etc/passwd", "access log"], "answer": 0, "explain": "Слайди називають error log найважливішим: туди потрапляють помилки скриптів, конфігурації і відмови в доступі."}, {"q": "Навіщо модуль mod_rewrite?", "options": ["Створювати резервні копії", "Шифрувати трафік", "Керувати користувачами MySQL", "Переписувати URL за правилами на основі регулярних виразів"], "answer": 3, "explain": "mod_rewrite перетворює запитаний URL на шлях до файла, редирект або проксі-запит — так роблять «гарні» URL."}, {"q": "Яка команда відновить БД opencart з файла дампа?", "options": ["mysqldump -u root -p opencart > opencart.sql", "systemctl restore mysqld", "mysql -u root -p opencart < opencart.sql", "mysql --all-databases > dump.sql"], "answer": 2, "explain": "mysqldump створює дамп (вивід у файл через >), а клієнт mysql виконує SQL з файла, поданого на вхід через <."}, {"q": "Поле <code>Id<\/code> цілочисельне. Які запити повернуть те саме, що <code>SELECT * FROM Category WHERE Id BETWEEN 2 AND 4<\/code>?", "options": ["<code>… WHERE Id &gt; 2 AND Id &lt; 4<\/code>", "<code>… WHERE Id IN (2..4)<\/code>", "<code>… WHERE Id BETWEEN 4 AND 2<\/code>", "<code>… WHERE Id &gt;= 2 AND &lt;= 4<\/code>", "<code>… WHERE Id &gt;= 2 AND Id &lt;= 4<\/code>", "<code>… WHERE Id IN (2, 3, 4)<\/code>"], "answer": [4, 5], "explain": "BETWEEN включає межі. Строгі нерівності втрачають 2 і 4, BETWEEN 4 AND 2 порожній, а IN (2..4) та «AND &lt;= 4» без лівої частини — синтаксичні помилки."}, {"q": "Які команди належать до DML?", "options": ["DELETE", "INSERT", "CREATE TABLE", "GRANT", "UPDATE"], "answer": [0, 1, 4], "explain": "DML змінює дані (а також SELECT). CREATE — DDL (структура), GRANT — DCL (права)."}, {"q": "Як знайти клієнтів, у яких не заповнено email?", "options": ["<code>WHERE email == ''<\/code>", "<code>WHERE email IS NULL<\/code>", "<code>WHERE email = NULL<\/code>", "<code>WHERE NULL(email)<\/code>"], "answer": 1, "explain": "NULL — «невідоме значення», тож = NULL ніколи не дає істини. Правильно — IS NULL."}, {"q": "Які імена підійдуть під <code>name LIKE 'A_n%'<\/code>?", "options": ["Alan", "Ann", "Andrew", "Anna"], "answer": [1, 3], "explain": "_ — рівно один символ, % — будь-яка кількість. Ann і Anna мають «n» на третій позиції; Andrew — «d», Alan — «a»."}, {"q": "Чим HAVING відрізняється від WHERE?", "options": ["HAVING сортує результат", "HAVING фільтрує групи після GROUP BY, WHERE — рядки до групування", "WHERE працює тільки з числами", "Нічим, це синоніми"], "answer": 1, "explain": "Агрегати на кшталт COUNT(*) &gt; 10 можна перевіряти лише в HAVING, бо до групування їх ще не пораховано."}, {"q": "Чим відрізняються облікові записи 'shop'@'localhost' і 'shop'@'%'?", "options": ["Другий має права root", "Перший може підключатися лише з того ж сервера, другий — з будь-якого хоста", "Нічим", "Перший працює тільки з PHP"], "answer": 1, "explain": "У MySQL обліковий запис = ім'я + хост. % означає будь-який хост, тому це окремий запис із власними правами."}]</script>
+<h2 id="quiz">Перевір себе<a class="h-anchor" href="#quiz" aria-label="Посилання на розділ">#</a></h2><p>30 питань на розуміння. В одиночних питаннях натисніть варіант — одразу побачите правильну відповідь і пояснення. Питання з позначкою <b>«кілька відповідей»</b> влаштовані як у тесті курсу (<i>Select one or more</i>): позначте всі правильні варіанти й натисніть «Перевірити».</p><div class="quiz" data-quiz="w1l5"></div><script type="application/json" id="quiz-data">[{"q": "Які компоненти утворюють стек LAMP?", "options": ["Apache", "PHP", "MySQL", "Nginx", "Laravel", "Linux"], "answer": [0, 1, 2, 5], "explain": "LAMP = Linux + Apache + MySQL (або сумісна MariaDB) + PHP (історично P — також Perl чи Python). Nginx замість Apache дає LEMP. Laravel — PHP-фреймворк, а не компонент стеку."}, {"q": "Які твердження про конфігурацію Apache правильні?", "options": ["<code>DocumentRoot<\/code> задає каталог, з якого віддаються файли сайту", "<code>.htaccess<\/code> діє на весь сервер незалежно від каталогу", "<code>LoadModule<\/code> підключає модуль", "<code>ErrorLog<\/code> записує кожен успішний запит", "<code>AllowOverride None<\/code> вимикає обробку <code>.htaccess<\/code>", "<code>&lt;VirtualHost&gt;<\/code> описує окремий сайт на тому самому сервері"], "answer": [0, 2, 4, 5], "explain": "Кожен запит пише access log (<code>CustomLog<\/code>), а <code>ErrorLog<\/code> — помилки. <code>.htaccess<\/code> діє лише на свій каталог і вкладені."}, {"q": "Для чого потрібен mod_rewrite?", "options": ["Балансувати навантаження між кількома серверами баз даних", "Стискати відповіді gzip перед відправленням клієнту", "Шифрувати трафік між браузером і сервером за допомогою TLS", "Робити редиректи (наприклад, з http на https)", "Робити «гарні» URL на кшталт <code>/product/42<\/code>", "Переписувати URL «на льоту» за правилами з регулярними виразами"], "answer": [3, 4, 5], "explain": "Стискання — mod_deflate, TLS — mod_ssl, балансування й проксі — mod_proxy."}, {"q": "Ви змінили конфіг Apache. Яка послідовність дій найбезпечніша?", "options": ["<code>systemctl restart httpd<\/code>, потім <code>apachectl configtest<\/code>", "<code>systemctl stop httpd<\/code>, потім <code>systemctl start httpd<\/code>", "<code>systemctl reload httpd<\/code> без перевірки синтаксису", "<code>reboot<\/code>, щоб усі служби перечитали конфіг", "<code>apachectl configtest<\/code>, потім <code>systemctl reload httpd<\/code>"], "answer": [4], "explain": "configtest перевіряє синтаксис; reload перечитує конфіг без розриву з'єднань і з помилкою залишає працювати стару конфігурацію. Restart з помилкою зупинить усі сайти."}, {"q": "Які твердження про Apache і Nginx правильні?", "options": ["LEMP — це Linux, Nginx, MySQL, PHP", "Apache не вміє працювати з PHP-FPM", "Nginx читає <code>.htaccess<\/code> у кожному каталозі", "Nginx виконує PHP лише через PHP-FPM (FastCGI)", "Apache підтримує децентралізований конфіг <code>.htaccess<\/code>", "Nginx часто ставлять перед застосунком як reverse proxy"], "answer": [0, 3, 4, 5], "explain": "Nginx не підтримує .htaccess — лише центральні файли конфігурації. Apache може працювати як через mod_php, так і через PHP-FPM."}, {"q": "Користувач бачить <b>502 Bad Gateway<\/b> від Nginx. Що найімовірніше?", "options": ["Запитаний файл не знайдено в DocumentRoot", "Nginx не зміг отримати відповідь від бекенду (PHP-FPM або застосунку)", "Служба PHP-FPM зупинена або впала", "Сертифікат HTTPS прострочений, і Nginx відхиляє з'єднання", "Користувач увів неправильний пароль, і сервер відмовив у доступі"], "answer": [1, 2], "explain": "502 — проксі отримав некоректну відповідь від upstream або не зміг з'єднатися. Відсутній файл — 404, авторизація — 401/403, прострочений сертифікат браузер покаже як помилку TLS ще до HTTP-відповіді."}, {"q": "Як створити дамп БД opencart і відновити його?", "options": ["<code>mysqldump --single-transaction opencart | gzip &gt; db.sql.gz<\/code> — стиснений узгоджений дамп", "<code>mysqldump opencart &lt; opencart.sql<\/code> — відновлення", "<code>mysql -u root -p opencart &gt; opencart.sql<\/code> — дамп", "<code>mysqldump -u root -p opencart &gt; opencart.sql<\/code> — дамп", "<code>mysql -u root -p opencart &lt; opencart.sql<\/code> — відновлення"], "answer": [0, 3, 4], "explain": "mysqldump пише SQL у stdout (&gt; у файл), а клієнт mysql читає його зі stdin (&lt;). Переплутані програми або напрямок перенаправлення не спрацюють."}, {"q": "До якої групи SQL-команд належать INSERT, UPDATE і DELETE?", "options": ["DCL — Data Control Language", "DML — Data Manipulation Language", "TCL — Transaction Control Language", "DQL — Data Query Language", "DDL — Data Definition Language"], "answer": [1], "explain": "DML змінює дані. DDL — структуру (CREATE, ALTER, DROP, TRUNCATE), DCL — права (GRANT, REVOKE), TCL — транзакції (COMMIT, ROLLBACK), DQL — SELECT."}, {"q": "Які команди належать до DDL?", "options": ["<code>GRANT<\/code>", "<code>UPDATE<\/code>", "<code>ALTER<\/code>", "<code>CREATE<\/code>", "<code>DROP<\/code>", "<code>TRUNCATE<\/code>"], "answer": [2, 3, 4, 5], "explain": "GRANT — DCL, UPDATE — DML. TRUNCATE формально DDL: він перестворює таблицю, а не видаляє рядки по одному."}, {"q": "Які пари «команда — група» правильні?", "options": ["CREATE — DML", "SELECT — DQL (або DML у класичному поділі)", "REVOKE — DCL", "GRANT — DCL", "ROLLBACK — DDL", "COMMIT — TCL"], "answer": [1, 2, 3, 5], "explain": "ROLLBACK — TCL, CREATE — DDL."}, {"q": "Таблиця Category має цілочисельне поле Id. Які умови WHERE дадуть той самий результат, що й <code>WHERE Id BETWEEN 2 AND 4<\/code>?", "options": ["<code>Id BETWEEN 4 AND 2<\/code>", "<code>Id &gt; 2 AND Id &lt; 4<\/code>", "<code>Id &gt;= 2 OR Id &lt;= 4<\/code>", "<code>Id &gt; 1 AND Id &lt; 5<\/code>", "<code>Id &gt;= 2 AND Id &lt;= 4<\/code>", "<code>Id IN (2, 3, 4)<\/code>"], "answer": [3, 4, 5], "explain": "BETWEEN включає обидві межі; для цілих чисел &gt;1 і &lt;5 — те саме. <code>&gt;2 AND &lt;4<\/code> дасть лише 3, обернені межі — 0 рядків, OR — усі рядки."}, {"q": "Що станеться з запитом <code>SELECT * FROM Category WHERE Id IN (2..4)<\/code>?", "options": ["Помилка синтаксису: такого запису діапазону в SQL немає", "Поверне рядки з Id 3, бо межі не включаються", "Поверне рядки лише з Id 2 і 4, без проміжних", "Поверне рядки з Id 2, 3 і 4, як BETWEEN 2 AND 4", "Поверне порожній результат без повідомлення про помилку"], "answer": [0], "explain": "IN приймає перелік через кому або підзапит. Діапазон пишуть через BETWEEN або IN (2, 3, 4)."}, {"q": "У таблиці product (див. навчальну схему) які товари поверне <code>WHERE price BETWEEN 900 AND 1200<\/code>?", "options": ["MacBook Air (1200)", "Galaxy S24 (900)", "ThinkPad X1 (1800)", "iPad 10 (450)", "iPhone 15 (1000)"], "answer": [0, 1, 4], "explain": "Межі 900 і 1200 включно."}, {"q": "Які шаблони LIKE збігаються з назвою «iPhone 15»?", "options": ["<code>'%Phone%'<\/code>", "<code>'iPhone_'<\/code>", "<code>'iPhone __'<\/code>", "<code>'%15'<\/code>", "<code>'*Phone*'<\/code>", "<code>'i%'<\/code>"], "answer": [0, 2, 3, 5], "explain": "% — будь-яка кількість символів, _ — рівно один. <code>'iPhone_'<\/code> чекає рівно один символ після iPhone, а там « 15» (три символи). <code>*<\/code> у LIKE не є шаблоном."}, {"q": "Як знайти рядки, де стовпець email не заповнено?", "options": ["<code>WHERE email IS NULL<\/code>", "<code>WHERE NOT email<\/code>", "<code>WHERE email == NULL<\/code>", "<code>WHERE email = ''<\/code>", "<code>WHERE email = NULL<\/code>"], "answer": [0], "explain": "Порівняння з NULL дає UNKNOWN, тож <code>= NULL<\/code> завжди повертає 0 рядків. Порожній рядок '' — це вже значення, а не NULL."}, {"q": "Таблиця product має 7 рядків, у одного з них category_id = NULL. Які твердження правильні?", "options": ["<code>WHERE category_id &lt;&gt; 1<\/code> не поверне рядок з NULL", "<code>COUNT(*)<\/code> поверне 7", "<code>COUNT(category_id)<\/code> поверне 7", "<code>COUNT(category_id)<\/code> поверне 6", "<code>GROUP BY category_id<\/code> пропустить рядок з NULL"], "answer": [0, 1, 3], "explain": "COUNT(стовпець) не рахує NULL; порівняння з NULL — UNKNOWN. GROUP BY збирає всі NULL в окрему групу."}, {"q": "Які твердження про WHERE і HAVING правильні?", "options": ["Умову <code>COUNT(*) &gt; 1<\/code> можна писати у WHERE", "WHERE фільтрує рядки до групування", "HAVING фільтрує групи після GROUP BY", "HAVING виконується перед WHERE", "Умову <code>COUNT(*) &gt; 1<\/code> пишуть у HAVING"], "answer": [1, 2, 4], "explain": "Логічний порядок: FROM → WHERE → GROUP BY → HAVING → SELECT → ORDER BY → LIMIT. Агрегати в WHERE ще не обчислені."}, {"q": "У якому порядку СКБД логічно виконує частини запиту?", "options": ["SELECT → FROM → WHERE → GROUP BY → HAVING → ORDER BY", "FROM → SELECT → WHERE → ORDER BY → GROUP BY", "SELECT → ORDER BY → FROM → WHERE", "FROM → WHERE → GROUP BY → HAVING → SELECT → ORDER BY → LIMIT", "WHERE → FROM → SELECT → HAVING → GROUP BY"], "answer": [3], "explain": "Тому псевдонім зі SELECT не можна використати у WHERE, але можна в ORDER BY."}, {"q": "Які твердження про JOIN правильні?", "options": ["MySQL підтримує FULL OUTER JOIN як окремий оператор", "JOIN без слова INNER — це LEFT JOIN", "LEFT JOIN повертає всі рядки лівої таблиці, а відсутні значення правої — NULL", "<code>A RIGHT JOIN B<\/code> дає той самий набір, що <code>B LEFT JOIN A<\/code>", "CROSS JOIN без умови дає декартів добуток", "INNER JOIN повертає лише рядки, для яких знайшлася пара в обох таблицях"], "answer": [2, 3, 4, 5], "explain": "JOIN без уточнення — INNER JOIN. FULL OUTER JOIN у MySQL емулюють через UNION LEFT і RIGHT JOIN."}, {"q": "Як знайти категорії, у яких немає жодного товару?", "options": ["<code>SELECT c.name FROM category c LEFT JOIN product p ON p.category_id = c.id WHERE p.id IS NULL<\/code>", "<code>SELECT name FROM category c WHERE NOT EXISTS (SELECT 1 FROM product p WHERE p.category_id = c.id)<\/code>", "<code>SELECT c.name FROM category c INNER JOIN product p ON p.category_id = c.id WHERE p.id IS NULL<\/code>", "<code>SELECT name FROM category WHERE id NOT IN (SELECT category_id FROM product)<\/code> (коли серед category_id є NULL)"], "answer": [0, 1], "explain": "INNER JOIN не містить рядків без пари, тож умова IS NULL нічого не знайде. NOT IN з NULL у підзапиті повертає порожній результат — класична пастка."}, {"q": "Які твердження про DELETE, TRUNCATE і DROP правильні?", "options": ["DROP TABLE видаляє лише дані, зберігаючи структуру", "DELETE може видаляти рядки за умовою WHERE", "TRUNCATE швидко видаляє всі рядки і скидає AUTO_INCREMENT", "DELETE без WHERE видаляє саму таблицю", "TRUNCATE підтримує WHERE", "DROP TABLE видаляє таблицю разом зі структурою"], "answer": [1, 2, 5], "explain": "DELETE без WHERE видаляє всі рядки, але таблиця лишається. TRUNCATE не має WHERE, DROP знищує і структуру."}, {"q": "Що станеться після <code>UPDATE product SET price = 0;<\/code>?", "options": ["Нічого, бо немає WHERE", "Таблицю буде видалено", "Ціна стане 0 у всіх рядках таблиці", "Зміниться лише перший рядок", "Помилка: UPDATE вимагає WHERE"], "answer": [2], "explain": "Без WHERE UPDATE і DELETE зачіпають усі рядки. Перед ними варто виконати SELECT з тією самою умовою."}, {"q": "Які твердження про ключі та обмеження правильні?", "options": ["PRIMARY KEY унікальний і не може бути NULL", "Таблиця може мати кілька PRIMARY KEY", "NOT NULL забороняє порожні (NULL) значення", "FOREIGN KEY посилається на первинний ключ іншої таблиці", "UNIQUE забороняє повтори значень", "FOREIGN KEY дозволяє посилатися на неіснуючий рядок"], "answer": [0, 2, 3, 4], "explain": "Первинний ключ у таблиці один (може складатися з кількох стовпців). Зовнішній ключ якраз забороняє посилання на неіснуючі рядки."}, {"q": "Що означає ACID для транзакцій?", "options": ["Durability — після COMMIT дані не втрачаються при збої", "Consistency — дані відповідають правилам після транзакції", "Isolation — паралельні транзакції не бачать проміжних станів", "Availability — база завжди доступна", "Authorization — перевірка прав користувача", "Atomicity — усе або нічого"], "answer": [0, 1, 2, 5], "explain": "Availability і Authorization до ACID не належать."}, {"q": "Які команди скасовують або фіксують транзакцію?", "options": ["<code>REVOKE<\/code> — скасувати транзакцію", "<code>COMMIT<\/code> — зафіксувати зміни", "<code>START TRANSACTION<\/code> — почати транзакцію", "<code>ROLLBACK<\/code> — скасувати зміни", "<code>TRUNCATE<\/code> — відкотити останню зміну"], "answer": [1, 2, 3], "explain": "REVOKE забирає права (DCL), TRUNCATE очищає таблицю і сам не відкочується."}, {"q": "Як надати застосунку права лише на читання і зміну даних у БД shop?", "options": ["<code>CREATE USER 'app' WITH ALL PRIVILEGES;<\/code>", "<code>GRANT SELECT, INSERT, UPDATE, DELETE ON shop.* TO 'app'@'10.0.1.%';<\/code>", "<code>REVOKE SELECT ON shop.* FROM 'app'@'10.0.1.%';<\/code>", "<code>GRANT ALL PRIVILEGES ON *.* TO 'app'@'%';<\/code>"], "answer": [1], "explain": "Принцип найменших привілеїв: лише DML на свою БД і лише з потрібної підмережі. ALL на *.* — надлишкові права, REVOKE їх забирає."}, {"q": "Які твердження про індекси правильні?", "options": ["Індекс прискорює пошук у WHERE і JOIN", "Індекси сповільнюють INSERT і UPDATE та займають місце", "<code>EXPLAIN<\/code> показує, чи використовує запит індекс", "Індекс робить будь-який запит швидшим без недоліків", "Первинний ключ індексується автоматично"], "answer": [0, 1, 2, 4], "explain": "Кожен індекс треба оновлювати при зміні даних, тому зайві індекси шкодять."}, {"q": "Як захистити застосунок від SQL-ін'єкцій?", "options": ["Ховати назви таблиць", "Підключатися до БД як root, щоб уникнути помилок прав", "Давати користувачу БД застосунку мінімальні права", "Склеювати запит з даних користувача, але прибирати пробіли", "Використовувати параметризовані запити (prepared statements)"], "answer": [2, 4], "explain": "Параметри передаються окремо від тексту запиту і не можуть змінити його структуру. Мінімальні права обмежують шкоду, якщо вразливість усе ж є."}, {"q": "Що поверне <code>SELECT DISTINCT category_id FROM product<\/code> на навчальній схемі?", "options": ["Сім рядків, по одному на товар", "Кількість різних категорій — одне число", "Унікальні значення 1, 2, 3, 4 і NULL", "Лише 1, 2, 3, 4 (NULL відкидається)"], "answer": [2], "explain": "DISTINCT прибирає повтори; NULL вважається одним окремим значенням. Кількість — це COUNT(DISTINCT category_id) = 4 (без NULL)."}, {"q": "Які твердження про ORDER BY і LIMIT правильні?", "options": ["За замовчуванням ORDER BY сортує за спаданням", "Без ORDER BY порядок рядків не гарантовано", "Без вказівки напрямку ORDER BY сортує за зростанням (ASC)", "<code>LIMIT 10 OFFSET 20<\/code> поверне рядки 21–30", "<code>ORDER BY price DESC LIMIT 3<\/code> поверне три найдорожчі товари"], "answer": [1, 2, 3, 4], "explain": "За замовчуванням — ASC."}]</script>
 <div class="complete-box"><p>Прочитали і пройшли тест? Позначте лекцію — прогрес оновиться на головній і в меню.</p><button type="button" class="btn primary" data-complete="w1l5" aria-pressed="false"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg><span class="lbl">Позначити як опрацьовану</span></button></div>
-<nav class="pager" aria-label="Попередня і наступна лекції"><a class="prev" href="../../lectures/week-1/lecture-4.html"><small>← Попередня · Лекція 4</small><span>Архітектура вебзастосунків: HTTP, REST API, N-tier і мікросервіси</span></a><a class="next" href="../../lectures/week-2/lecture-6.html"><small>Наступна · Лекція 6 →</small><span>Комп&#x27;ютерні мережі: OSI і TCP/IP, IP-адресація, порти, NAT і VPN</span></a></nav>
-<div class="sources-note"><b>Джерела лекції:</b> презентація «LAMP Stack» (39 слайдів); чат лекції 5 (LAMP vs Node.js, NGINX, CentOS); розділ SQL доповнено з документації MySQL 8.0 Reference Manual під питання тесту курсу. <b>Обмеження:</b> MP3-запис лекції не транскрибовано; відео для цієї лекції в папці немає.</div>
+<nav class="pager" aria-label="Попередня і наступна лекції"><a class="prev" href="../../lectures/week-1/lecture-4.html"><small>← Попередня · Лекція 4</small><span>Архітектура вебзастосунків: HTTP, REST API, N-tier і мікросервіси</span></a><a class="next" href="../../lectures/week-2/lecture-6.html"><small>Наступна · Лекція 6 →</small><span>Комп&#x27;ютерні мережі: OSI і TCP/IP, IPv4 і IPv6, DHCP, DNS, NAT, VPN, QoS</span></a></nav>
+<div class="sources-note"><b>Джерела лекції:</b> презентація «LAMP Stack» (39 слайдів); чат лекції 5 (LAMP vs Node.js, NGINX, CentOS); розділ SQL доповнено з документації MySQL 8.0 Reference Manual під питання тесту курсу; MySQL 8.0 Reference Manual, Apache HTTP Server 2.4 і nginx documentation, Let&#x27;s Encrypt/certbot; усі SQL-приклади перевірено виконанням. <b>Обмеження:</b> MP3-запис лекції не транскрибовано; відео для цієї лекції в папці немає.</div>
 </main>
-<aside class="toc" aria-label="На цій сторінці"><div class="toc-title">На цій сторінці</div><ol><li><a href="#goals">Чого ви навчитесь</a></li><li><a href="#stack">Що таке LAMP</a></li><li><a href="#config">Конфігурація Apache</a></li><li><a href="#deploy">Практика: розгортання OpenCart на CentOS</a></li><li><a href="#backup">Резервні копії БД</a></li><li><a href="#sql">SQL: мінімум, який перевіряють у тестах</a></li><li><a href="#mistakes">Типові помилки</a></li><li><a href="#quiz">Перевір себе</a></li></ol></aside>
+<aside class="toc" aria-label="На цій сторінці"><div class="toc-title">На цій сторінці</div><ol><li><a href="#goals">Чого ви навчитесь</a></li><li><a href="#stack">Що таке LAMP</a></li><li><a href="#config">Конфігурація Apache</a></li><li><a href="#deploy">Практика: розгортання OpenCart на CentOS</a></li><li><a href="#ops">Експлуатація вебсервера: перевірка конфігу, Nginx, PHP-FPM, HTTPS, діагностика</a></li><li><a href="#backup">Резервні копії БД</a></li><li><a href="#sql">SQL: реляційна модель і групи команд</a></li><li><a href="#select">SELECT і фільтрація WHERE</a></li><li><a href="#group">Агрегатні функції, GROUP BY і HAVING</a></li><li><a href="#join">JOIN, підзапити, UNION</a></li><li><a href="#modify">Зміна даних і структури, транзакції, права, індекси</a></li><li><a href="#mistakes">Типові помилки</a></li><li><a href="#quiz">Перевір себе</a></li></ol></aside>
 </div>
 </div>
 <footer class="site-footer">Навчальний конспект для самопідготовки. Прогрес і результати тестів зберігаються лише в цьому браузері на цьому пристрої (localStorage) і не синхронізуються між пристроями.</footer>

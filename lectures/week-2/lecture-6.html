@@ -3,8 +3,8 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Лекція 6. Комп&#x27;ютерні мережі: OSI і TCP/IP, IP-адресація, порти, NAT і VPN · Хмарні технології та сервіси</title>
-<meta name="description" content="Моделі OSI та TCP/IP, інкапсуляція, MAC/IP/порт, IPv4 і IPv6, маска та підмережі з розрахунком, DNS, ping і traceroute, NAT/PAT, VPN; TCP vs UDP, DHCP (DORA), шлюз, мережеві команди Linux.">
+<title>Лекція 6. Комп&#x27;ютерні мережі: OSI і TCP/IP, IPv4 і IPv6, DHCP, DNS, NAT, VPN, QoS · Хмарні технології та сервіси</title>
+<meta name="description" content="Рівні OSI і TCP/IP, пристрої, MAC/ARP, порти, TCP vs UDP, unicast/broadcast/multicast/anycast; двійкова система, маска, розрахунок підмереж, класи, приватні та спеціальні діапазони (loopback, APIPA, Class D/E); IPv6: скорочення, типи адрес, EUI-64, SLAAC, NDP, dual stack, 6to4, Teredo/Miredo; DHCP (DORA, scope, lease, reservation, relay), DNS і записи, NAT/PAT/port forwarding, VPN, QoS/CoS/DiffServ, ACL, маршрутизація, діагностика.">
 <meta name="theme-color" content="#0d7a6f">
 <script>try{var t=localStorage.getItem("htc-theme");if(t)document.documentElement.setAttribute("data-theme",t)}catch(e){}</script>
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=Onest:wght@400;500;600;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
@@ -26,13 +26,13 @@
 <div class="side-group"><a class="side-link" href="../../index.html"><span class="side-num">⌂</span><span>Огляд курсу і план</span></a></div>
 <div class="side-group" data-week-progress="w1l1,w1l2,w1l3,w1l4,w1l5"><div class="side-title"><a href="../../weeks/week-1.html">Тиждень 1</a><span class="wk-count wp-text">0 з 5</span></div>
 <a class="side-link" href="../../lectures/week-1/lecture-1.html"><span class="side-num">01</span><span>Вступ до DevOps, SDLC і хмарних моделей</span><span class="side-check" data-check="w1l1" role="img" aria-label="Не опрацьовано"></span></a>
-<a class="side-link" href="../../lectures/week-1/lecture-2.html"><span class="side-num">02</span><span>Linux: команди, користувачі, права</span><span class="side-check" data-check="w1l2" role="img" aria-label="Не опрацьовано"></span></a>
+<a class="side-link" href="../../lectures/week-1/lecture-2.html"><span class="side-num">02</span><span>Linux CLI: файли, пошук, права, процеси</span><span class="side-check" data-check="w1l2" role="img" aria-label="Не опрацьовано"></span></a>
 <a class="side-link" href="../../lectures/week-1/lecture-3.html"><span class="side-num">03</span><span>Bash: змінні, умови, цикли, функції</span><span class="side-check" data-check="w1l3" role="img" aria-label="Не опрацьовано"></span></a>
 <a class="side-link" href="../../lectures/week-1/lecture-4.html"><span class="side-num">04</span><span>Веб-архітектура: HTTP, REST, N-tier</span><span class="side-check" data-check="w1l4" role="img" aria-label="Не опрацьовано"></span></a>
-<a class="side-link" href="../../lectures/week-1/lecture-5.html"><span class="side-num">05</span><span>LAMP: Apache, MySQL, PHP</span><span class="side-check" data-check="w1l5" role="img" aria-label="Не опрацьовано"></span></a>
+<a class="side-link" href="../../lectures/week-1/lecture-5.html"><span class="side-num">05</span><span>LAMP, Apache/Nginx і SQL</span><span class="side-check" data-check="w1l5" role="img" aria-label="Не опрацьовано"></span></a>
 </div>
 <div class="side-group" data-week-progress="w2l6,w2l7,w2l8,w2l9,w2l10"><div class="side-title"><a href="../../weeks/week-2.html">Тиждень 2</a><span class="wk-count wp-text">0 з 5</span></div>
-<a class="side-link" href="../../lectures/week-2/lecture-6.html" aria-current="page"><span class="side-num">06</span><span>Мережі: OSI, TCP/IP, IP, NAT, VPN</span><span class="side-check" data-check="w2l6" role="img" aria-label="Не опрацьовано"></span></a>
+<a class="side-link" href="../../lectures/week-2/lecture-6.html" aria-current="page"><span class="side-num">06</span><span>Мережі: OSI, IPv4/IPv6, DHCP, DNS, NAT</span><span class="side-check" data-check="w2l6" role="img" aria-label="Не опрацьовано"></span></a>
 <a class="side-link" href="../../lectures/week-2/lecture-7.html"><span class="side-num">07</span><span>Хмари: NIST, моделі, AWS/GCP/Azure</span><span class="side-check" data-check="w2l7" role="img" aria-label="Не опрацьовано"></span></a>
 <a class="side-link" href="../../lectures/week-2/lecture-8.html"><span class="side-num">08</span><span>IaC і Terraform</span><span class="side-check" data-check="w2l8" role="img" aria-label="Не опрацьовано"></span></a>
 <a class="side-link" href="../../lectures/week-2/lecture-9.html"><span class="side-num">09</span><span>Віртуалізація і Docker</span><span class="side-check" data-check="w2l9" role="img" aria-label="Не опрацьовано"></span></a>
@@ -48,30 +48,72 @@
 <div class="lecture-hero">
 <div class="crumbs"><a href="../../index.html">Курс</a><span>/</span><a href="../../weeks/week-2.html">Тиждень 2</a><span>/</span><span>Лекція 6</span></div>
 <div class="eyebrow">Тиждень 2 · Лекція 6</div>
-<h1>Комп&#x27;ютерні мережі: OSI і TCP/IP, IP-адресація, порти, NAT і VPN</h1>
-<p class="lead">Будь-який розподілений застосунок — це мережа. DevOps-інженер щодня налаштовує IP-адреси, порти, правила NAT і діагностує зв'язок, тож без цієї бази хмари й контейнери залишаться «магією».</p>
+<h1>Комп&#x27;ютерні мережі: OSI і TCP/IP, IPv4 і IPv6, DHCP, DNS, NAT, VPN, QoS</h1>
+<p class="lead">Будь-який розподілений застосунок — це мережа. Ця лекція покриває тест Network quiz на рівні CompTIA Network+: адресацію IPv4 і IPv6, спеціальні діапазони, DHCP, NAT і механізми переходу на IPv6 — з розрахунками і розбором пасток.</p>
 <div class="meta-row">
-<span class="chip"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>≈ 18 хв читання</span>
-<span class="chip"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M9.5 9.5a2.5 2.5 0 114 2c-1 .7-1.5 1.2-1.5 2.5M12 17h.01"/></svg>11 питань самоперевірки</span>
+<span class="chip"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>≈ 88 хв читання</span>
+<span class="chip"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M9.5 9.5a2.5 2.5 0 114 2c-1 .7-1.5 1.2-1.5 2.5M12 17h.01"/></svg>59 питань самоперевірки</span>
 <span class="chip" data-status="w2l6"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg><span class="lbl">Не опрацьовано</span></span>
 </div>
 </div>
 <div class="objectives">
 <h2 id="goals">Чого ви навчитесь<a class="h-anchor" href="#goals" aria-label="Посилання на розділ">#</a></h2>
 <ul>
-<li>Назвати рівні <b>OSI</b> і <b>TCP/IP</b>, протоколи на кожному рівні та одиниці даних (кадр, пакет, сегмент).</li>
-<li>Розрізняти три види адрес: <b>MAC</b> (пристрій), <b>IP</b> (вузол у мережі), <b>порт</b> (процес).</li>
-<li>Порахувати за IP і маскою адресу мережі, broadcast і кількість хостів.</li>
-<li>Знати приватні діапазони, спеціальні адреси і правила скорочення IPv6.</li>
-<li>Пояснити NAT (SNAT, DNAT, PAT) і VPN, а також діагностувати мережу через <code>ping</code> і <code>traceroute</code>.</li>
+<li>Пояснити кожен рівень <b>OSI</b> і <b>TCP/IP</b>: функцію, протоколи, одиницю даних (PDU) і пристрої.</li>
+<li>Розрізняти адреси <b>MAC</b>, <b>IP</b> і <b>порт</b>, пояснити роботу ARP і знати основні порти напам'ять.</li>
+<li>Описати TCP (рукостискання, гарантії) і UDP, а також види передачі: unicast, broadcast, multicast, anycast.</li>
+<li>Переводити IPv4 у двійковий вигляд, рахувати за IP і маскою адресу мережі, broadcast, діапазон і кількість хостів, ділити мережу на підмережі.</li>
+<li>Знати класи IPv4, приватні та всі спеціальні діапазони: loopback, APIPA, multicast, Class E, 0.0.0.0.</li>
+<li>Скорочувати і розгортати IPv6, знати типи адрес (link-local, unique local, global, multicast), EUI-64, SLAAC, NDP і механізми переходу (dual stack, 6to4, Teredo/Miredo, NAT64).</li>
+<li>Розібрати DHCP (DORA, scope, lease, reservation, relay) і DNS (ієрархія, рекурсія, типи записів).</li>
+<li>Пояснити NAT (static, dynamic, PAT, port forwarding), VPN, QoS/CoS/DSCP, ACL і фаєрволи.</li>
+<li>Діагностувати мережу знизу вгору: <code>ip</code>, <code>ping</code>, <code>traceroute</code>, <code>ss</code>, <code>dig</code>, <code>curl</code>, <code>nc</code>.</li>
 </ul>
 </div>
 
-<h2 id="basics">Протоколи і моделі<a class="h-anchor" href="#basics" aria-label="Посилання на розділ">#</a></h2>
-<p>Сучасне ПЗ здебільшого <b>розподілене</b> — його частини спілкуються мережею за моделлю клієнт-сервер. Клієнт ініціює запити, чекає і отримує відповіді, може працювати з кількома серверами; сервер ніколи не ініціює обмін першим, а чекає запитів.</p>
-<div class="callout def"><div class="callout-title">Визначення</div><p><b>Протокол</b> — набір правил обміну даними: типи повідомлень, їхній синтаксис і значення полів, порядок надсилання і отримання, дії сторін і взаємодія з нижчим рівнем.</p></div>
-<p><b>Застосунки</b> дають інтерфейс до мережевих сервісів, <b>сервіси (демони)</b> надають функціональність (вебсервер, DNS-сервер), а <b>протоколи</b> забезпечують їхню взаємодію.</p>
+<h2 id="basics">Мережа, протокол, пристрої<a class="h-anchor" href="#basics" aria-label="Посилання на розділ">#</a></h2>
+<p>Сучасне ПЗ здебільшого <b>розподілене</b>: браузер, вебсервер, база даних, кеш і черги працюють на різних машинах і спілкуються мережею за моделлю <b>клієнт-сервер</b>. Клієнт ініціює запит і чекає відповіді; сервер слухає порт і відповідає, сам обмін не починає.</p>
+<div class="callout def"><div class="callout-title">Визначення</div><p><b>Протокол</b> — набір правил обміну даними: формат повідомлень і значення полів, порядок надсилання й отримання, реакція на помилки, взаємодія з сусідніми рівнями. Приклади: HTTP, TCP, IP, Ethernet.</p></div>
+<div class="table-wrap"><table>
+<thead><tr><th>Термін</th><th>Значення</th></tr></thead>
+<tbody>
+<tr><td><b>LAN</b> (Local Area Network)</td><td>локальна мережа: офіс, дім, стійка в дата-центрі</td></tr>
+<tr><td><b>WAN</b> (Wide Area Network)</td><td>мережа, що з'єднує віддалені LAN (інтернет — найбільша WAN)</td></tr>
+<tr><td><b>Хост</b> (host, вузол)</td><td>будь-який пристрій з IP-адресою: сервер, ноутбук, принтер, контейнер</td></tr>
+<tr><td><b>Сегмент / підмережа</b></td><td>частина мережі, де хости бачать один одного напряму, без маршрутизатора</td></tr>
+<tr><td><b>Шлюз за замовчуванням</b> (default gateway)</td><td>маршрутизатор, якому хост віддає все, що адресовано в інші мережі</td></tr>
+<tr><td><b>Пропускна здатність / затримка</b></td><td>скільки бітів за секунду (bandwidth, Мбіт/с) / скільки часу йде пакет (latency, мс; RTT — туди й назад)</td></tr>
+</tbody></table></div>
+<h3>Мережеві пристрої і рівні, на яких вони працюють</h3>
+<div class="table-wrap"><table>
+<thead><tr><th>Пристрій</th><th>Рівень OSI</th><th>Що робить</th></tr></thead>
+<tbody>
+<tr><td><b>Хаб</b> (hub), повторювач (repeater)</td><td>L1 фізичний</td><td>повторює сигнал на всі порти, нічого не аналізує. Застарів</td></tr>
+<tr><td><b>Комутатор</b> (switch), міст (bridge)</td><td>L2 канальний</td><td>вивчає MAC-адреси пристроїв на кожному порту (MAC-таблиця) і пересилає кадр лише в потрібний порт</td></tr>
+<tr><td><b>Точка доступу</b> (wireless access point)</td><td>L2</td><td>підключає бездротові пристрої до дротової LAN</td></tr>
+<tr><td><b>Маршрутизатор</b> (router)</td><td>L3 мережевий</td><td>з'єднує <b>різні</b> IP-мережі, обирає шлях за таблицею маршрутизації, зазвичай робить NAT</td></tr>
+<tr><td>Комутатор L3 (multilayer switch)</td><td>L2 + L3</td><td>комутатор з функцією маршрутизації між VLAN</td></tr>
+<tr><td><b>Фаєрвол</b> (firewall)</td><td>L3–L4, NGFW — до L7</td><td>пропускає або блокує трафік за правилами (адреси, порти, стан з'єднання, вміст)</td></tr>
+<tr><td><b>Балансувальник навантаження</b> (load balancer)</td><td>L4 або L7</td><td>розподіляє запити між кількома серверами</td></tr>
+<tr><td>Проксі-сервер</td><td>L7</td><td>робить запити від імені клієнта (кешування, фільтрація, приховування клієнта)</td></tr>
+</tbody></table></div>
 
+<h2 id="osi">Модель OSI: сім рівнів<a class="h-anchor" href="#osi" aria-label="Посилання на розділ">#</a></h2>
+<p><b>OSI</b> (Open Systems Interconnection, ISO 7498) — еталонна модель, що ділить мережеву взаємодію на 7 рівнів. Кожен рівень вирішує свою задачу і спирається на нижчий. Реальні мережі на неї лише «накладаються»; працює інтернет на стеку TCP/IP. Але OSI — спільна мова: «проблема на L2» одразу каже, що шукати треба в комутаторі чи VLAN, а не в коді застосунку.</p>
+<div class="table-wrap"><table>
+<thead><tr><th>№</th><th>Рівень</th><th>Задача</th><th>Протоколи і стандарти</th><th>PDU</th><th>Пристрої</th></tr></thead>
+<tbody>
+<tr><td>7</td><td><b>Application</b> (прикладний)</td><td>мережеві сервіси для застосунків</td><td>HTTP(S), FTP, SMTP, POP3, IMAP, DNS, DHCP, SSH, Telnet, SNMP, NTP, LDAP</td><td>дані</td><td>—</td></tr>
+<tr><td>6</td><td><b>Presentation</b> (представлення)</td><td>формат даних: кодування, стиснення, шифрування</td><td>ASCII, UTF-8, JPEG, MPEG; шифрування TLS/SSL часто відносять сюди</td><td>дані</td><td>—</td></tr>
+<tr><td>5</td><td><b>Session</b> (сеансовий)</td><td>встановлення, підтримка і завершення сеансів</td><td>NetBIOS, RPC, SMB (частково), PPTP</td><td>дані</td><td>—</td></tr>
+<tr><td>4</td><td><b>Transport</b> (транспортний)</td><td>доставка між <b>процесами</b> (порти), надійність, порядок, контроль потоку</td><td>TCP, UDP</td><td><b>сегмент</b> (TCP) / <b>датаграма</b> (UDP)</td><td>балансувальник L4, фаєрвол</td></tr>
+<tr><td>3</td><td><b>Network</b> (мережевий)</td><td>логічна адресація (IP) і <b>маршрутизація</b> між мережами</td><td>IPv4, IPv6, ICMP, IPsec, OSPF, BGP</td><td><b>пакет</b></td><td>маршрутизатор, комутатор L3</td></tr>
+<tr><td>2</td><td><b>Data Link</b> (канальний)</td><td>доставка кадру в межах сегмента за <b>MAC-адресою</b>, виявлення помилок (CRC)</td><td>Ethernet (802.3), Wi-Fi (802.11), VLAN (802.1Q), ARP, PPP</td><td><b>кадр</b> (frame)</td><td>комутатор, міст, точка доступу, NIC</td></tr>
+<tr><td>1</td><td><b>Physical</b> (фізичний)</td><td>передача бітів сигналом: напруга, світло, радіо; роз'єми, кабелі</td><td>вита пара (RJ-45), оптика, 802.11 радіо, DSL</td><td><b>біти</b></td><td>кабель, хаб, повторювач, трансивер</td></tr>
+</tbody></table></div>
+<p>Мнемоніка «згори вниз» (7→1): <b>A</b>ll <b>P</b>eople <b>S</b>eem <b>T</b>o <b>N</b>eed <b>D</b>ata <b>P</b>rocessing. «Знизу вгору» (1→7): <b>P</b>lease <b>D</b>o <b>N</b>ot <b>T</b>hrow <b>S</b>ausage <b>P</b>izza <b>A</b>way. Канальний рівень поділяють на два підрівні: <b>LLC</b> (Logical Link Control, зв'язок з L3) і <b>MAC</b> (Media Access Control, доступ до середовища і MAC-адреси).</p>
+
+<h2 id="tcpip">Модель TCP/IP і інкапсуляція<a class="h-anchor" href="#tcpip" aria-label="Посилання на розділ">#</a></h2>
 <figure><div class="figure wide">
 <svg class="dg" viewBox="0 0 720 330" role="img" aria-label="Відповідність семи рівнів OSI чотирьом рівням TCP/IP з прикладами протоколів та одиницями даних">
 <g text-anchor="middle">
@@ -96,48 +138,167 @@
 <rect x="520" y="198" width="180" height="40" rx="6" class="warm"/><text x="610" y="214" text-anchor="middle" class="t-bold">Internet</text><text x="610" y="230" text-anchor="middle" class="t-small t-muted">(Network)</text>
 <rect x="520" y="246" width="180" height="72" rx="6" class="box"/><text x="610" y="286" text-anchor="middle" class="t-bold">Network Access</text>
 </svg></div>
-<figcaption><b>OSI vs TCP/IP.</b> Верхні три рівні OSI в TCP/IP об'єднані в один Application, нижні два — у Network Access. (*ARP працює на межі L2/L3.)</figcaption></figure>
-<p><b>OSI</b> — еталонна (описова) модель: як пояснив інструктор, жодна реальна мережа не відповідає їй на 100%. Часто її ділять на «програмні» рівні 7–5 і «мережеві» 4–1. Реальний інтернет працює на стеку <b>TCP/IP</b>.</p>
-<h3>Інкапсуляція</h3>
-<p>Під час відправлення кожен рівень додає до даних свій <b>заголовок</b>: застосунок → <b>TCP-сегмент</b> (порти) → <b>IP-пакет</b> (IP-адреси) → <b>Ethernet-кадр</b> (MAC-адреси) → біти в кабелі. Отримувач «розпаковує» в зворотному порядку — <b>декапсуляція</b>.</p>
+<figcaption><b>OSI vs TCP/IP.</b> Верхні три рівні OSI в TCP/IP об'єднані в один Application, нижні два — у Network Access (Link). (*ARP працює на межі L2/L3.)</figcaption></figure>
+<p>Модель <b>TCP/IP</b> (DoD-модель) має 4 рівні: <b>Application</b> (L5–7 OSI), <b>Transport</b> (L4), <b>Internet</b> (L3), <b>Network Access / Link</b> (L1–2). Деякі підручники рахують 5 рівнів, виділяючи Physical окремо. Назви рівнів у тесті можуть бути будь-якими з цих варіантів — орієнтуйтеся на протоколи: IP — Internet, TCP/UDP — Transport, Ethernet — Network Access.</p>
+<h3>Інкапсуляція і декапсуляція</h3>
+<p>Під час відправлення кожен рівень додає до даних свій <b>заголовок</b> (а канальний — ще й трейлер з контрольною сумою): дані застосунку → <b>TCP-сегмент</b> (порти) → <b>IP-пакет</b> (IP-адреси) → <b>Ethernet-кадр</b> (MAC-адреси, CRC) → біти в кабелі. Отримувач знімає заголовки в зворотному порядку — <b>декапсуляція</b>. Кожен рівень читає лише «свій» заголовок.</p>
 <figure><div class="figure wide">
 <svg class="dg" viewBox="0 0 720 170" role="img" aria-label="Інкапсуляція: дані застосунку обгортаються TCP-заголовком у сегмент, IP-заголовком у пакет, Ethernet-заголовком і трейлером у кадр">
 <rect x="420" y="12" width="190" height="28" rx="5" class="vio"/><text x="515" y="31" text-anchor="middle" class="t-small">Дані застосунку</text>
 <rect x="330" y="50" width="88" height="28" rx="5" class="acc"/><text x="374" y="69" text-anchor="middle" class="t-small">TCP-заголовок</text><rect x="420" y="50" width="190" height="28" rx="5" class="vio"/><text x="515" y="69" text-anchor="middle" class="t-small">Дані</text><text x="20" y="69" class="t-small t-bold">Сегмент (L4)</text>
 <rect x="240" y="88" width="88" height="28" rx="5" class="warm"/><text x="284" y="107" text-anchor="middle" class="t-small">IP-заголовок</text><rect x="330" y="88" width="280" height="28" rx="5" class="acc"/><text x="470" y="107" text-anchor="middle" class="t-small">TCP-сегмент</text><text x="20" y="107" class="t-small t-bold">Пакет (L3)</text>
 <rect x="150" y="126" width="88" height="28" rx="5" class="box"/><text x="194" y="145" text-anchor="middle" class="t-small">Eth-заголовок</text><rect x="240" y="126" width="370" height="28" rx="5" class="warm"/><text x="425" y="145" text-anchor="middle" class="t-small">IP-пакет</text><rect x="612" y="126" width="70" height="28" rx="5" class="box"/><text x="647" y="145" text-anchor="middle" class="t-small">трейлер</text><text x="20" y="145" class="t-small t-bold">Кадр (L2)</text>
-</svg></div></figure>
+</svg></div>
+<figcaption><b>Інкапсуляція.</b> Кожен рівень загортає дані вищого рівня у свою «обгортку».</figcaption></figure>
+<h3>Що відбувається, коли ви відкриваєте https://example.com</h3>
+<ol class="steps">
+<li><b>DNS (L7, UDP 53):</b> браузер дізнається IP сервера за іменем.</li>
+<li><b>TCP (L4):</b> тристороннє рукостискання з портом 443 сервера; ваш порт — випадковий з динамічного діапазону.</li>
+<li><b>TLS (L6/L7):</b> узгодження шифрування, перевірка сертифіката.</li>
+<li><b>IP (L3):</b> ваш хост порівнює адресу призначення зі своєю мережею (через маску), бачить, що вона чужа, і відправляє пакет на <b>шлюз</b>.</li>
+<li><b>ARP (L2/L3):</b> щоб покласти кадр у кабель, потрібна MAC-адреса шлюзу; хост дізнається її ARP-запитом.</li>
+<li><b>Ethernet (L2/L1):</b> кадр з MAC шлюзу як отримувачем іде через комутатор до роутера.</li>
+<li><b>Маршрутизатори (L3)</b> передають пакет мережа за мережею; на кожному переході MAC-адреси в кадрі змінюються, а IP-адреси (без NAT) лишаються.</li>
+<li>На вашому роутері <b>NAT</b> замінює приватну адресу відправника на публічну.</li>
+<li><b>HTTP (L7):</b> всередині зашифрованого каналу йде <code>GET /</code>, сервер відповідає HTML.</li>
+</ol>
 
-<h2 id="addressing">Три рівні адресації<a class="h-anchor" href="#addressing" aria-label="Посилання на розділ">#</a></h2>
+<h2 id="addressing">Три рівні адресації: MAC, IP, порт<a class="h-anchor" href="#addressing" aria-label="Посилання на розділ">#</a></h2>
+<p>Аналогія з поштою: <b>IP-адреса</b> — адреса будинку, <b>порт</b> — номер квартири (яка програма отримає дані), <b>MAC-адреса</b> — номер конкретного поштового ящика, до якого листоноша несе лист на останньому відрізку шляху.</p>
 <div class="term-grid">
-<div class="term"><span class="en">MAC · L2 · 48 біт</span><b>Фізична адреса пристрою</b><p>Унікальна адреса мережевої карти, напр. <code>1A:2B:3C:4D:5E:6F</code>. Перші 3 байти — виробник (OUI). Діє в межах локального сегмента.</p></div>
-<div class="term"><span class="en">IP · L3</span><b>Логічна адреса вузла</b><p>Ідентифікує вузол у мережі та дозволяє маршрутизацію між мережами. «Ім'я — що шукаємо, адреса — де воно, маршрут — як дістатися».</p></div>
-<div class="term"><span class="en">Port · L4 · 0–65535</span><b>Адреса процесу</b><p>Дозволяє багатьом програмам (Zoom, браузер, Viber) ділити один мережевий інтерфейс.</p></div>
+<div class="term"><span class="en">MAC · L2 · 48 біт</span><b>Фізична адреса інтерфейсу</b><p>Записується 12 шістнадцятковими цифрами: <code>3C:52:82:1A:2B:9F</code> (або через дефіс, у Cisco — <code>3c52.821a.2b9f</code>). Перші 24 біти — <b>OUI</b> (ідентифікатор виробника), решта — номер пристрою. Діє лише в межах сегмента: маршрутизатор її не пропускає далі.</p></div>
+<div class="term"><span class="en">IP · L3 · 32 / 128 біт</span><b>Логічна адреса вузла</b><p>Призначається адміністратором, DHCP або автоматично. Складається з частини мережі й частини хоста, тому дає змогу <b>маршрутизувати</b> між мережами.</p></div>
+<div class="term"><span class="en">Port · L4 · 16 біт (0–65535)</span><b>Адреса процесу</b><p>Дозволяє багатьом програмам ділити одну IP-адресу. Пара <b>IP:порт</b> називається <b>сокетом</b>: <code>203.0.113.10:443</code>.</p></div>
 </div>
+<p>MAC-адреса <code>FF:FF:FF:FF:FF:FF</code> — широкомовна (broadcast) на L2: кадр отримають усі пристрої сегмента. Подивитися свою MAC: <code>ip link</code> (рядок <code>link/ether</code>).</p>
+
+<h3>ARP: як IP перетворюється на MAC</h3>
+<p>Щоб передати пакет у межах сегмента, потрібна MAC-адреса отримувача (або шлюзу). Її дізнаються протоколом <b>ARP</b> (Address Resolution Protocol, лише IPv4):</p>
+<ol class="steps">
+<li>Хост A (<code>192.168.1.10</code>) хоче надіслати пакет на <code>192.168.1.1</code>. Перевіряє свій <b>ARP-кеш</b> (<code>ip neigh</code>, у Windows <code>arp -a</code>).</li>
+<li>Запису немає → A надсилає <b>широкомовний</b> ARP Request на <code>FF:FF:FF:FF:FF:FF</code>: «Хто має 192.168.1.1? Скажіть 192.168.1.10».</li>
+<li>Усі в сегменті отримують запит, але відповідає лише власник адреси: <b>unicast</b> ARP Reply «192.168.1.1 — це <code>AA:BB:CC:11:22:33</code>».</li>
+<li>A кладе відповідність у кеш на кілька хвилин і відправляє кадр.</li>
+</ol>
+<p>Якщо адреса призначення в <b>іншій</b> мережі, хост через ARP шукає MAC не сервера, а <b>шлюзу</b>. В IPv6 ARP немає — цю роль виконує <b>NDP</b> (див. розділ про IPv6).</p>
+
+<h2 id="cast">Види передачі: unicast, broadcast, multicast, anycast<a class="h-anchor" href="#cast" aria-label="Посилання на розділ">#</a></h2>
 <div class="table-wrap"><table>
-<thead><tr><th></th><th>IPv4</th><th>IPv6</th></tr></thead>
+<thead><tr><th>Тип</th><th>Кому</th><th>Приклад</th><th>IPv4 / IPv6</th></tr></thead>
 <tbody>
-<tr><td>Розгорнуто</td><td>1981</td><td>1998</td></tr>
-<tr><td>Розмір</td><td>32 біти</td><td>128 біт</td></tr>
-<tr><td>Запис</td><td>десятковий з крапками: <code>192.149.252.76</code></td><td>шістнадцятковий: <code>3FFE:F200:0234:AB00:0123:4567:8901:ABCD</code></td></tr>
-<tr><td>Префікс</td><td><code>192.149.0.0/24</code></td><td><code>3FFE:F200:0234::/48</code></td></tr>
-<tr><td>Кількість адрес</td><td>2³² ≈ 4,3 млрд</td><td>2¹²⁸ ≈ 3,4·10³⁸</td></tr>
+<tr><td><b>Unicast</b></td><td>одному конкретному хосту з унікальною адресою</td><td>завантаження вебсторінки, SSH</td><td>є / є</td></tr>
+<tr><td><b>Broadcast</b></td><td>усім хостам сегмента</td><td>ARP Request, DHCP Discover</td><td>є (<code>255.255.255.255</code> — limited, <code>192.168.1.255</code> — directed) / <b>немає</b></td></tr>
+<tr><td><b>Multicast</b></td><td>групі хостів, які «підписалися»</td><td>IPTV, протоколи маршрутизації (OSPF — <code>224.0.0.5</code>)</td><td><code>224.0.0.0/4</code> (Class D) / <code>ff00::/8</code></td></tr>
+<tr><td><b>Anycast</b></td><td><b>найближчому</b> з кількох вузлів з однаковою адресою</td><td>кореневі DNS-сервери, публічні DNS <code>1.1.1.1</code>, <code>8.8.8.8</code>, CDN</td><td>реалізується маршрутизацією (BGP) / вбудовано в стандарт</td></tr>
+</tbody></table></div>
+<p>Broadcast не проходить через маршрутизатор — він обмежує <b>широкомовний домен</b>. Тому, наприклад, DHCP-сервер в іншій підмережі потребує relay-агента.</p>
+
+<h2 id="ports">Порти і транспортні протоколи<a class="h-anchor" href="#ports" aria-label="Посилання на розділ">#</a></h2>
+<p>Запит іде з <b>динамічного</b> (ефемерного) порту клієнта на <b>well-known</b> порт сервера: клієнт <code>192.168.1.10:51234</code> → сервер <code>93.184.216.34:443</code>. Відповідь повертається на 51234.</p>
+<div class="table-wrap"><table>
+<thead><tr><th>Діапазон</th><th>Назва</th><th>Призначення</th></tr></thead>
+<tbody>
+<tr><td>0–1023</td><td>well-known (системні)</td><td>стандартні служби; у Linux прив'язатися до них може лише root (або з capability)</td></tr>
+<tr><td>1024–49151</td><td>registered</td><td>зареєстровані в IANA програми (3306 MySQL, 8080 альтернативний HTTP)</td></tr>
+<tr><td>49152–65535</td><td>dynamic / private / ephemeral</td><td>тимчасові порти клієнтів (Linux за замовчуванням бере 32768–60999)</td></tr>
+</tbody></table></div>
+<h3>Порти, які треба знати напам'ять</h3>
+<div class="table-wrap"><table>
+<thead><tr><th>Порт</th><th>Протокол</th><th>Транспорт</th><th>Призначення</th></tr></thead>
+<tbody>
+<tr><td>20, 21</td><td>FTP</td><td>TCP</td><td>передача файлів: 20 — дані, 21 — команди (без шифрування)</td></tr>
+<tr><td>22</td><td>SSH, SFTP, SCP</td><td>TCP</td><td>захищений віддалений доступ і копіювання</td></tr>
+<tr><td>23</td><td>Telnet</td><td>TCP</td><td>віддалений доступ без шифрування (застарілий)</td></tr>
+<tr><td>25</td><td>SMTP</td><td>TCP</td><td>пересилання пошти між серверами (587 — відправлення клієнтом, 465 — SMTPS)</td></tr>
+<tr><td>53</td><td>DNS</td><td>UDP (запити), TCP (зонні трансфери, великі відповіді)</td><td>імена → адреси</td></tr>
+<tr><td>67, 68</td><td>DHCP</td><td>UDP</td><td>67 — сервер, 68 — клієнт</td></tr>
+<tr><td>69</td><td>TFTP</td><td>UDP</td><td>простий FTP без автентифікації (завантаження по мережі, прошивки)</td></tr>
+<tr><td>80</td><td>HTTP</td><td>TCP</td><td>веб без шифрування</td></tr>
+<tr><td>110 / 995</td><td>POP3 / POP3S</td><td>TCP</td><td>отримання пошти (завантажити і видалити з сервера)</td></tr>
+<tr><td>123</td><td>NTP</td><td>UDP</td><td>синхронізація часу</td></tr>
+<tr><td>143 / 993</td><td>IMAP / IMAPS</td><td>TCP</td><td>робота з поштою на сервері</td></tr>
+<tr><td>161, 162</td><td>SNMP</td><td>UDP</td><td>моніторинг мережевих пристроїв (162 — trap-повідомлення)</td></tr>
+<tr><td>389 / 636</td><td>LDAP / LDAPS</td><td>TCP</td><td>каталоги користувачів (Active Directory)</td></tr>
+<tr><td>443</td><td>HTTPS</td><td>TCP (і UDP для HTTP/3)</td><td>веб через TLS</td></tr>
+<tr><td>445</td><td>SMB</td><td>TCP</td><td>файлові ресурси Windows</td></tr>
+<tr><td>514</td><td>Syslog</td><td>UDP</td><td>централізовані логи</td></tr>
+<tr><td>1433 / 1521</td><td>MS SQL / Oracle</td><td>TCP</td><td>бази даних</td></tr>
+<tr><td>3306</td><td>MySQL / MariaDB</td><td>TCP</td><td>база даних</td></tr>
+<tr><td>3389</td><td>RDP</td><td>TCP</td><td>віддалений робочий стіл Windows</td></tr>
+<tr><td>5432</td><td>PostgreSQL</td><td>TCP</td><td>база даних</td></tr>
+<tr><td>6379 / 27017</td><td>Redis / MongoDB</td><td>TCP</td><td>NoSQL-сховища</td></tr>
+<tr><td>8080, 8443</td><td>альтернативні HTTP/HTTPS</td><td>TCP</td><td>сервери застосунків, Jenkins, проксі</td></tr>
 </tbody></table></div>
 
-<h3>Порти</h3>
-<p>Запит іде з <b>динамічного</b> порту клієнта на <b>well-known</b> порт сервера (наприклад, клієнт :51234 → сервер :443).</p>
-<div class="compare">
-<div><h4>Діапазони</h4><ul><li><b>0–1023</b> — well-known (системні)</li><li><b>1024–49151</b> — registered</li><li><b>49152–65535</b> — dynamic / private</li></ul></div>
-<div><h4>Порти, які треба пам'ятати</h4><ul><li>20/21 — FTP (дані / команди) · 22 — SSH · 23 — Telnet</li><li>25 — SMTP · 110 — POP3 · 53 — DNS</li><li>80 — HTTP · 443 — HTTPS · 3306 — MySQL</li></ul></div>
-</div>
-<p><b>DNS (Domain Name System)</b> перетворює доменні імена (<code>google.com</code>) на IP-адреси. Перевірити: <code>nslookup google.com</code> або <code>dig google.com</code>.</p>
+<h3>TCP: надійна доставка через з'єднання</h3>
+<figure><div class="figure wide">
+<svg class="dg" viewBox="0 0 720 300" role="img" aria-label="TCP: тристороннє рукостискання SYN, SYN-ACK, ACK, потім обмін даними з підтвердженнями, завершення FIN, ACK, FIN, ACK">
+<defs><marker id="l6t" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0L10 5L0 10z" class="arrow-acc"/></marker><marker id="l6u" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0L10 5L0 10z" class="arrow-warm"/></marker></defs>
+<rect x="60" y="10" width="140" height="34" rx="8" class="box"/><text x="130" y="32" text-anchor="middle" class="t-bold">Клієнт :51234</text>
+<rect x="520" y="10" width="140" height="34" rx="8" class="box"/><text x="590" y="32" text-anchor="middle" class="t-bold">Сервер :443</text>
+<path d="M130 44 V290" class="ln dash"/><path d="M590 44 V290" class="ln dash"/>
+<path d="M130 66 L588 86" class="ln-acc" marker-end="url(#l6t)"/><text x="360" y="68" text-anchor="middle" class="t-mono t-small">1. SYN (seq=100)</text>
+<path d="M590 100 L132 120" class="ln-acc" marker-end="url(#l6t)"/><text x="360" y="102" text-anchor="middle" class="t-mono t-small">2. SYN-ACK (seq=300, ack=101)</text>
+<path d="M130 134 L588 154" class="ln-acc" marker-end="url(#l6t)"/><text x="360" y="136" text-anchor="middle" class="t-mono t-small">3. ACK (ack=301)</text>
+<text x="14" y="104" class="t-small t-acc">з'єднання</text><text x="14" y="120" class="t-small t-acc">встановлено</text>
+<path d="M130 172 L588 188" class="ln" marker-end="url(#l6t)"/><text x="360" y="172" text-anchor="middle" class="t-small">дані → / ← ACK (підтвердження, повтор втрачених)</text>
+<path d="M130 214 L588 230" class="ln-warm" marker-end="url(#l6u)"/><text x="360" y="214" text-anchor="middle" class="t-mono t-small">FIN →</text>
+<path d="M590 240 L132 256" class="ln-warm" marker-end="url(#l6u)"/><text x="360" y="244" text-anchor="middle" class="t-mono t-small">← ACK, ← FIN</text>
+<path d="M130 266 L588 282" class="ln-warm" marker-end="url(#l6u)"/><text x="360" y="270" text-anchor="middle" class="t-mono t-small">ACK →</text>
+<text x="14" y="232" class="t-small t-warm">закриття</text>
+</svg></div>
+<figcaption><b>Життя TCP-з'єднання.</b> Тристороннє рукостискання, обмін з підтвердженнями, чотиристороннє закриття.</figcaption></figure>
+<ul>
+<li><b>Тристороннє рукостискання</b> (three-way handshake): SYN → SYN-ACK → ACK. Сторони узгоджують початкові порядкові номери (sequence numbers).</li>
+<li><b>Нумерація і підтвердження</b>: кожен байт має номер; отримувач підтверджує прийняте (ACK). Не отримав підтвердження за таймаут — відправник <b>повторює</b> сегмент.</li>
+<li><b>Порядок</b>: сегменти, що прийшли не по черзі, переставляються за номерами.</li>
+<li><b>Контроль потоку</b> (вікно, window size): отримувач каже, скільки ще може прийняти, щоб його не «затопили».</li>
+<li><b>Контроль перевантаження</b> (congestion control): швидкість знижується, коли мережа губить пакети.</li>
+<li>Прапорці заголовка: <code>SYN</code>, <code>ACK</code>, <code>FIN</code> (коректне завершення), <code>RST</code> (скинути з'єднання — наприклад, на закритий порт), <code>PSH</code>, <code>URG</code>.</li>
+</ul>
+<h3>UDP: швидко і без гарантій</h3>
+<p>UDP просто відправляє <b>датаграми</b>: без з'єднання, підтверджень, повторів і впорядкування. Заголовок — лише 8 байт (у TCP — від 20). Застосунок сам вирішує, що робити з втратами. Тому UDP обирають там, де затримка гірша за втрату: DNS-запит (простіше перепитати), DHCP (у клієнта ще немає адреси для з'єднання), VoIP і відеодзвінки, онлайн-ігри, стрімінг, NTP, SNMP, syslog, TFTP. HTTP/3 (QUIC) працює поверх UDP і реалізує надійність сам.</p>
+<div class="table-wrap"><table>
+<thead><tr><th></th><th>TCP</th><th>UDP</th></tr></thead>
+<tbody>
+<tr><td>З'єднання</td><td>connection-oriented: рукостискання перед даними</td><td>connectionless</td></tr>
+<tr><td>Надійність</td><td>гарантує доставку, цілісність і порядок</td><td>best effort: можливі втрати, дублікати, інший порядок</td></tr>
+<tr><td>Контроль потоку і перевантаження</td><td>є</td><td>немає</td></tr>
+<tr><td>Заголовок</td><td>20–60 байт</td><td>8 байт</td></tr>
+<tr><td>Одиниця даних</td><td>сегмент</td><td>датаграма</td></tr>
+<tr><td>Broadcast / multicast</td><td>неможливі (з'єднання між двома сторонами)</td><td>можливі</td></tr>
+<tr><td>Приклади</td><td>HTTP(S), SSH, FTP, SMTP, IMAP, БД</td><td>DNS, DHCP, TFTP, NTP, SNMP, VoIP, ігри</td></tr>
+</tbody></table></div>
 
-<h2 id="ipv4">IPv4: мережа, хост, маска<a class="h-anchor" href="#ipv4" aria-label="Посилання на розділ">#</a></h2>
-<p>32 біти IPv4 записують 4 октетами. Старші біти — <b>мережева частина</b> (P біт), молодші — <b>частина хоста</b> (N біт), <b>P + N = 32</b>. Довжину мережевої частини задає <b>префікс</b> <code>/P</code> або <b>маска</b>: 32-бітне число, де мережеві біти = 1, хостові = 0.</p>
+<h2 id="binary">Двійкова система: без неї маски не зрозуміти<a class="h-anchor" href="#binary" aria-label="Посилання на розділ">#</a></h2>
+<p>IPv4-адреса — це <b>32 біти</b>. Для людей її записують у <b>десятковому вигляді з крапками</b> (dotted decimal): чотири <b>октети</b> по 8 біт, кожен від 0 до 255. Не шістнадцятковими (так пишуть IPv6 і MAC), не вісімковими і не двійковими — хоча всередині комп'ютера адреса двійкова.</p>
+<div class="table-wrap"><table>
+<thead><tr><th>Біт (позиція)</th><th>8</th><th>7</th><th>6</th><th>5</th><th>4</th><th>3</th><th>2</th><th>1</th></tr></thead>
+<tbody>
+<tr><td>Вага</td><td>128</td><td>64</td><td>32</td><td>16</td><td>8</td><td>4</td><td>2</td><td>1</td></tr>
+</tbody></table></div>
+<h3>Десяткове → двійкове: віднімаємо ваги зліва направо</h3>
+<pre data-lang="text"><code>192 = 128 + 64                → 1 1 0 0 0 0 0 0
+168 = 128 + 32 + 8            → 1 0 1 0 1 0 0 0
+ 25 = 16 + 8 + 1              → 0 0 0 1 1 0 0 1
+100 = 64 + 32 + 4             → 0 1 1 0 0 1 0 0
+192.168.25.100 = 11000000.10101000.00011001.01100100</code></pre>
+<h3>Значення октетів маски, які варто запам'ятати</h3>
+<p>Маска завжди має вигляд «спочатку одиниці, потім нулі», тому в октеті маски можливі лише 9 значень:</p>
+<div class="table-wrap"><table>
+<thead><tr><th>Двійково</th><th>00000000</th><th>10000000</th><th>11000000</th><th>11100000</th><th>11110000</th><th>11111000</th><th>11111100</th><th>11111110</th><th>11111111</th></tr></thead>
+<tbody>
+<tr><td>Десятково</td><td>0</td><td>128</td><td>192</td><td>224</td><td>240</td><td>248</td><td>252</td><td>254</td><td>255</td></tr>
+<tr><td>Одиниць</td><td>0</td><td>1</td><td>2</td><td>3</td><td>4</td><td>5</td><td>6</td><td>7</td><td>8</td></tr>
+</tbody></table></div>
+
+<h2 id="ipv4">IPv4: мережа, хост, маска, префікс<a class="h-anchor" href="#ipv4" aria-label="Посилання на розділ">#</a></h2>
+<p>Старші біти адреси — <b>мережева частина</b> (network ID, P біт), молодші — <b>частина хоста</b> (host ID, N біт), <b>P + N = 32</b>. Де проходить межа, показує <b>маска підмережі</b> (subnet mask): 32-бітне число, де мережеві біти = 1, хостові = 0. Скорочений запис маски — <b>префікс</b> (CIDR-нотація): <code>/24</code> означає 24 одиниці, тобто <code>255.255.255.0</code>.</p>
+<div class="callout def"><div class="callout-title">Головна ідея</div><p>Саме <b>маска</b> дозволяє визначити, до якого мережевого сегмента належить IP-адреса. Хост виконує побітове «І» (AND) своєї адреси з маскою і адреси призначення з тією самою маскою. Результати збігаються → отримувач у тій самій мережі, кадр іде напряму. Не збігаються → пакет іде на шлюз за замовчуванням.</p></div>
 <div class="term-grid">
-<div class="term"><b>Адреса мережі</b><p>Усі біти хоста = 0. Ідентифікує підмережу, використовується в маршрутизації: <code>192.168.25.0</code>.</p></div>
-<div class="term"><b>Broadcast</b><p>Усі біти хоста = 1. Пакет усім у підмережі: <code>192.168.25.255</code>.</p></div>
-<div class="term"><b>Адреси хостів</b><p>Усе між ними: <code>192.168.25.1–254</code>. Кількість = <b>2<sup>N</sup> − 2</b>.</p></div>
+<div class="term"><b>Адреса мережі</b><p>Усі біти хоста = 0. Ідентифікує підмережу в таблицях маршрутизації, хосту не призначається: <code>192.168.25.0</code>.</p></div>
+<div class="term"><b>Broadcast</b><p>Усі біти хоста = 1. Пакет отримають усі в підмережі: <code>192.168.25.255</code>. Хосту не призначається.</p></div>
+<div class="term"><b>Адреси хостів</b><p>Усе між ними: <code>.1–.254</code>. Кількість = <b>2<sup>N</sup> − 2</b>. Шлюзу зазвичай дають першу (<code>.1</code>) або останню (<code>.254</code>).</p></div>
 </div>
 <figure><div class="figure wide">
 <svg class="dg" viewBox="0 0 720 190" role="img" aria-label="Побітове І адреси 192.168.25.100 і маски 255.255.255.0 дає адресу мережі 192.168.25.0">
@@ -151,61 +312,307 @@
 <rect x="424" y="122" width="80" height="22" rx="5" class="warm"/><text x="464" y="138" text-anchor="middle" class="t-small">8 біт хоста (N)</text>
 <text x="20" y="176" class="t-muted">Хостів: 2⁸ − 2 = 254 (мінус адреса мережі і broadcast) · Broadcast: 192.168.25.255</text>
 </svg></div>
-<figcaption><b>Побітове І (AND).</b> IP &amp; маска = адреса мережі. Два хости в одній мережі, якщо результат однаковий.</figcaption></figure>
+<figcaption><b>Побітове І (AND).</b> 1 AND 1 = 1, усе інше = 0. IP &amp; маска = адреса мережі.</figcaption></figure>
 
-<h3>Приклад: ділимо /24 на підмережі</h3>
-<p><b>Subnetting</b> — позичаємо S біт з хостової частини в мережеву: підмереж стає <b>2<sup>S</sup></b>, хостів у кожній — <b>2<sup>N</sup> − 2</b>. Переваги: простіше керування, адресація і маршрутизація, локалізація трафіку. Критерії поділу — географія, призначення, відповідальність.</p>
-<p>Завдання: мережу <code>192.168.25.0/24</code> поділити на 4 підмережі.</p>
+<h3>Алгоритм розрахунку за IP і маскою</h3>
 <ol class="steps">
-<li>4 = 2², отже позичаємо <b>S = 2</b> біти: новий префікс <b>/26</b>, маска <code>255.255.255.192</code> (11000000 = 128+64 = 192).</li>
-<li>Хостових біт лишилось <b>N = 32 − 26 = 6</b> → у кожній підмережі 2⁶ = 64 адреси, з них <b>62</b> хости.</li>
-<li>Крок між мережами — 64: <code>.0</code>, <code>.64</code>, <code>.128</code>, <code>.192</code>.</li>
-<li>Для першої: мережа <code>192.168.25.0</code>, хости <code>.1–.62</code>, broadcast <code>.63</code>. Хост <code>192.168.25.100</code> потрапляє в другу підмережу <code>.64/26</code> (broadcast <code>.127</code>).</li>
+<li>Знайдіть «цікавий» октет — перший, де маска не 255 і не 0. Якщо маска кратна 8 (/8, /16, /24), рахувати майже нічого не треба.</li>
+<li><b>Розмір блоку</b> = 256 − значення маски в цікавому октеті. Мережі починаються з чисел, кратних розміру блоку.</li>
+<li><b>Адреса мережі</b>: найбільше кратне розміру блоку, що не перевищує значення октету адреси.</li>
+<li><b>Broadcast</b>: адреса наступної мережі − 1.</li>
+<li><b>Хости</b>: від (мережа + 1) до (broadcast − 1), кількість 2<sup>N</sup> − 2, де N = 32 − префікс.</li>
 </ol>
-<div class="table-wrap"><table>
-<thead><tr><th>Префікс</th><th>Маска</th><th>Хостів</th></tr></thead>
-<tbody>
-<tr><td><code>/8</code></td><td>255.0.0.0</td><td>16 777 214</td></tr>
-<tr><td><code>/16</code></td><td>255.255.0.0</td><td>65 534</td></tr>
-<tr><td><code>/24</code></td><td>255.255.255.0</td><td>254</td></tr>
-<tr><td><code>/26</code></td><td>255.255.255.192</td><td>62</td></tr>
-<tr><td><code>/30</code></td><td>255.255.255.252</td><td>2 (з'єднання «точка-точка»)</td></tr>
-</tbody></table></div>
+<h3>Приклад 1: <code>192.168.25.100/26</code></h3>
+<pre data-lang="text"><code>/26 → маска 255.255.255.192, цікавий октет — 4-й (192)
+розмір блоку = 256 − 192 = 64 → мережі: .0  .64  .128  .192
+100 лежить між 64 і 128
+мережа      192.168.25.64
+broadcast   192.168.25.127
+хости       192.168.25.65 – 192.168.25.126  (2^6 − 2 = 62)</code></pre>
+<h3>Приклад 2: <code>172.16.45.10/20</code></h3>
+<pre data-lang="text"><code>/20 = 8+8+4 → маска 255.255.240.0, цікавий октет — 3-й (240)
+розмір блоку = 256 − 240 = 16 → мережі в 3-му октеті: 0, 16, 32, 48 …
+45 лежить між 32 і 48
+мережа      172.16.32.0
+broadcast   172.16.47.255
+хости       172.16.32.1 – 172.16.47.254  (2^12 − 2 = 4094)</code></pre>
+<h3>Приклад 3: чи в одній мережі <code>10.1.1.5/25</code> і <code>10.1.1.200/25</code>?</h3>
+<pre data-lang="text"><code>/25 → 255.255.255.128, блок 128 → мережі .0 і .128
+10.1.1.5   → мережа 10.1.1.0
+10.1.1.200 → мережа 10.1.1.128
+Мережі різні: хости спілкуються лише через маршрутизатор.</code></pre>
+<p>Перевірити себе можна утилітою <code>ipcalc 192.168.25.100/26</code> (пакет <code>ipcalc</code>) або в Python: <code>python3 -c "import ipaddress; print(ipaddress.ip_interface('192.168.25.100/26').network)"</code>.</p>
 
-<h3>Класи, приватні та спеціальні адреси</h3>
-<div class="table-wrap"><table>
-<thead><tr><th>Клас</th><th>Перший октет</th><th>Приватний діапазон</th></tr></thead>
-<tbody>
-<tr><td>A (старший біт 0)</td><td>0–127</td><td><code>10.0.0.0/8</code></td></tr>
-<tr><td>B (10…)</td><td>128–191</td><td><code>172.16.0.0/12</code></td></tr>
-<tr><td>C (110…)</td><td>192–223</td><td><code>192.168.0.0/16</code></td></tr>
-<tr><td>D (1110…)</td><td>224–239</td><td>multicast</td></tr>
-<tr><td>E (1111…)</td><td>240–255</td><td>зарезервовано</td></tr>
-</tbody></table></div>
-<p>Спеціальні адреси: <code>0.0.0.0</code> — маршрут за замовчуванням («будь-яка адреса»), <code>127.0.0.0/8</code> — <b>loopback</b> (<code>127.0.0.1</code> — «я сам»), <code>169.254.0.0/16</code> — link-local (немає DHCP), <code>192.0.2.0/24</code> — TEST-NET для документації, <code>255.255.255.255</code> — обмежений broadcast.</p>
-<p><b>Види передачі:</b> <b>unicast</b> — одному пристрою; <b>broadcast</b> — усім у підмережі (limited — у своїй, directed — у віддаленій); <b>multicast</b> — вибраній групі.</p>
-
-<h2 id="ipv6">IPv6 коротко<a class="h-anchor" href="#ipv6" aria-label="Посилання на розділ">#</a></h2>
-<p>128 біт = 8 груп по 4 hex-цифри (хекстети). Масок немає — лише префікс: <code>/64</code> означає 64 біти мережі. Скорочення:</p>
+<h3>Поділ мережі на підмережі (subnetting)</h3>
+<p>Позичаємо <b>S</b> біт з хостової частини: підмереж стає <b>2<sup>S</sup></b>, хостів у кожній <b>2<sup>N</sup> − 2</b>. Навіщо: менші широкомовні домени, ізоляція (бази даних окремо від вебсерверів), безпека через ACL між підмережами, раціональне використання адрес. У хмарах так само: VPC <code>10.0.0.0/16</code> ділиться на публічні й приватні підмережі <code>/24</code> у різних зонах доступності.</p>
+<p>Завдання: <code>192.168.25.0/24</code> поділити на 4 підмережі.</p>
 <ol class="steps">
-<li>Прибрати ведучі нулі в кожній групі: <code>2001:0DB0:0000:123A:0000:0000:0000:0030</code> → <code>2001:DB0:0:123A:0:0:0:30</code>.</li>
-<li>Одну (найдовшу) послідовність нульових груп замінити на <code>::</code> — <b>лише один раз</b>: <code>2001:DB0:0:123A::30</code>.</li>
+<li>4 = 2², отже <b>S = 2</b>: новий префікс <b>/26</b>, маска <code>255.255.255.192</code>.</li>
+<li>Хостових біт <b>N = 32 − 26 = 6</b> → 64 адреси, <b>62</b> хости в кожній.</li>
+<li>Мережі: <code>.0/26</code> (хости .1–.62, broadcast .63), <code>.64/26</code> (.65–.126, .127), <code>.128/26</code> (.129–.190, .191), <code>.192/26</code> (.193–.254, .255).</li>
 </ol>
-<p>Loopback в IPv6 — <code>::1</code>.</p>
-
-<h2 id="tools">Діагностика: ping і traceroute<a class="h-anchor" href="#tools" aria-label="Посилання на розділ">#</a></h2>
+<p>Обернена задача: «потрібно 50 хостів у кожній підмережі». 2<sup>N</sup> − 2 ≥ 50 → N = 6 (62 хости) → префікс /26. Для 500 хостів: N = 9 (510) → /23.</p>
 <div class="table-wrap"><table>
-<thead><tr><th>Перевірка</th><th>Що показує</th></tr></thead>
+<thead><tr><th>Префікс</th><th>Маска</th><th>Адрес</th><th>Хостів</th><th>Типове використання</th></tr></thead>
 <tbody>
-<tr><td><code>ping 127.0.0.1</code></td><td>Чи працює локальний стек TCP/IP. Нічого не каже про кабель і налаштування IP/маски/шлюзу</td></tr>
-<tr><td><code>ping &lt;шлюз&gt;</code></td><td>Локальна мережа: IP, маска, комутатор, шлюз</td></tr>
-<tr><td><code>ping 8.8.8.8</code></td><td>Вихід в інтернет. Може «не пінгуватись», якщо ICMP заблоковано</td></tr>
-<tr><td><code>traceroute host</code> (<code>tracert</code> у Windows)</td><td>Маршрут пакетів і затримка (RTT) на кожному вузлі</td></tr>
+<tr><td><code>/8</code></td><td>255.0.0.0</td><td>16 777 216</td><td>16 777 214</td><td>класична мережа класу A, VPC-планування</td></tr>
+<tr><td><code>/16</code></td><td>255.255.0.0</td><td>65 536</td><td>65 534</td><td>клас B, VPC в AWS</td></tr>
+<tr><td><code>/20</code></td><td>255.255.240.0</td><td>4 096</td><td>4 094</td><td>підмережі за замовчуванням у default VPC AWS</td></tr>
+<tr><td><code>/23</code></td><td>255.255.254.0</td><td>512</td><td>510</td><td>—</td></tr>
+<tr><td><code>/24</code></td><td>255.255.255.0</td><td>256</td><td>254</td><td>клас C, типова офісна чи домашня мережа</td></tr>
+<tr><td><code>/25</code></td><td>255.255.255.128</td><td>128</td><td>126</td><td>—</td></tr>
+<tr><td><code>/26</code></td><td>255.255.255.192</td><td>64</td><td>62</td><td>—</td></tr>
+<tr><td><code>/27</code></td><td>255.255.255.224</td><td>32</td><td>30</td><td>—</td></tr>
+<tr><td><code>/28</code></td><td>255.255.255.240</td><td>16</td><td>14</td><td>найменша підмережа в AWS VPC</td></tr>
+<tr><td><code>/29</code></td><td>255.255.255.248</td><td>8</td><td>6</td><td>невеликий блок публічних адрес від провайдера</td></tr>
+<tr><td><code>/30</code></td><td>255.255.255.252</td><td>4</td><td>2</td><td>з'єднання «точка-точка» між роутерами</td></tr>
+<tr><td><code>/31</code></td><td>255.255.255.254</td><td>2</td><td>2 (RFC 3021, без мережі і broadcast)</td><td>точка-точка</td></tr>
+<tr><td><code>/32</code></td><td>255.255.255.255</td><td>1</td><td>1</td><td>один конкретний хост (у правилах фаєрвола, маршрутах)</td></tr>
 </tbody></table></div>
-<p><code>ping</code> використовує <b>ICMP</b> Echo Request/Echo Reply; <code>traceroute</code> — ICMP Time Exceeded від кожного маршрутизатора. Типовий маршрут: локальний роутер (ваш шлюз) → PoP провайдера → регіональний Tier 2 ISP → <b>IXP</b> (точка обміну трафіком) → магістральний <b>Tier 1</b> ISP → мережа отримувача.</p>
+<p>Хмарні провайдери резервують ще кілька адрес: в AWS у кожній підмережі недоступні 5 адрес (мережа, роутер VPC, DNS, резерв, broadcast), тому в /24 там 251 хост, а не 254.</p>
 
-<h2 id="nat">NAT і PAT<a class="h-anchor" href="#nat" aria-label="Посилання на розділ">#</a></h2>
-<p><b>NAT (Network Address Translation)</b> переписує IP-адреси (і порти) в пакетах, що проходять через маршрутизатор. Так багато «сірих» (приватних) адрес виходять в інтернет через одну «білу» (публічну).</p>
+<h2 id="classes">Класи IPv4 (classful addressing)<a class="h-anchor" href="#classes" aria-label="Посилання на розділ">#</a></h2>
+<p>До 1993 року розмір мережі визначався <b>першими бітами</b> адреси — класом. Потім перейшли на <b>CIDR</b> (Classless Inter-Domain Routing), де префікс може бути будь-яким. Класи більше не використовуються для маршрутизації, але їх досі питають на тестах і за ними названо діапазони.</p>
+<div class="table-wrap"><table>
+<thead><tr><th>Клас</th><th>Старші біти</th><th>Перший октет</th><th>Маска за замовчуванням</th><th>Мереж</th><th>Хостів у мережі</th><th>Призначення</th></tr></thead>
+<tbody>
+<tr><td><b>A</b></td><td><code>0</code></td><td><b>1–126</b> (0 і 127 зарезервовані)</td><td>255.0.0.0 /8</td><td>126</td><td>16 777 214</td><td>дуже великі мережі, unicast</td></tr>
+<tr><td><b>B</b></td><td><code>10</code></td><td><b>128–191</b></td><td>255.255.0.0 /16</td><td>16 384</td><td>65 534</td><td>середні мережі, unicast</td></tr>
+<tr><td><b>C</b></td><td><code>110</code></td><td><b>192–223</b></td><td>255.255.255.0 /24</td><td>2 097 152</td><td>254</td><td>малі мережі, unicast</td></tr>
+<tr><td><b>D</b></td><td><code>1110</code></td><td><b>224–239</b></td><td>—</td><td>—</td><td>—</td><td><b>multicast</b></td></tr>
+<tr><td><b>E</b></td><td><code>1111</code></td><td><b>240–255</b></td><td>—</td><td>—</td><td>—</td><td><b>зарезервовано для майбутнього</b> (експериментальне)</td></tr>
+</tbody></table></div>
+<p>Як швидко визначити клас: перегляньте перший октет. <code>10.x</code> → A, <code>172.16.x</code> → B (172 між 128 і 191), <code>192.168.x</code> → C, <code>224.0.0.5</code> → D.</p>
+
+<h2 id="special">Приватні, публічні та спеціальні адреси<a class="h-anchor" href="#special" aria-label="Посилання на розділ">#</a></h2>
+<h3>Приватні діапазони (RFC 1918)</h3>
+<p>Ці адреси можна вільно використовувати в будь-якій локальній мережі, але в інтернеті вони <b>не маршрутизуються</b> (non-routable): провайдери їх відкидають. Щоб вийти в інтернет з приватної адреси, потрібен NAT.</p>
+<div class="table-wrap"><table>
+<thead><tr><th>Діапазон</th><th>Префікс</th><th>У межах класу</th><th>Розмір</th><th>Де зустрічається</th></tr></thead>
+<tbody>
+<tr><td><code>10.0.0.0 – 10.255.255.255</code></td><td><code>10.0.0.0/8</code></td><td>A</td><td>16,7 млн</td><td>корпоративні мережі, VPC у хмарах</td></tr>
+<tr><td><code>172.16.0.0 – 172.31.255.255</code></td><td><code>172.16.0.0/12</code></td><td>B</td><td>1 млн</td><td>мережі Docker за замовчуванням (<code>172.17.0.0/16</code>), default VPC AWS (<code>172.31.0.0/16</code>)</td></tr>
+<tr><td><code>192.168.0.0 – 192.168.255.255</code></td><td><code>192.168.0.0/16</code></td><td>C</td><td>65 тис.</td><td>домашні роутери (<code>192.168.0.0/24</code>, <code>192.168.1.0/24</code>)</td></tr>
+</tbody></table></div>
+<p>Пастки: <code>172.32.0.1</code> вже <b>публічна</b> (діапазон закінчується на 172.31), <code>192.169.1.1</code> — теж публічна. Зверніть увагу, що <code>192.168.0.0/16</code> — це 256 мереж /24, а не одна мережа /24.</p>
+<h3>Спеціальні діапазони</h3>
+<div class="table-wrap"><table>
+<thead><tr><th>Адреси</th><th>Назва</th><th>Значення</th></tr></thead>
+<tbody>
+<tr><td><code>0.0.0.0/8</code>, зокрема <code>0.0.0.0</code></td><td>«ця мережа» / невизначена адреса</td><td>як адреса відправника — «ще не маю адреси» (DHCP Discover); у налаштуваннях сервера — «слухати на всіх інтерфейсах»; <code>0.0.0.0/0</code> — маршрут за замовчуванням (усі адреси)</td></tr>
+<tr><td><code>127.0.0.0/8</code></td><td><b>loopback</b></td><td>звернення до самого себе, пакети не виходять з хоста. Найчастіше <code>127.0.0.1</code> = <code>localhost</code></td></tr>
+<tr><td><code>169.254.0.0/16</code></td><td><b>link-local / APIPA</b></td><td>адреса, яку хост призначає собі сам, якщо не отримав відповідь від DHCP. Працює лише в межах сегмента</td></tr>
+<tr><td><code>100.64.0.0/10</code></td><td>CGNAT (shared address space)</td><td>адреси, які провайдер дає клієнтам за своїм NAT (carrier-grade NAT)</td></tr>
+<tr><td><code>192.0.2.0/24</code>, <code>198.51.100.0/24</code>, <code>203.0.113.0/24</code></td><td>TEST-NET-1/2/3</td><td>лише для документації і прикладів</td></tr>
+<tr><td><code>224.0.0.0/4</code> (224–239)</td><td><b>multicast</b> (клас D)</td><td>групова розсилка: <code>224.0.0.1</code> — усі хости сегмента, <code>224.0.0.2</code> — усі маршрутизатори</td></tr>
+<tr><td><code>240.0.0.0/4</code> (240–255)</td><td>зарезервовано (клас E)</td><td>«для майбутнього використання», хостам не призначається</td></tr>
+<tr><td><code>255.255.255.255</code></td><td>limited broadcast</td><td>усім у власному сегменті; маршрутизатори не пропускають</td></tr>
+</tbody></table></div>
+<h3>APIPA детальніше</h3>
+<p><b>APIPA</b> (Automatic Private IP Addressing) — механізм (у Windows під цією назвою, в Linux — IPv4 link-local, RFC 3927), який спрацьовує, коли клієнт налаштований на DHCP, але жоден сервер не відповів. Хост сам обирає випадкову адресу з <code>169.254.1.0 – 169.254.254.255</code> з маскою <code>255.255.0.0</code>, перевіряє через ARP, що її ніхто не зайняв, і періодично продовжує шукати DHCP-сервер (Windows — кожні 5 хвилин).</p>
+<p>З такою адресою хост може спілкуватися лише з сусідами, які теж мають APIPA-адресу, і <b>не може вийти в інтернет</b>: шлюзу немає. Тому адреса <code>169.254.x.x</code> на сервері — майже завжди <b>симптом проблеми з DHCP</b>: служба зупинена, сервер недоступний, обірваний кабель, неправильна VLAN або не налаштовано DHCP relay. Виняток — хмари: <code>169.254.169.254</code> навмисно використовується як адреса сервісу метаданих EC2, Azure, GCP.</p>
+<h3>Публічні адреси і дефіцит IPv4</h3>
+<p>2³² ≈ 4,3 млрд адрес, з яких частина зарезервована. Вільні блоки IPv4 у регіональних реєстраторах (RIPE, ARIN) закінчилися в 2011–2019 роках. Дефіцит долають трьома способами: <b>NAT</b> (багато приватних адрес за однією публічною), <b>CIDR</b> (видавати блоки потрібного розміру замість цілих класів) і перехід на <b>IPv6</b>.</p>
+
+<h2 id="ipv6">IPv6 детально<a class="h-anchor" href="#ipv6" aria-label="Посилання на розділ">#</a></h2>
+<p>IPv6 (RFC 8200) розроблено, щоб розв'язати дефіцит IPv4: <b>128 біт</b> адреси дають 2¹²⁸ ≈ 3,4·10³⁸ адрес. Попутно спрощено заголовок, прибрано broadcast і обов'язковий NAT, вбудовано автоналаштування адрес.</p>
+<div class="table-wrap"><table>
+<thead><tr><th></th><th>IPv4</th><th>IPv6</th></tr></thead>
+<tbody>
+<tr><td>Довжина адреси</td><td>32 біти</td><td>128 біт</td></tr>
+<tr><td>Запис</td><td>десятковий, 4 октети через крапку: <code>192.149.252.76</code></td><td><b>шістнадцятковий</b>, 8 груп (хекстетів) по 16 біт через двокрапку: <code>2001:0db8:85a3:0000:0000:8a2e:0370:7334</code></td></tr>
+<tr><td>Розмір мережі</td><td>маска або префікс</td><td>лише префікс; типова підмережа — <b>/64</b></td></tr>
+<tr><td>Broadcast</td><td>є</td><td><b>немає</b>, замінено multicast</td></tr>
+<tr><td>Визначення MAC сусіда</td><td>ARP</td><td><b>NDP</b> (ICMPv6)</td></tr>
+<tr><td>Автоналаштування</td><td>DHCP, APIPA</td><td>SLAAC, DHCPv6, link-local завжди</td></tr>
+<tr><td>Адрес на інтерфейсі</td><td>зазвичай одна</td><td>кілька одночасно (link-local + глобальна + тимчасові)</td></tr>
+<tr><td>NAT</td><td>майже обов'язковий через дефіцит</td><td>не потрібен: адрес вистачає кожному пристрою</td></tr>
+<tr><td>Loopback</td><td><code>127.0.0.1</code></td><td><code>::1</code></td></tr>
+<tr><td>URL з адресою</td><td><code>http://192.0.2.1:8080/</code></td><td>у квадратних дужках: <code>http://[2001:db8::1]:8080/</code></td></tr>
+</tbody></table></div>
+
+<h3>Правила скорочення (RFC 4291, RFC 5952)</h3>
+<ol class="steps">
+<li><b>Ведучі нулі</b> в кожній групі можна прибрати: <code>0db8</code> → <code>db8</code>, <code>00A7</code> → <code>A7</code>, <code>0000</code> → <code>0</code>. Кінцеві нулі прибирати <b>не можна</b>: <code>4C00</code> лишається <code>4C00</code>.</li>
+<li><b>Одну</b> безперервну послідовність груп, що складаються лише з нулів, можна замінити на <code>::</code>. Використати <code>::</code> двічі не можна: тоді невідомо, скільки нулів у кожному пропуску.</li>
+<li>Рекомендації RFC 5952 для канонічної форми: стискати <b>найдовшу</b> послідовність нулів; якщо є кілька однакової довжини — першу; одну нульову групу не стискати в <code>::</code>; писати малими літерами.</li>
+</ol>
+<h3>Розібрані приклади</h3>
+<pre data-lang="text"><code>2001:0db8:0000:0000:0000:0000:0000:0001  →  2001:db8::1
+2001:0DB0:0000:123A:0000:0000:0000:0030  →  2001:db0:0:123a::30      (найдовша серія — 3 групи)
+FE80:00A7:0000:0000:02AA:0000:4C00:FE9A  →  FE80:A7::2AA:0:4C00:FE9A (серія з 2 груп → ::, одиночна 0 лишається)
+0000:0000:0000:0000:0000:0000:0000:0001  →  ::1                      (loopback)
+0000:0000:0000:0000:0000:0000:0000:0000  →  ::                       (невизначена адреса)
+ff02:0000:0000:0000:0000:0000:0000:0002  →  ff02::2                  (усі маршрутизатори)</code></pre>
+<h3>Розгортання назад</h3>
+<p>Порахуйте наявні групи і доповніть пропуск <code>::</code> нульовими групами до восьми. <code>2001:db8::8a2e:370:7334</code>: є 5 груп → <code>::</code> замінює 3 → <code>2001:0db8:0000:0000:0000:8a2e:0370:7334</code>.</p>
+<div class="callout exam"><div class="callout-title">Як перевіряти варіанти «стиснутої» адреси</div><p>Розгорніть кожен варіант до 8 повних груп і порівняйте з оригіналом. Типові пастки: прибрано <b>кінцеві</b> нулі (<code>4C00</code> → <code>4C</code> — інша адреса), <code>::</code> використано двічі, пропущено групу без <code>::</code> (вийшло 7 груп), не прибрано ведучі нулі (<code>00A7</code> — адреса та сама, але запис не скорочено повністю).</p></div>
+
+<h3>Структура адреси: префікс + ідентифікатор інтерфейсу</h3>
+<pre data-lang="text"><code>2001:0db8:acad:0001 : 021a:2bff:fe3c:4d5e
+└── 64 біти: префікс мережі ──┘ └── 64 біти: Interface ID ──┘
+    (провайдер дає /48 або /56,      (генерується хостом: EUI-64,
+     організація ділить на /64)       випадково або вручну)</code></pre>
+<h3>EUI-64: як з MAC-адреси отримати Interface ID</h3>
+<ol class="steps">
+<li>MAC <code>00:1A:2B:3C:4D:5E</code> ділимо навпіл: <code>001A2B</code> | <code>3C4D5E</code>.</li>
+<li>Вставляємо посередині <code>FFFE</code>: <code>001A2B<b>FFFE</b>3C4D5E</code> (64 біти).</li>
+<li>Інвертуємо 7-й біт першого байта (U/L-біт): <code>00</code> = 00000000 → 00000010 = <code>02</code>.</li>
+<li>Результат: <code>021A:2BFF:FE3C:4D5E</code>; link-local адреса — <code>fe80::21a:2bff:fe3c:4d5e</code>.</li>
+</ol>
+<p>Через приватність (MAC видно з адреси) сучасні ОС для вихідних з'єднань використовують випадкові тимчасові ідентифікатори (privacy extensions, RFC 8981).</p>
+
+<h3>Типи адрес IPv6</h3>
+<div class="table-wrap"><table>
+<thead><tr><th>Префікс</th><th>Тип</th><th>Аналог в IPv4</th><th>Пояснення</th></tr></thead>
+<tbody>
+<tr><td><code>::1/128</code></td><td><b>Loopback</b></td><td><code>127.0.0.1</code></td><td>повна форма <code>0:0:0:0:0:0:0:1</code></td></tr>
+<tr><td><code>::/128</code></td><td>Невизначена (unspecified)</td><td><code>0.0.0.0</code></td><td>джерело, поки адреси ще немає</td></tr>
+<tr><td><code>fe80::/10</code></td><td><b>Link-local</b></td><td><b>APIPA</b> <code>169.254.0.0/16</code></td><td>є на кожному інтерфейсі з IPv6 автоматично, діє лише в сегменті, не маршрутизується; потрібна для NDP</td></tr>
+<tr><td><code>fc00::/7</code> (на практиці <code>fd00::/8</code>)</td><td><b>Unique Local</b> (ULA)</td><td>приватні RFC 1918</td><td>для внутрішніх мереж, в інтернеті не маршрутизуються</td></tr>
+<tr><td><code>2000::/3</code></td><td><b>Global Unicast</b></td><td>публічні адреси</td><td>маршрутизуються в інтернеті (зараз роздаються адреси, що починаються з 2 або 3)</td></tr>
+<tr><td><code>ff00::/8</code></td><td><b>Multicast</b></td><td><code>224.0.0.0/4</code></td><td><code>ff02::1</code> — усі вузли сегмента, <code>ff02::2</code> — усі маршрутизатори</td></tr>
+<tr><td>з діапазону unicast</td><td><b>Anycast</b></td><td>—</td><td>одна адреса на кількох вузлах, пакет іде до найближчого</td></tr>
+<tr><td><code>2001:db8::/32</code></td><td>Документація</td><td>TEST-NET</td><td>лише для прикладів</td></tr>
+<tr><td><code>2002::/16</code></td><td>6to4</td><td>—</td><td>механізм переходу (див. нижче)</td></tr>
+<tr><td><code>2001::/32</code></td><td>Teredo</td><td>—</td><td>механізм переходу через NAT</td></tr>
+<tr><td><code>::ffff:0:0/96</code></td><td>IPv4-mapped</td><td>—</td><td>IPv4-адреса всередині IPv6-сокета: <code>::ffff:192.0.2.1</code></td></tr>
+</tbody></table></div>
+
+<h3>Як хост отримує IPv6-адресу</h3>
+<div class="table-wrap"><table>
+<thead><tr><th>Спосіб</th><th>Як працює</th></tr></thead>
+<tbody>
+<tr><td><b>Link-local</b></td><td>завжди і автоматично: <code>fe80::</code> + Interface ID, перевірка унікальності (DAD)</td></tr>
+<tr><td><b>SLAAC</b> (Stateless Address Autoconfiguration)</td><td>маршрутизатор у Router Advertisement оголошує префікс /64; хост сам дописує свій Interface ID. Сервер, що веде облік адрес, не потрібен</td></tr>
+<tr><td><b>DHCPv6 stateful</b></td><td>адресу видає DHCPv6-сервер і веде облік (UDP 546 — клієнт, 547 — сервер); <b>DHCPv6 є IPv6-аналогом DHCP</b></td></tr>
+<tr><td>DHCPv6 stateless</td><td>адреса з SLAAC, а DHCPv6 видає лише додаткові параметри (DNS-сервери, домен)</td></tr>
+<tr><td>Вручну (static)</td><td>для серверів і маршрутизаторів</td></tr>
+</tbody></table></div>
+<p>Шлюз за замовчуванням в IPv6 хост дізнається з Router Advertisement — у DHCPv6 такої опції немає.</p>
+
+<h3>NDP: Neighbor Discovery Protocol</h3>
+<p><b>NDP</b> (RFC 4861) працює поверх ICMPv6 і замінює в IPv6 одразу кілька механізмів IPv4: ARP, ICMP Router Discovery і Redirect.</p>
+<div class="table-wrap"><table>
+<thead><tr><th>Повідомлення NDP</th><th>Тип ICMPv6</th><th>Призначення</th></tr></thead>
+<tbody>
+<tr><td>Router Solicitation (RS)</td><td>133</td><td>хост просить маршрутизатори оголосити себе — <b>пошук маршрутизаторів</b></td></tr>
+<tr><td>Router Advertisement (RA)</td><td>134</td><td>маршрутизатор <b>оголошує свою присутність</b>, префікси мережі, параметри SLAAC</td></tr>
+<tr><td>Neighbor Solicitation (NS)</td><td>135</td><td>«хто має цю IPv6-адресу?» — <b>визначення MAC-адреси сусіда</b> (аналог ARP Request); також DAD</td></tr>
+<tr><td>Neighbor Advertisement (NA)</td><td>136</td><td>відповідь з MAC-адресою (аналог ARP Reply)</td></tr>
+<tr><td>Redirect</td><td>137</td><td>маршрутизатор підказує кращий наступний перехід</td></tr>
+</tbody></table></div>
+<p>Тобто на питання «який протокол IPv6 виконує функцію ARP», «як хост визначає link-layer адресу сусіда», «як маршрутизатор оголошує свою присутність» і «як вузли знаходять маршрутизатори» відповідь одна — <b>NDP</b>. Сусідів в Linux видно командою <code>ip -6 neigh</code>.</p>
+
+<h2 id="transition">Співіснування IPv4 і IPv6: механізми переходу<a class="h-anchor" href="#transition" aria-label="Посилання на розділ">#</a></h2>
+<p>Інтернет переходить на IPv6 поступово, тому довгий час обидві версії працюють разом. Механізми переходу поділяють на три групи.</p>
+<div class="table-wrap"><table>
+<thead><tr><th>Механізм</th><th>Група</th><th>Суть</th><th>Особливості</th></tr></thead>
+<tbody>
+<tr><td><b>Dual stack</b></td><td>подвійний стек</td><td>хост і мережа одночасно мають і IPv4, і IPv6; з кожним сервером спілкуються тією версією, яку він підтримує</td><td>найпоширеніший і рекомендований підхід</td></tr>
+<tr><td><b>6in4</b> (ручний тунель)</td><td>тунелювання</td><td>IPv6-пакет вкладається в IPv4-пакет (IP protocol 41) між двома налаштованими кінцями</td><td>тунельні брокери, напр. Hurricane Electric</td></tr>
+<tr><td><b>6to4</b> (RFC 3056)</td><td>тунелювання</td><td><b>автоматично</b> інкапсулює IPv6 в IPv4 для передачі IPv4-мережами; IPv6-префікс <code>2002::/16</code> будується з публічної IPv4-адреси</td><td>«обмежений» механізм: потрібна <b>публічна</b> IPv4, не працює за NAT; застарілий (RFC 7526)</td></tr>
+<tr><td><b>Teredo</b> (RFC 4380)</td><td>тунелювання</td><td>інкапсулює IPv6 в <b>UDP</b>-датаграми IPv4 (порт 3544), тому проходить крізь NAT</td><td>механізм з <b>нативною підтримкою NAT</b>; префікс <code>2001::/32</code>; був вбудований у Windows</td></tr>
+<tr><td><b>Miredo</b></td><td>—</td><td>відкрита <b>реалізація Teredo</b> (клієнт і сервер) для Linux, BSD, macOS</td><td>це програма, а не окремий протокол</td></tr>
+<tr><td><b>ISATAP</b></td><td>тунелювання</td><td>тунелі IPv6 через IPv4 всередині корпоративної мережі</td><td>застарілий</td></tr>
+<tr><td><b>NAT64 + DNS64</b></td><td>трансляція</td><td>шлюз перекладає пакети IPv6 ↔ IPv4, щоб клієнти лише з IPv6 бачили IPv4-сайти</td><td>мобільні мережі, AWS</td></tr>
+<tr><td>NAT-PT</td><td>трансляція</td><td>ранній варіант трансляції протоколів</td><td>скасований (historic)</td></tr>
+</tbody></table></div>
+<div class="callout exam"><div class="callout-title">Як відрізнити у тесті</div><p>«Інкапсуляція IPv6 в IPv4, обмежений механізм» → <b>6to4</b>. «Нативна підтримка NAT» → <b>Teredo</b>. «Miredo» → програмне забезпечення для тунелювання Teredo. «Обидва протоколи одночасно» → <b>dual stack</b>. «4to6» — не стандартна назва (існує 4in6/DS-Lite, але він передає IPv4 всередині IPv6, тобто у зворотному напрямку), 802.3af — стандарт живлення по Ethernet (PoE), eDiscovery — юридичний пошук електронних даних.</p></div>
+
+<h2 id="dhcp">DHCP: автоматична видача адрес<a class="h-anchor" href="#dhcp" aria-label="Посилання на розділ">#</a></h2>
+<p><b>DHCP</b> (Dynamic Host Configuration Protocol, RFC 2131) — протокол, що замінює <b>ручне</b> налаштування IP-адрес. Клієнт без жодних налаштувань отримує від сервера: <b>IP-адресу, маску, шлюз за замовчуванням, DNS-сервери</b>, ім'я домену, строк оренди та інші опції. Транспорт — <b>UDP</b>: сервер слухає порт <b>67</b>, клієнт — <b>68</b>.</p>
+<h3>DORA: чотири кроки отримання адреси</h3>
+<figure><div class="figure wide">
+<svg class="dg" viewBox="0 0 720 250" role="img" aria-label="DHCP DORA: клієнт широкомовно надсилає Discover, сервер відповідає Offer з адресою, клієнт широкомовно надсилає Request, сервер підтверджує Acknowledge">
+<defs><marker id="l6d" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0L10 5L0 10z" class="arrow-acc"/></marker><marker id="l6e" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0L10 5L0 10z" class="arrow-warm"/></marker></defs>
+<rect x="40" y="10" width="170" height="40" rx="8" class="box"/><text x="125" y="28" text-anchor="middle" class="t-bold">Клієнт</text><text x="125" y="43" text-anchor="middle" class="t-small t-muted">порт 68, адреси ще немає</text>
+<rect x="510" y="10" width="170" height="40" rx="8" class="box"/><text x="595" y="28" text-anchor="middle" class="t-bold">DHCP-сервер</text><text x="595" y="43" text-anchor="middle" class="t-small t-muted">порт 67</text>
+<path d="M125 50 V240" class="ln dash"/><path d="M595 50 V240" class="ln dash"/>
+<path d="M125 78 L593 98" class="ln-warm" marker-end="url(#l6e)"/><text x="360" y="80" text-anchor="middle" class="t-small"><tspan class="t-bold">D</tspan>iscover · 0.0.0.0 → 255.255.255.255 (broadcast)</text>
+<path d="M595 122 L127 142" class="ln-acc" marker-end="url(#l6d)"/><text x="360" y="124" text-anchor="middle" class="t-small"><tspan class="t-bold">O</tspan>ffer · «пропоную 192.168.1.50/24, шлюз .1, DNS, 24 год»</text>
+<path d="M125 166 L593 186" class="ln-warm" marker-end="url(#l6e)"/><text x="360" y="168" text-anchor="middle" class="t-small"><tspan class="t-bold">R</tspan>equest · «беру пропозицію сервера X» (broadcast)</text>
+<path d="M595 210 L127 230" class="ln-acc" marker-end="url(#l6d)"/><text x="360" y="212" text-anchor="middle" class="t-small"><tspan class="t-bold">A</tspan>cknowledge · «адреса ваша, оренда почалась»</text>
+</svg></div>
+<figcaption><b>DORA.</b> Discover і Request — широкомовні: у клієнта ще немає адреси, і він має повідомити всі сервери, чию пропозицію прийняв.</figcaption></figure>
+<ol class="steps">
+<li><b>Discover</b>: клієнт широкомовно (з <code>0.0.0.0</code> на <code>255.255.255.255</code>) шукає сервери.</li>
+<li><b>Offer</b>: кожен сервер, що почув, пропонує вільну адресу з параметрами.</li>
+<li><b>Request</b>: клієнт обирає одну пропозицію (зазвичай першу) і широкомовно повідомляє, яку саме — інші сервери повертають свої адреси в пул.</li>
+<li><b>Acknowledge (ACK)</b>: сервер підтверджує, клієнт налаштовує інтерфейс. Якщо адреса вже недоступна — сервер відповість <b>NAK</b>, і процес почнеться спочатку.</li>
+</ol>
+<p>Перед використанням клієнт може перевірити адресу через ARP, щоб уникнути конфлікту. Коли адреса більше не потрібна, клієнт надсилає <b>DHCPRELEASE</b>.</p>
+
+<h3>Ключові поняття DHCP-сервера</h3>
+<div class="table-wrap"><table>
+<thead><tr><th>Термін</th><th>Значення</th><th>Приклад</th></tr></thead>
+<tbody>
+<tr><td><b>Scope</b> (область, pool)</td><td>діапазон адрес, які сервер може видавати в певній підмережі, разом з її параметрами</td><td><code>192.168.1.100 – 192.168.1.200</code>, маска /24</td></tr>
+<tr><td><b>Exclusion</b> (виключення)</td><td>адреси всередині scope, які сервер не видаватиме (для пристроїв зі статичними адресами)</td><td><code>.100–.110</code> для принтерів</td></tr>
+<tr><td><b>Lease</b> (оренда)</td><td><b>тимчасове</b> призначення адреси на визначений строк</td><td>8 годин для гостьового Wi-Fi, 8 днів в офісі</td></tr>
+<tr><td><b>Reservation</b> (резервування)</td><td><b>постійне</b> призначення: сервер завжди видає пристрою з указаною MAC-адресою одну й ту саму IP</td><td>MAC принтера <code>3C:52:…</code> → завжди <code>.150</code></td></tr>
+<tr><td><b>Options</b> (опції)</td><td>додаткові параметри</td><td>003 — шлюз (router), 006 — DNS-сервери, 015 — ім'я домену, 051 — строк оренди, 066/067 — завантаження по мережі (PXE)</td></tr>
+<tr><td><b>DHCP relay</b> (IP helper)</td><td>агент на маршрутизаторі, що пересилає широкомовні DHCP-запити до сервера в <b>іншій</b> підмережі (broadcast крізь роутер не проходить)</td><td>Cisco: <code>ip helper-address 10.0.0.5</code></td></tr>
+</tbody></table></div>
+<p>RFC 2131 описує три способи розподілу: <b>dynamic</b> — адреса на обмежений час (оренда); <b>automatic</b> — постійна адреса, видана сервером автоматично; <b>manual</b> — адреса, яку адміністратор закріпив за пристроєм (у сучасних серверах це і є <b>reservation</b>, або «static DHCP»). Тому твердження «DHCP може статично видавати адресу на основі відповідності IP–MAC» — правильне.</p>
+<h3>Оновлення оренди</h3>
+<ul>
+<li>На <b>50%</b> строку (таймер T1) клієнт напряму (unicast) просить свій сервер продовжити оренду — це повторні Request/ACK без Discover.</li>
+<li>Сервер не відповідає — на <b>87,5%</b> (T2) клієнт широкомовно звертається до будь-якого сервера (rebinding).</li>
+<li>Строк вийшов — адреса знімається, і клієнт починає з Discover. Якщо ніхто не відповів — <b>APIPA</b> (<code>169.254.x.x</code>).</li>
+</ul>
+<pre data-lang="bash"><code>sudo dhclient -r eth0      <span class="c"># звільнити адресу (release)</span>
+sudo dhclient eth0         <span class="c"># отримати знову</span>
+<span class="c"># Windows: ipconfig /release, ipconfig /renew, ipconfig /all</span>
+ip a show eth0             <span class="c"># подивитися видану адресу ("dynamic" і залишок оренди)</span></code></pre>
+<p><b>Статична чи динамічна адреса?</b> Сервери, маршрутизатори, принтери, DNS-сервери мають постійну адресу — статично налаштовану або через reservation. Ноутбуки, телефони, віртуальні машини в хмарі — динамічну. У хмарах DHCP працює «під капотом»: AWS видає ВМ приватну IP з підмережі через DHCP, і вона не змінюється, поки існує мережевий інтерфейс.</p>
+
+<h2 id="dns">DNS: як ім'я перетворюється на адресу<a class="h-anchor" href="#dns" aria-label="Посилання на розділ">#</a></h2>
+<p><b>DNS</b> (Domain Name System) — розподілена ієрархічна база даних «ім'я → дані». Людям зручні імена (<code>www.example.com</code>), мережі потрібні адреси (<code>93.184.215.14</code>). Працює на <b>порту 53</b>: звичайні запити — UDP, великі відповіді та передача зон між серверами — TCP.</p>
+<h3>Ієрархія імен</h3>
+<pre data-lang="text"><code>                    .  (корінь, 13 логічних кореневих серверів a–m.root-servers.net)
+        ┌───────────┼───────────┐
+       com         org          ua           ← TLD (домени верхнього рівня)
+        │                        │
+     example                    kpi           ← домени другого рівня
+        │                        │
+       www                     campus         ← піддомени / імена хостів
+Повне ім'я (FQDN): www.example.com.   ← крапка в кінці — корінь</code></pre>
+<h3>Як відбувається розв'язання імені</h3>
+<ol class="steps">
+<li>Програма перевіряє локальний кеш і файл <code>/etc/hosts</code> (порядок задає <code>/etc/nsswitch.conf</code>).</li>
+<li>Немає — запит до <b>рекурсивного резолвера</b> з <code>/etc/resolv.conf</code> (провайдер, <code>8.8.8.8</code>, <code>1.1.1.1</code>, у хмарі — резолвер VPC). Клієнт ставить <b>рекурсивний</b> запит: «дай мені остаточну відповідь».</li>
+<li>Резолвер, якщо не має відповіді в кеші, робить <b>ітеративні</b> запити: корінь → «питай сервери <code>.com</code>» → сервер <code>.com</code> → «питай <code>ns1.example.com</code>» → <b>авторитетний</b> сервер домену → «<code>www.example.com</code> = 93.184.215.14».</li>
+<li>Резолвер кешує відповідь на час <b>TTL</b> (time to live, у секундах) і повертає клієнту.</li>
+</ol>
+<p>TTL пояснює, чому зміни в DNS «поширюються» не одразу: доки не мине TTL старого запису, резолвери віддають кешовану адресу. Перед міграцією сервера TTL заздалегідь зменшують, наприклад до 300 секунд.</p>
+<h3>Типи записів</h3>
+<div class="table-wrap"><table>
+<thead><tr><th>Запис</th><th>Що зберігає</th><th>Приклад</th></tr></thead>
+<tbody>
+<tr><td><b>A</b></td><td>ім'я → IPv4</td><td><code>www  A  93.184.215.14</code></td></tr>
+<tr><td><b>AAAA</b></td><td>ім'я → IPv6</td><td><code>www  AAAA  2606:2800:21f:cb07::1</code></td></tr>
+<tr><td><b>CNAME</b></td><td>псевдонім → інше ім'я (canonical name)</td><td><code>blog  CNAME  myblog.github.io.</code></td></tr>
+<tr><td><b>MX</b></td><td>поштовий сервер домену з пріоритетом (менше число — вищий пріоритет)</td><td><code>@  MX 10 mail.example.com.</code></td></tr>
+<tr><td><b>NS</b></td><td>авторитетні сервери імен домену</td><td><code>@  NS  ns1.example.com.</code></td></tr>
+<tr><td><b>PTR</b></td><td>зворотний запис: IP → ім'я (зони <code>in-addr.arpa</code>, <code>ip6.arpa</code>)</td><td><code>14.215.184.93.in-addr.arpa  PTR  www.example.com.</code></td></tr>
+<tr><td><b>SOA</b></td><td>головна інформація зони: основний сервер, email адміністратора, серійний номер, таймери</td><td>один на зону</td></tr>
+<tr><td><b>TXT</b></td><td>довільний текст: SPF, DKIM, підтвердження власності домену</td><td><code>@  TXT  "v=spf1 include:_spf.google.com ~all"</code></td></tr>
+<tr><td><b>SRV</b></td><td>розташування служби: хост і порт</td><td><code>_sip._tcp  SRV 10 5 5060 sip.example.com.</code></td></tr>
+</tbody></table></div>
+<pre data-lang="bash"><code>dig example.com                 <span class="c"># A-запис з деталями (TTL, сервер, час)</span>
+dig +short example.com AAAA     <span class="c"># лише IPv6-адреси</span>
+dig MX gmail.com                <span class="c"># поштові сервери</span>
+dig -x 8.8.8.8                  <span class="c"># зворотний запит (PTR)</span>
+dig @1.1.1.1 example.com        <span class="c"># запитати конкретний DNS-сервер</span>
+dig +trace example.com          <span class="c"># показати всю ітеративну ланку від кореня</span>
+nslookup example.com            <span class="c"># простіший інструмент (є і в Windows)</span>
+host example.com
+getent hosts example.com        <span class="c"># як ім'я бачить система (з урахуванням /etc/hosts)</span></code></pre>
+<p>Файл <code>/etc/hosts</code> перевіряється <b>раніше</b> за DNS, тому рядок <code>127.0.0.1 myapp.local</code> дозволяє локально відкрити сайт за іменем без DNS-сервера. Ця ж властивість іноді «ламає» резолвінг: забутий запис у hosts переважує правильний DNS.</p>
+
+<h2 id="nat">NAT: трансляція адрес<a class="h-anchor" href="#nat" aria-label="Посилання на розділ">#</a></h2>
+<p><b>NAT (Network Address Translation)</b> змінює IP-адреси (і порти) в заголовках пакетів, <b>поки ті проходять через маршрутизатор</b>. Маршрутизатор веде таблицю трансляцій, щоб повернути відповідь правильному внутрішньому хосту. Наслідки: багато приватних адрес виходять в інтернет через одну публічну (економія IPv4), а внутрішні адреси ззовні не видно (NAT працює як IP-проксі між приватною LAN і публічною мережею).</p>
 <figure><div class="figure wide">
 <svg class="dg" viewBox="0 0 720 200" role="img" aria-label="PAT: комп'ютер 192.168.1.3 порт 102 відправляє запит; роутер підміняє адресу на публічну 101.89.101.12 порт 8801; відповідь повертається на 8801 і перенаправляється назад">
 <defs><marker id="l6a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0L10 5L0 10z" class="arrow-acc"/></marker><marker id="l6b" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0L10 5L0 10z" class="arrow-warm"/></marker></defs>
@@ -221,65 +628,144 @@
 </svg></div>
 <figcaption><b>PAT на прикладі зі слайдів.</b> Роутер запам'ятовує, якому внутрішньому хосту належить публічний порт 8801, і повертає йому відповідь.</figcaption></figure>
 <div class="table-wrap"><table>
-<thead><tr><th>Тип</th><th>Суть</th></tr></thead>
+<thead><tr><th>Тип</th><th>Відповідність</th><th>Суть</th></tr></thead>
 <tbody>
-<tr><td><b>SNAT</b> (Source NAT)</td><td>Доступ з локальної мережі в інтернет; запит ініціює внутрішній хост, підміняється адреса відправника</td></tr>
-<tr><td><b>DNAT</b> (Destination NAT)</td><td>Доступ з інтернету до внутрішнього хоста; підміняється адреса отримувача</td></tr>
-<tr><td><b>PAT</b> (Port Address Translation)</td><td>Багато клієнтів за однією публічною IP, розрізняються портами (1024–65535). Також «port forwarding»</td></tr>
-<tr><td>Static / Dynamic NAT</td><td>Одна приватна ↔ одна публічна / багато приватних ↔ пул публічних</td></tr>
-<tr><td>Masquerading</td><td>Різновид SNAT: зовнішня адреса береться автоматично з інтерфейсу (для динамічних «білих» IP)</td></tr>
+<tr><td><b>Static NAT</b></td><td>одна приватна ↔ одна публічна, <b>постійно</b></td><td>потрібно, щоб внутрішній сервер завжди мав ту саму публічну адресу (вхідні з'єднання)</td></tr>
+<tr><td><b>Dynamic NAT</b></td><td>багато приватних ↔ <b>пул</b> публічних, тимчасово</td><td>хост отримує будь-яку вільну адресу з пулу на час сеансу; пул вичерпався — нові хости чекають</td></tr>
+<tr><td><b>PAT</b> (Port Address Translation), NAT overload, NAPT</td><td>багато приватних ↔ <b>одна</b> публічна, розрізнення за <b>портами</b></td><td>прив'язує комбінацію «приватна IP + порт» до «публічна IP + порт». Так працює кожен домашній роутер</td></tr>
+<tr><td><b>Port forwarding</b> (переадресація портів, static PAT)</td><td>публічна IP:порт → приватна IP:порт</td><td>сервер з приватною адресою обслуговує запити з інтернету: <code>203.0.113.5:80</code> → <code>192.168.1.20:8080</code></td></tr>
+<tr><td>Masquerading</td><td>як PAT</td><td>у Linux (iptables/nftables): публічна адреса береться з інтерфейсу автоматично — зручно, коли вона динамічна</td></tr>
+<tr><td>CGNAT</td><td>NAT у провайдера</td><td>клієнти отримують адреси з <code>100.64.0.0/10</code>, а провайдер транслює їх у свої публічні</td></tr>
 </tbody></table></div>
+<div class="callout exam"><div class="callout-title">Дві розшифровки SNAT і DNAT</div><p>У Linux і в слайдах курсу: <b>SNAT = Source NAT</b> (змінюється адреса <b>відправника</b>, доступ з LAN в інтернет), <b>DNAT = Destination NAT</b> (змінюється адреса <b>отримувача</b>, доступ ззовні до внутрішнього сервера; port forwarding — різновид DNAT). У тестах CompTIA/ExamCompass ті самі абревіатури означають <b>Static NAT</b> і <b>Dynamic NAT</b>. Тому читайте розшифровку в дужках. Твердження «Dynamic NAT дає <b>постійну</b> відповідність приватної і публічної адреси» — хибне (постійна — у static). «Static NAT зіставляє приватну адресу з <b>будь-якою з пулу</b>» — теж хибне (пул — у dynamic).</p></div>
+<pre data-lang="bash"><code><span class="c"># Linux як NAT-роутер (nftables/iptables)</span>
+sudo sysctl -w net.ipv4.ip_forward=1                         <span class="c"># дозволити пересилання пакетів</span>
+sudo iptables -t nat -A POSTROUTING -o eth0 -j MASQUERADE    <span class="c"># SNAT/PAT для виходу в інтернет</span>
+sudo iptables -t nat -A PREROUTING -i eth0 -p tcp --dport 80 \
+     -j DNAT --to-destination 192.168.1.20:8080             <span class="c"># port forwarding</span>
+<span class="c"># Docker робить те саме, коли ви пишете: docker run -p 8080:80 nginx</span></code></pre>
 <div class="compare">
-<div><h4>Переваги NAT</h4><ul><li>Економія публічних IPv4-адрес</li><li>Обмеження доступу ззовні (безпека)</li><li>Приховування внутрішньої архітектури</li></ul></div>
-<div><h4>Недоліки NAT</h4><ul><li>Не всі протоколи з ним працюють</li><li>Навантаження на проміжний пристрій</li><li>Складніше ідентифікувати користувачів (багато з'єднань з однієї IP)</li><li>Важкий доступ до внутрішніх ресурсів ззовні</li></ul></div>
+<div><h4>Переваги NAT</h4><ul><li>Економія публічних IPv4-адрес</li><li>Внутрішні адреси приховані, ззовні не можна напряму ініціювати з'єднання</li><li>Можна змінювати внутрішню адресацію, не чіпаючи зовнішню</li></ul></div>
+<div><h4>Недоліки NAT</h4><ul><li>Ламає наскрізну адресацію: складніше для VoIP, P2P, IPsec</li><li>Навантаження на маршрутизатор (таблиця трансляцій)</li><li>Важче ідентифікувати користувача: тисячі з'єднань з однієї IP</li><li>Доступ ззовні — лише через port forwarding</li></ul></div>
 </div>
-<p><b>DMZ (демілітаризована зона)</b> — окремий сегмент для публічних серверів (веб, пошта), ізольований від внутрішньої мережі.</p>
+<p><b>DMZ (демілітаризована зона)</b> — окремий сегмент для публічних серверів (веб, пошта), ізольований фаєрволом від внутрішньої мережі. Якщо зламають вебсервер, нападник не опиниться одразу у внутрішній мережі.</p>
 
 <h2 id="vpn">VPN<a class="h-anchor" href="#vpn" aria-label="Посилання на розділ">#</a></h2>
-<p><b>VPN (Virtual Private Network)</b> — мережа поверх іншої, зазвичай публічної й недовіреної, мережі. Трафік <b>тунелюється</b> і <b>шифрується</b>.</p>
-<ul>
-<li><b>Intranet VPN</b> — об'єднати кілька офісів однієї організації в одну захищену мережу.</li>
-<li><b>Remote Access VPN</b> — захищений доступ окремого (мобільного) користувача до корпоративної мережі.</li>
-<li><b>Client/Server VPN</b> — захист даних між двома вузлами всередині корпоративної мережі.</li>
-</ul>
-<p>Переваги: тунелювання, шифрування, автентифікація/авторизація/облік (AAA), приховування внутрішньої архітектури, віддалений доступ. Недолік — <b>додатковий трафік</b> (накладні витрати на заголовки та шифрування).</p>
+<p><b>VPN (Virtual Private Network)</b> — захищена мережа поверх іншої, зазвичай публічної й недовіреної. Трафік <b>тунелюється</b> (вкладається в пакети іншого протоколу) і <b>шифрується</b>; сторони проходять автентифікацію.</p>
+<div class="table-wrap"><table>
+<thead><tr><th>Тип</th><th>Призначення</th></tr></thead>
+<tbody>
+<tr><td><b>Site-to-site</b> (Intranet VPN)</td><td>постійно об'єднує мережі кількох офісів або офіс і хмару (AWS Site-to-Site VPN) в одну</td></tr>
+<tr><td><b>Remote access</b></td><td>окремий співробітник з ноутбука підключається до корпоративної мережі</td></tr>
+<tr><td>Client/server</td><td>шифрування між двома вузлами всередині корпоративної мережі</td></tr>
+</tbody></table></div>
+<p>Протоколи: <b>IPsec</b> (L3, site-to-site), <b>OpenVPN</b> і SSL/TLS VPN (через TLS, проходить фаєрволи на 443), <b>WireGuard</b> (сучасний, простий і швидкий, UDP), застарілі PPTP і L2TP. <b>Split tunneling</b> — у тунель іде лише корпоративний трафік, а інтернет — напряму; <b>full tunnel</b> — увесь трафік через VPN. Недоліки VPN: накладні витрати на заголовки та шифрування, додаткова затримка.</p>
 
-<h2 id="tcpudp">TCP vs UDP, DHCP і мережеві команди Linux<a class="h-anchor" href="#tcpudp" aria-label="Посилання на розділ">#</a></h2>
+<h2 id="qos">QoS, ACL, фаєрволи, VLAN<a class="h-anchor" href="#qos" aria-label="Посилання на розділ">#</a></h2>
+<h3>QoS: керування якістю обслуговування</h3>
+<p><b>QoS (Quality of Service)</b> — набір механізмів, що виділяють мережеві ресурси різним типам трафіку: голос і відео отримують пріоритет перед завантаженням файлів, щоб розмова не переривалась.</p>
 <div class="table-wrap"><table>
-<thead><tr><th></th><th>TCP</th><th>UDP</th></tr></thead>
+<thead><tr><th>Механізм</th><th>Рівень</th><th>Суть</th></tr></thead>
 <tbody>
-<tr><td>З'єднання</td><td>встановлюється «рукостисканням» <b>SYN → SYN-ACK → ACK</b></td><td>без з'єднання — просто надсилає датаграми</td></tr>
-<tr><td>Гарантії</td><td>доставка, порядок, повторна передача втрачених сегментів</td><td>жодних: пакет може загубитися чи прийти не по черзі</td></tr>
-<tr><td>Швидкість / накладні витрати</td><td>повільніше, більший заголовок</td><td>швидше, менший заголовок</td></tr>
-<tr><td>Де використовують</td><td>HTTP(S), SSH, FTP, SMTP, бази даних</td><td>DNS-запити, DHCP, VoIP, відеозв'язок, онлайн-ігри</td></tr>
+<tr><td><b>CoS</b> (Class of Service, IEEE 802.1p)</td><td>L2</td><td>3-бітне поле пріоритету (PCP, 0–7) в <b>заголовку Ethernet-кадру</b>, у тезі 802.1Q (VLAN). Необов'язкове поле, яке вмикає QoS у кадрах</td></tr>
+<tr><td><b>DiffServ / DSCP</b></td><td>L3</td><td>6-бітне поле в заголовку IP-пакета позначає клас трафіку; кожен маршрутизатор обробляє клас за своєю політикою. Архітектура DiffServ — це QoS і керування трафіком</td></tr>
+<tr><td><b>Traffic shaping</b> (packet shaping)</td><td>—</td><td>згладжує трафік до заданої швидкості, буферизуючи надлишок</td></tr>
+<tr><td>Policing</td><td>—</td><td>жорстко відкидає трафік понад ліміт</td></tr>
 </tbody></table></div>
-<p><b>DHCP</b> (Dynamic Host Configuration Protocol) автоматично видає пристрою <b>IP-адресу, маску, шлюз за замовчуванням і DNS-сервери</b>. Обмін з чотирьох кроків — <b>DORA</b>: Discover → Offer → Request → Acknowledge (UDP-порти 67/68). <b>Шлюз за замовчуванням</b> (default gateway) — маршрутизатор, куди хост відправляє все, що адресовано в інші мережі.</p>
+<h3>ACL і фаєрволи</h3>
+<p><b>ACL</b> (Access Control List) — упорядкований список правил, що визначає, яким користувачам, процесам або пакетам дозволено доступ до ресурсу. У мережах ACL на маршрутизаторі чи фаєрволі перевіряє кожен пакет за адресами, портами і протоколом. Правила читаються <b>згори вниз</b> до першого збігу, а наприкінці стоїть неявне «заборонити все» (implicit deny).</p>
+<pre data-lang="text"><code>1  permit tcp any        host 10.0.1.10 eq 443    <span class="c"># HTTPS до вебсервера — дозволено</span>
+2  permit tcp 10.0.9.0/24 host 10.0.1.10 eq 22     <span class="c"># SSH лише з адмін-мережі</span>
+3  deny   ip  any any                              <span class="c"># усе інше (неявно є і без цього рядка)</span></code></pre>
+<ul>
+<li><b>Stateless</b> фаєрвол (простий ACL) перевіряє кожен пакет окремо — для відповідей потрібні дзеркальні правила.</li>
+<li><b>Stateful</b> фаєрвол відстежує з'єднання: дозволили вихідний запит — відповідь пропускається автоматично. Так працюють Security Groups в AWS, тоді як Network ACL в AWS — stateless.</li>
+<li>Фаєрволи в Linux: <code>nftables</code>/<code>iptables</code>, надбудови <code>ufw</code> (Ubuntu: <code>sudo ufw allow 22/tcp</code>) і <code>firewalld</code> (RHEL: <code>firewall-cmd --add-service=http --permanent</code>).</li>
+<li><b>WAF</b> (web application firewall) працює на L7 і блокує атаки на вебзастосунки (SQL-ін'єкції, XSS).</li>
+</ul>
+<h3>VLAN</h3>
+<p><b>VLAN</b> (Virtual LAN, IEEE 802.1Q) логічно ділить один фізичний комутатор на кілька ізольованих мереж: бухгалтерія, розробники і гості фізично в одному комутаторі, але один одного не бачать без маршрутизатора. У кадр додається 4-байтовий тег з номером VLAN (1–4094) і полем пріоритету CoS. Порт <b>access</b> належить одній VLAN, <b>trunk</b> передає кілька VLAN між комутаторами.</p>
+
+<h2 id="routing">Маршрутизація<a class="h-anchor" href="#routing" aria-label="Посилання на розділ">#</a></h2>
+<p>Маршрутизатор пересилає пакет за <b>таблицею маршрутизації</b>, обираючи <b>найдовший збіг префікса</b> (longest prefix match): маршрут <code>10.1.2.0/24</code> точніший за <code>10.0.0.0/8</code>. Якщо жоден маршрут не підходить, використовується <b>маршрут за замовчуванням</b> <code>0.0.0.0/0</code> (default route) — він веде до шлюзу.</p>
+<pre data-lang="bash"><code>$ ip route
+default via 192.168.1.1 dev eth0 proto dhcp      <span class="c"># шлюз за замовчуванням</span>
+192.168.1.0/24 dev eth0 proto kernel scope link  <span class="c"># своя мережа — напряму</span>
+172.17.0.0/16 dev docker0                        <span class="c"># мережа Docker</span>
+$ ip route get 8.8.8.8                           <span class="c"># яким маршрутом піде пакет</span>
+$ sudo ip route add 10.10.0.0/16 via 192.168.1.254   <span class="c"># статичний маршрут</span></code></pre>
+<ul>
+<li><b>Статична маршрутизація</b> — маршрути прописує адміністратор. Просто, але не реагує на збої.</li>
+<li><b>Динамічна</b> — маршрутизатори обмінюються маршрутами протоколами: <b>OSPF</b> (всередині організації, link-state), <b>BGP</b> (між автономними системами в інтернеті), RIP (застарілий, distance-vector).</li>
+<li>Поле <b>TTL</b> в IP-заголовку (Hop Limit в IPv6) зменшується на 1 на кожному маршрутизаторі; при 0 пакет відкидається, а відправнику йде ICMP Time Exceeded. На цьому побудовано <code>traceroute</code>.</li>
+</ul>
+
+<h2 id="tools">Діагностика мережі<a class="h-anchor" href="#tools" aria-label="Посилання на розділ">#</a></h2>
+<h3>Алгоритм «знизу вгору»</h3>
+<p>Коли «сайт не відкривається», перевіряйте рівні OSI по черзі — так ви не шукатимете помилку в коді, коли не підключено кабель.</p>
 <div class="table-wrap"><table>
-<thead><tr><th>Задача</th><th>Команда / файл</th></tr></thead>
+<thead><tr><th>Крок</th><th>Перевірка</th><th>Що означає провал</th></tr></thead>
 <tbody>
-<tr><td>Мої IP-адреси / таблиця маршрутів і шлюз</td><td><code>ip a</code>, <code>ip r</code></td></tr>
-<tr><td>Які порти слухає сервер і які процеси</td><td><code>ss -tulpn</code> (старіше — <code>netstat -tulpn</code>)</td></tr>
-<tr><td>Чи відкритий порт на віддаленому хості</td><td><code>nc -zv host 443</code>, <code>telnet host 443</code></td></tr>
-<tr><td>Перевірити DNS</td><td><code>nslookup site.com</code>, <code>dig site.com</code></td></tr>
-<tr><td>HTTP-відповідь сервера</td><td><code>curl -I https://site.com</code></td></tr>
-<tr><td>Ручні відповідності ім'я → IP (перевіряються раніше за DNS)</td><td><code>/etc/hosts</code></td></tr>
-<tr><td>Які DNS-сервери використовує система</td><td><code>/etc/resolv.conf</code></td></tr>
+<tr><td>1. Інтерфейс (L1–L2)</td><td><code>ip link</code> — стан <code>UP</code>, <code>ip a</code> — є адреса</td><td>кабель, драйвер, вимкнений інтерфейс. Адреса <code>169.254.x.x</code> — DHCP не відповів</td></tr>
+<tr><td>2. Локальний стек</td><td><code>ping 127.0.0.1</code></td><td>проблема з TCP/IP на самому хості (буває рідко). Успіх нічого не каже про кабель, IP, маску чи шлюз</td></tr>
+<tr><td>3. Своя мережа (L3)</td><td><code>ip r</code> — є default; <code>ping 192.168.1.1</code> (шлюз)</td><td>неправильна IP/маска/VLAN, шлюз недоступний</td></tr>
+<tr><td>4. Інтернет за IP</td><td><code>ping 8.8.8.8</code>, <code>traceroute 8.8.8.8</code></td><td>маршрутизація, NAT, провайдер. Але ICMP може бути заблоковано</td></tr>
+<tr><td>5. DNS</td><td><code>dig example.com</code>, <code>getent hosts example.com</code></td><td>за IP працює, за іменем ні → DNS-сервер, <code>/etc/resolv.conf</code>, <code>/etc/hosts</code></td></tr>
+<tr><td>6. Порт (L4)</td><td><code>nc -zv example.com 443</code>, <code>ss -tulpn</code> на сервері</td><td>служба не слухає порт, фаєрвол, Security Group</td></tr>
+<tr><td>7. Застосунок (L7)</td><td><code>curl -v https://example.com</code></td><td>статус-код 4xx/5xx, сертифікат, редиректи, логи застосунку</td></tr>
 </tbody></table></div>
+<h3>ping і traceroute</h3>
+<p><code>ping</code> надсилає <b>ICMP Echo Request</b> і чекає <b>Echo Reply</b>, показуючи затримку (RTT) і втрати. <code>traceroute</code> (у Windows — <code>tracert</code>) відправляє пакети зі зростаючим TTL = 1, 2, 3…; кожен маршрутизатор, на якому TTL обнулився, відповідає ICMP Time Exceeded — так видно всі проміжні вузли і затримку до кожного. Зірочки <code>* * *</code> означають, що вузол не відповідає на такі пакети (часто це не проблема).</p>
+<pre data-lang="bash"><code>ping -c 4 8.8.8.8              <span class="c"># 4 запити (у Linux ping без -c працює нескінченно, Ctrl+C)</span>
+ping -6 ::1                    <span class="c"># IPv6</span>
+traceroute example.com         <span class="c"># маршрут (може знадобитись apt install traceroute)</span>
+tracepath example.com          <span class="c"># те саме без root, показує ще й MTU</span>
+mtr example.com                <span class="c"># ping + traceroute наживо, зручно шукати місце втрат</span></code></pre>
+<p>Типовий маршрут з дому: локальний роутер (ваш шлюз) → вузол провайдера (PoP) → регіональний провайдер Tier 2 → <b>IXP</b> (точка обміну трафіком) → магістральний провайдер Tier 1 → мережа отримувача.</p>
+<h3>Інші команди Linux</h3>
+<div class="table-wrap"><table>
+<thead><tr><th>Задача</th><th>Команда</th><th>Застарілий аналог / Windows</th></tr></thead>
+<tbody>
+<tr><td>Інтерфейси та адреси</td><td><code>ip a</code>, <code>ip -4 a</code>, <code>ip -6 a</code></td><td><code>ifconfig</code> / <code>ipconfig /all</code></td></tr>
+<tr><td>Маршрути, шлюз</td><td><code>ip r</code></td><td><code>route -n</code>, <code>netstat -r</code> / <code>route print</code></td></tr>
+<tr><td>ARP / NDP-сусіди</td><td><code>ip neigh</code></td><td><code>arp -n</code> / <code>arp -a</code></td></tr>
+<tr><td>Які порти слухаються, якими процесами</td><td><code>sudo ss -tulpn</code> (t TCP, u UDP, l listening, p процес, n без розв'язання імен)</td><td><code>netstat -tulpn</code> / <code>netstat -ano</code></td></tr>
+<tr><td>Активні з'єднання</td><td><code>ss -tn</code></td><td><code>netstat -tn</code></td></tr>
+<tr><td>Чи відкритий порт віддалено</td><td><code>nc -zv host 443</code>, <code>telnet host 443</code>, <code>curl -v telnet://host:443</code></td><td><code>Test-NetConnection host -Port 443</code></td></tr>
+<tr><td>HTTP-запит</td><td><code>curl -I URL</code> (заголовки), <code>curl -v URL</code> (деталі TLS і заголовків)</td><td>—</td></tr>
+<tr><td>Захоплення пакетів</td><td><code>sudo tcpdump -i eth0 port 53</code>, Wireshark</td><td>—</td></tr>
+<tr><td>Ім'я хоста / DNS-сервери</td><td><code>hostname -I</code>, <code>cat /etc/resolv.conf</code>, <code>resolvectl status</code></td><td><code>ipconfig /displaydns</code></td></tr>
+</tbody></table></div>
+<pre data-lang="bash"><code>$ sudo ss -tulpn
+Netid State  Local Address:Port  Peer Address:Port Process
+tcp   LISTEN 0.0.0.0:22          0.0.0.0:*         users:(("sshd",pid=812))
+tcp   LISTEN 127.0.0.1:3306      0.0.0.0:*         users:(("mysqld",pid=930))
+tcp   LISTEN [::]:80             [::]:*            users:(("nginx",pid=1021))
+<span class="c"># 0.0.0.0:22 — SSH доступний на всіх інтерфейсах;</span>
+<span class="c"># 127.0.0.1:3306 — MySQL слухає лише loopback, ззовні недоступна (це правильно);</span>
+<span class="c"># [::]:80 — nginx на всіх IPv6 (і зазвичай IPv4) адресах.</span></code></pre>
 
 <h2 id="mistakes">Типові помилки<a class="h-anchor" href="#mistakes" aria-label="Посилання на розділ">#</a></h2>
 <div class="mistakes">
 <div class="mistake"><div class="wrong">UDP — «зламаний TCP», його не використовують.</div><div class="right">UDP навмисно простіший і швидший: для DNS, DHCP, голосу й відео затримка гірша за втрату окремого пакета.</div></div>
 <div class="mistake"><div class="wrong">У мережі /24 можна адресувати 256 хостів.</div><div class="right">256 адрес, але хостів 2⁸ − 2 = 254: адреса мережі та broadcast не призначаються пристроям.</div></div>
 <div class="mistake"><div class="wrong">Успішний <code>ping 127.0.0.1</code> = мережа працює.</div><div class="right">Loopback перевіряє лише локальний стек TCP/IP, а не кабель, IP, маску чи шлюз.</div></div>
-<div class="mistake"><div class="wrong">Хост «не пінгується», отже він вимкнений.</div><div class="right">ICMP часто блокують фаєрволи. Перевірте сервіс напряму: <code>curl</code>, <code>telnet host port</code>, <code>nc -zv host 443</code>.</div></div>
+<div class="mistake"><div class="wrong">Хост «не пінгується», отже він вимкнений.</div><div class="right">ICMP часто блокують фаєрволи. Перевірте сервіс напряму: <code>curl</code>, <code>nc -zv host 443</code>.</div></div>
 <div class="mistake"><div class="wrong"><code>2001:DB8::1::5</code> — коректне скорочення.</div><div class="right"><code>::</code> можна використати лише один раз, інакше неможливо визначити, скільки нулів у кожному пропуску.</div></div>
+<div class="mistake"><div class="wrong">При скороченні IPv6 можна прибрати й кінцеві нулі: <code>4C00</code> → <code>4C</code>.</div><div class="right">Прибирати можна лише <b>ведучі</b> нулі. <code>4C</code> = <code>004C</code> — інше значення.</div></div>
+<div class="mistake"><div class="wrong">IPv4 записують вісімковими або шістнадцятковими числами.</div><div class="right">IPv4 — десятковий запис з крапками. Шістнадцятковими пишуть IPv6 і MAC.</div></div>
+<div class="mistake"><div class="wrong"><code>172.32.0.0</code> — приватна адреса, бо «172 — це приватний діапазон».</div><div class="right">Приватний лише <code>172.16.0.0 – 172.31.255.255</code> (/12). Усе інше з 172 — публічне.</div></div>
+<div class="mistake"><div class="wrong">Адреса <code>169.254.x.x</code> на сервері — нормальна приватна адреса.</div><div class="right">Це APIPA: хост не отримав відповідь DHCP. Шукайте проблему з DHCP-сервером, кабелем, VLAN або relay.</div></div>
+<div class="mistake"><div class="wrong">DHCP lease — це постійна адреса пристрою.</div><div class="right">Lease — оренда на строк. Постійну адресу дає <b>reservation</b> (прив'язка до MAC) або статичне налаштування.</div></div>
+<div class="mistake"><div class="wrong">В IPv6 є broadcast, як і в IPv4.</div><div class="right">В IPv6 broadcast немає: його замінює multicast (<code>ff02::1</code> — усі вузли сегмента), а ARP замінює NDP.</div></div>
+<div class="mistake"><div class="wrong">Маска визначає клас адреси, а шлюз — мережу.</div><div class="right">До якої мережі належить адреса, визначає <b>маска</b>. Шлюз — лише маршрутизатор для трафіку в інші мережі.</div></div>
 </div>
-<h2 id="quiz">Перевір себе<a class="h-anchor" href="#quiz" aria-label="Посилання на розділ">#</a></h2><p>11 питань на розуміння. В одиночних питаннях натисніть варіант — одразу побачите правильну відповідь і пояснення. Питання з позначкою <b>«кілька відповідей»</b> влаштовані як у тесті курсу (<i>Select one or more</i>): позначте всі правильні варіанти й натисніть «Перевірити».</p><div class="quiz" data-quiz="w2l6"></div><script type="application/json" id="quiz-data">[{"q": "На якому рівні TCP/IP працюють протоколи TCP і UDP?", "options": ["Network Access", "Application", "Internet", "Transport"], "answer": 3, "explain": "TCP і UDP — транспортний рівень; саме тут з'являються номери портів. IP — рівень Internet (L3 в OSI)."}, {"q": "Скільки адрес хостів у мережі 10.0.5.0/26?", "options": ["62", "30", "64", "254"], "answer": 0, "explain": "N = 32 − 26 = 6 хостових біт: 2⁶ − 2 = 62 (мінус адреса мережі та broadcast)."}, {"q": "Яка адреса мережі для хоста 192.168.25.100 з маскою 255.255.255.192?", "options": ["192.168.25.96", "192.168.25.128", "192.168.25.0", "192.168.25.64"], "answer": 3, "explain": "Маска /26 ділить октет на блоки по 64: 0, 64, 128, 192. Число 100 лежить у блоці 64–127, тому мережа — 192.168.25.64."}, {"q": "Яка з адрес є приватною?", "options": ["193.168.1.1", "8.8.8.8", "172.20.1.5", "172.32.0.1"], "answer": 2, "explain": "Приватний діапазон класу B — 172.16.0.0/12, тобто 172.16.0.0–172.31.255.255. 172.20.1.5 входить у нього, 172.32.0.1 — ні."}, {"q": "Який порт за замовчуванням використовує SSH?", "options": ["21", "443", "22", "3306"], "answer": 2, "explain": "22 — SSH; 21 — FTP (керування), 443 — HTTPS, 3306 — MySQL."}, {"q": "Як правильно скоротити IPv6 2001:0DB8:0000:0000:0000:0000:0000:0001?", "options": ["2001::DB8::1", "2001:DB8::1", "21:DB8::1", "2001:DB8:0::0:1"], "answer": 1, "explain": "Прибираємо ведучі нулі (0DB8 → DB8) і замінюємо одну найдовшу послідовність нульових груп на ::. :: можна використати лише раз."}, {"q": "Які з цих сервісів зазвичай працюють поверх UDP?", "options": ["DNS-запити", "DHCP", "HTTP", "SSH"], "answer": [0, 1], "explain": "DHCP і звичайні DNS-запити використовують UDP — швидко, без з'єднання. SSH і HTTP потребують надійного TCP."}, {"q": "Як називається обмін DHCP з чотирьох кроків?", "options": ["SYN, SYN-ACK, ACK", "GET, POST, PUT, DELETE", "DORA: Discover, Offer, Request, Acknowledge", "ARP, RARP, ICMP, IGMP"], "answer": 2, "explain": "DORA — DHCP. SYN/SYN-ACK/ACK — тристороннє рукостискання TCP."}, {"q": "Якими командами можна подивитися, які порти слухає Linux-сервер?", "options": ["<code>ping localhost<\/code>", "<code>ss -tulpn<\/code>", "<code>netstat -tulpn<\/code>", "<code>traceroute 8.8.8.8<\/code>"], "answer": [1, 2], "explain": "ss (сучасна) і netstat (старіша) показують відкриті сокети та процеси. ping і traceroute перевіряють досяжність і маршрут."}, {"q": "Що гарантує TCP, але не гарантує UDP?", "options": ["Більшу швидкість", "Доставку і правильний порядок даних", "Шифрування трафіку", "Роботу без IP-адрес"], "answer": 1, "explain": "TCP встановлює з'єднання, підтверджує й повторно надсилає втрачене. Шифрування дає TLS, а не TCP."}, {"q": "Багато ПК офісу з приватними адресами виходять в інтернет через одну публічну IP, розрізняючись номерами портів. Як це називається?", "options": ["DNAT", "PAT", "VPN", "Static NAT"], "answer": 1, "explain": "PAT (Port Address Translation) зіставляє пару «публічна IP:порт» з «приватна IP:порт» кожного клієнта."}]</script>
+<h2 id="quiz">Перевір себе<a class="h-anchor" href="#quiz" aria-label="Посилання на розділ">#</a></h2><p>59 питань на розуміння. В одиночних питаннях натисніть варіант — одразу побачите правильну відповідь і пояснення. Питання з позначкою <b>«кілька відповідей»</b> влаштовані як у тесті курсу (<i>Select one or more</i>): позначте всі правильні варіанти й натисніть «Перевірити».</p><div class="quiz" data-quiz="w2l6"></div><script type="application/json" id="quiz-data">[{"q": "З чого складається IPv4-адреса?", "options": ["32 біти", "48 біт", "128 біт", "4 байти", "8 груп по 16 біт", "4 октети по 8 біт"], "answer": [0, 3, 5], "explain": "32 біти = 4 октети = 4 байти — це той самий розмір у різних одиницях. 48 біт — MAC-адреса, 128 біт у 8 групах по 16 біт — IPv6."}, {"q": "Як записують IPv4-адреси для людей?", "options": ["Вісімковими числами", "Шістнадцятковими парами через дефіс", "Десятковими числами, розділеними крапками", "Шістнадцятковими групами через двокрапку", "Двійковими числами з крапками"], "answer": [2], "explain": "IPv4 — dotted decimal: <code>192.168.1.10<\/code>, кожен октет 0–255. Всередині адреса двійкова, але записують її десятково. Шістнадцяткові групи через двокрапку — IPv6, пари через дефіс або двокрапку — MAC."}, {"q": "Які твердження про запис IPv6-адреси правильні?", "options": ["Адреса складається з 8 груп по 16 біт", "Групи розділяються крапками", "Записується десятковими числами", "Використовуються шістнадцяткові цифри", "Довжина адреси — 128 біт", "Довжина адреси — 64 біти"], "answer": [0, 3, 4], "explain": "IPv6: 128 біт, 8 хекстетів по 4 hex-цифри через <b>двокрапку<\/b>. 64 біти — типовий розмір префікса підмережі або Interface ID, а не всієї адреси."}, {"q": "Подвійна двокрапка <code>::<\/code> в IPv6-адресі означає, що частину адреси, яка містить лише нулі, стиснуто для скорочення запису. Як правильно доповнити це твердження?", "options": ["Неправильно: <code>::<\/code> відокремлює префікс мережі від Interface ID", "Правильно, і <code>::<\/code> можна використати кілька разів", "Правильно, але <code>::<\/code> можна використати лише один раз в адресі", "Неправильно: <code>::<\/code> позначає кінцеві нулі в кожній групі", "Неправильно: <code>::<\/code> завжди позначає loopback"], "answer": [2], "explain": "<code>::<\/code> замінює одну безперервну серію нульових груп. Двічі не можна — інакше невідомо, скільки груп у кожному пропуску. Loopback — це <code>::1<\/code>, а не <code>::<\/code> (невизначена адреса)."}, {"q": "Які записи є IPv6-адресою loopback?", "options": ["<code>0:0:0:0:0:0:0:1<\/code>", "<code>169.254.0.0/16<\/code>", "<code>::1<\/code>", "<code>127.0.0.1<\/code>", "<code>::<\/code>", "<code>FE80::/10<\/code>"], "answer": [0, 2], "explain": "Loopback IPv6 — <code>::1<\/code>, у повній формі <code>0:0:0:0:0:0:0:1<\/code>. <code>127.0.0.1<\/code> — loopback IPv4. <code>::<\/code> — невизначена адреса. <code>FE80::/10<\/code> — link-local IPv6, <code>169.254.0.0/16<\/code> — APIPA IPv4."}, {"q": "Який префікс відповідає link-local адресам IPv6?", "options": ["<code>FF00::/8<\/code>", "<code>FC00::/7<\/code>", "<code>2001::/32<\/code>", "<code>FE80::/10<\/code>", "<code>2002::/16<\/code>", "<code>::1/128<\/code>"], "answer": [3], "explain": "Link-local — <code>fe80::/10<\/code>. <code>::1<\/code> — loopback, <code>2001::/32<\/code> — Teredo, <code>2002::/16<\/code> — 6to4, <code>fc00::/7<\/code> — unique local (аналог приватних), <code>ff00::/8<\/code> — multicast."}, {"q": "Еквівалентом якої IPv4-адреси є link-local адреса IPv6?", "options": ["Широкомовної адреси", "Multicast-адреси класу D", "Приватної адреси RFC 1918", "APIPA-адреси (169.254.0.0/16)", "Публічної адреси", "Loopback-адреси 127.0.0.1"], "answer": [3], "explain": "Обидві призначаються автоматично і працюють лише в межах сегмента, без маршрутизації. Аналогом приватних RFC 1918 в IPv6 є unique local <code>fc00::/7<\/code>, аналогом loopback — <code>::1<\/code>, broadcast в IPv6 немає."}, {"q": "Який запис є повністю скороченою (канонічною) формою адреси <code>FE80:00A7:0000:0000:02AA:0000:4C00:FE9A<\/code>?", "options": ["<code>FE80:00A7::2AA:0:4C00:FE9A<\/code>", "<code>FE80:A7::2AA::4C00:FE9A<\/code>", "<code>FE80:A7::2AA:0:4C00:FE9A<\/code>", "<code>FE80:A7:0:2AA:0:4C00:FE9A<\/code>", "<code>FE80:A7::2AA:0:4C:FE9A<\/code>", "<code>FE80:A7:0:0:2AA::4C00:FE9A<\/code>"], "answer": [2], "explain": "Прибрати ведучі нулі (00A7→A7, 02AA→2AA, 0000→0) і найдовшу серію нулів (дві групи) замінити на <code>::<\/code>. Варіант з <code>00A7<\/code> не скорочено до кінця; <code>::<\/code> двічі — недопустимо; без <code>::<\/code> вийшло 7 груп; <code>4C<\/code> — прибрано <b>кінцеві<\/b> нулі, це інша адреса; останній варіант стискає одиночну нульову групу замість довшої серії."}, {"q": "Які записи є коректним представленням адреси <code>2001:0db8:0000:0000:0000:ff00:0042:8329<\/code>?", "options": ["<code>2001:db8::ff00:42:8329<\/code>", "<code>2001:db8::ff00::42:8329<\/code>", "<code>2001:0db8::ff00:0042:8329<\/code>", "<code>2001:db8:0:0:0:ff00:42:8329<\/code>", "<code>2001:db8:ff00:42:8329<\/code>", "<code>2001:db8::ff:42:8329<\/code>"], "answer": [0, 2, 3], "explain": "Ведучі нулі можна прибирати або залишати — адреса та сама; три нульові групи можна записати як <code>0:0:0<\/code> або <code>::<\/code>. <code>ff<\/code> замість <code>ff00<\/code> — інше значення. <code>::<\/code> двічі — недопустимо. Останній варіант має лише 5 груп без <code>::<\/code>."}, {"q": "Обмежений механізм переходу IPv4→IPv6, що інкапсулює IPv6-пакети в IPv4-пакети для передачі IPv4-мережами, — це:", "options": ["Dual stack", "802.3af", "Teredo", "6to4", "NAT64", "4to6"], "answer": [3], "explain": "6to4 автоматично вкладає IPv6 в IPv4 (протокол 41); «обмежений», бо потребує публічної IPv4 і не працює за NAT. Teredo вкладає IPv6 в UDP і проходить NAT. Dual stack — одночасна робота обох протоколів без інкапсуляції. NAT64 — трансляція, а не інкапсуляція. 802.3af — PoE."}, {"q": "Механізм переходу IPv4→IPv6 з нативною підтримкою NAT називається:", "options": ["Dual stack", "6to4", "Teredo", "ISATAP", "6in4"], "answer": [2], "explain": "Teredo інкапсулює IPv6 в UDP-датаграми IPv4 (порт 3544), тож проходить крізь NAT-роутери. 6to4 і 6in4 використовують IP-протокол 41, який NAT зазвичай не пропускає. ISATAP — тунелі в корпоративній мережі."}, {"q": "Що таке Miredo?", "options": ["Повідомлення NDP, яким маршрутизатор оголошує префікс мережі", "Програмна реалізація тунелювання Teredo для Linux, BSD і macOS", "Стандарт QoS для позначення пріоритету в Ethernet-кадрах", "Ретранслятор 6to4, що з'єднує IPv6-острови через IPv4", "Сервер DHCPv6, що видає адреси без збереження стану", "Різновид link-local адреси IPv6, що призначається через NDP"], "answer": [1], "explain": "Miredo — відкрите ПЗ (клієнт, ретранслятор і сервер Teredo) для Unix-подібних систем. Це програма, а не окремий протокол."}, {"q": "Які твердження про dual stack правильні?", "options": ["Dual stack перетворює IPv6-пакети в IPv4", "Хост одночасно використовує і IPv4, і IPv6", "Хост має одночасно IPv4- і IPv6-адреси", "Dual stack працює лише з APIPA-адресами", "Dual stack обов'язково потребує тунелювання"], "answer": [1, 2], "explain": "Dual stack — обидва стеки протоколів на одному пристрої; з кожним сервером спілкуються тією версією, яку він підтримує. Перетворення — це трансляція (NAT64), вкладення — тунелювання (6to4, Teredo)."}, {"q": "Які функції виконує NDP (Neighbor Discovery Protocol) в IPv6?", "options": ["Призначає IPv4-адреси хостам, що працюють у режимі dual stack", "Визначає link-layer (MAC) адресу сусіднього вузла", "Допомагає вузлам знаходити маршрутизатори", "Дозволяє маршрутизаторам оголошувати свою присутність у мережі", "Перетворює доменні імена на IPv6-адреси замість DNS", "Перевіряє, чи не зайнята адреса іншим вузлом (DAD)"], "answer": [1, 2, 3, 5], "explain": "NDP через ICMPv6 замінює ARP (Neighbor Solicitation/Advertisement), ICMP Router Discovery (Router Solicitation/Advertisement) і Redirect, а також виконує Duplicate Address Detection. Адреси IPv4 видає DHCP, імена розв'язує DNS."}, {"q": "Який протокол IPv6 виконує функцію ARP з IPv4?", "options": ["IGMP", "DHCPv6", "RARP", "DNS", "NDP", "ARPv6"], "answer": [4], "explain": "Адресу канального рівня сусіда в IPv6 визначає NDP (Neighbor Solicitation/Advertisement). Протоколу ARPv6 не існує. RARP — давній протокол «MAC→IP», IGMP керує multicast-групами IPv4."}, {"q": "Які характеристики має адресний простір <code>10.0.0.0 – 10.255.255.255 (10.0.0.0/8)<\/code>?", "options": ["Приватний (не маршрутизується в інтернеті) діапазон", "Діапазон класу A", "Публічний (маршрутизується в інтернеті) діапазон", "Діапазон класу B", "Діапазон класу C", "Діапазон loopback-адрес"], "answer": [0, 1], "explain": "10.0.0.0/8 — приватний діапазон RFC 1918, перший октет 10 лежить у класі A (1–126)."}, {"q": "Які характеристики має адресний простір <code>172.16.0.0 – 172.31.255.255 (172.16.0.0/12)<\/code>?", "options": ["Діапазон APIPA-адрес", "Діапазон класу C", "Діапазон класу A", "Приватний (не маршрутизується в інтернеті) діапазон", "Діапазон класу B", "Публічний (маршрутизується в інтернеті) діапазон"], "answer": [3, 4], "explain": "172 лежить у класі B (128–191); 172.16–172.31 — приватний діапазон RFC 1918. Зверніть увагу: /12 не збігається з маскою класу B за замовчуванням (/16) — блок охоплює 16 мереж класу B."}, {"q": "Які характеристики має адресний простір <code>192.168.0.0 – 192.168.255.255<\/code>?", "options": ["Діапазон класу A", "Діапазон класу B", "Діапазон класу C", "Приватний (не маршрутизується в інтернеті) діапазон", "Multicast-діапазон класу D", "Публічний (маршрутизується в інтернеті) діапазон"], "answer": [2, 3], "explain": "192 лежить у класі C (192–223), а 192.168.0.0/16 — приватний діапазон RFC 1918 (256 мереж /24). У питаннях тесту він іноді помилково підписаний як /24."}, {"q": "Які адреси належать до приватних діапазонів RFC 1918?", "options": ["<code>192.168.100.1<\/code>", "<code>192.169.1.1<\/code>", "<code>172.20.5.5<\/code>", "<code>10.200.1.1<\/code>", "<code>11.0.0.1<\/code>", "<code>172.32.1.1<\/code>"], "answer": [0, 2, 3], "explain": "Приватні: 10.0.0.0/8, 172.16.0.0–172.31.255.255, 192.168.0.0/16. 172.32.x.x вже за межею /12, 192.169.x.x — поза 192.168, 11.x.x.x — звичайна публічна адреса."}, {"q": "Який діапазон IPv4 зарезервовано для loopback-адрес?", "options": ["<code>169.254.0.0 – 169.254.255.255 (169.254.0.0/16)<\/code>", "<code>0.0.0.0 – 0.255.255.255 (0.0.0.0/8)<\/code>", "<code>10.0.0.0 – 10.255.255.255 (10.0.0.0/8)<\/code>", "<code>127.0.0.0 – 127.255.255.255 (127.0.0.0/8)<\/code>", "<code>240.0.0.0 – 255.255.255.254 (240.0.0.0/4)<\/code>"], "answer": [3], "explain": "Увесь блок 127/8 — loopback, хоча зазвичай використовують 127.0.0.1. 0.0.0.0/8 — «ця мережа», 169.254/16 — APIPA, 240/4 — зарезервовано (клас E), 10/8 — приватний."}, {"q": "Який діапазон IPv4 зарезервовано для майбутнього використання?", "options": ["<code>224.0.0.0/4<\/code> (224–239)", "<code>240.0.0.0/4<\/code> (240–255)", "<code>0.0.0.0/8<\/code>", "<code>169.254.0.0/16<\/code>", "<code>127.0.0.0/8<\/code>", "<code>100.64.0.0/10<\/code>"], "answer": [1], "explain": "Клас E (240–255) — reserved for future use. 224/4 — multicast (клас D), 0/8 — «ця мережа», 127/8 — loopback, 100.64/10 — CGNAT, 169.254/16 — APIPA."}, {"q": "Які відповіді описують блок multicast-адрес IPv4?", "options": ["Клас D", "Клас E", "Перший октет 224–239", "Перший октет 240–255", "Клас C", "Перший октет 192–223"], "answer": [0, 2], "explain": "Multicast — 224.0.0.0/4, тобто клас D. 240–255 — клас E (зарезервовано), 192–223 — клас C (unicast)."}, {"q": "Які твердження про класи IPv4 правильні?", "options": ["Перший октет 192–223 — клас C", "Адреса 127.0.0.1 належить класу C", "Перший октет 128–191 — клас B", "Перший октет 240–255 — клас D", "Перший октет 1–126 — клас A", "Перший октет 224–239 — клас E"], "answer": [0, 2, 4], "explain": "A: 1–126, B: 128–191, C: 192–223, D (multicast): 224–239, E (зарезервовано): 240–255. 127 формально в межах класу A, але весь блок 127/8 відданий під loopback."}, {"q": "Яка маска за замовчуванням у мережі класу B?", "options": ["<code>255.0.0.0<\/code>", "<code>/8<\/code>", "<code>/16<\/code>", "<code>255.255.0.0<\/code>", "<code>/24<\/code>", "<code>255.255.255.0<\/code>"], "answer": [2, 3], "explain": "Клас B — 16 біт мережі: 255.255.0.0 = /16. Клас A — 255.0.0.0 (/8), клас C — 255.255.255.0 (/24)."}, {"q": "Що дає змогу визначити, до якого мережевого сегмента належить IP-адреса?", "options": ["DNS", "Шлюз за замовчуванням", "Фізична (MAC) адреса", "Маска підмережі", "DHCP", "ARP"], "answer": [3], "explain": "Маска показує, які біти адреси — мережа: IP AND маска = адреса мережі. DHCP лише видає параметри, ARP шукає MAC за IP, MAC не містить інформації про IP-мережу, шлюз — маршрутизатор для трафіку в інші мережі."}, {"q": "Адреси APIPA придатні лише для зв'язку в межах сегмента, і хост з APIPA-адресою не може вийти в інтернет. Призначення APIPA-адреси зазвичай вказує на проблему з:", "options": ["DHCP", "SMTP", "NAT", "DNS", "NTP", "SNMP"], "answer": [0], "explain": "Хост бере 169.254.x.x сам, коли DHCP-сервер не відповів: служба зупинена, сервер недоступний, обірваний кабель, неправильна VLAN або немає DHCP relay. DNS, SNMP, SMTP, NTP і NAT адреси інтерфейсу не призначають."}, {"q": "Які твердження про APIPA правильні?", "options": ["Хост з APIPA виходить в інтернет через шлюз за замовчуванням", "Адреси з діапазону 169.254.0.0/16", "Хост може спілкуватися лише з сусідами в межах сегмента", "Адресу видає DHCP-сервер на короткий строк", "APIPA — тип адреси IPv6", "Використовується маска 255.255.0.0"], "answer": [1, 2, 5], "explain": "APIPA — самопризначена IPv4-адреса 169.254.x.x/16, коли DHCP недоступний. Шлюзу вона не має, тому інтернету немає. IPv6-аналог — link-local fe80::/10."}, {"q": "Які рішення приховують внутрішні IP-адреси, змінюючи інформацію про IP-адреси в заголовках пакетів під час проходження через маршрутизатор?", "options": ["Port Address Translation (PAT)", "Quality of Service (QoS)", "Virtual LAN (VLAN)", "Domain Name System (DNS)", "Network Address Translation (NAT)", "Dynamic Host Configuration Protocol (DHCP)"], "answer": [0, 4], "explain": "NAT переписує адреси в заголовках; PAT — різновид NAT, що додатково переписує порти. QoS керує пріоритетами, DHCP видає адреси, DNS розв'язує імена, VLAN ділить комутатор на логічні мережі."}, {"q": "Які рішення пом'якшують дефіцит IPv4-адрес, дозволяючи багатьом хостам приватної LAN використовувати одну публічну IP-адресу?", "options": ["Automatic Private IP Addressing (APIPA)", "Dynamic Host Configuration Protocol (DHCP)", "Virtual LAN (VLAN)", "Domain Name System (DNS)", "Network Address Translation (NAT)", "Port Address Translation (PAT, NAT overload)"], "answer": [4, 5], "explain": "Саме NAT, а точніше його різновид PAT (порти розрізняють хости), дає змогу ділити одну публічну адресу. APIPA — самопризначені локальні адреси, DHCP видає адреси, але не дає спільну публічну."}, {"q": "Який метод NAT прив'язує комбінацію «приватна IP + номер порту» до «публічна IP + номер порту»?", "options": ["ARP", "Static NAT", "Dynamic NAT", "Masquerading без портів", "APIPA", "PAT"], "answer": [5], "explain": "PAT (Port Address Translation, NAT overload) розрізняє внутрішні з'єднання за портами. Static NAT — одна-до-однієї адреса, Dynamic NAT — адреса з пулу, без трансляції портів."}, {"q": "Сервер з приватною IP-адресою має обслуговувати запити з публічної мережі. Які механізми це забезпечують?", "options": ["APIPA (автоматична приватна адресація)", "Dynamic NAT (з пулом публічних адрес)", "Port forwarding (переадресація портів)", "DHCP reservation (закріплена адреса за MAC)", "Masquerading (SNAT у термінах Linux/iptables)", "Destination NAT (DNAT у термінах Linux/iptables)"], "answer": [2, 5], "explain": "Port forwarding перенаправляє зовнішній IP:порт на внутрішній; технічно це Destination NAT. Masquerading і Dynamic NAT обслуговують вихідні з'єднання, APIPA і reservation — способи отримання адреси."}, {"q": "Які твердження про різновиди NAT правильні?", "options": ["NAT працює як IP-проксі між приватною LAN і публічною мережею", "Static NAT зіставляє приватну адресу з будь-якою адресою з пулу", "Dynamic NAT дає постійну відповідність приватної і публічної адреси", "Dynamic NAT бере публічну адресу з пулу на час сеансу", "PAT розрізняє внутрішні хости за номерами портів", "Static NAT дає постійну відповідність «одна приватна — одна публічна»"], "answer": [0, 3, 4, 5], "explain": "Постійна відповідність — ознака static NAT, пул — dynamic NAT. Обидва останні твердження «переплутані місцями» і тому хибні (у тестах CompTIA SNAT = Static NAT, DNAT = Dynamic NAT)."}, {"q": "Тип мережевого трафіку, призначений одному хосту з унікальною IP-адресою, називається:", "options": ["Multicast", "Broadcast", "Unicast", "Немає правильної відповіді", "Anycast"], "answer": [2], "explain": "Unicast — «один до одного». Broadcast — усім у сегменті, multicast — групі підписаних, anycast — найближчому з кількох вузлів з однаковою адресою."}, {"q": "Які твердження про види передачі правильні?", "options": ["В IPv6 broadcast працює так само, як в IPv4", "Broadcast отримують усі хости сегмента", "Anycast доставляється найближчому з кількох вузлів з однаковою адресою", "Маршрутизатори пересилають broadcast між мережами", "Unicast — це передача «один до багатьох»", "Multicast отримує група хостів, що підписалися"], "answer": [1, 2, 5], "explain": "В IPv6 broadcast немає — його замінює multicast. Unicast — «один до одного». Маршрутизатори обмежують широкомовний домен і broadcast не пропускають (тому для DHCP через роутер потрібен relay)."}, {"q": "Який термін означає постійне призначення IP-адреси DHCP-сервером?", "options": ["Exclusion", "Lease", "Reservation", "Scope", "Option 003", "DHCP relay"], "answer": [2], "explain": "Reservation прив'язує IP до MAC-адреси: пристрій завжди отримує ту саму адресу. Lease — тимчасова оренда, scope — діапазон адрес, relay пересилає запити між підмережами, exclusion — адреси, які сервер не видає, опція 003 — шлюз."}, {"q": "Які твердження про DHCP правильні?", "options": ["Lease — призначення адреси на обмежений строк", "DHCP Discover надсилається unicast на адресу сервера", "DHCP працює через TCP-порти 67 і 68", "DHCP relay пересилає запити клієнтів до сервера в іншій підмережі", "Scope — діапазон адрес, які сервер може видавати", "DHCP може статично видавати адресу на основі відповідності IP–MAC"], "answer": [0, 3, 4, 5], "explain": "DHCP використовує <b>UDP<\/b> 67 (сервер) і 68 (клієнт). Discover — широкомовний (з 0.0.0.0 на 255.255.255.255): клієнт ще не знає ні своєї адреси, ні адреси сервера."}, {"q": "У якому порядку відбувається обмін повідомленнями DHCP при отриманні адреси?", "options": ["Discover → Offer → Request → Acknowledge", "Discover → Offer → Acknowledge → Request", "Request → Offer → Discover → Acknowledge", "Discover → Request → Offer → Acknowledge", "Offer → Discover → Acknowledge → Request"], "answer": [0], "explain": "DORA: клієнт шукає сервери (Discover), сервери пропонують (Offer), клієнт обирає (Request), сервер підтверджує (ACK)."}, {"q": "Які мережеві протоколи є альтернативою ручному призначенню IP-адрес?", "options": ["ARP", "DHCP", "NAT", "SNMP", "DHCPv6", "DNS"], "answer": [1, 4], "explain": "DHCP (і DHCPv6 для IPv6) видає адреси автоматично. DNS розв'язує імена, SNMP — моніторинг пристроїв, NAT транслює адреси, ARP шукає MAC за IP."}, {"q": "Які твердження про отримання адрес в IPv6 правильні?", "options": ["В IPv6 адресу можна призначити лише вручну або через DHCPv6", "DHCPv6 використовує ті самі UDP-порти 67 і 68, що й DHCP", "DHCPv6 є IPv6-аналогом DHCP для IPv4", "DHCPv6 видає клієнтам шлюз за замовчуванням разом з адресою", "SLAAC дає змогу налаштувати адресу без DHCP-сервера, за префіксом з Router Advertisement"], "answer": [2, 4], "explain": "Шлюз IPv6-хост дізнається з Router Advertisement (NDP), такої опції в DHCPv6 немає. DHCPv6 використовує порти 546 (клієнт) і 547 (сервер)."}, {"q": "Які твердження про віртуальну IP-адресу (VIP/VIPA) правильні?", "options": ["Це MAC-адреса, яку гіпервізор призначає віртуальній машині", "Вона може переходити між серверами при відмові одного з них", "Її використовують балансувальники навантаження як єдину точку входу", "Це завжди публічна адреса, видана провайдером", "Це IP-адреса, яка не відповідає жодному фізичному мережевому інтерфейсу", "Це адреса 169.254.x.x, яку хост призначає собі без DHCP"], "answer": [1, 2, 4], "explain": "VIP не прив'язана до конкретної мережевої карти: її можна перенести на інший вузол (keepalived, кластери) або віддати балансувальнику. Вона може бути як приватною, так і публічною."}, {"q": "Які терміни стосуються рішень для керування мережевими ресурсами і виділення пріоритету певним типам трафіку?", "options": ["Dynamic Host Configuration Protocol (DHCP)", "Network Address Translation (NAT)", "Domain Name System (DNS)", "Quality of Service (QoS)", "Packet shaping (traffic shaping)", "Address Resolution Protocol (ARP)"], "answer": [3, 4], "explain": "QoS — загальна назва механізмів пріоритизації, packet shaping згладжує трафік до заданої швидкості. Інші — адресація та розв'язання імен."}, {"q": "Яке необов'язкове поле в заголовку Ethernet-кадру може вмикати функцію QoS?", "options": ["DSCP (Differentiated Services Code Point)", "EtherType (тип протоколу)", "Destination MAC (адреса призначення)", "FCS (Frame Check Sequence)", "TTL (Time To Live)", "CoS (Class of Service)"], "answer": [5], "explain": "CoS — 3-бітне поле пріоритету 802.1p у тезі 802.1Q Ethernet-кадру. DSCP теж служить для QoS, але знаходиться в заголовку <b>IP-пакета<\/b>. TTL — поле IP, FCS — контрольна сума кадру, EtherType і MAC-адреса не задають пріоритет."}, {"q": "Які функції виконує архітектура DiffServ?", "options": ["Трансляцію адрес", "Розв'язання доменних імен", "QoS", "Керування трафіком (traffic management)", "Шифрування трафіку", "Видачу IP-адрес"], "answer": [2, 3], "explain": "DiffServ позначає пакети класами (DSCP) і дає маршрутизаторам обробляти класи з різним пріоритетом — тобто це QoS і керування трафіком."}, {"q": "Як називається набір правил, що визначає, яким користувачам або системним процесам надано доступ до об'єктів і які операції їм дозволено?", "options": ["VPN", "VLAN", "DMZ", "QoS", "ACL", "NAT"], "answer": [4], "explain": "ACL (Access Control List) — список правил доступу; у мережах правила перевіряються згори вниз до першого збігу, наприкінці — неявне «заборонити все». DMZ — ізольований сегмент для публічних серверів."}, {"q": "Які відповідності «пристрій або протокол — рівень OSI» правильні?", "options": ["Хаб — фізичний (L1)", "TCP — транспортний (L4)", "Комутатор — канальний (L2)", "HTTP — мережевий (L3)", "Маршрутизатор — мережевий (L3)", "IP — транспортний (L4)"], "answer": [0, 1, 2, 4], "explain": "IP — мережевий рівень (L3), HTTP — прикладний (L7). Маршрутизатор працює з IP-адресами, комутатор — з MAC, хаб лише повторює сигнал."}, {"q": "Які відповідності «одиниця даних (PDU) — рівень» правильні?", "options": ["Пакет — мережевий", "Біти — фізичний", "Кадр — мережевий", "Сегмент — транспортний", "Кадр — канальний", "Пакет — транспортний"], "answer": [0, 1, 3, 4], "explain": "Транспорт — сегмент (TCP) або датаграма (UDP), мережевий — пакет, канальний — кадр (frame), фізичний — біти."}, {"q": "Які твердження про TCP і UDP правильні?", "options": ["TCP встановлює з'єднання тристороннім рукостисканням SYN, SYN-ACK, ACK", "UDP не гарантує доставку і порядок", "UDP гарантує порядок датаграм, але не їхню доставку", "Заголовок TCP займає лише 8 байт, тому він швидший за UDP", "DNS-запити зазвичай передаються через UDP", "DHCP працює поверх TCP, бо видача адреси має бути гарантованою"], "answer": [0, 1, 4], "explain": "DHCP працює через UDP (у клієнта ще немає адреси для з'єднання). Порядок і доставку гарантує лише TCP. 8 байт — заголовок UDP, у TCP — від 20 байт."}, {"q": "Які відповідності «протокол — порт» правильні?", "options": ["DNS — 53", "MySQL — 5432", "SSH — 22", "RDP — 3389", "SMTP — 110", "Telnet — 21", "HTTPS — 443"], "answer": [0, 2, 3, 6], "explain": "Telnet — 23 (21 — FTP), SMTP — 25 (110 — POP3), MySQL — 3306 (5432 — PostgreSQL)."}, {"q": "Які твердження про адресу <code>192.168.25.100/26<\/code> правильні?", "options": ["Адреса мережі — 192.168.25.64", "У підмережі 64 адреси для хостів", "У підмережі 62 адреси для хостів", "Broadcast-адреса — 192.168.25.255", "Broadcast-адреса — 192.168.25.127", "Адреса мережі — 192.168.25.0"], "answer": [0, 2, 4], "explain": "/26 → маска 255.255.255.192, розмір блоку 64: мережі .0, .64, .128, .192. 100 лежить у .64–.127. Хостів 2⁶ − 2 = 62 (64 — це всього адрес разом з мережею і broadcast)."}, {"q": "Скільки адрес для хостів у мережі з префіксом /24?", "options": ["128", "254", "255", "252", "62", "256"], "answer": [1], "explain": "2⁸ = 256 адрес мінус адреса мережі і broadcast = 254."}, {"q": "Яка маска відповідає префіксу /20?", "options": ["<code>255.255.248.0<\/code>", "<code>255.255.240.0<\/code>", "<code>255.255.224.0<\/code>", "<code>255.255.255.240<\/code>", "<code>255.240.0.0<\/code>", "<code>255.255.252.0<\/code>"], "answer": [1], "explain": "/20 = 8 + 8 + 4 одиниці: 255.255.11110000.0 = 255.255.240.0. 255.255.255.240 — це /28, 248 — /21, 224 — /19, 252 у третьому октеті — /22."}, {"q": "Які адреси належать до мережі <code>172.16.32.0/20<\/code>?", "options": ["<code>172.16.45.10<\/code>", "<code>172.16.32.1<\/code>", "<code>172.16.47.254<\/code>", "<code>172.16.48.1<\/code>", "<code>172.16.64.1<\/code>", "<code>172.16.31.255<\/code>"], "answer": [0, 1, 2], "explain": "/20 → блок 16 у третьому октеті: мережа 172.16.32.0 охоплює 172.16.32.0 – 172.16.47.255. 48 — це вже наступна мережа, 31 — попередня."}, {"q": "Які твердження про діагностику мережі правильні?", "options": ["<code>dig<\/code> і <code>nslookup<\/code> перевіряють розв'язання імен", "<code>ping<\/code> використовує TCP-порт 7", "Успішний <code>ping 127.0.0.1<\/code> означає, що працює локальний стек TCP/IP", "<code>traceroute<\/code> показує маршрут пакетів і затримку на кожному вузлі", "<code>tracert<\/code> — стандартна команда Linux", "Успішний <code>ping 127.0.0.1<\/code> доводить, що кабель і шлюз справні"], "answer": [0, 2, 3], "explain": "Loopback не виходить з хоста, тому нічого не каже про кабель і шлюз. <code>ping<\/code> використовує ICMP, а не TCP. <code>tracert<\/code> — назва в Windows, у Linux — <code>traceroute<\/code>."}, {"q": "Які відповідності «тип DNS-запису — вміст» правильні?", "options": ["AAAA — IPv6-адреса імені", "MX — поштовий сервер домену", "NS — IP-адреса шлюзу", "PTR — ім'я за IP-адресою (зворотний запис)", "A — IPv4-адреса імені", "CNAME — IPv4-адреса поштового сервера"], "answer": [0, 1, 3, 4], "explain": "CNAME — псевдонім, що вказує на інше <b>ім'я<\/b>. NS — авторитетні сервери імен домену."}, {"q": "Що покаже команда <code>ss -tulpn<\/code>?", "options": ["Налаштовані DNS-сервери і порядок розв'язання імен", "Ту саму інформацію, що й застаріла <code>netstat -tulpn<\/code>", "Активні правила фаєрвола для вхідних з'єднань", "Таблицю маршрутизації разом зі шлюзом за замовчуванням", "TCP- і UDP-порти, які слухаються, і процеси, що їх відкрили", "ARP-кеш: відповідність IP-адрес і MAC-адрес сусідів"], "answer": [1, 4], "explain": "t — TCP, u — UDP, l — listening, p — процес, n — числові адреси й порти. Маршрути — <code>ip r<\/code>, сусіди — <code>ip neigh<\/code>, DNS — <code>/etc/resolv.conf<\/code>."}, {"q": "У яких випадках використовується адреса <code>0.0.0.0<\/code>?", "options": ["Зарезервована адреса класу E для експериментів", "Адреса відправника в DHCP Discover, коли в хоста ще немає IP", "Широкомовна адреса, яку отримують усі хости сегмента", "<code>0.0.0.0/0<\/code> — маршрут за замовчуванням (усі адреси)", "Сервер «слухає на всіх інтерфейсах»", "Loopback-адреса, через яку хост звертається сам до себе"], "answer": [1, 3, 4], "explain": "0.0.0.0 означає «будь-яка / невизначена адреса». Loopback — 127.0.0.1, обмежений broadcast — 255.255.255.255, клас E — 240–255."}, {"q": "Який Interface ID отримає хост з MAC-адресою <code>00:1A:2B:3C:4D:5E<\/code> за методом EUI-64?", "options": ["<code>001A:2BFF:FE3C:4D5E<\/code>", "<code>021A:2BFE:FF3C:4D5E<\/code>", "<code>001A:2B3C:4D5E:FFFE<\/code>", "<code>021A:2B3C:4D5E:0000<\/code>", "<code>021A:2BFF:FE3C:4D5E<\/code>"], "answer": [4], "explain": "MAC ділять навпіл, посередині вставляють FFFE і інвертують 7-й біт першого байта: 00 → 02. Без інверсії (001A…) — помилка, а FFFE вставляють саме посередині і в такому порядку."}, {"q": "Які префікси IPv6 відповідають приватним (не маршрутизованим в інтернеті) адресам — аналогу RFC 1918?", "options": ["<code>2001:db8::/32<\/code>", "<code>fe80::/10<\/code>", "<code>ff00::/8<\/code>", "<code>fc00::/7<\/code>", "<code>fd00::/8<\/code>", "<code>2000::/3<\/code>"], "answer": [3, 4], "explain": "Unique local — <code>fc00::/7<\/code>; на практиці використовують його половину <code>fd00::/8<\/code> (з випадковим 40-бітним ідентифікатором). fe80::/10 — link-local (аналог APIPA), 2000::/3 — глобальні, ff00::/8 — multicast, 2001:db8::/32 — документація."}, {"q": "Які твердження про VPN правильні?", "options": ["Remote access VPN підключає окремого користувача до корпоративної мережі", "VPN не додає накладних витрат: шифрування не збільшує розмір пакетів", "VPN — інша назва NAT: обидва лише переписують адреси в заголовках", "Site-to-site VPN постійно об'єднує мережі кількох офісів", "WireGuard — різновид NAT, що працює без шифрування", "VPN тунелює і шифрує трафік поверх недовіреної мережі"], "answer": [0, 3, 5], "explain": "VPN додає заголовки і шифрування, тому має накладні витрати. NAT лише переписує адреси, без шифрування. WireGuard — сучасний VPN-протокол."}]</script>
 <div class="complete-box"><p>Прочитали і пройшли тест? Позначте лекцію — прогрес оновиться на головній і в меню.</p><button type="button" class="btn primary" data-complete="w2l6" aria-pressed="false"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg><span class="lbl">Позначити як опрацьовану</span></button></div>
-<nav class="pager" aria-label="Попередня і наступна лекції"><a class="prev" href="../../lectures/week-1/lecture-5.html"><small>← Попередня · Лекція 5</small><span>LAMP-стек: Apache, MySQL, PHP і розгортання вебзастосунку</span></a><a class="next" href="../../lectures/week-2/lecture-7.html"><small>Наступна · Лекція 7 →</small><span>Хмарні обчислення: модель NIST, IaaS/PaaS/SaaS і провайдери AWS, GCP, Azure</span></a></nav>
-<div class="sources-note"><b>Джерела лекції:</b> презентація «Networks Intro» (32 слайди); презентація «Networks. IP-Addressing. IP-Networks» (45 слайдів); чат лекцій 6–7 (OSI, MAC, IPv6); розділ TCP/UDP, DHCP і мережевих команд доповнено з RFC 793/2131 та man-сторінок iproute2. <b>Обмеження:</b> MP3-запис лекції не транскрибовано; відео не оброблялося за правилами курсу.</div>
+<nav class="pager" aria-label="Попередня і наступна лекції"><a class="prev" href="../../lectures/week-1/lecture-5.html"><small>← Попередня · Лекція 5</small><span>LAMP і SQL: Apache, Nginx, MySQL, запити, JOIN і транзакції</span></a><a class="next" href="../../lectures/week-2/lecture-7.html"><small>Наступна · Лекція 7 →</small><span>Хмарні обчислення: модель NIST, IaaS/PaaS/SaaS і провайдери AWS, GCP, Azure</span></a></nav>
+<div class="sources-note"><b>Джерела лекції:</b> презентація «Networks Intro» (32 слайди); презентація «Networks. IP-Addressing. IP-Networks» (45 слайдів); чат лекцій 6–7 (OSI, MAC, IPv6); RFC 791, 793, 768, 1918, 2131, 3056, 3927, 4291, 4380, 4861, 5952, 8200, 8415; CompTIA Network+ (N10-008/009) objectives і банк питань ExamCompass, з якого взято Network quiz курсу; man-сторінки iproute2, dig, ss. <b>Обмеження:</b> MP3-запис лекції не транскрибовано; відео не оброблялося за правилами курсу.</div>
 </main>
-<aside class="toc" aria-label="На цій сторінці"><div class="toc-title">На цій сторінці</div><ol><li><a href="#goals">Чого ви навчитесь</a></li><li><a href="#basics">Протоколи і моделі</a></li><li><a href="#addressing">Три рівні адресації</a></li><li><a href="#ipv4">IPv4: мережа, хост, маска</a></li><li><a href="#ipv6">IPv6 коротко</a></li><li><a href="#tools">Діагностика: ping і traceroute</a></li><li><a href="#nat">NAT і PAT</a></li><li><a href="#vpn">VPN</a></li><li><a href="#tcpudp">TCP vs UDP, DHCP і мережеві команди Linux</a></li><li><a href="#mistakes">Типові помилки</a></li><li><a href="#quiz">Перевір себе</a></li></ol></aside>
+<aside class="toc" aria-label="На цій сторінці"><div class="toc-title">На цій сторінці</div><ol><li><a href="#goals">Чого ви навчитесь</a></li><li><a href="#basics">Мережа, протокол, пристрої</a></li><li><a href="#osi">Модель OSI: сім рівнів</a></li><li><a href="#tcpip">Модель TCP/IP і інкапсуляція</a></li><li><a href="#addressing">Три рівні адресації: MAC, IP, порт</a></li><li><a href="#cast">Види передачі: unicast, broadcast, multicast, anycast</a></li><li><a href="#ports">Порти і транспортні протоколи</a></li><li><a href="#binary">Двійкова система: без неї маски не зрозуміти</a></li><li><a href="#ipv4">IPv4: мережа, хост, маска, префікс</a></li><li><a href="#classes">Класи IPv4 (classful addressing)</a></li><li><a href="#special">Приватні, публічні та спеціальні адреси</a></li><li><a href="#ipv6">IPv6 детально</a></li><li><a href="#transition">Співіснування IPv4 і IPv6: механізми переходу</a></li><li><a href="#dhcp">DHCP: автоматична видача адрес</a></li><li><a href="#dns">DNS: як ім&#x27;я перетворюється на адресу</a></li><li><a href="#nat">NAT: трансляція адрес</a></li><li><a href="#vpn">VPN</a></li><li><a href="#qos">QoS, ACL, фаєрволи, VLAN</a></li><li><a href="#routing">Маршрутизація</a></li><li><a href="#tools">Діагностика мережі</a></li><li><a href="#mistakes">Типові помилки</a></li><li><a href="#quiz">Перевір себе</a></li></ol></aside>
 </div>
 </div>
 <footer class="site-footer">Навчальний конспект для самопідготовки. Прогрес і результати тестів зберігаються лише в цьому браузері на цьому пристрої (localStorage) і не синхронізуються між пристроями.</footer>

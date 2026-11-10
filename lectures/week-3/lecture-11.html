@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Лекція 11. CI/CD і Jenkins: конвеєр збирання, Jenkinsfile і Pipeline as Code · Хмарні технології та сервіси</title>
-<meta name="description" content="Неперервна інтеграція, архітектура CI-сервера, встановлення Jenkins, Jenkinsfile: declarative vs scripted, stages/steps, паралельність, approval, post, parameters, credentials, інструменти; тригери збірки (Poll SCM, webhook, розклад), плагіни, правила CI.">
+<meta name="description" content="Неперервна інтеграція, архітектура CI-сервера, встановлення Jenkins, Jenkinsfile: declarative vs scripted, stages/steps, паралельність, approval, post, parameters, credentials, інструменти; тригери збірки (Poll SCM, webhook, розклад), плагіни, правила CI; архітектура (controller, agents, executors, labels), типи задач і статуси, Credentials і withCredentials, безпека і JCasC, повний конвеєр з Docker і деплоєм, вбудовані змінні, порівняння CI-систем.">
 <meta name="theme-color" content="#0d7a6f">
 <script>try{var t=localStorage.getItem("htc-theme");if(t)document.documentElement.setAttribute("data-theme",t)}catch(e){}</script>
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=Onest:wght@400;500;600;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
@@ -26,13 +26,13 @@
 <div class="side-group"><a class="side-link" href="../../index.html"><span class="side-num">⌂</span><span>Огляд курсу і план</span></a></div>
 <div class="side-group" data-week-progress="w1l1,w1l2,w1l3,w1l4,w1l5"><div class="side-title"><a href="../../weeks/week-1.html">Тиждень 1</a><span class="wk-count wp-text">0 з 5</span></div>
 <a class="side-link" href="../../lectures/week-1/lecture-1.html"><span class="side-num">01</span><span>Вступ до DevOps, SDLC і хмарних моделей</span><span class="side-check" data-check="w1l1" role="img" aria-label="Не опрацьовано"></span></a>
-<a class="side-link" href="../../lectures/week-1/lecture-2.html"><span class="side-num">02</span><span>Linux: команди, користувачі, права</span><span class="side-check" data-check="w1l2" role="img" aria-label="Не опрацьовано"></span></a>
+<a class="side-link" href="../../lectures/week-1/lecture-2.html"><span class="side-num">02</span><span>Linux CLI: файли, пошук, права, процеси</span><span class="side-check" data-check="w1l2" role="img" aria-label="Не опрацьовано"></span></a>
 <a class="side-link" href="../../lectures/week-1/lecture-3.html"><span class="side-num">03</span><span>Bash: змінні, умови, цикли, функції</span><span class="side-check" data-check="w1l3" role="img" aria-label="Не опрацьовано"></span></a>
 <a class="side-link" href="../../lectures/week-1/lecture-4.html"><span class="side-num">04</span><span>Веб-архітектура: HTTP, REST, N-tier</span><span class="side-check" data-check="w1l4" role="img" aria-label="Не опрацьовано"></span></a>
-<a class="side-link" href="../../lectures/week-1/lecture-5.html"><span class="side-num">05</span><span>LAMP: Apache, MySQL, PHP</span><span class="side-check" data-check="w1l5" role="img" aria-label="Не опрацьовано"></span></a>
+<a class="side-link" href="../../lectures/week-1/lecture-5.html"><span class="side-num">05</span><span>LAMP, Apache/Nginx і SQL</span><span class="side-check" data-check="w1l5" role="img" aria-label="Не опрацьовано"></span></a>
 </div>
 <div class="side-group" data-week-progress="w2l6,w2l7,w2l8,w2l9,w2l10"><div class="side-title"><a href="../../weeks/week-2.html">Тиждень 2</a><span class="wk-count wp-text">0 з 5</span></div>
-<a class="side-link" href="../../lectures/week-2/lecture-6.html"><span class="side-num">06</span><span>Мережі: OSI, TCP/IP, IP, NAT, VPN</span><span class="side-check" data-check="w2l6" role="img" aria-label="Не опрацьовано"></span></a>
+<a class="side-link" href="../../lectures/week-2/lecture-6.html"><span class="side-num">06</span><span>Мережі: OSI, IPv4/IPv6, DHCP, DNS, NAT</span><span class="side-check" data-check="w2l6" role="img" aria-label="Не опрацьовано"></span></a>
 <a class="side-link" href="../../lectures/week-2/lecture-7.html"><span class="side-num">07</span><span>Хмари: NIST, моделі, AWS/GCP/Azure</span><span class="side-check" data-check="w2l7" role="img" aria-label="Не опрацьовано"></span></a>
 <a class="side-link" href="../../lectures/week-2/lecture-8.html"><span class="side-num">08</span><span>IaC і Terraform</span><span class="side-check" data-check="w2l8" role="img" aria-label="Не опрацьовано"></span></a>
 <a class="side-link" href="../../lectures/week-2/lecture-9.html"><span class="side-num">09</span><span>Віртуалізація і Docker</span><span class="side-check" data-check="w2l9" role="img" aria-label="Не опрацьовано"></span></a>
@@ -51,8 +51,8 @@
 <h1>CI/CD і Jenkins: конвеєр збирання, Jenkinsfile і Pipeline as Code</h1>
 <p class="lead">CI-сервер — це «конвеєр» команди: на кожну зміну в Git він сам збирає проєкт, проганяє тести й повідомляє про результат. Jenkins — найпоширеніший open-source CI-сервер, а Jenkinsfile описує конвеєр як код.</p>
 <div class="meta-row">
-<span class="chip"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>≈ 15 хв читання</span>
-<span class="chip"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M9.5 9.5a2.5 2.5 0 114 2c-1 .7-1.5 1.2-1.5 2.5M12 17h.01"/></svg>10 питань самоперевірки</span>
+<span class="chip"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>≈ 31 хв читання</span>
+<span class="chip"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M9.5 9.5a2.5 2.5 0 114 2c-1 .7-1.5 1.2-1.5 2.5M12 17h.01"/></svg>22 питань самоперевірки</span>
 <span class="chip" data-status="w3l11"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg><span class="lbl">Не опрацьовано</span></span>
 </div>
 </div>
@@ -64,6 +64,10 @@
 <li>Встановити Jenkins і знати його ключові налаштування.</li>
 <li>Прочитати і написати <b>declarative Jenkinsfile</b>: <code>agent</code>, <code>stages</code>, <code>steps</code>, <code>post</code>, <code>parameters</code>, <code>when</code>.</li>
 <li>Порівняти declarative і scripted pipeline та знати допоміжні інструменти Jenkins.</li>
+<li>Пояснити архітектуру Jenkins: контролер, агенти, executors, мітки, workspace; типи задач і статуси збірки.</li>
+<li>Безпечно працювати з секретами (Credentials, withCredentials, sshagent) і знати правила безпеки Jenkins.</li>
+<li>Написати повний конвеєр: тести з junit, збірка і публікація Docker-образу, деплой зі схваленням; знати вбудовані змінні.</li>
+<li>Порівняти Jenkins з GitHub Actions, GitLab CI, TeamCity та іншими системами.</li>
 </ul>
 </div>
 
@@ -100,6 +104,68 @@ rpm --import http://pkg.jenkins-ci.org/redhat/jenkins-ci.org.key
 yum install jenkins
 service jenkins start                       <span class="c"># далі http://server:8080</span></code></pre>
 <p>Налаштування сервісу — <code>/etc/sysconfig/jenkins</code>: <code>JENKINS_HOME="/var/lib/jenkins"</code> (усі задачі, плагіни, історія), <code>JENKINS_USER="jenkins"</code>, <code>JENKINS_PORT="8080"</code>. Після першого входу: оновити/встановити плагіни, налаштувати Maven (для Java-проєктів), Git-плагін, і SSH-ключ для доступу до репозиторію (<code>ssh-keygen</code> → публічний ключ у GitHub, як у лекції 2). Адреси репозиторіїв Jenkins з часом змінювались — актуальну інструкцію беріть на jenkins.io.</p>
+
+<h2 id="arch">Архітектура Jenkins: контролер, агенти, задачі, облікові дані<a class="h-anchor" href="#arch" aria-label="Посилання на розділ">#</a></h2>
+<figure><div class="figure wide">
+<svg class="dg" viewBox="0 0 720 230" role="img" aria-label="Jenkins controller зберігає конфігурацію, планує збірки і веб-інтерфейс; агенти з мітками linux, docker, windows виконують збірки в executor-ах">
+<defs><marker id="l11a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0L10 5L0 10z" class="arrow-acc"/></marker></defs>
+<rect x="20" y="60" width="230" height="120" rx="12" class="vio"/>
+<text x="135" y="86" text-anchor="middle" class="t-bold">Controller (master)</text>
+<text x="135" y="108" text-anchor="middle" class="t-small">веб-інтерфейс, планування</text>
+<text x="135" y="126" text-anchor="middle" class="t-small">конфігурація задач, плагіни</text>
+<text x="135" y="144" text-anchor="middle" class="t-small">облікові дані, історія</text>
+<text x="135" y="166" text-anchor="middle" class="t-mono t-small">JENKINS_HOME</text>
+<rect x="430" y="14" width="270" height="56" rx="10" class="box"/><text x="445" y="36" class="t-bold">Agent «linux»</text><text x="445" y="56" class="t-small">2 executors · SSH</text>
+<rect x="430" y="86" width="270" height="56" rx="10" class="box"/><text x="445" y="108" class="t-bold">Agent «docker»</text><text x="445" y="128" class="t-small">збірка в контейнерах</text>
+<rect x="430" y="158" width="270" height="56" rx="10" class="box"/><text x="445" y="180" class="t-bold">Agent «windows»</text><text x="445" y="200" class="t-small">inbound (JNLP/WebSocket)</text>
+<path d="M250 100 L428 44" class="ln-acc" marker-end="url(#l11a)"/><path d="M250 120 L428 114" class="ln-acc" marker-end="url(#l11a)"/><path d="M250 140 L428 186" class="ln-acc" marker-end="url(#l11a)"/>
+<text x="330" y="60" text-anchor="middle" class="t-small t-muted">розподіляє збірки</text><text x="330" y="74" text-anchor="middle" class="t-small t-muted">за мітками</text>
+</svg></div>
+<figcaption><b>Розподілені збірки.</b> Контролер керує, агенти виконують. На production-контролері самі збірки не запускають.</figcaption></figure>
+<div class="table-wrap"><table>
+<thead><tr><th>Поняття</th><th>Значення</th></tr></thead>
+<tbody>
+<tr><td><b>Controller</b> (колишній master)</td><td>центральний сервер: UI, планування, конфігурація, плагіни, облікові дані, історія збірок</td></tr>
+<tr><td><b>Agent</b> (node, slave)</td><td>машина або контейнер, де виконуються збірки. Підключається по SSH (контролер ходить на агента) або inbound (агент сам підключається до контролера)</td></tr>
+<tr><td><b>Executor</b></td><td>слот для однієї збірки на агенті; 2 executors = 2 паралельні збірки</td></tr>
+<tr><td><b>Label</b></td><td>мітка агента (<code>linux</code>, <code>docker</code>, <code>gpu</code>); у Jenkinsfile — <code>agent { label 'docker' }</code></td></tr>
+<tr><td><b>Workspace</b></td><td>каталог на агенті, куди клонується код і де йде збірка (<code>$WORKSPACE</code>)</td></tr>
+<tr><td><b>Build</b></td><td>один запуск задачі з номером (<code>#42</code>), логом консолі, артефактами і статусом</td></tr>
+</tbody></table></div>
+<h3>Типи задач і статуси збірки</h3>
+<ul>
+<li><b>Freestyle</b> — налаштування мишкою у вебформі (старий підхід, не версіонується).</li>
+<li><b>Pipeline</b> — конвеєр з Jenkinsfile.</li>
+<li><b>Multibranch Pipeline</b> — окрема задача для кожної гілки і PR репозиторію з Jenkinsfile.</li>
+<li><b>Folder / Organization Folder</b> — групування і автоматичне сканування організації GitHub.</li>
+</ul>
+<div class="table-wrap"><table>
+<thead><tr><th>Статус</th><th>Колір</th><th>Значення</th></tr></thead>
+<tbody>
+<tr><td>SUCCESS</td><td>зелений (синій у старому UI)</td><td>усі кроки пройшли</td></tr>
+<tr><td>UNSTABLE</td><td>жовтий</td><td>збірка є, але частина тестів впала (наприклад, junit знайшов провалені тести)</td></tr>
+<tr><td>FAILURE</td><td>червоний</td><td>крок завершився помилкою (ненульовий код <code>sh</code>, помилка компіляції)</td></tr>
+<tr><td>ABORTED</td><td>сірий</td><td>зупинено вручну або за тайм-аутом</td></tr>
+<tr><td>NOT_BUILT</td><td>сірий</td><td>етап пропущено (наприклад, умова <code>when</code> не виконалась)</td></tr>
+</tbody></table></div>
+<h3>Облікові дані (Credentials)</h3>
+<p>Секрети зберігаються в Jenkins зашифровано і підставляються в збірку за ID, а в лозі маскуються як <code>****</code>. Типи: Username with password, Secret text (токен), SSH Username with private key, Secret file, Certificate.</p>
+<pre data-lang="groovy"><code>withCredentials([usernamePassword(credentialsId: 'dockerhub',
+                                  usernameVariable: 'DOCKER_USER',
+                                  passwordVariable: 'DOCKER_PASS')]) {
+    sh 'echo "$DOCKER_PASS" | docker login -u "$DOCKER_USER" --password-stdin'
+}
+sshagent(['deploy-key']) {
+    sh 'ssh -o StrictHostKeyChecking=no deploy@10.0.1.10 "sudo systemctl restart app"'
+}</code></pre>
+<p>Зверніть увагу на одинарні лапки в <code>sh '...'</code>: змінну розкриє shell, а не Groovy, тож секрет не потрапить у текст команди, що логується. У подвійних лапках Groovy підставив би значення сам.</p>
+<h3>Безпека і супровід</h3>
+<ul>
+<li>Не запускати збірки на контролері (кількість executors контролера = 0): код зі збірки міг би прочитати всі секрети <code>JENKINS_HOME</code>.</li>
+<li>Авторизація за ролями (Matrix/Role-based), вхід через SSO, регулярні оновлення Jenkins і плагінів (більшість вразливостей — у плагінах).</li>
+<li>Бекап <code>JENKINS_HOME</code> (задачі, конфігурація, облікові дані); краще — <b>Configuration as Code</b> (плагін JCasC): уся конфігурація Jenkins у YAML-файлі в Git.</li>
+<li>Швидкий старт у Docker: <code>docker run -d -p 8080:8080 -p 50000:50000 -v jenkins_home:/var/jenkins_home jenkins/jenkins:lts</code> (50000 — порт для inbound-агентів); початковий пароль — у <code>docker logs</code> або файлі <code>secrets/initialAdminPassword</code>.</li>
+</ul>
 
 <h2 id="jenkinsfile">Jenkinsfile: Pipeline as Code<a class="h-anchor" href="#jenkinsfile" aria-label="Посилання на розділ">#</a></h2>
 <p><b>Jenkinsfile</b> — опис конвеєра на <b>Groovy DSL</b>, що лежить у репозиторії поруч із кодом. Переваги зберігання в SCM: рев'ю й ітерації коду конвеєра, <b>журнал змін (audit trail)</b>, <b>єдине джерело правди</b>.</p>
@@ -203,6 +269,91 @@ service jenkins start                       <span class="c"># далі http://se
 }</code></pre>
 <p>Крок <code>node</code> займає слот виконавця (можна фільтрувати за мітками: <code>node('php7')</code>); код поза <code>node</code> виконується «легким» виконавцем на master. Виконання конвеєра <b>переживає перезапуск</b> Jenkins.</p>
 
+<h2 id="full-pipeline">Повний конвеєр: тести → Docker-образ → реєстр → деплой<a class="h-anchor" href="#full-pipeline" aria-label="Посилання на розділ">#</a></h2>
+<pre data-lang="groovy"><code>pipeline {
+    agent { label 'docker' }
+    environment {
+        IMAGE = "ghcr.io/anna/shop-api"
+        TAG   = "${env.BUILD_NUMBER}-${env.GIT_COMMIT.take(7)}"   // напр. 42-a1b2c3d
+    }
+    options {
+        timeout(time: 30, unit: 'MINUTES')
+        disableConcurrentBuilds()
+        buildDiscarder(logRotator(numToKeepStr: '20'))
+    }
+    triggers { githubPush() }                    // webhook від GitHub
+
+    stages {
+        stage('Test') {
+            agent { docker { image 'python:3.12-slim'; reuseNode true } }
+            steps {
+                sh 'pip install -r requirements.txt'
+                sh 'pytest --junitxml=reports/junit.xml'
+            }
+            post { always { junit 'reports/junit.xml' } }   // графік тестів у UI, UNSTABLE при падіннях
+        }
+        stage('Build image') {
+            steps { sh 'docker build -t $IMAGE:$TAG .' }
+        }
+        stage('Push image') {
+            when { branch 'main' }
+            steps {
+                withCredentials([usernamePassword(credentialsId: 'ghcr',
+                        usernameVariable: 'U', passwordVariable: 'P')]) {
+                    sh 'echo "$P" | docker login ghcr.io -u "$U" --password-stdin'
+                    sh 'docker push $IMAGE:$TAG'
+                }
+            }
+        }
+        stage('Deploy to staging') {
+            when { branch 'main' }
+            steps {
+                sshagent(['staging-key']) {
+                    sh 'ssh deploy@staging.local "docker pull $IMAGE:$TAG &amp;&amp; docker rm -f api || true &amp;&amp; docker run -d --name api -p 80:8000 $IMAGE:$TAG"'
+                }
+            }
+        }
+        stage('Deploy to production') {
+            when { branch 'main' }
+            steps {
+                input message: "Deploy ${TAG} to production?", submitter: 'release-managers'
+                sh 'kubectl set image deploy/api api=$IMAGE:$TAG'     // Continuous Delivery: реліз після схвалення людиною
+            }
+        }
+    }
+    post {
+        success { echo "OK: ${env.BUILD_URL}" }
+        failure { echo "FAILED: ${env.JOB_NAME} #${env.BUILD_NUMBER}" }   // тут — Slack/email
+        always  { sh 'docker image prune -f || true' }
+    }
+}</code></pre>
+<h3>Вбудовані змінні Jenkins</h3>
+<div class="table-wrap"><table>
+<thead><tr><th>Змінна</th><th>Значення</th></tr></thead>
+<tbody>
+<tr><td><code>BUILD_NUMBER</code></td><td>номер збірки: 42</td></tr>
+<tr><td><code>BUILD_ID</code>, <code>BUILD_URL</code></td><td>ідентифікатор і посилання на збірку</td></tr>
+<tr><td><code>JOB_NAME</code></td><td>ім'я задачі (для multibranch — з гілкою)</td></tr>
+<tr><td><code>WORKSPACE</code></td><td>шлях до робочого каталогу на агенті</td></tr>
+<tr><td><code>BRANCH_NAME</code></td><td>гілка (у multibranch pipeline)</td></tr>
+<tr><td><code>GIT_COMMIT</code></td><td>хеш коміту, що збирається</td></tr>
+<tr><td><code>NODE_NAME</code></td><td>агент, на якому йде збірка</td></tr>
+</tbody></table></div>
+<p>Список з описами — на сторінці <code>http://jenkins:8080/env-vars.html</code>. Тег образу з номером збірки і хешем коміту однозначно пов'язує образ у реєстрі з кодом і збіркою, на відміну від <code>latest</code>.</p>
+
+<h2 id="ci-tools">Jenkins і інші CI/CD-системи<a class="h-anchor" href="#ci-tools" aria-label="Посилання на розділ">#</a></h2>
+<div class="table-wrap"><table>
+<thead><tr><th>Система</th><th>Розміщення</th><th>Опис конвеєра</th><th>Особливості</th></tr></thead>
+<tbody>
+<tr><td><b>Jenkins</b></td><td>власний сервер (self-hosted)</td><td>Jenkinsfile (Groovy)</td><td>максимальна гнучкість, 1800+ плагінів, але сервер треба адмініструвати і оновлювати</td></tr>
+<tr><td><b>GitHub Actions</b></td><td>хмара GitHub (+ self-hosted runners)</td><td>YAML у <code>.github/workflows/</code></td><td>інтеграція з GitHub, маркетплейс готових дій (лекція 12)</td></tr>
+<tr><td><b>GitLab CI/CD</b></td><td>GitLab.com або власний GitLab</td><td><code>.gitlab-ci.yml</code></td><td>вбудований у GitLab разом з реєстром і середовищами</td></tr>
+<tr><td><b>TeamCity</b></td><td>власний сервер / хмара JetBrains</td><td>UI або Kotlin DSL</td><td>зручний для .NET і Java</td></tr>
+<tr><td><b>Azure Pipelines</b></td><td>Azure DevOps</td><td>YAML</td><td>інтеграція з екосистемою Microsoft</td></tr>
+<tr><td><b>CircleCI</b>, Travis CI</td><td>хмара</td><td>YAML</td><td>популярні для open source</td></tr>
+<tr><td><b>Argo CD</b>, Flux</td><td>у Kubernetes</td><td>маніфести в Git</td><td>лише CD за підходом GitOps</td></tr>
+</tbody></table></div>
+
 <h2 id="ecosystem">Масштабування і зручності<a class="h-anchor" href="#ecosystem" aria-label="Посилання на розділ">#</a></h2>
 <ul>
 <li><b>Multibranch / Organization Folder</b> — сканує організацію GitHub/Bitbucket, знаходить Jenkinsfile і автоматично створює задачі для кожного репозиторію, гілки й PR. Запуск — через webhook або періодично.</li>
@@ -235,17 +386,21 @@ service jenkins start                       <span class="c"># далі http://se
 
 <h2 id="mistakes">Типові помилки<a class="h-anchor" href="#mistakes" aria-label="Посилання на розділ">#</a></h2>
 <div class="mistakes">
+<div class="mistake"><div class="wrong">Збірки зручно запускати прямо на контролері Jenkins.</div><div class="right">Код збірки на контролері має доступ до JENKINS_HOME і всіх секретів. Збірки — на агентах, executors контролера = 0.</div></div>
+<div class="mistake"><div class="wrong">Секрет у <code>sh "docker login -p ${PASS}"</code> безпечний, бо Jenkins маскує його.</div><div class="right">Подвійні лапки — інтерполяція Groovy: секрет потрапляє в текст команди. Пишіть <code>sh '... "$PASS" ...'</code> і передавайте через stdin.</div></div>
+<div class="mistake"><div class="wrong">UNSTABLE — те саме, що FAILURE.</div><div class="right">UNSTABLE: збірка відбулась, але частина тестів впала. FAILURE: крок завершився помилкою.</div></div>
+
 <div class="mistake"><div class="wrong">Налаштовувати конвеєр кліками в UI (Freestyle) і ніде його не зберігати.</div><div class="right">Jenkinsfile у репозиторії: рев'ю, історія змін, відтворюваність. Для міграції є автоконвертація Freestyle → Pipeline.</div></div>
 <div class="mistake"><div class="wrong">Писати пароль прямо в Jenkinsfile.</div><div class="right">Секрети зберігають у Jenkins Credentials і підставляють через <code>credentials('id')</code> в <code>environment</code>.</div></div>
 <div class="mistake"><div class="wrong">Плутати <code>stage</code> і <code>step</code>.</div><div class="right">Stage — етап конвеєра (Build, Test, Deploy), steps — список дій усередині етапу (<code>sh</code>, <code>echo</code>, <code>git</code>).</div></div>
 <div class="mistake"><div class="wrong">Тримати <code>input</code> всередині агента, що займає executor на дні.</div><div class="right">Для очікування схвалення використовують <code>agent none</code> на верхньому рівні, щоб не блокувати ресурси.</div></div>
 </div>
-<h2 id="quiz">Перевір себе<a class="h-anchor" href="#quiz" aria-label="Посилання на розділ">#</a></h2><p>10 питань на розуміння. В одиночних питаннях натисніть варіант — одразу побачите правильну відповідь і пояснення. Питання з позначкою <b>«кілька відповідей»</b> влаштовані як у тесті курсу (<i>Select one or more</i>): позначте всі правильні варіанти й натисніть «Перевірити».</p><div class="quiz" data-quiz="w3l11"></div><script type="application/json" id="quiz-data">[{"q": "Яка головна мета Continuous Integration?", "options": ["Зберігати артефакти", "Автоматично деплоїти в production без тестів", "Замінити систему контролю версій", "Часто інтегрувати зміни і перевіряти кожну автоматичною збіркою й тестами, щоб рано знаходити помилки"], "answer": 3, "explain": "CI = часті злиття + автоматичне збирання і тестування кожної зміни зі швидким зворотним зв'язком."}, {"q": "Як називається файл, що описує Jenkins-конвеєр як код?", "options": ["pipeline.yml", "Dockerfile", "Jenkinsfile", "main.tf"], "answer": 2, "explain": "Jenkinsfile на Groovy DSL зберігається в репозиторії разом із кодом."}, {"q": "Чим declarative pipeline відрізняється від scripted?", "options": ["Declarative працює тільки в Docker", "Declarative не використовує Groovy", "Declarative має простіший суворіший синтаксис з валідацією; scripted — імперативна модель з максимальною гнучкістю", "Scripted не підтримує stages"], "answer": 2, "explain": "Обидва на Groovy і на одному движку, але declarative обмежує синтаксис заради простоти, а scripted — повноцінне програмування."}, {"q": "Який блок declarative pipeline виконує дії після завершення збірки, наприклад лист при падінні?", "options": ["post", "agent", "stages", "options"], "answer": 0, "explain": "post має секції always, success, failure тощо; у прикладі зі слайдів failure надсилає emailext."}, {"q": "Що робить <code>input message: 'Deploy to Stage?'<\/code>?", "options": ["Встановлює плагін", "Зупиняє конвеєр до ручного схвалення людиною", "Читає файл", "Запускає паралельні етапи"], "answer": 1, "explain": "input реалізує approval — типовий крок Continuous Delivery перед виходом у production чи staging."}, {"q": "Як правильно передати секретний ключ у Jenkinsfile?", "options": ["Записати в README", "Передати через назву гілки", "Написати його в коді", "Зберегти в Jenkins Credentials і використати credentials('id') в environment"], "answer": 3, "explain": "Секрети живуть у сховищі облікових даних Jenkins і маскуються в логах."}, {"q": "Чим webhook кращий за Poll SCM?", "options": ["Webhook не потребує мережі", "Poll SCM не підтримує Git", "Webhook працює лише вночі", "Репозиторій сам повідомляє Jenkins про зміни — без затримки і зайвих опитувань"], "answer": 3, "explain": "Poll SCM — Jenkins питає за розкладом; webhook — GitHub штовхає подію одразу після push."}, {"q": "Які з цих правил належать до практик Continuous Integration?", "options": ["Першочергово лагодити зламану збірку", "Зливати гілки раз на кілька місяців", "Збирати і тестувати кожен коміт автоматично", "Часто комітити малими порціями"], "answer": [0, 2, 3], "explain": "Рідкісні великі злиття — саме те, від чого рятує CI («integration hell»)."}, {"q": "Як в Jenkins розширюють функціональність (Git, Docker, Blue Ocean)?", "options": ["Встановлюють плагіни через Manage Jenkins → Plugins", "Ніяк — функції фіксовані", "Переписують вихідний код Jenkins", "Тільки через Jenkinsfile"], "answer": 0, "explain": "Майже все в Jenkins, включно з Pipeline і інтеграцією з Git, — це плагіни."}, {"q": "Де Jenkins (на CentOS) зберігає задачі, плагіни й історію збірок за замовчуванням?", "options": ["/etc/jenkins", "/var/lib/jenkins (JENKINS_HOME)", "/home/jenkins/www", "/usr/bin/jenkins"], "answer": 1, "explain": "У /etc/sysconfig/jenkins задано JENKINS_HOME=\"/var/lib/jenkins\"; саме цей каталог потрібно бекапити."}]</script>
+<h2 id="quiz">Перевір себе<a class="h-anchor" href="#quiz" aria-label="Посилання на розділ">#</a></h2><p>22 питань на розуміння. В одиночних питаннях натисніть варіант — одразу побачите правильну відповідь і пояснення. Питання з позначкою <b>«кілька відповідей»</b> влаштовані як у тесті курсу (<i>Select one or more</i>): позначте всі правильні варіанти й натисніть «Перевірити».</p><div class="quiz" data-quiz="w3l11"></div><script type="application/json" id="quiz-data">[{"q": "Що таке Continuous Integration?", "options": ["Автоматичний реліз у production без тестів", "Швидкий зворотний зв'язок розробникам про зламаний код", "Щомісячне злиття всіх гілок перед релізом", "Практика частого злиття змін у спільну гілку", "Автоматична збірка і тестування кожної зміни"], "answer": [1, 3, 4], "explain": "Рідкісні великі злиття — якраз те, від чого CI позбавляє. Реліз у production — етап CD."}, {"q": "Для чого використовують Jenkins?", "options": ["Зберігання Docker-образів для розгортання", "Запуск конвеєрів, описаних у Jenkinsfile", "Контроль версій вихідного коду і зберігання історії комітів", "Автоматизація збірки, тестування і розгортання (CI/CD)", "Моніторинг метрик серверів і надсилання алертів"], "answer": [1, 3], "explain": "Код зберігається в Git, метрики — Prometheus/Nagios, образи — реєстр (Docker Hub, Nexus)."}, {"q": "Які факти про Jenkins правильні?", "options": ["Jenkins 2.0 зробив Pipeline as Code основним підходом", "Є форком (наступником) проєкту Hudson", "Написаний на Java", "Jenkins — платний продукт Microsoft", "Має понад тисячу плагінів"], "answer": [0, 1, 2, 4], "explain": "Jenkins — open source з ліцензією MIT."}, {"q": "Які твердження про Jenkinsfile правильні?", "options": ["Описує конвеєр мовою Groovy DSL", "Змінюється тільки через вебінтерфейс, тому історії змін у Git не має", "Існує у двох синтаксисах: declarative і scripted", "Пишеться лише в YAML і зберігається в налаштуваннях Jenkins, а не в репозиторії", "Зберігається в репозиторії разом з кодом", "Дає рев'ю і журнал змін конвеєра"], "answer": [0, 2, 4, 5], "explain": "YAML використовують GitHub Actions і GitLab CI."}, {"q": "Чим відрізняються declarative і scripted pipeline?", "options": ["Scripted не підтримує Groovy і пишеться окремою мовою", "Scripted — повноцінна імперативна мова з node { }", "Declarative має суворішу структуру: pipeline, agent, stages, steps", "В declarative можна вставити scripted-код через script { }", "Declarative не підтримує паралельних етапів, на відміну від scripted"], "answer": [1, 2, 3], "explain": "Обидва — Groovy; parallel є і в declarative."}, {"q": "Які відповідності «директива declarative pipeline — призначення» правильні?", "options": ["post — дії після завершення (always, success, failure)", "steps — конкретні дії всередині етапу", "agent — де виконувати збірку", "when — розклад запуску за cron", "environment — список агентів", "stages / stage — логічні етапи конвеєра"], "answer": [0, 1, 2, 5], "explain": "when — умова виконання етапу; розклад — triggers; environment — змінні оточення."}, {"q": "Що робить крок input у pipeline?", "options": ["Дозволяє обмежити, хто може схвалити (submitter)", "Читає вміст файла з workspace у змінну Groovy", "Реалізує ручний крок перед production у Continuous Delivery", "Призупиняє конвеєр до ручного схвалення", "Отримує код з репозиторію Git у workspace"], "answer": [0, 2, 3], "explain": "Файли — readFile, код — checkout scm або git."}, {"q": "Навіщо stash і unstash?", "options": ["Зберегти, наприклад, результати збірки для етапу деплою", "Зберегти секрети між запусками конвеєра", "Видалити старі збірки і звільнити місце на агенті", "Сховати незакомічені зміни в Git-репозиторії, як git stash", "Передати файли між етапами, що виконуються на різних агентах"], "answer": [0, 4], "explain": "Це кроки Jenkins, не пов'язані з git stash; ротацію збірок робить buildDiscarder."}, {"q": "Які тригери запуску збірки існують у Jenkins?", "options": ["Запуск при зміні DNS-запису", "Webhook з GitHub про push", "Poll SCM — періодична перевірка репозиторію", "Ручний запуск Build Now", "Build periodically — за розкладом"], "answer": [1, 2, 3, 4], "explain": "Webhook швидший і не навантажує сервер опитуваннями."}, {"q": "Що означає H у розкладі <code>H/5 * * * *<\/code>?", "options": ["Задачі надається високий пріоритет у черзі", "Це розподіляє запуск багатьох задач у часі", "Jenkins обирає зміщення хвилини за хешем назви задачі", "Задача запускається щогодини, а 5 — це хвилина запуску", "Задача запускається лише у вихідні дні"], "answer": [1, 2], "explain": "H/5 — кожні 5 хвилин, але з індивідуальним зміщенням для кожної задачі."}, {"q": "Які твердження про архітектуру Jenkins правильні?", "options": ["Контролер зберігає конфігурацію і планує збірки", "Мітка (label) дозволяє обрати агента з потрібними інструментами", "Executor — слот для однієї збірки на агенті", "Агенти виконують збірки", "Агент зберігає облікові дані всіх задач"], "answer": [0, 1, 2, 3], "explain": "Облікові дані зберігаються на контролері."}, {"q": "Що означають статуси збірки?", "options": ["NOT_BUILT — збірка видалена з диска", "UNSTABLE — збірка є, але частина тестів впала", "SUCCESS — частина тестів пропущена через помилку", "ABORTED — зупинено вручну або за тайм-аутом", "FAILURE — крок завершився помилкою"], "answer": [1, 3, 4], "explain": "NOT_BUILT — етап не виконувався (наприклад, умова when не виконалась)."}, {"q": "Як безпечно використати пароль від Docker-реєстру в Jenkinsfile?", "options": ["Зберегти його в Jenkins Credentials", "Записати пароль прямо в Jenkinsfile", "Отримати через withCredentials і передати в docker login через stdin", "Писати <code>sh '...'<\/code> з одинарними лапками, щоб змінну розкрив shell", "Передати пароль через <code>sh \"docker login -p ${PASS}\"<\/code>"], "answer": [0, 2, 3], "explain": "Подвійні лапки — інтерполяція Groovy: секрет потрапляє в текст команди."}, {"q": "Чому на контролері Jenkins не запускають збірки?", "options": ["Так вимагає ліцензія Jenkins", "Код збірки отримав би доступ до JENKINS_HOME і всіх секретів", "Це порушує принцип ізоляції", "Збірки навантажують контролер і уповільнюють UI", "Контролер не вміє запускати shell-команди"], "answer": [1, 2, 3], "explain": "Технічно контролер може виконувати збірки, але це небезпечно."}, {"q": "Що зберігається в JENKINS_HOME?", "options": ["Історія і логи збірок", "Вихідний код Jenkins", "Встановлені плагіни", "Облікові дані", "Конфігурація задач"], "answer": [0, 2, 3, 4], "explain": "Тому JENKINS_HOME регулярно бекаплять або описують конфігурацію через JCasC."}, {"q": "Що робить крок <code>junit 'reports/*.xml'<\/code>?", "options": ["Позначає збірку UNSTABLE, якщо є провалені тести", "Публікує результати тестів у Jenkins", "Запускає тести JUnit у каталозі reports", "Компілює Java-код перед запуском тестів", "Показує тренд тестів між збірками"], "answer": [0, 1, 4], "explain": "Самі тести запускає команда збірки (mvn test, pytest), junit лише читає звіт."}, {"q": "Які вбудовані змінні Jenkins існують?", "options": ["WORKSPACE", "JOB_NAME", "SERVER_IP", "DOCKER_PASSWORD", "GIT_COMMIT", "BUILD_NUMBER"], "answer": [0, 1, 4, 5], "explain": "Секрети і власні значення задаються самостійно — через Credentials та environment."}, {"q": "Що дає Multibranch Pipeline?", "options": ["Автоматичне злиття гілок у main після збірки без рев'ю", "Окрему задачу для кожної гілки з Jenkinsfile", "Можливість зберігати код у SVN замість Git", "Автоматичне прибирання задач для видалених гілок", "Автоматичні збірки pull request"], "answer": [1, 3, 4], "explain": "Злиття і рев'ю відбуваються в GitHub/GitLab."}, {"q": "Навіщо Docker-агенти в Jenkins?", "options": ["Не встановлювати інструменти збірки на сервер", "Отримувати чисте середовище для кожної збірки", "Замінити webhook від GitHub на опитування репозиторію", "Використовувати різні версії мов у різних проєктах", "Автоматично шифрувати артефакти збірки"], "answer": [0, 1, 3], "explain": "Наприклад, <code>agent { docker { image 'python:3.12-slim' } }<\/code>."}, {"q": "Які правила CI правильні?", "options": ["Комітити часто й малими порціями", "Зламану збірку лагодять першочергово", "Кожен коміт автоматично збирається і тестується", "Тести запускають лише раз на тиждень", "Збірка має бути швидкою"], "answer": [0, 1, 2, 4], "explain": "Рідкісні тести позбавляють CI сенсу."}, {"q": "Які відповідності «CI-система — формат конвеєра» правильні?", "options": ["GitHub Actions — Groovy", "GitLab CI — .gitlab-ci.yml", "GitHub Actions — YAML у .github/workflows", "Jenkins — лише YAML", "Jenkins — Jenkinsfile на Groovy"], "answer": [1, 2, 4], "explain": "Jenkins з плагінами може читати й інші формати, але основний — Jenkinsfile."}, {"q": "Чому тег образу <code>42-a1b2c3d<\/code> кращий за <code>latest<\/code>?", "options": ["Тег latest заборонено в Docker", "Дозволяє відкотитися до конкретної версії", "Однозначно пов'язує образ зі збіркою і комітом", "latest перезаписується з кожною збіркою"], "answer": [1, 2, 3], "explain": "latest дозволений, але неінформативний і змінюється."}]</script>
 <div class="complete-box"><p>Прочитали і пройшли тест? Позначте лекцію — прогрес оновиться на головній і в меню.</p><button type="button" class="btn primary" data-complete="w3l11" aria-pressed="false"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg><span class="lbl">Позначити як опрацьовану</span></button></div>
 <nav class="pager" aria-label="Попередня і наступна лекції"><a class="prev" href="../../lectures/week-2/lecture-10.html"><small>← Попередня · Лекція 10</small><span>Системи контролю версій: Git, гілки, Git Flow і pull request</span></a><a class="next" href="../../lectures/week-3/lecture-12.html"><small>Наступна · Лекція 12 →</small><span>GitHub Actions: workflow, jobs, runners, secrets і автоматичний деплой</span></a></nav>
-<div class="sources-note"><b>Джерела лекції:</b> презентація «Jenkins CI» (48 слайдів); презентація «Jenkins CI» скорочена (17 слайдів, дублює першу); чат лекції 11; розділ про тригери, плагіни і правила CI доповнено з документації jenkins.io і статті Martin Fowler «Continuous Integration». <b>Обмеження:</b> MP3-записи (лекція 11 і окремий запис «Jenkins») не транскрибовано; відео не оброблялося за правилами курсу. PDF про GitHub Actions з цієї папки використано в лекції 12.</div>
+<div class="sources-note"><b>Джерела лекції:</b> презентація «Jenkins CI» (48 слайдів); презентація «Jenkins CI» скорочена (17 слайдів, дублює першу); чат лекції 11; розділ про тригери, плагіни і правила CI доповнено з документації jenkins.io і статті Martin Fowler «Continuous Integration»; Jenkins User Handbook (jenkins.io/doc), Pipeline Syntax reference. <b>Обмеження:</b> MP3-записи (лекція 11 і окремий запис «Jenkins») не транскрибовано; відео не оброблялося за правилами курсу. PDF про GitHub Actions з цієї папки використано в лекції 12.</div>
 </main>
-<aside class="toc" aria-label="На цій сторінці"><div class="toc-title">На цій сторінці</div><ol><li><a href="#goals">Чого ви навчитесь</a></li><li><a href="#ci">Continuous Integration</a></li><li><a href="#jenkins">Jenkins</a></li><li><a href="#jenkinsfile">Jenkinsfile: Pipeline as Code</a></li><li><a href="#ecosystem">Масштабування і зручності</a></li><li><a href="#practice">Тригери збірки, плагіни і правила CI</a></li><li><a href="#mistakes">Типові помилки</a></li><li><a href="#quiz">Перевір себе</a></li></ol></aside>
+<aside class="toc" aria-label="На цій сторінці"><div class="toc-title">На цій сторінці</div><ol><li><a href="#goals">Чого ви навчитесь</a></li><li><a href="#ci">Continuous Integration</a></li><li><a href="#jenkins">Jenkins</a></li><li><a href="#arch">Архітектура Jenkins: контролер, агенти, задачі, облікові дані</a></li><li><a href="#jenkinsfile">Jenkinsfile: Pipeline as Code</a></li><li><a href="#full-pipeline">Повний конвеєр: тести → Docker-образ → реєстр → деплой</a></li><li><a href="#ci-tools">Jenkins і інші CI/CD-системи</a></li><li><a href="#ecosystem">Масштабування і зручності</a></li><li><a href="#practice">Тригери збірки, плагіни і правила CI</a></li><li><a href="#mistakes">Типові помилки</a></li><li><a href="#quiz">Перевір себе</a></li></ol></aside>
 </div>
 </div>
 <footer class="site-footer">Навчальний конспект для самопідготовки. Прогрес і результати тестів зберігаються лише в цьому браузері на цьому пристрої (localStorage) і не синхронізуються між пристроями.</footer>
