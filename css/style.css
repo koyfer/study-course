@@ -419,3 +419,19 @@ svg.dg .fill-muted { fill: var(--faint); }
 
 /* keyboard keys in lecture text */
 .content kbd { font-family: var(--mono); font-size: .82em; border: 1px solid var(--border-strong); border-bottom-width: 2px; border-radius: 5px; padding: 0 5px; background: var(--surface-2); color: var(--text); white-space: nowrap; }
+
+/* ---------- quiz letters, source links, practice page ---------- */
+.q-letter { font: 600 13px var(--mono); color: var(--muted); margin-right: 4px; }
+.q-src { display: inline-block; margin-left: 8px; font-size: 12px; font-weight: 600; color: var(--violet); background: var(--violet-soft); border-radius: 999px; padding: 2px 9px; text-decoration: none; white-space: nowrap; }
+.q-src:hover { text-decoration: underline; }
+.practice-form { display: grid; gap: 16px; padding: 18px; border: 1px solid var(--border); border-radius: var(--radius); background: var(--surface); margin: 20px 0 12px; }
+.practice-form fieldset { border: 0; padding: 0; margin: 0; min-width: 0; }
+.practice-form legend { font-weight: 700; margin-bottom: 10px; }
+.practice-lectures { display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 8px; }
+.pr-item { display: flex; gap: 10px; align-items: flex-start; padding: 8px 10px; border: 1px solid var(--border); border-radius: 10px; background: var(--surface-2); cursor: pointer; min-width: 0; }
+.pr-item input { margin-top: 4px; accent-color: var(--accent); }
+.pr-item span { min-width: 0; overflow-wrap: anywhere; }
+.pr-item small { color: var(--muted); }
+.practice-actions, .practice-run { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; margin-top: 10px; }
+.practice-run label { display: flex; gap: 8px; align-items: center; font-weight: 600; }
+.practice-run select { font: inherit; min-height: 40px; padding: 0 10px; border-radius: 10px; border: 1px solid var(--border-strong); background: var(--surface); color: var(--text); }

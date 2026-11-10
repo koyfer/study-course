@@ -23,7 +23,7 @@
 <div class="layout">
 <nav class="sidebar" id="sidebar" aria-label="Навігація курсом">
 <div class="side-progress" data-week-progress="w1l1,w1l2,w1l3,w1l4,w1l5,w2l6,w2l7,w2l8,w2l9,w2l10,w3l11,w3l12"><div>Прогрес курсу: <strong class="wp-text">0 з 12</strong></div><div class="bar"><i></i></div></div>
-<div class="side-group"><a class="side-link" href="../index.html"><span class="side-num">⌂</span><span>Огляд курсу і план</span></a></div>
+<div class="side-group"><a class="side-link" href="../index.html"><span class="side-num">⌂</span><span>Огляд курсу і план</span></a><a class="side-link" href="../practice.html"><span class="side-num">✓</span><span>Тренувальний тест з усіх лекцій</span></a></div>
 <div class="side-group" data-week-progress="w1l1,w1l2,w1l3,w1l4,w1l5"><div class="side-title"><a href="../weeks/week-1.html">Тиждень 1</a><span class="wk-count wp-text">0 з 5</span></div>
 <a class="side-link" href="../lectures/week-1/lecture-1.html"><span class="side-num">01</span><span>Вступ до DevOps, SDLC і хмарних моделей</span><span class="side-check" data-check="w1l1" role="img" aria-label="Не опрацьовано"></span></a>
 <a class="side-link" href="../lectures/week-1/lecture-2.html"><span class="side-num">02</span><span>Linux CLI: файли, пошук, права, процеси</span><span class="side-check" data-check="w1l2" role="img" aria-label="Не опрацьовано"></span></a>
@@ -48,27 +48,27 @@
 <div class="crumbs"><a href="../index.html">Курс</a><span>/</span><span>Тиждень 3</span></div>
 <div class="eyebrow">Тиждень 3</div>
 <h1>Автоматизація доставки: CI/CD, Jenkins, GitHub Actions</h1>
-<p class="lead">2 лекцій · загалом ≈ 66 хв читання.</p>
+<p class="lead">2 лекцій · загалом ≈ 113 хв читання.</p>
 <section class="week-block" aria-labelledby="week-3">
 <div class="week-head">
-<div><div class="eyebrow">Тиждень 3 · 2 лекцій · ≈ 66 хв</div><h2 id="week-3"><a href="../weeks/week-3.html" style="color:inherit">Автоматизація доставки: CI/CD, Jenkins, GitHub Actions</a></h2></div>
+<div><div class="eyebrow">Тиждень 3 · 2 лекцій · ≈ 113 хв</div><h2 id="week-3"><a href="../weeks/week-3.html" style="color:inherit">Автоматизація доставки: CI/CD, Jenkins, GitHub Actions</a></h2></div>
 <div class="wk-meta" data-week-progress="w3l11,w3l12">Опрацьовано: <b class="wp-text">0 з 2</b><div class="bar"><i></i></div></div>
 </div>
 <div class="cards"><a class="card" href="../lectures/week-3/lecture-11.html">
 <span class="card-num">ЛЕКЦІЯ 11</span>
 <h3>CI/CD і Jenkins: конвеєр збирання, Jenkinsfile і Pipeline as Code</h3>
-<p>Неперервна інтеграція, архітектура CI-сервера, встановлення Jenkins, Jenkinsfile: declarative vs scripted, stages/steps, паралельність, approval, post, parameters, credentials, інструменти; тригери збірки (Poll SCM, webhook, розклад), плагіни, правила CI; архітектура (controller, agents, executors, labels), типи задач і статуси, Credentials і withCredentials, безпека і JCasC, повний конвеєр з Docker і деплоєм, вбудовані змінні, порівняння CI-систем.</p>
-<div class="card-foot"><span style="display:inline-flex;width:14px;height:14px"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg></span>≈ 31 хв · 22 питань<span class="side-check" data-check="w3l11" role="img" aria-label="Не опрацьовано"></span></div>
+<p>Неперервна інтеграція, архітектура CI-сервера, встановлення Jenkins, Jenkinsfile: declarative vs scripted, stages/steps, паралельність, approval, post, parameters, credentials, інструменти; тригери збірки (Poll SCM, webhook, розклад), плагіни, правила CI; архітектура (controller, agents, executors, labels), типи задач і статуси, Credentials і withCredentials, безпека і JCasC, повний конвеєр з Docker і деплоєм, вбудовані змінні, порівняння CI-систем; довідник declarative: agent, options, parameters, triggers і cron з H, when, порядок post, matrix, типи credentials і пастка Groovy-інтерполяції; Jenkins у Docker, типи jobs, webhook крок за кроком, статуси збірки, читання консолі, junit і артефакти, shared library; порівняння CI-систем і таблиця типових проблем.</p>
+<div class="card-foot"><span style="display:inline-flex;width:14px;height:14px"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg></span>≈ 53 хв · 26 питань<span class="side-check" data-check="w3l11" role="img" aria-label="Не опрацьовано"></span></div>
 </a>
 <a class="card" href="../lectures/week-3/lecture-12.html">
 <span class="card-num">ЛЕКЦІЯ 12</span>
 <h3>GitHub Actions: workflow, jobs, runners, secrets і автоматичний деплой</h3>
-<p>Компоненти GitHub Actions (workflow, event, job, step, action, runner), синтаксис YAML, matrix, secrets, self-hosted runners, Marketplace, розбір workflow деплою на Heroku, порівняння з Jenkins; тригери schedule і workflow_dispatch, needs, if, кеш і артефакти; контексти і вирази, outputs, GITHUB_OUTPUT/GITHUB_ENV, функції статусу, permissions, concurrency, services, environments зі схваленням, OIDC, безпека дій, reusable workflows; повний конвеєр з матрицею, GHCR і деплоєм.</p>
-<div class="card-foot"><span style="display:inline-flex;width:14px;height:14px"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg></span>≈ 35 хв · 22 питань<span class="side-check" data-check="w3l12" role="img" aria-label="Не опрацьовано"></span></div>
+<p>Компоненти GitHub Actions (workflow, event, job, step, action, runner), синтаксис YAML, matrix, secrets, self-hosted runners, Marketplace, розбір workflow деплою на Heroku, порівняння з Jenkins; тригери schedule і workflow_dispatch, needs, if, кеш і артефакти; контексти і вирази, outputs, GITHUB_OUTPUT/GITHUB_ENV, функції статусу, permissions, concurrency, services, environments зі схваленням, OIDC, безпека дій, reusable workflows; повний конвеєр з матрицею, GHCR і деплоєм; фільтри подій (branches, paths, types), schedule в UTC, workflow_dispatch з inputs, release, workflow_run; permissions GITHUB_TOKEN, concurrency, timeout, fail-fast і матриця з exclude/include; runners, сервісні контейнери, кеш vs артефакти, reusable workflow і composite action, деплой в AWS через OIDC; налагодження, чек-лист безпеки і ліміти.</p>
+<div class="card-foot"><span style="display:inline-flex;width:14px;height:14px"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg></span>≈ 60 хв · 25 питань<span class="side-check" data-check="w3l12" role="img" aria-label="Не опрацьовано"></span></div>
 </a></div>
 </section>
 <h2 id="table">Коротко у таблиці</h2>
-<div class="table-wrap"><table><thead><tr><th>#</th><th>Лекція</th><th>Час</th><th>Статус</th></tr></thead><tbody><tr><td>11</td><td><a href="../lectures/week-3/lecture-11.html">CI/CD і Jenkins: конвеєр збирання, Jenkinsfile і Pipeline as Code</a></td><td>≈ 31 хв</td><td><span class="side-check" data-check="w3l11" role="img" aria-label="Не опрацьовано" style="display:inline-block"></span></td></tr><tr><td>12</td><td><a href="../lectures/week-3/lecture-12.html">GitHub Actions: workflow, jobs, runners, secrets і автоматичний деплой</a></td><td>≈ 35 хв</td><td><span class="side-check" data-check="w3l12" role="img" aria-label="Не опрацьовано" style="display:inline-block"></span></td></tr></tbody></table></div>
+<div class="table-wrap"><table><thead><tr><th>#</th><th>Лекція</th><th>Час</th><th>Статус</th></tr></thead><tbody><tr><td>11</td><td><a href="../lectures/week-3/lecture-11.html">CI/CD і Jenkins: конвеєр збирання, Jenkinsfile і Pipeline as Code</a></td><td>≈ 53 хв</td><td><span class="side-check" data-check="w3l11" role="img" aria-label="Не опрацьовано" style="display:inline-block"></span></td></tr><tr><td>12</td><td><a href="../lectures/week-3/lecture-12.html">GitHub Actions: workflow, jobs, runners, secrets і автоматичний деплой</a></td><td>≈ 60 хв</td><td><span class="side-check" data-check="w3l12" role="img" aria-label="Не опрацьовано" style="display:inline-block"></span></td></tr></tbody></table></div>
 <nav class="pager" aria-label="Інші тижні"><a class="prev" href="week-2.html"><small>← Тиждень 2</small><span>Інфраструктура: мережі, хмари, IaC/Terraform, Docker, Git</span></a></nav>
 </main>
 

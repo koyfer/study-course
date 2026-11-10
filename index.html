@@ -23,7 +23,7 @@
 <div class="layout">
 <nav class="sidebar" id="sidebar" aria-label="Навігація курсом">
 <div class="side-progress" data-week-progress="w1l1,w1l2,w1l3,w1l4,w1l5,w2l6,w2l7,w2l8,w2l9,w2l10,w3l11,w3l12"><div>Прогрес курсу: <strong class="wp-text">0 з 12</strong></div><div class="bar"><i></i></div></div>
-<div class="side-group"><a class="side-link" href="index.html" aria-current="page"><span class="side-num">⌂</span><span>Огляд курсу і план</span></a></div>
+<div class="side-group"><a class="side-link" href="index.html" aria-current="page"><span class="side-num">⌂</span><span>Огляд курсу і план</span></a><a class="side-link" href="practice.html"><span class="side-num">✓</span><span>Тренувальний тест з усіх лекцій</span></a></div>
 <div class="side-group" data-week-progress="w1l1,w1l2,w1l3,w1l4,w1l5"><div class="side-title"><a href="weeks/week-1.html">Тиждень 1</a><span class="wk-count wp-text">0 з 5</span></div>
 <a class="side-link" href="lectures/week-1/lecture-1.html"><span class="side-num">01</span><span>Вступ до DevOps, SDLC і хмарних моделей</span><span class="side-check" data-check="w1l1" role="img" aria-label="Не опрацьовано"></span></a>
 <a class="side-link" href="lectures/week-1/lecture-2.html"><span class="side-num">02</span><span>Linux CLI: файли, пошук, права, процеси</span><span class="side-check" data-check="w1l2" role="img" aria-label="Не опрацьовано"></span></a>
@@ -53,8 +53,8 @@
 <div class="stats">
 <div class="stat"><b>3</b><span>тижні</span></div>
 <div class="stat"><b>12</b><span>лекцій</span></div>
-<div class="stat"><b>≈ 14.7 год</b><span>загальний час читання</span></div>
-<div class="stat"><b>460</b><span>питань самоперевірки</span></div>
+<div class="stat"><b>≈ 15.6 год</b><span>загальний час читання</span></div>
+<div class="stat"><b>467</b><span>питань самоперевірки</span></div>
 </div>
 </div>
 <div class="ring-wrap">
@@ -125,13 +125,13 @@
 <div class="plan">
 <div><h4>Тиждень 1 · фундамент</h4><p>Лекції 1–5. Головне: DevOps/CAMS, IaaS/PaaS/SaaS, команди Linux і права <code>chmod</code>, синтаксис Bash, HTTP-методи і REST, як влаштований LAMP.</p></div>
 <div><h4>Тиждень 2 · інфраструктура</h4><p>Лекції 6–10. Головне: OSI vs TCP/IP, IP/маска/порти, NAT; NIST-модель хмари; цикл Terraform; образ vs контейнер, Dockerfile; Git-команди і гілки.</p></div>
-<div><h4>Тиждень 3 · CI/CD і повторення</h4><p>Лекції 11–12, далі — повторення через тести. Головне: CI vs CD, Jenkinsfile, workflow GitHub Actions. Перепройдіть тести, де результат нижче 70%.</p></div>
+<div><h4>Тиждень 3 · CI/CD і повторення</h4><p>Лекції 11–12, далі — повторення через тести. Головне: CI vs CD, Jenkinsfile, workflow GitHub Actions. Перепройдіть тести, де результат нижче 70%, і закрийте тиждень <a href="practice.html">тренувальним тестом з усіх лекцій</a>.</p></div>
 </div>
 <p class="note-small" style="margin-top:12px">Порада: спочатку прочитайте блок «Чого ви навчитесь» і пройдіть тест у кінці лекції — так одразу видно прогалини. Позначка «опрацьовано» і результати тестів зберігаються лише в цьому браузері. <button type="button" class="btn" data-reset-progress style="min-height:32px;padding:0 10px;font-size:13px;margin-left:6px">Скинути прогрес</button></p>
 
 <section class="week-block" aria-labelledby="week-1">
 <div class="week-head">
-<div><div class="eyebrow">Тиждень 1 · 5 лекцій · ≈ 449 хв</div><h2 id="week-1"><a href="weeks/week-1.html" style="color:inherit">Фундамент: DevOps, Linux, Bash, веб-архітектура, LAMP</a></h2></div>
+<div><div class="eyebrow">Тиждень 1 · 5 лекцій · ≈ 450 хв</div><h2 id="week-1"><a href="weeks/week-1.html" style="color:inherit">Фундамент: DevOps, Linux, Bash, веб-архітектура, LAMP</a></h2></div>
 <div class="wk-meta" data-week-progress="w1l1,w1l2,w1l3,w1l4,w1l5">Опрацьовано: <b class="wp-text">0 з 5</b><div class="bar"><i></i></div></div>
 </div>
 <div class="cards"><a class="card" href="lectures/week-1/lecture-1.html">
@@ -143,7 +143,7 @@
 <a class="card" href="lectures/week-1/lecture-2.html">
 <span class="card-num">ЛЕКЦІЯ 02</span>
 <h3>Linux: командний рядок, файлова система, користувачі, права, процеси</h3>
-<p>FHS і шляхи, довідка (man, --help, help), ls і шаблони, створення/копіювання/видалення (усі варіанти rm, rmdir, mkdir -p), cat/less/tail, inode і посилання ln, find/locate/grep, змінні й PATH, потоки та перенаправлення, коди виходу, sort/uniq/cut/awk, користувачі й /etc/shadow, chmod/umask/SUID, процеси і сигнали, free/df, systemd, apt/dnf, tar, SSH, пастки Windows-синтаксису.</p>
+<p>FHS і шляхи, довідка (man, --help, help), ls і шаблони, створення/копіювання/видалення (усі варіанти rm, rmdir, mkdir -p), cat/less/tail, inode і посилання ln, find/locate/grep, змінні й PATH, потоки та перенаправлення, коди виходу, sort/uniq/cut/awk, користувачі й /etc/shadow, chmod/umask/SUID, процеси і сигнали, free/df, systemd, apt/dnf, tar, SSH, пастки Windows-синтаксису; як читати вивід ps aux, free, df/du, рядок /etc/passwd і права в ls -l; vim; практикум із 12 адміністративних задач; зведена шпаргалка до тесту Linux CLI.</p>
 <div class="card-foot"><span style="display:inline-flex;width:14px;height:14px"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg></span>≈ 128 хв · 63 питань<span class="side-check" data-check="w1l2" role="img" aria-label="Не опрацьовано"></span></div>
 </a>
 <a class="card" href="lectures/week-1/lecture-3.html">
@@ -156,7 +156,7 @@
 <span class="card-num">ЛЕКЦІЯ 04</span>
 <h3>Архітектура вебзастосунків: HTTP, REST API, N-tier і мікросервіси</h3>
 <p>Клієнт-сервер, як працює HTTP, методи GET/POST/PUT/DELETE, URL vs URI, cookies, 2/3/N-tier, frontend/backend, AJAX, JSON, REST і curl, моноліт vs мікросервіси; HTTPS/TLS, вебсервер vs сервер застосунку, балансування, кеш і CDN; коди статусу і заголовки, curl -v, HTTP/1.1–3, сесії і кукі, Basic/Bearer/JWT/OAuth, CORS, принципи REST і проєктування API, SOAP/GraphQL/gRPC, мікросервіси і Twelve-Factor, forward/reverse proxy, L4/L7, TLS-рукостискання; повний шлях запиту від URL до відмальованої сторінки (розбір URL, ланцюжок DNS, TCP і TLS, обробка на сервері, таймінги curl); Nginx як reverse proxy і балансувальник з робочим конфігом, діагностика 502/503/504/403; Cache-Control, ETag і 304, CDN; шпаргалка curl.</p>
-<div class="card-foot"><span style="display:inline-flex;width:14px;height:14px"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg></span>≈ 68 хв · 35 питань<span class="side-check" data-check="w1l4" role="img" aria-label="Не опрацьовано"></span></div>
+<div class="card-foot"><span style="display:inline-flex;width:14px;height:14px"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg></span>≈ 69 хв · 35 питань<span class="side-check" data-check="w1l4" role="img" aria-label="Не опрацьовано"></span></div>
 </a>
 <a class="card" href="lectures/week-1/lecture-5.html">
 <span class="card-num">ЛЕКЦІЯ 05</span>
@@ -167,7 +167,7 @@
 </section>
 <section class="week-block" aria-labelledby="week-2">
 <div class="week-head">
-<div><div class="eyebrow">Тиждень 2 · 5 лекцій · ≈ 369 хв</div><h2 id="week-2"><a href="weeks/week-2.html" style="color:inherit">Інфраструктура: мережі, хмари, IaC/Terraform, Docker, Git</a></h2></div>
+<div><div class="eyebrow">Тиждень 2 · 5 лекцій · ≈ 370 хв</div><h2 id="week-2"><a href="weeks/week-2.html" style="color:inherit">Інфраструктура: мережі, хмари, IaC/Terraform, Docker, Git</a></h2></div>
 <div class="wk-meta" data-week-progress="w2l6,w2l7,w2l8,w2l9,w2l10">Опрацьовано: <b class="wp-text">0 з 5</b><div class="bar"><i></i></div></div>
 </div>
 <div class="cards"><a class="card" href="lectures/week-2/lecture-6.html">
@@ -180,7 +180,7 @@
 <span class="card-num">ЛЕКЦІЯ 07</span>
 <h3>Хмарні обчислення: модель NIST, IaaS/PaaS/SaaS і провайдери AWS, GCP, Azure</h3>
 <p>Чому з&#x27;явились хмари, задача масштабування, 5 характеристик NIST, моделі сервісів і розгортання, переваги й ризики, регіони та зони, відповідники сервісів AWS/Azure/GCP; масштабування, еластичність, shared responsibility, моделі оплати, типи сховищ; IAM і ролі, VPC (підмережі, IGW, NAT, Security Group vs NACL), EC2, S3, RDS, ELB, Auto Scaling, CloudWatch, Lambda, AWS CLI, «дев&#x27;ятки», RPO/RTO, стратегії DR, Well-Architected, міграція 6R; характеристики NIST на сценаріях, матриця відповідальності On-Prem/IaaS/CaaS/PaaS/FaaS/SaaS, hybrid vs multi-cloud; типи сховищ, класи S3 і lifecycle, типи EBS і EC2, від ВМ до функцій; розрахунок вартості, FinOps і актуальні умови free tier; практика: вебсервер в AWS через CLI; проєкт відмовостійкої архітектури і поведінка при збоях.</p>
-<div class="card-foot"><span style="display:inline-flex;width:14px;height:14px"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg></span>≈ 58 хв · 30 питань<span class="side-check" data-check="w2l7" role="img" aria-label="Не опрацьовано"></span></div>
+<div class="card-foot"><span style="display:inline-flex;width:14px;height:14px"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg></span>≈ 59 хв · 30 питань<span class="side-check" data-check="w2l7" role="img" aria-label="Не опрацьовано"></span></div>
 </a>
 <a class="card" href="lectures/week-2/lecture-8.html">
 <span class="card-num">ЛЕКЦІЯ 08</span>
@@ -203,20 +203,20 @@
 </section>
 <section class="week-block" aria-labelledby="week-3">
 <div class="week-head">
-<div><div class="eyebrow">Тиждень 3 · 2 лекцій · ≈ 66 хв</div><h2 id="week-3"><a href="weeks/week-3.html" style="color:inherit">Автоматизація доставки: CI/CD, Jenkins, GitHub Actions</a></h2></div>
+<div><div class="eyebrow">Тиждень 3 · 2 лекцій · ≈ 113 хв</div><h2 id="week-3"><a href="weeks/week-3.html" style="color:inherit">Автоматизація доставки: CI/CD, Jenkins, GitHub Actions</a></h2></div>
 <div class="wk-meta" data-week-progress="w3l11,w3l12">Опрацьовано: <b class="wp-text">0 з 2</b><div class="bar"><i></i></div></div>
 </div>
 <div class="cards"><a class="card" href="lectures/week-3/lecture-11.html">
 <span class="card-num">ЛЕКЦІЯ 11</span>
 <h3>CI/CD і Jenkins: конвеєр збирання, Jenkinsfile і Pipeline as Code</h3>
-<p>Неперервна інтеграція, архітектура CI-сервера, встановлення Jenkins, Jenkinsfile: declarative vs scripted, stages/steps, паралельність, approval, post, parameters, credentials, інструменти; тригери збірки (Poll SCM, webhook, розклад), плагіни, правила CI; архітектура (controller, agents, executors, labels), типи задач і статуси, Credentials і withCredentials, безпека і JCasC, повний конвеєр з Docker і деплоєм, вбудовані змінні, порівняння CI-систем.</p>
-<div class="card-foot"><span style="display:inline-flex;width:14px;height:14px"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg></span>≈ 31 хв · 22 питань<span class="side-check" data-check="w3l11" role="img" aria-label="Не опрацьовано"></span></div>
+<p>Неперервна інтеграція, архітектура CI-сервера, встановлення Jenkins, Jenkinsfile: declarative vs scripted, stages/steps, паралельність, approval, post, parameters, credentials, інструменти; тригери збірки (Poll SCM, webhook, розклад), плагіни, правила CI; архітектура (controller, agents, executors, labels), типи задач і статуси, Credentials і withCredentials, безпека і JCasC, повний конвеєр з Docker і деплоєм, вбудовані змінні, порівняння CI-систем; довідник declarative: agent, options, parameters, triggers і cron з H, when, порядок post, matrix, типи credentials і пастка Groovy-інтерполяції; Jenkins у Docker, типи jobs, webhook крок за кроком, статуси збірки, читання консолі, junit і артефакти, shared library; порівняння CI-систем і таблиця типових проблем.</p>
+<div class="card-foot"><span style="display:inline-flex;width:14px;height:14px"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg></span>≈ 53 хв · 26 питань<span class="side-check" data-check="w3l11" role="img" aria-label="Не опрацьовано"></span></div>
 </a>
 <a class="card" href="lectures/week-3/lecture-12.html">
 <span class="card-num">ЛЕКЦІЯ 12</span>
 <h3>GitHub Actions: workflow, jobs, runners, secrets і автоматичний деплой</h3>
-<p>Компоненти GitHub Actions (workflow, event, job, step, action, runner), синтаксис YAML, matrix, secrets, self-hosted runners, Marketplace, розбір workflow деплою на Heroku, порівняння з Jenkins; тригери schedule і workflow_dispatch, needs, if, кеш і артефакти; контексти і вирази, outputs, GITHUB_OUTPUT/GITHUB_ENV, функції статусу, permissions, concurrency, services, environments зі схваленням, OIDC, безпека дій, reusable workflows; повний конвеєр з матрицею, GHCR і деплоєм.</p>
-<div class="card-foot"><span style="display:inline-flex;width:14px;height:14px"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg></span>≈ 35 хв · 22 питань<span class="side-check" data-check="w3l12" role="img" aria-label="Не опрацьовано"></span></div>
+<p>Компоненти GitHub Actions (workflow, event, job, step, action, runner), синтаксис YAML, matrix, secrets, self-hosted runners, Marketplace, розбір workflow деплою на Heroku, порівняння з Jenkins; тригери schedule і workflow_dispatch, needs, if, кеш і артефакти; контексти і вирази, outputs, GITHUB_OUTPUT/GITHUB_ENV, функції статусу, permissions, concurrency, services, environments зі схваленням, OIDC, безпека дій, reusable workflows; повний конвеєр з матрицею, GHCR і деплоєм; фільтри подій (branches, paths, types), schedule в UTC, workflow_dispatch з inputs, release, workflow_run; permissions GITHUB_TOKEN, concurrency, timeout, fail-fast і матриця з exclude/include; runners, сервісні контейнери, кеш vs артефакти, reusable workflow і composite action, деплой в AWS через OIDC; налагодження, чек-лист безпеки і ліміти.</p>
+<div class="card-foot"><span style="display:inline-flex;width:14px;height:14px"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg></span>≈ 60 хв · 25 питань<span class="side-check" data-check="w3l12" role="img" aria-label="Не опрацьовано"></span></div>
 </a></div>
 </section>
 
